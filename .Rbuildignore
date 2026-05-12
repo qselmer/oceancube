@@ -1,0 +1,8 @@
+^\.github$
+^\.lintr$
+^cran-comments\.md$
+^data-raw$
+^pkgdown$
+^_pkgdown\.yml$
+^.*\.Rproj$
+^\.Rproj\.user$

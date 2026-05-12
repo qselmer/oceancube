@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+title: oceancube
+type: software
+authors:
+  - family-names: Quispe-Salazar
+    given-names: Elmer
+version: 0.0.0.9000
+message: "If you use oceancube, please cite it."

@@ -1,0 +1,15 @@
+---
+title: "Getting started with oceancube"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with oceancube}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, eval=FALSE}
+library(oceancube)
+```
+
+This vignette will describe the core workflow:
+NetCDF -> ocean_cube -> mask -> layer -> climatology -> anomaly -> annual indicators.

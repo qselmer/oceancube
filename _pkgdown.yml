@@ -1,0 +1,22 @@
+url: https://qselmer.github.io/oceancube/
+template:
+  bootstrap: 5
+reference:
+  - title: Core cube
+    contents:
+      - ocean_cube
+      - read_nc
+  - title: Copernicus
+    contents:
+      - cm_setup
+      - cm_connect
+      - download_nc
+  - title: Processing
+    contents:
+      - layer_mean
+      - to_month
+      - clim_month
+      - anom_diff
+      - anom_z
+      - signal_noise
+      - annual_index

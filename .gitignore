@@ -1,0 +1,64 @@
+# R session files
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+# Local data and outputs
+cin/
+cout/
+
+# Heavy files
+*.nc
+*.nc4
+*.grib
+*.zarr/
+*.parquet
+*.rds
+
+# R local files
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+
+# R build/check
+*.tar.gz
+*.Rcheck/
+.Rcheck/
+
+# Credentials
+.Renviron
+.copernicusmarine/
+
+
+# R build/check
+*.tar.gz
+*.Rcheck/
+.Rcheck/
+check/
+
+# Local outputs
+cin/
+cout/
+data-raw/tmp/
+tmp/
+temp/
+
+# NetCDF and heavy files
+*.nc
+*.nc4
+*.grib
+*.zarr/
+*.parquet
+*.rds
+
+# Credentials
+.Renviron
+.copernicusmarine/
+*.pem
+*.key
+*.json
+
+# OS
+.DS_Store
+Thumbs.db
