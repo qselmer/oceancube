@@ -9,7 +9,7 @@ signal_noise(x, clim, signed = FALSE)
 \arguments{
 \item{x}{An \verb{<ocean_cube>} object.}
 
-\item{clim}{An \verb{<ocean_clim>} object created by \code{\link[=clim_month]{clim_month()}}.}
+\item{clim}{An \verb{<ocean_clim>} object created by \code{clim_month()} or \code{clim_day()}.}
 
 \item{signed}{Logical. If \code{FALSE}, returns absolute signal-to-noise magnitude.}
 }

@@ -2,18 +2,18 @@
 % Please edit documentation in R/anom_diff.R
 \name{anom_z}
 \alias{anom_z}
-\title{Compute standardized monthly anomalies}
+\title{Compute standardized anomalies from a climatology}
 \usage{
 anom_z(x, clim)
 }
 \arguments{
 \item{x}{An \verb{<ocean_cube>} object.}
 
-\item{clim}{An \verb{<ocean_clim>} object created by \code{\link[=clim_month]{clim_month()}}.}
+\item{clim}{An \verb{<ocean_clim>} object created by \code{clim_month()} or \code{clim_day()}.}
 }
 \value{
 An \verb{<ocean_cube>} with standardized anomaly values \code{(x - climatology) / sd_clim}.
 }
 \description{
-Compute standardized monthly anomalies
+Compute standardized anomalies from a climatology
 }

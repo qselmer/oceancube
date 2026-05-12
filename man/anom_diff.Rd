@@ -2,18 +2,18 @@
 % Please edit documentation in R/anom_diff.R
 \name{anom_diff}
 \alias{anom_diff}
-\title{Compute absolute anomalies from monthly climatology}
+\title{Compute absolute anomalies from a climatology}
 \usage{
 anom_diff(x, clim)
 }
 \arguments{
 \item{x}{An \verb{<ocean_cube>} object.}
 
-\item{clim}{An \verb{<ocean_clim>} object created by \code{\link[=clim_month]{clim_month()}}.}
+\item{clim}{An \verb{<ocean_clim>} object created by \code{clim_month()} or \code{clim_day()}.}
 }
 \value{
 An \verb{<ocean_cube>} with anomaly values \code{x - climatology}.
 }
 \description{
-Compute absolute anomalies from monthly climatology
+Compute absolute anomalies from a climatology
 }
