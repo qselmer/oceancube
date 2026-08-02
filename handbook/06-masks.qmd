@@ -1,0 +1,10 @@
+# Masks and spatial context
+`cube_crop()` reduces axes without changing retained values. `cube_mask()` preserves every axis and converts cells outside polygons to `NA` using cell-centre semantics. `cube_polygon_weights()` does not read cube values: it returns geometry intersections and fractions.
+
+| Operation | Preserves all axes | Modifies values | Returns cube | Semantics |
+|---|---:|---:|---:|---|
+| crop | no | no | yes | domain reduction |
+| mask | yes | yes (`NA`) | yes | cell centre |
+| polygon weights | n/a | no values read | no | geometric fraction |
+
+`stock_mask()`, `crop_stock()`, and `coast_dist()` preserve established spatial-context workflows.

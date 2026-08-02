@@ -48,7 +48,8 @@ clim_day <- function(x, period = NULL, leap = c("feb28", "drop", "keep"), min_n 
   }
 
   days <- .daily_keys(leap = leap)
-  d <- dim(x$data)
+  d <- unname(.cube_shape(x))
+  values <- .cube_read(x)
 
   clim_mean <- array(NA_real_, dim = c(d[1], d[2], d[3], length(days), d[5]))
   clim_sd   <- array(NA_real_, dim = c(d[1], d[2], d[3], length(days), d[5]))
@@ -58,7 +59,7 @@ clim_day <- function(x, period = NULL, leap = c("feb28", "drop", "keep"), min_n 
     idx <- which(idx_base & key == days[j])
     if (length(idx) == 0L) next
 
-    sub <- x$data[, , , idx, , drop = FALSE]
+    sub <- values[, , , idx, , drop = FALSE]
     n_j <- apply(sub, c(1, 2, 3, 5), function(z) sum(is.finite(z)))
 
     clim_n[, , , j, ] <- n_j
@@ -100,7 +101,7 @@ clim_day <- function(x, period = NULL, leap = c("feb28", "drop", "keep"), min_n 
     n = clim_n,
     units = x$units,
     source = x$source,
-    dataset_id = x$dataset_id,
+    dataset_id = x[["dataset_id"]],
     provenance = .make_provenance(
       "clim_day",
       args = list(period = period, leap = leap, min_n = min_n),

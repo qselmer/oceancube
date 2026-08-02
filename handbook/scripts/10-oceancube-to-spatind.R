@@ -1,0 +1,6 @@
+library(oceancube)
+boundary <- system.file('architecture','oceancube-spatind-boundary.md',package='oceancube')
+stopifnot(file.exists(boundary))
+forbidden <- c('center_of_gravity','occupied_area','occupied_volume','gini','patchiness')
+stopifnot(!any(forbidden %in% getNamespaceExports('oceancube')))
+message('Prepared cube values and weights belong upstream of spatind; no indicator was calculated. PASS')

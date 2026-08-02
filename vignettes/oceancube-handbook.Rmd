@@ -1,0 +1,19 @@
+---
+title: "OceanCube Handbook"
+author: "Elmer Quispe-Salazar"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{OceanCube Handbook}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+`oceancube` represents `longitude × latitude × depth × time × variable` cubes with memory and read-only local NetCDF backends. The full navigable handbook is available at <https://qselmer.github.io/oceancube/handbook/>.
+
+```{r}
+library(oceancube)
+x <- ocean_cube(lon=c(-80,-79),lat=-12,depth=0,time=as.Date('2020-01-01'),vars='temperature',data=array(1:2,dim=c(2,1,1,1,1)))
+stopifnot(length(dim(x$data)) == 5L)
+```
+
+Main flows: construct/read → slice/crop → extract/transect/mask → climatology/anomalies → geometry/weights. `spatind` consumes prepared values and weights; it owns indicators and inference.

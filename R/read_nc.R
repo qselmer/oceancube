@@ -31,14 +31,14 @@ read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
   time_name <- time_name %||% .guess_dim(dim_names, c("time", "date"), arg = "time")
   depth_name <- depth_name %||% .guess_dim(dim_names, c("depth", "deptht", "lev", "z"), required = FALSE)
 
-  lon <- ncdf4::ncvar_get(nc, lon_name)
-  lat <- ncdf4::ncvar_get(nc, lat_name)
-  time_raw <- ncdf4::ncvar_get(nc, time_name)
+  lon <- as.vector(ncdf4::ncvar_get(nc, lon_name))
+  lat <- as.vector(ncdf4::ncvar_get(nc, lat_name))
+  time_raw <- as.vector(ncdf4::ncvar_get(nc, time_name))
   time_units <- ncdf4::ncatt_get(nc, time_name, "units")$value
-  time_calendar <- tryCatch(
-    ncdf4::ncatt_get(nc, time_name, "calendar")$value,
-    error = function(e) "gregorian"
-  )
+  time_calendar <- tryCatch({
+    calendar_attr <- ncdf4::ncatt_get(nc, time_name, "calendar")
+    if (isTRUE(calendar_attr$hasatt)) calendar_attr$value else "gregorian"
+  }, error = function(e) "gregorian")
   time <- .read_cf_time(time_raw, time_units, calendar = time_calendar)
 
   all_vars <- names(nc$var)
@@ -57,7 +57,11 @@ read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
     depth_name %in% vapply(nc$var[[v]]$dim, function(d) d$name, character(1))
   }, logical(1)))
 
-  depth <- if (isTRUE(has_depth)) ncdf4::ncvar_get(nc, depth_name) else NA_real_
+  depth <- if (isTRUE(has_depth)) {
+    as.vector(ncdf4::ncvar_get(nc, depth_name))
+  } else {
+    NA_real_
+  }
 
   data <- array(
     NA_real_,

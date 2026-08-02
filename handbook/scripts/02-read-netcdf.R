@@ -1,0 +1,6 @@
+library(oceancube)
+message('Read a temporary NetCDF')
+p <- system.file('examples','backend_netcdf_read_block.R',package='oceancube')
+stopifnot(nzchar(p), file.exists(p))
+source(p, local=new.env(parent=globalenv()))
+message('PASS')

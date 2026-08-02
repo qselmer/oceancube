@@ -11,7 +11,8 @@ annual_index <- function(x, threshold_pos = NULL, threshold_neg = NULL) {
 
   years <- sort(unique(as.integer(format(x$time, "%Y"))))
   year_vec <- as.integer(format(x$time, "%Y"))
-  d <- dim(x$data)
+  d <- unname(.cube_shape(x))
+  values <- .cube_read(x)
 
   rows <- vector("list", length(years) * d[3] * d[5])
   ii <- 0L
@@ -20,7 +21,7 @@ annual_index <- function(x, threshold_pos = NULL, threshold_neg = NULL) {
     for (z in seq_len(d[3])) {
       for (yy in years) {
         idx <- which(year_vec == yy)
-        vals <- as.vector(x$data[, , z, idx, k, drop = FALSE])
+        vals <- as.vector(values[, , z, idx, k, drop = FALSE])
         vals <- vals[is.finite(vals)]
 
         pos_thr <- threshold_pos %||% 0

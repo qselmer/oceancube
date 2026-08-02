@@ -7,6 +7,7 @@
 #' @export
 coast_dist <- function(x, coast) {
   .check_cube(x)
+  cube_shape <- .cube_shape(x)
   if (!requireNamespace("sf", quietly = TRUE)) {
     rlang::abort("Package `sf` is required for `coast_dist()`.")
   }
@@ -24,7 +25,12 @@ coast_dist <- function(x, coast) {
   pts <- sf::st_as_sf(grid, coords = c("lon", "lat"), crs = 4326)
   dc_m <- as.numeric(sf::st_distance(pts, sf::st_union(coast_sf)))
   dc_nm <- dc_m * 0.000539957
-  dc_mat <- matrix(dc_nm, nrow = length(x$lon), ncol = length(x$lat), byrow = FALSE)
+  dc_mat <- matrix(
+    dc_nm,
+    nrow = cube_shape[["longitude"]],
+    ncol = cube_shape[["latitude"]],
+    byrow = FALSE
+  )
 
   x$dc <- dc_mat
   x$provenance <- .make_provenance("coast_dist", args = list(), extra = list(parent = x$provenance))

@@ -1,0 +1,6 @@
+library(oceancube)
+message('Climatology and anomalies')
+p <- system.file('examples','refactor_temporal_backend.R',package='oceancube')
+stopifnot(nzchar(p), file.exists(p))
+source(p, local=new.env(parent=globalenv()))
+message('PASS')

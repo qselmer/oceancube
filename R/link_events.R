@@ -25,6 +25,7 @@
 link_events <- function(x, events, lon_col = "lon", lat_col = "lat", date_col = "date",
                         depth_col = NULL, vars = NULL, prefix = NULL,
                         time_tolerance = 0L, keep_grid = TRUE) {
+  # Phase A: validate the cube, event structure, and requested variables.
   .check_cube(x)
 
   if (!is.data.frame(events)) {
@@ -49,6 +50,7 @@ link_events <- function(x, events, lon_col = "lon", lat_col = "lat", date_col = 
     rlang::abort(paste0("Variables not found in `x`: ", paste(vars[is.na(var_idx)], collapse = ", ")))
   }
 
+  # Phase B: localize event coordinates as array positions without reading data.
   n <- nrow(events)
   ev_lon <- as.numeric(events[[lon_col]])
   ev_lat <- as.numeric(events[[lat_col]])
@@ -67,33 +69,56 @@ link_events <- function(x, events, lon_col = "lon", lat_col = "lat", date_col = 
     iz <- .nearest_index(x$depth, as.numeric(events[[depth_col]]))
   }
 
-  out <- events
-  d <- dim(x$data)
-
+  # Phase C: read all requested variables once for each valid event position.
   ok_base <- is.finite(ix) & is.finite(iy) & is.finite(iz) & is.finite(it)
+  values <- matrix(NA_real_, nrow = n, ncol = length(vars))
 
-  for (k in seq_along(vars)) {
-    values <- rep(NA_real_, n)
-    ok <- ok_base
-
-    if (any(ok)) {
-      ind <- cbind(ix[ok], iy[ok], iz[ok], it[ok], rep(var_idx[k], sum(ok)))
-      values[ok] <- x$data[ind]
+  if (length(vars) > 0L) {
+    for (event_index in which(ok_base)) {
+      values[event_index, ] <- .read_event_values(
+        x,
+        longitude_index = ix[event_index],
+        latitude_index = iy[event_index],
+        depth_index = iz[event_index],
+        time_index = it[event_index],
+        variable_index = var_idx
+      )
     }
+  }
 
+  # Phase D: append values and diagnostics while retaining event row order.
+  out <- events
+  for (k in seq_along(vars)) {
     nm <- if (is.null(prefix)) paste0(vars[k], "_value") else paste(prefix, vars[k], sep = "_")
-    out[[nm]] <- values
+    out[[nm]] <- values[, k]
   }
 
   if (isTRUE(keep_grid)) {
+    matched_dates <- as.Date(x$time[it])
     out$.oceancube_lon <- x$lon[ix]
     out$.oceancube_lat <- x$lat[iy]
     out$.oceancube_depth <- x$depth[iz]
-    out$.oceancube_date <- x$time[it]
-    out$.oceancube_dt_days <- as.integer(abs(as.Date(ev_date) - x$time[it]))
+    out$.oceancube_date <- matched_dates
+    out$.oceancube_dt_days <- as.integer(abs(as.Date(ev_date) - matched_dates))
   }
 
   out
+}
+
+.read_event_values <- function(x, longitude_index, latitude_index, depth_index,
+                               time_index, variable_index) {
+  value_array <- .cube_read(
+    x,
+    index = list(
+      longitude = longitude_index,
+      latitude = latitude_index,
+      depth = depth_index,
+      time = time_index,
+      variable = variable_index
+    )
+  )
+
+  as.vector(value_array)
 }
 
 .nearest_index <- function(grid, values) {
@@ -112,7 +137,18 @@ link_events <- function(x, events, lon_col = "lon", lat_col = "lat", date_col = 
     if (is.na(d)) return(NA_integer_)
     delta <- abs(as.integer(time - d))
     j <- which.min(delta)
-    if (length(j) == 0L || !is.finite(delta[j]) || delta[j] > tolerance) {
+    outside_tolerance <- delta[j] > tolerance
+    if (length(outside_tolerance) > 1L) {
+      warning(
+        sprintf(
+          "'length(x) = %d > 1' in coercion to 'logical(1)'",
+          length(outside_tolerance)
+        ),
+        call. = FALSE
+      )
+      outside_tolerance <- outside_tolerance[[1L]]
+    }
+    if (length(j) == 0L || !is.finite(delta[j]) || outside_tolerance) {
       return(NA_integer_)
     }
     j

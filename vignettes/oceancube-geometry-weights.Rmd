@@ -1,0 +1,66 @@
+---
+title: "Grid geometry and polygon weights"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Grid geometry and polygon weights}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+`oceancube` exposes geometry primitives for rectilinear grids. Horizontal areas
+use geodesic polygon areas; vertical bounds must be explicit or available in
+unambiguous cube metadata. These functions do not read ocean values.
+
+```{r cube}
+library(oceancube)
+x <- ocean_cube(
+  lon = c(-80.5, -79.5), lat = c(-12.5, -11.5),
+  depth = structure(c(5, 15), units = "m", positive = "down"),
+  time = as.Date("2020-01-01"),
+  data = array(1:8, c(2, 2, 2, 1, 1)), vars = "temperature"
+)
+thickness <- cube_layer_thickness(x, depth_bounds = c(0, 10, 20), unit = "m")
+thickness
+```
+
+Horizontal area, volume, masks, and polygon weights require the optional `sf`
+package. The example stays offline and uses a tiny polygon.
+
+```{r sf-geometry}
+if (requireNamespace("sf", quietly = TRUE)) {
+  area <- cube_cell_area(x, unit = "km2")
+  volume <- cube_cell_volume(
+    x, depth_bounds = c(0, 10, 20), unit = "km3"
+  )
+  polygon <- sf::st_as_sf(
+    data.frame(id = "region", wkt =
+      "POLYGON ((-81 -13, -79 -13, -79 -11, -81 -11, -81 -13))"),
+    wkt = "wkt", crs = 4326
+  )
+  masked <- cube_mask(x, polygon)
+  weights_2d <- cube_polygon_weights(x, polygon, id_col = "id")
+  weights_3d <- cube_polygon_weights(
+    x, polygon, id_col = "id", dimension = "3d",
+    depth_bounds = c(0, 10, 20)
+  )
+  area
+  volume
+  masked$mask
+  weights_2d
+  weights_3d
+}
+```
+
+`cube_mask()` uses cell-centre membership and changes cube values outside the
+selected coverage. `cube_polygon_weights()` instead calculates feature-specific
+cell intersections and returns self-contained merge keys, areas, fractions,
+and—when requested—volumes. It does not aggregate variables or calculate an
+indicator. Indicator definitions, normalization, uncertainty, and inference
+belong to `spatind`.
+
+This release supports geographic rectilinear grids and deliberately rejects
+unsafe or ambiguous geometry, including unsupported antimeridian cases.

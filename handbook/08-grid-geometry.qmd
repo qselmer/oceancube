@@ -1,0 +1,4 @@
+# Grid geometry and weights
+For rectilinear grids, `cube_cell_area()` returns horizontal area, `cube_layer_thickness()` derives vertical thickness, and `cube_cell_volume()` combines both. `cube_polygon_weights()` returns sparse intersections suitable for downstream aggregation.
+
+CRS must be known and compatible. Curvilinear/unstructured grids and general antimeridian handling are outside 0.1.0. Polygon weights are experimental during the 0.x series.

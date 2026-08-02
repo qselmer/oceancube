@@ -22,7 +22,7 @@ layer_mean <- function(x, depth) {
   z_edge <- .depth_edges(x$depth)
   layer_depth <- vapply(bins, mean, numeric(1))
 
-  d <- dim(x$data)
+  d <- unname(.cube_shape(x))
   out <- array(NA_real_, dim = c(d[1], d[2], length(bins), d[4], d[5]))
 
   for (b in seq_along(bins)) {
@@ -32,9 +32,10 @@ layer_mean <- function(x, depth) {
     idx <- which(w > 0)
     if (length(idx) == 0L) next
     w_use <- w[idx]
+    layer_values <- .cube_read(x, index = list(depth = idx))
 
     for (k in seq_len(d[5])) {
-      sub <- x$data[, , idx, , k, drop = FALSE]
+      sub <- layer_values[, , , , k, drop = FALSE]
       sub <- array(sub, dim = dim(sub)[1:4])
       out[, , b, , k] <- apply(sub, c(1, 2, 4), function(z) .weighted_mean(z, w_use))
     }
@@ -49,7 +50,7 @@ layer_mean <- function(x, depth) {
     data = out,
     units = x$units,
     source = x$source,
-    dataset_id = x$dataset_id,
+    dataset_id = x[["dataset_id"]],
     spatial_extent = x$spatial_extent,
     temporal_extent = x$temporal_extent,
     depth_extent = range(breaks),

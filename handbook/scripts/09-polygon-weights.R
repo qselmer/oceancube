@@ -1,0 +1,6 @@
+library(oceancube)
+message('Polygon weights')
+p <- system.file('examples','cube_geometry_weights.R',package='oceancube')
+stopifnot(nzchar(p), file.exists(p))
+source(p, local=new.env(parent=globalenv()))
+message('PASS')

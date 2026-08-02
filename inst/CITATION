@@ -1,0 +1,5 @@
+meta <- packageDescription("oceancube")
+
+citHeader("To cite oceancube in publications use:")
+
+citation(auto = meta)

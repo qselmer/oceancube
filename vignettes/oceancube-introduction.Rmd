@@ -1,0 +1,106 @@
+---
+title: "Introduction to oceancube"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to oceancube}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+## One object and five axes
+
+`oceancube` represents rectilinear ocean products with the canonical order
+longitude, latitude, depth, time, and variable. The logical contract is always
+five-dimensional, including surface fields, which use a singleton depth axis.
+
+```{r create}
+library(oceancube)
+
+lon <- c(-80, -79)
+lat <- c(-12, -11)
+depth <- c(5, 15)
+time <- as.Date(c("2020-01-01", "2020-02-01", "2021-01-01", "2021-02-01"))
+values <- array(seq_len(2 * 2 * 2 * 4), c(2, 2, 2, 4, 1))
+x <- ocean_cube(
+  lon, lat, time, values, depth = depth,
+  vars = "temperature", units = "degC", source = "offline example"
+)
+x
+summary(x)
+```
+
+Memory cubes contain their values. Local NetCDF products can be materialized
+with `read_nc()`. The package also has an internal, serializable, read-only
+NetCDF descriptor backend; `cube_collect()` turns that representation into an
+independent memory cube. No network connection is needed for these workflows.
+
+## Selection and extraction
+
+Slices select stored positions or coordinates, while crops use closed ranges.
+Nearest matching is discrete and never interpolates.
+
+```{r selection}
+slice <- cube_slice(x, longitude = -79, latitude = -11, by = "value")
+crop <- cube_crop(x, longitude = c(-80, -79), depth = c(5, 15))
+point <- cube_extract(
+  x, longitude = -79, latitude = -11, depth = 5,
+  time = time[1], variable = "temperature", by = "value"
+)
+profile <- cube_extract(
+  x, longitude = -79, latitude = -11, time = time[1],
+  variable = "temperature", by = "value", mode = "profile"
+)
+series <- cube_extract(
+  x, longitude = -79, latitude = -11, depth = 5,
+  variable = "temperature", by = "value", mode = "series"
+)
+dim(slice$data)
+nrow(cube_extract(crop))
+point
+profile
+series
+```
+
+`cube_transect()` extracts ordered path-depth combinations. It is experimental
+in 0.1.0, so code should name important arguments.
+
+```{r transect}
+path <- data.frame(station = c("A", "B"), lon = lon, lat = lat)
+cube_transect(
+  x, path, lon_col = "lon", lat_col = "lat", id_col = "station",
+  depth = 5, time = time[1], variable = "temperature", by = "value"
+)
+```
+
+## Masks, climatologies, anomalies, and geometry
+
+`cube_mask()` classifies horizontal cell centres against polygons and requires
+the optional `sf` package. `clim_month()` and `clim_day()` describe recurring
+temporal baselines; anomalies retain the cube contract.
+
+```{r temporal}
+clim <- clim_month(x)
+difference <- anom_diff(x, clim)
+standardized <- anom_z(x, clim)
+clim
+dim(difference$data)
+dim(standardized$data)
+```
+
+Geometry functions provide cell areas, vertical thicknesses, volumes, and
+polygon weights without calculating indicators. See the geometry vignette for
+the optional-`sf` workflow.
+
+## Responsibility and limitations
+
+`oceancube` owns representation, local reading, selection, extraction,
+transects, masks, climatologies, anomalies, geometry, and weights. Spatial
+indicators and inference belong to `spatind`.
+
+Version 0.1.0 is limited to local rectilinear data. It does not write NetCDF,
+read OPeNDAP or THREDDS, interpolate, regrid, process curvilinear meshes, or
+provide general antimeridian support.
