@@ -1,0 +1,49 @@
+# `coast_dist()`
+**Category:** Masks and context
+**Status:** stable
+
+## Purpose
+Compute distance to a coastline geometry.
+
+## When to use
+Use it when its declared input and output match the workflow. Prefer a narrower selection before any operation that may materialise values.
+
+## When not to use
+Do not use it to calculate `spatind` indicators or to bypass coordinate, CRS, unit, and provenance checks.
+
+## Real signature
+```r
+coast_dist(x, coast)
+```
+
+## Arguments
+- `x`: see the installed Rd manual for validation and defaults.
+- `coast`: see the installed Rd manual for validation and defaults.
+
+## Input and output
+Input: **ocean_cube + geometry**. Output: **distance matrix**.
+
+## Backend support
+Memory: **TRUE**. NetCDF: **TRUE**. Backend operations retain read-only semantics; materialisation is explicit.
+
+## Dimensional effect
+Preserves the relevant cube contract or returns metadata/geometry without silently dropping axes.
+
+## Metadata
+Units, coordinates, provenance, masks, and QA metadata are retained or reported where meaningful.
+
+## Minimal executable check
+```r
+library(oceancube)
+stopifnot(is.function(oceancube::coast_dist))
+names(formals(oceancube::coast_dist))
+```
+
+## Example in a workflow
+Typical position: `ocean_cube` → `coast_dist()` → `analysis`. See the workflow scripts for a checked end-to-end example.
+
+## Frequent errors and limitations
+Invalid dimensions, selectors, units, CRS, source-file identity, optional dependencies, or unsupported grids are rejected explicitly. Read the function Rd page for exact diagnostics.
+
+## Related functions
+Previous: `ocean_cube`. Next: `analysis`.

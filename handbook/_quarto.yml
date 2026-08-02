@@ -1,0 +1,36 @@
+project:
+  type: book
+  output-dir: ../docs/handbook
+book:
+  title: "OceanCube Handbook"
+  subtitle: "Version 0.1.0"
+  repo-url: https://github.com/qselmer/oceancube
+  chapters:
+    - index.qmd
+    - 01-introduction.qmd
+    - 02-mental-model.qmd
+    - 03-ocean-cube-object.qmd
+    - 04-data-access.qmd
+    - 05-selection-extraction.qmd
+    - 06-masks.qmd
+    - 07-temporal-climatology.qmd
+    - 08-grid-geometry.qmd
+    - 09-function-reference.qmd
+    - 10-workflows.qmd
+    - 11-spatind-boundary.qmd
+    - 12-git-release-workflow.qmd
+    - 13-troubleshooting.qmd
+    - 14-cheat-sheet.qmd
+format:
+  html:
+    toc: true
+    number-sections: true
+    code-fold: false
+    code-copy: true
+    link-external-newwindow: true
+    search: true
+    css: styles.css
+execute:
+  freeze: auto
+  warning: false
+  message: false

@@ -1,0 +1,8 @@
+# Boundary with spatind
+## oceancube produces
+Cubes, values, coordinates, indices, masks, areas, thicknesses, volumes, intersections, weights, units, and provenance.
+
+## spatind will calculate
+2-D and 3-D indicators, centres of gravity, occupied area/volume, dispersion, inertia, elongation, isotropy, concentration, Gini, patchiness, trends, uncertainty, regimes, and inference.
+
+These are architectural responsibilities, not a claim that future `spatind` functions already exist.

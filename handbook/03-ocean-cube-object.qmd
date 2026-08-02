@@ -1,0 +1,13 @@
+# The ocean_cube object
+Create a memory cube from a five-dimensional array. Validation checks axis lengths, names, order, time values, units, and backend invariants.
+
+```r
+library(oceancube)
+x <- ocean_cube(lon=c(-80,-79), lat=-12, depth=0,
+  time=as.Date(c('2020-01-01','2020-02-01')), vars='temperature',
+  data=array(1:4, dim=c(2,1,1,2,1)))
+x
+summary(x)
+```
+
+`cube_collect()` turns a lazy selection into an independent memory-backed cube. Serialisation preserves descriptors and provenance; a NetCDF descriptor still requires its unchanged source file until collected.

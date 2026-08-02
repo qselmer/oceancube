@@ -1,0 +1,4 @@
+# Git and release workflow
+The persistent branch is `main`. Future `feature/*`, `fix/*`, `docs/*`, and `release/*` branches are temporary: create one objective per branch, test, merge or open a PR, then delete only after ancestry is verified.
+
+Never force the history of `main`. Use annotated tags for versions and attach GitHub Releases to those tags. ‘Only main remains’ means completed work branches are removed; it does not forbid future branches.

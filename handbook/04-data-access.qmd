@@ -1,0 +1,4 @@
+# Data access
+`cm_setup()`, `cm_connect()`, and `download_nc()` coordinate optional Copernicus acquisition without storing credentials. `read_nc()` opens a **local, read-only** NetCDF descriptor. No OPeNDAP, THREDDS, cloud store, or write support is claimed.
+
+A NetCDF backend validates file identity, maps physical axes to the canonical contract, and reads only requested blocks when possible. `cube_collect()` explicitly materialises values.

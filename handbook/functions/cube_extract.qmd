@@ -1,0 +1,60 @@
+# `cube_extract()`
+**Category:** Selection and extraction
+**Status:** stable
+
+## Purpose
+Extract values as tidy tables, series, or profiles.
+
+## When to use
+Use it when its declared input and output match the workflow. Prefer a narrower selection before any operation that may materialise values.
+
+## When not to use
+Do not use it to calculate `spatind` indicators or to bypass coordinate, CRS, unit, and provenance checks.
+
+## Real signature
+```r
+cube_extract(x, longitude = NULL, latitude = NULL, depth = NULL,      time = NULL, variable = NULL, by = c("value", "index"), match = c("exact",          "nearest"), tolerance = NULL, mode = c("point", "profile",          "series", "table"), format = c("long", "wide"), keep_index = FALSE,      keep_distance = FALSE)
+```
+
+## Arguments
+- `x`: see the installed Rd manual for validation and defaults.
+- `longitude`: see the installed Rd manual for validation and defaults.
+- `latitude`: see the installed Rd manual for validation and defaults.
+- `depth`: see the installed Rd manual for validation and defaults.
+- `time`: see the installed Rd manual for validation and defaults.
+- `variable`: see the installed Rd manual for validation and defaults.
+- `by`: see the installed Rd manual for validation and defaults.
+- `match`: see the installed Rd manual for validation and defaults.
+- `tolerance`: see the installed Rd manual for validation and defaults.
+- `mode`: see the installed Rd manual for validation and defaults.
+- `format`: see the installed Rd manual for validation and defaults.
+- `keep_index`: see the installed Rd manual for validation and defaults.
+- `keep_distance`: see the installed Rd manual for validation and defaults.
+
+## Input and output
+Input: **ocean_cube**. Output: **data.frame**.
+
+## Backend support
+Memory: **TRUE**. NetCDF: **TRUE**. Backend operations retain read-only semantics; materialisation is explicit.
+
+## Dimensional effect
+May change shape or return a non-cube analytical object; inspect dimensions/rows.
+
+## Metadata
+Units, coordinates, provenance, masks, and QA metadata are retained or reported where meaningful.
+
+## Minimal executable check
+```r
+library(oceancube)
+stopifnot(is.function(oceancube::cube_extract))
+names(formals(oceancube::cube_extract))
+```
+
+## Example in a workflow
+Typical position: `cube_slice/cube_crop` → `cube_extract()` → `spatind/data analysis`. See the workflow scripts for a checked end-to-end example.
+
+## Frequent errors and limitations
+Invalid dimensions, selectors, units, CRS, source-file identity, optional dependencies, or unsupported grids are rejected explicitly. Read the function Rd page for exact diagnostics.
+
+## Related functions
+Previous: `cube_slice/cube_crop`. Next: `spatind/data analysis`.

@@ -1,0 +1,11 @@
+# Mental model
+The logical cube always has five axes, including singleton axes. A surface field uses one depth position (often `NA`) rather than dropping depth. Variables form a logical fifth axis even when a NetCDF stores them as separate physical variables.
+
+```text
+ocean_cube
+├── coordinates: longitude, latitude, depth, time, variable
+├── metadata: units, extents, provenance, mask, QA
+└── backend: memory | netcdf
+```
+
+A coordinate is a scientific value; an index is its integer position. Logical order is canonical; physical NetCDF order may differ and is translated by the backend. Missing values remain `NA`; units and provenance travel with derived cubes.

@@ -1,0 +1,65 @@
+# `ocean_cube()`
+**Category:** Construction and backend
+**Status:** stable
+
+## Purpose
+Construct and validate a canonical five-dimensional cube.
+
+## When to use
+Use it when its declared input and output match the workflow. Prefer a narrower selection before any operation that may materialise values.
+
+## When not to use
+Do not use it to calculate `spatind` indicators or to bypass coordinate, CRS, unit, and provenance checks.
+
+## Real signature
+```r
+ocean_cube(lon, lat, time, data, depth = NULL, vars = NULL, units = NULL,      source = NULL, dataset_id = NULL, spatial_extent = NULL,      temporal_extent = NULL, depth_extent = NULL, mask = NULL,      dc = NULL, climatology = NULL, anomaly = NULL, provenance = NULL,      qa = NULL)
+```
+
+## Arguments
+- `lon`: see the installed Rd manual for validation and defaults.
+- `lat`: see the installed Rd manual for validation and defaults.
+- `time`: see the installed Rd manual for validation and defaults.
+- `data`: see the installed Rd manual for validation and defaults.
+- `depth`: see the installed Rd manual for validation and defaults.
+- `vars`: see the installed Rd manual for validation and defaults.
+- `units`: see the installed Rd manual for validation and defaults.
+- `source`: see the installed Rd manual for validation and defaults.
+- `dataset_id`: see the installed Rd manual for validation and defaults.
+- `spatial_extent`: see the installed Rd manual for validation and defaults.
+- `temporal_extent`: see the installed Rd manual for validation and defaults.
+- `depth_extent`: see the installed Rd manual for validation and defaults.
+- `mask`: see the installed Rd manual for validation and defaults.
+- `dc`: see the installed Rd manual for validation and defaults.
+- `climatology`: see the installed Rd manual for validation and defaults.
+- `anomaly`: see the installed Rd manual for validation and defaults.
+- `provenance`: see the installed Rd manual for validation and defaults.
+- `qa`: see the installed Rd manual for validation and defaults.
+
+## Input and output
+Input: **coordinates + array/backend**. Output: **ocean_cube**.
+
+## Backend support
+Memory: **TRUE**. NetCDF: **FALSE**. Backend operations retain read-only semantics; materialisation is explicit.
+
+## Dimensional effect
+Preserves the relevant cube contract or returns metadata/geometry without silently dropping axes.
+
+## Metadata
+Units, coordinates, provenance, masks, and QA metadata are retained or reported where meaningful.
+
+## Minimal executable check
+```r
+library(oceancube)
+stopifnot(is.function(oceancube::ocean_cube))
+names(formals(oceancube::ocean_cube))
+```
+
+## Example in a workflow
+Typical position: `array/read_nc` → `ocean_cube()` → `cube_slice`. See the workflow scripts for a checked end-to-end example.
+
+## Frequent errors and limitations
+Invalid dimensions, selectors, units, CRS, source-file identity, optional dependencies, or unsupported grids are rejected explicitly. Read the function Rd page for exact diagnostics.
+
+## Related functions
+Previous: `array/read_nc`. Next: `cube_slice`.

@@ -1,0 +1,20 @@
+# Troubleshooting
+| Problem | Cause | Solution |
+|---|---|---|
+| array is not 5-D | dropped/missing axis | reshape with all five axes |
+| missing axis or out-of-domain index | invalid selector | inspect coordinates and valid positions |
+| coordinate/nearest outside tolerance | no valid match | widen tolerance deliberately or correct input |
+| NetCDF missing or modified | descriptor source changed | restore the exact file or recreate descriptor |
+| variable missing | mapping mismatch | inspect NetCDF variables |
+| CRS missing/incompatible | geometry metadata absent | define/transform CRS explicitly |
+| invalid geometry | topology error | validate with `sf` |
+| antimeridian | unsupported geometry | split/normalise before use |
+| depth bounds absent | thickness cannot be inferred safely | supply bounds |
+| unknown units | metadata incomplete | assign verified units |
+| polygon has no centres | cell-centre mask selects none | inspect polygon/grid |
+| curvilinear grid | unsupported in 0.1.0 | regrid outside oceancube |
+| materialisation too large | full cube exceeds memory | select/crop before collect |
+| experimental function | 0.x evolution | pin version and test outputs |
+| Quarto/HTML unavailable | toolchain/configuration | run `quarto check` and render locally |
+| branch not integrated/deletion rejected | ancestry check fails | merge first; never use `-D` |
+| tag already exists | version collision | inspect tag; never overwrite published tag |

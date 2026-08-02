@@ -1,0 +1,12 @@
+root <- normalizePath('.', winslash='/')
+lib <- tempfile('oceancube-handbook-lib-')
+dir.create(lib)
+on.exit(unlink(lib,recursive=TRUE,force=TRUE),add=TRUE)
+install.packages(root,repos=NULL,type='source',lib=lib,quiet=TRUE)
+.libPaths(c(lib,.libPaths()))
+library(oceancube)
+files <- list.files(file.path(root,'handbook','scripts'),pattern='^[0-9]{2}-.*[.]R$',full.names=TRUE)
+files <- files[basename(files) != '00-run-all.R']
+results <- vapply(files,function(f){message('Running ',basename(f)); tryCatch({source(f,local=new.env(parent=globalenv())); TRUE},error=function(e){message(conditionMessage(e)); FALSE})},logical(1))
+stopifnot(length(results)==10L,all(results))
+cat('OCEANCUBE HANDBOOK WORKFLOWS: PASS')

@@ -1,0 +1,6 @@
+library(oceancube)
+message('Create a memory cube')
+p <- system.file('examples','backend_memory.R',package='oceancube')
+stopifnot(nzchar(p), file.exists(p))
+source(p, local=new.env(parent=globalenv()))
+message('PASS')

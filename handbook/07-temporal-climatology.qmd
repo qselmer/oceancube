@@ -1,0 +1,4 @@
+# Time, climatology, and anomalies
+`to_month()` aggregates time to months. `clim_month()` and `clim_day()` estimate reference means and variability. `anom_diff()` returns absolute departures, `anom_z()` standardised departures, and `signal_noise()` a signal-to-noise representation. `annual_index()` and `layer_mean()` provide annual and vertical summaries.
+
+Always inspect time coverage, missingness, sample counts, and units before interpreting climatology products.

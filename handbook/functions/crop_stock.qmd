@@ -1,0 +1,49 @@
+# `crop_stock()`
+**Category:** Masks and context
+**Status:** stable
+
+## Purpose
+Crop legacy stock objects to their domain.
+
+## When to use
+Use it when its declared input and output match the workflow. Prefer a narrower selection before any operation that may materialise values.
+
+## When not to use
+Do not use it to calculate `spatind` indicators or to bypass coordinate, CRS, unit, and provenance checks.
+
+## Real signature
+```r
+crop_stock(x, mask)
+```
+
+## Arguments
+- `x`: see the installed Rd manual for validation and defaults.
+- `mask`: see the installed Rd manual for validation and defaults.
+
+## Input and output
+Input: **stock object**. Output: **cropped stock**.
+
+## Backend support
+Memory: **TRUE**. NetCDF: **TRUE**. Backend operations retain read-only semantics; materialisation is explicit.
+
+## Dimensional effect
+Preserves the relevant cube contract or returns metadata/geometry without silently dropping axes.
+
+## Metadata
+Units, coordinates, provenance, masks, and QA metadata are retained or reported where meaningful.
+
+## Minimal executable check
+```r
+library(oceancube)
+stopifnot(is.function(oceancube::crop_stock))
+names(formals(oceancube::crop_stock))
+```
+
+## Example in a workflow
+Typical position: `stock_mask` → `crop_stock()` → `analysis`. See the workflow scripts for a checked end-to-end example.
+
+## Frequent errors and limitations
+Invalid dimensions, selectors, units, CRS, source-file identity, optional dependencies, or unsupported grids are rejected explicitly. Read the function Rd page for exact diagnostics.
+
+## Related functions
+Previous: `stock_mask`. Next: `analysis`.

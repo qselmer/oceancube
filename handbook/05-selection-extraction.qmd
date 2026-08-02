@@ -1,0 +1,10 @@
+# Selection and extraction
+| Function | Spatial selection | Temporal selection | Output |
+|---|---|---|---|
+| `cube_slice()` | discrete Cartesian product | discrete | cube |
+| `cube_crop()` | rectangular intervals | interval | cube |
+| `cube_extract()` | Cartesian product | discrete | table |
+| `cube_transect()` | ordered spatial pairs | one time | table |
+| `link_events()` | one match per row | one match per row | enriched table |
+
+They are not interchangeable: slice/crop preserve cube semantics, extract/transect produce analytical tables, and event linkage preserves the original event rows.

@@ -1,22 +1,60 @@
 url: https://qselmer.github.io/oceancube/
 template:
   bootstrap: 5
+navbar:
+  components:
+    handbook:
+      text: OceanCube Handbook
+      href: https://qselmer.github.io/oceancube/handbook/
+  structure:
+    left: [intro, reference, articles, news, handbook]
 reference:
-  - title: Core cube
+  - title: Core cube and backends
     contents:
       - ocean_cube
       - read_nc
+      - cube_collect
+  - title: Selection and extraction
+    contents:
+      - cube_slice
+      - cube_crop
+      - cube_extract
+      - cube_transect
+  - title: Masks and spatial context
+    contents:
+      - cube_mask
+      - stock_mask
+      - crop_stock
+      - coast_dist
+  - title: Geometry and weights
+    contents:
+      - cube_cell_area
+      - cube_layer_thickness
+      - cube_cell_volume
+      - cube_polygon_weights
+  - title: Time, climatology, and anomalies
+    contents:
+      - to_month
+      - clim_month
+      - clim_day
+      - anom_diff
+      - anom_z
+      - signal_noise
+      - annual_index
+  - title: Established summaries and linkage
+    contents:
+      - layer_mean
+      - link_events
   - title: Copernicus
     contents:
       - cm_setup
       - cm_connect
       - download_nc
-  - title: Processing
+articles:
+  - title: Get started
+    navbar: ~
     contents:
-      - layer_mean
-      - to_month
-      - clim_month
-      - anom_diff
-      - anom_z
-      - signal_noise
-      - annual_index
+      - get-started
+      - oceancube-introduction
+      - oceancube-architecture
+      - oceancube-geometry-weights

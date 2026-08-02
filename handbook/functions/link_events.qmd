@@ -1,0 +1,57 @@
+# `link_events()`
+**Category:** Selection and extraction
+**Status:** stable
+
+## Purpose
+Attach nearest cube values to event rows.
+
+## When to use
+Use it when its declared input and output match the workflow. Prefer a narrower selection before any operation that may materialise values.
+
+## When not to use
+Do not use it to calculate `spatind` indicators or to bypass coordinate, CRS, unit, and provenance checks.
+
+## Real signature
+```r
+link_events(x, events, lon_col = "lon", lat_col = "lat", date_col = "date",      depth_col = NULL, vars = NULL, prefix = NULL, time_tolerance = 0L,      keep_grid = TRUE)
+```
+
+## Arguments
+- `x`: see the installed Rd manual for validation and defaults.
+- `events`: see the installed Rd manual for validation and defaults.
+- `lon_col`: see the installed Rd manual for validation and defaults.
+- `lat_col`: see the installed Rd manual for validation and defaults.
+- `date_col`: see the installed Rd manual for validation and defaults.
+- `depth_col`: see the installed Rd manual for validation and defaults.
+- `vars`: see the installed Rd manual for validation and defaults.
+- `prefix`: see the installed Rd manual for validation and defaults.
+- `time_tolerance`: see the installed Rd manual for validation and defaults.
+- `keep_grid`: see the installed Rd manual for validation and defaults.
+
+## Input and output
+Input: **events + ocean_cube**. Output: **data.frame**.
+
+## Backend support
+Memory: **TRUE**. NetCDF: **TRUE**. Backend operations retain read-only semantics; materialisation is explicit.
+
+## Dimensional effect
+May change shape or return a non-cube analytical object; inspect dimensions/rows.
+
+## Metadata
+Units, coordinates, provenance, masks, and QA metadata are retained or reported where meaningful.
+
+## Minimal executable check
+```r
+library(oceancube)
+stopifnot(is.function(oceancube::link_events))
+names(formals(oceancube::link_events))
+```
+
+## Example in a workflow
+Typical position: `events + ocean_cube` → `link_events()` → `analysis`. See the workflow scripts for a checked end-to-end example.
+
+## Frequent errors and limitations
+Invalid dimensions, selectors, units, CRS, source-file identity, optional dependencies, or unsupported grids are rejected explicitly. Read the function Rd page for exact diagnostics.
+
+## Related functions
+Previous: `events + ocean_cube`. Next: `analysis`.

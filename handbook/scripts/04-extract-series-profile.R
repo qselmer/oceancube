@@ -1,0 +1,6 @@
+library(oceancube)
+message('Series and profile extraction')
+p <- system.file('examples','cube_extract.R',package='oceancube')
+stopifnot(nzchar(p), file.exists(p))
+source(p, local=new.env(parent=globalenv()))
+message('PASS')

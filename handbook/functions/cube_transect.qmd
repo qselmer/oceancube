@@ -1,0 +1,61 @@
+# `cube_transect()`
+**Category:** Selection and extraction
+**Status:** experimental
+
+## Purpose
+Extract ordered paired spatial locations.
+
+## When to use
+Use it when its declared input and output match the workflow. Prefer a narrower selection before any operation that may materialise values.
+
+## When not to use
+Do not use it to calculate `spatind` indicators or to bypass coordinate, CRS, unit, and provenance checks.
+
+## Real signature
+```r
+cube_transect(x, path, lon_col = "longitude", lat_col = "latitude",      id_col = NULL, depth = NULL, time = NULL, variable = NULL,      by = c("value", "index"), match = c("nearest", "exact"),      tolerance = NULL, mode = c("auto", "horizontal", "section",          "profile"), format = c("long", "wide"), keep_index = FALSE)
+```
+
+## Arguments
+- `x`: see the installed Rd manual for validation and defaults.
+- `path`: see the installed Rd manual for validation and defaults.
+- `lon_col`: see the installed Rd manual for validation and defaults.
+- `lat_col`: see the installed Rd manual for validation and defaults.
+- `id_col`: see the installed Rd manual for validation and defaults.
+- `depth`: see the installed Rd manual for validation and defaults.
+- `time`: see the installed Rd manual for validation and defaults.
+- `variable`: see the installed Rd manual for validation and defaults.
+- `by`: see the installed Rd manual for validation and defaults.
+- `match`: see the installed Rd manual for validation and defaults.
+- `tolerance`: see the installed Rd manual for validation and defaults.
+- `mode`: see the installed Rd manual for validation and defaults.
+- `format`: see the installed Rd manual for validation and defaults.
+- `keep_index`: see the installed Rd manual for validation and defaults.
+
+## Input and output
+Input: **ocean_cube + path**. Output: **data.frame**.
+
+## Backend support
+Memory: **TRUE**. NetCDF: **TRUE**. Backend operations retain read-only semantics; materialisation is explicit.
+
+## Dimensional effect
+May change shape or return a non-cube analytical object; inspect dimensions/rows.
+
+## Metadata
+Units, coordinates, provenance, masks, and QA metadata are retained or reported where meaningful.
+
+## Minimal executable check
+```r
+library(oceancube)
+stopifnot(is.function(oceancube::cube_transect))
+names(formals(oceancube::cube_transect))
+```
+
+## Example in a workflow
+Typical position: `cube_crop` → `cube_transect()` → `analysis`. See the workflow scripts for a checked end-to-end example.
+
+## Frequent errors and limitations
+Invalid dimensions, selectors, units, CRS, source-file identity, optional dependencies, or unsupported grids are rejected explicitly. Read the function Rd page for exact diagnostics.
+
+## Related functions
+Previous: `cube_crop`. Next: `analysis`.
