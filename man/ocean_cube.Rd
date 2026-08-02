@@ -26,32 +26,39 @@ ocean_cube(
 )
 }
 \arguments{
-\item{lon}{Numeric vector of longitudes.}
+\item{lon}{Non-empty finite numeric vector of longitudes, using either the
+\verb{[-180, 180]} or \verb{[0, 360]} convention.}
 
-\item{lat}{Numeric vector of latitudes.}
+\item{lat}{Non-empty finite numeric vector of latitudes in \verb{[-90, 90]}.}
 
-\item{time}{Date vector.}
+\item{time}{Non-empty \code{Date}, \code{POSIXct}, or character vector coercible to
+\code{Date}. Values are stored as \code{Date}.}
 
 \item{data}{Numeric array. Preferred shape is 5D: \verb{[lon, lat, depth, time, var]}.
 A 4D array \verb{[lon, lat, time, var]} is accepted and internally promoted to
 a single-depth cube.}
 
 \item{depth}{Numeric vector of depth levels. If \code{NULL}, a single surface/no-depth
-level is used.}
+level is used. A single \code{NA_real_} represents a surface cube without an
+explicit depth coordinate.}
 
-\item{vars}{Character vector of variable names.}
+\item{vars}{Non-empty character vector of unique variable names.}
 
-\item{units}{Optional named list or character vector of units.}
+\item{units}{Optional character vector or list with one unit per variable.
+If named, names must match \code{vars} uniquely.}
 
 \item{source}{Optional data source label.}
 
 \item{dataset_id}{Optional dataset identifier.}
 
-\item{spatial_extent}{Optional spatial extent.}
+\item{spatial_extent}{Optional finite
+\code{c(lon_min, lon_max, lat_min, lat_max)} covering the coordinates.}
 
-\item{temporal_extent}{Optional temporal extent.}
+\item{temporal_extent}{Optional ordered pair of \code{Date} or \code{POSIXct} values
+covering \code{time}.}
 
-\item{depth_extent}{Optional depth extent.}
+\item{depth_extent}{Optional finite ordered depth range covering \code{depth}, or
+\code{c(NA_real_, NA_real_)} for a surface cube.}
 
 \item{mask}{Optional mask object.}
 
@@ -72,6 +79,32 @@ An object of class \verb{<ocean_cube>}.
 \code{ocean_cube()} stores gridded oceanographic data in a standard 5D array:
 \verb{[longitude, latitude, depth, time, variable]}. Surface fields can be stored
 with a single depth level set to \code{NA_real_}.
+}
+\details{
+The stable dimensional contract is
+\verb{[longitude, latitude, depth, time, variable]}. For current in-memory cubes:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{dim(data) == c(length(lon), length(lat), length(depth),
+               length(time), length(vars))
+}\if{html}{\out{</div>}}
+
+Coordinate values are preserved in the supplied order; the constructor does
+not sort, deduplicate, or convert longitude conventions. Positive and
+negative depth values are accepted without inferring whether the vertical
+axis is positive upward or downward. Duplicate or non-monotonic coordinate
+values remain supported for compatibility, while variable names must be
+unique.
+
+Dimension lengths and axis order form the primary contract. Names attached to
+\code{dim(data)} or \code{dimnames(data)} are descriptive and are not used to determine
+axis meaning. The current \code{data} array is retained for compatibility, but the
+physical storage mechanism is an internal concern that may be represented by
+another backend in a future version.
+
+Optional metadata do not alter dimensional validity. The schemas of
+\code{provenance} and \code{qa} are intentionally not formalized yet. Non-Gregorian CF
+calendars and vertical positive-direction metadata require an explicit
+future policy and are not inferred by this constructor.
 }
 \examples{
 lon <- seq(-82, -80, length.out = 3)

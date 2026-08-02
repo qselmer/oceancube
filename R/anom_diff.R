@@ -52,18 +52,19 @@ signal_noise <- function(x, clim, signed = FALSE) {
     rlang::abort("`x` and `clim` must have compatible lon, lat, and depth dimensions.")
   }
 
-  d <- dim(x$data)
+  values <- .cube_read(x)
+  d <- dim(values)
   scale <- clim$scale %||% if (dim(clim$mean)[4] == 12L) "month" else "day"
   idx <- .clim_index(x$time, clim, scale = scale)
 
-  out <- array(NA_real_, dim = d, dimnames = dimnames(x$data))
+  out <- array(NA_real_, dim = d, dimnames = dimnames(values))
 
   for (i in seq_along(x$time)) {
     j <- idx[i]
     if (is.na(j)) next
 
     obs <- array(
-      x$data[, , , i, , drop = FALSE],
+      values[, , , i, , drop = FALSE],
       dim = c(d[1], d[2], d[3], d[5])
     )
 
@@ -113,7 +114,7 @@ signal_noise <- function(x, clim, signed = FALSE) {
     data = out,
     units = if (method == "difference") x$units else NULL,
     source = x$source,
-    dataset_id = x$dataset_id,
+    dataset_id = x[["dataset_id"]],
     spatial_extent = x$spatial_extent,
     temporal_extent = x$temporal_extent,
     depth_extent = x$depth_extent,

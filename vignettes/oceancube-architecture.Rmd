@@ -1,0 +1,62 @@
+---
+title: "oceancube architecture and contracts"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{oceancube architecture and contracts}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Public contract
+
+The public `ocean_cube` contract consists of coordinate vectors, variables,
+scientific metadata, and a logical five-dimensional shape ordered as
+`[longitude, latitude, depth, time, variable]`. Coordinates are preserved in
+their stored order. Public selection functions return independent memory cubes;
+table extractors return self-contained data frames.
+
+```{r}
+library(oceancube)
+x <- ocean_cube(
+  lon = c(-80, -79), lat = c(-12, -11), depth = c(5, 15),
+  time = as.Date("2020-01-01") + 0:1,
+  data = array(seq_len(16), c(2, 2, 2, 2, 1)),
+  vars = "temperature", units = "degC"
+)
+stopifnot(identical(dim(x$data), c(2L, 2L, 2L, 2L, 1L)))
+```
+
+## Backend boundary
+
+The memory backend owns an R array. The NetCDF backend owns only a serializable
+descriptor for a local file and is read-only. Internal read operations validate
+the cube, plan five-axis indices, and dispatch to the backend. Scientific
+functions do not access physical storage directly. This separation gives memory
+and NetCDF inputs the same logical results while allowing block-level file reads.
+
+`cube_collect()` is the explicit materialization boundary. A collected, sliced,
+cropped, or masked result is independent of the original NetCDF file. A deferred
+descriptor correctly fails if its source disappears or changes.
+
+## Classes and metadata
+
+The principal S3 classes are `ocean_cube`, `ocean_clim`, and `ocean_mask`.
+Temporal summaries and inherited compatibility functions may add result classes
+without changing the cube header. Units and provenance follow operations when
+scientifically meaningful; derived components that can no longer be aligned are
+dropped explicitly and recorded.
+
+## Stability
+
+The constructor, reading, collection, selection, extraction, masks, temporal
+operations, and grid geometry are stable for the 0.1 series. `cube_transect()`
+and `cube_polygon_weights()` are experimental because their tabular schemas may
+gain compatible metadata as downstream use develops. Their current names and
+documented arguments remain the 0.1.0 contract.
+
+## Package boundary
+
+This package may produce geometry primitives and sparse polygon weights. It does
+not calculate spatial indicators or perform indicator inference. Those
+responsibilities belong to `spatind`; the checked-in architecture note is the
+normative boundary.

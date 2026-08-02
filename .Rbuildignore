@@ -1,3 +1,4 @@
+^\.git$
 ^\.github$
 ^\.lintr$
 ^cran-comments\.md$
@@ -6,3 +7,19 @@
 ^_pkgdown\.yml$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.RDataTmp$
+^dev$
+^artifacts$
+^auxdata$
+^\.RData$
+^\.Rhistory$
+^CITATION\.cff$
+^docs$
+^README\.Rmd$
+^README_cache$
+^README_files$
+^vignettes/.*_cache$
+^vignettes/.*_files$
+^doc$
+^Meta$
+^handbook$

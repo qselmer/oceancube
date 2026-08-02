@@ -1,21 +1,24 @@
 Package: oceancube
-Title: Reproducible Oceanographic Cubes for Marine Ecology and Fisheries
-Version: 0.0.0.9000
+Type: Package
+Title: Tools for Multidimensional Ocean Data Cubes
+Version: 0.1.0
+Date: 2026-08-02
 Authors@R: 
     person(given = "Elmer",
            family = "Quispe-Salazar",
            role = c("aut", "cre"),
-           email = "elmer@example.com",
-           comment = c(ORCID = "0000-0000-0000-0000"))
-Description: Tools to download, read, mask, aggregate, transform, and
-    summarize oceanographic NetCDF data as reproducible environmental cubes.
-    The package supports marine ecology and fisheries workflows including
-    stock-oriented masks, distance-to-coast filters, vertical layers,
-    climatologies, anomalies, signal-to-noise diagnostics, and annual indicators.
+           email = "qselmer@gmail.com")
+Description: Represents multidimensional ocean data with a canonical
+    longitude, latitude, depth, time, and variable contract. In-memory and
+    read-only local NetCDF backends support selection, extraction, transects,
+    climatologies, anomalies, polygon masks, grid geometry, and polygon
+    weights for integration with downstream marine analyses.
 License: MIT + file LICENSE
-URL: https://github.com/qselmer/oceancube
+URL: https://github.com/qselmer/oceancube,
+    https://qselmer.github.io/oceancube/
 BugReports: https://github.com/qselmer/oceancube/issues
 Encoding: UTF-8
+LazyData: false
 Roxygen: list(markdown = TRUE)
 Depends:
     R (>= 4.2.0)
@@ -27,14 +30,10 @@ Imports:
     stats,
     utils
 Suggests:
-    covr,
-    ggplot2,
     knitr,
-    lubridate,
     rmarkdown,
     sf,
     testthat (>= 3.0.0),
-    vdiffr,
     withr
 Config/testthat/edition: 3
 VignetteBuilder: knitr

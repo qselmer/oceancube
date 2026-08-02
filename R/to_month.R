@@ -12,12 +12,13 @@ to_month <- function(x, fun = mean) {
   months <- unique(ym)
   month_dates <- as.Date(paste0(months, "-01"))
 
-  d <- dim(x$data)
+  d <- unname(.cube_shape(x))
+  values <- .cube_read(x)
   out <- array(NA_real_, dim = c(d[1], d[2], d[3], length(months), d[5]))
 
   for (i in seq_along(months)) {
     idx <- which(ym == months[i])
-    sub <- x$data[, , , idx, , drop = FALSE]
+    sub <- values[, , , idx, , drop = FALSE]
     out[, , , i, ] <- apply(sub, c(1, 2, 3, 5), function(z) fun(z, na.rm = TRUE))
   }
 
@@ -30,7 +31,7 @@ to_month <- function(x, fun = mean) {
     data = out,
     units = x$units,
     source = x$source,
-    dataset_id = x$dataset_id,
+    dataset_id = x[["dataset_id"]],
     spatial_extent = x$spatial_extent,
     temporal_extent = range(month_dates),
     depth_extent = x$depth_extent,

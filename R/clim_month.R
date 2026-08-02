@@ -22,7 +22,8 @@ clim_month <- function(x, period = NULL) {
   }
 
   mon <- as.integer(format(x$time, "%m"))
-  d <- dim(x$data)
+  d <- unname(.cube_shape(x))
+  values <- .cube_read(x)
 
   clim_mean <- array(NA_real_, dim = c(d[1], d[2], d[3], 12L, d[5]))
   clim_sd <- array(NA_real_, dim = c(d[1], d[2], d[3], 12L, d[5]))
@@ -31,7 +32,7 @@ clim_month <- function(x, period = NULL) {
   for (m in 1:12) {
     idx <- which(mon == m & idx_base)
     if (length(idx) == 0L) next
-    sub <- x$data[, , , idx, , drop = FALSE]
+    sub <- values[, , , idx, , drop = FALSE]
     clim_mean[, , , m, ] <- apply(sub, c(1, 2, 3, 5), .safe_mean)
     clim_sd[, , , m, ] <- apply(sub, c(1, 2, 3, 5), .safe_sd)
     clim_n[, , , m, ] <- apply(sub, c(1, 2, 3, 5), function(z) sum(is.finite(z)))
@@ -58,19 +59,10 @@ clim_month <- function(x, period = NULL) {
     n = clim_n,
     units = x$units,
     source = x$source,
-    dataset_id = x$dataset_id,
+    dataset_id = x[["dataset_id"]],
     provenance = .make_provenance("clim_month", args = list(period = period), extra = list(parent = x$provenance))
   )
 
   class(out) <- c("ocean_clim", "list")
   out
-}
-
-#' @export
-print.ocean_clim <- function(x, ...) {
-  cat("<ocean_clim> monthly climatology\n")
-  cat("  period    : ", paste(x$period, collapse = " to "), "\n", sep = "")
-  cat("  variables : ", paste(x$vars, collapse = ", "), "\n", sep = "")
-  cat("  dimensions: ", paste(dim(x$mean), collapse = " x "), " [lon x lat x depth x month x var]\n", sep = "")
-  invisible(x)
 }

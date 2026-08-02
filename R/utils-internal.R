@@ -38,11 +38,172 @@
   invisible(TRUE)
 }
 
+.check_cube_coordinates <- function(lon, lat, depth, time, vars) {
+  .check_numeric_vector(lon, "lon")
+  if (!is.null(dim(lon))) {
+    .abort_badarg("lon", "must be a vector.")
+  }
+  if (length(lon) == 0L) {
+    .abort_badarg("lon", "must not be empty.")
+  }
+  if (any(!is.finite(lon))) {
+    .abort_badarg("lon", "must contain only finite values.")
+  }
+  valid_lon_convention <-
+    all(lon >= -180 & lon <= 180) ||
+    all(lon >= 0 & lon <= 360)
+  if (!valid_lon_convention) {
+    .abort_badarg("lon", "values must follow either the [-180, 180] or [0, 360] convention.")
+  }
+
+  .check_numeric_vector(lat, "lat")
+  if (!is.null(dim(lat))) {
+    .abort_badarg("lat", "must be a vector.")
+  }
+  if (length(lat) == 0L) {
+    .abort_badarg("lat", "must not be empty.")
+  }
+  if (any(!is.finite(lat))) {
+    .abort_badarg("lat", "must contain only finite values.")
+  }
+  if (any(lat < -90 | lat > 90)) {
+    .abort_badarg("lat", "values must be between -90 and 90.")
+  }
+
+  .check_numeric_vector(depth, "depth", allow_na = TRUE)
+  if (!is.null(dim(depth))) {
+    .abort_badarg("depth", "must be a vector.")
+  }
+  if (length(depth) == 0L) {
+    .abort_badarg("depth", "must not be empty.")
+  }
+  is_surface_depth <- length(depth) == 1L && is.na(depth) && !is.nan(depth)
+  if (!is_surface_depth && any(!is.finite(depth))) {
+    .abort_badarg("depth", "must contain finite values, or be a single NA for a surface cube.")
+  }
+
+  if (!inherits(time, c("Date", "POSIXct"))) {
+    .abort_badarg("time", "must inherit from Date or POSIXct.")
+  }
+  if (length(time) == 0L) {
+    .abort_badarg("time", "must not be empty.")
+  }
+  if (anyNA(time)) {
+    .abort_badarg("time", "must not contain missing values.")
+  }
+
+  if (!is.character(vars) || !is.null(dim(vars))) {
+    .abort_badarg("vars", "must be a character vector.")
+  }
+  if (length(vars) == 0L) {
+    .abort_badarg("vars", "must contain at least one variable name.")
+  }
+  if (anyNA(vars) || any(!nzchar(vars))) {
+    .abort_badarg("vars", "must contain non-empty, non-missing names.")
+  }
+  if (anyDuplicated(vars)) {
+    .abort_badarg("vars", "must not contain duplicates.")
+  }
+
+  invisible(TRUE)
+}
+
+.check_cube_dimensions <- function(data, lon, lat, depth, time, vars) {
+  if (!is.array(data) || !is.numeric(data)) {
+    .abort_badarg("data", "must be a numeric array.")
+  }
+
+  actual <- dim(data)
+  if (length(actual) != 5L) {
+    .abort_badarg(
+      "data",
+      paste0(
+        "must have 5 dimensions [longitude, latitude, depth, time, variable]; obtained ",
+        length(actual), "."
+      )
+    )
+  }
+
+  expected <- c(
+    length(lon),
+    length(lat),
+    length(depth),
+    length(time),
+    length(vars)
+  )
+
+  if (!identical(unname(actual), as.integer(expected))) {
+    rlang::abort(
+      paste0(
+        "Invalid cube dimensions: coordinate length must match each data axis; expected [",
+        paste(expected, collapse = " x "),
+        "] from [longitude, latitude, depth, time, variable], obtained [",
+        paste(actual, collapse = " x "),
+        "]."
+      ),
+      class = "oceancube_bad_cube"
+    )
+  }
+
+  invisible(TRUE)
+}
+
+.cube_shape <- function(x) {
+  if (!inherits(x, "ocean_cube")) {
+    rlang::abort("`x` must be an <ocean_cube> object.", class = "oceancube_bad_cube")
+  }
+  if (!is.list(x)) {
+    rlang::abort("An <ocean_cube> must be a list.", class = "oceancube_bad_cube")
+  }
+
+  required <- c("lon", "lat", "depth", "time", "vars")
+  missing <- setdiff(required, names(x))
+  if (length(missing) > 0L) {
+    rlang::abort(
+      paste0("<ocean_cube> header is missing fields: ", paste(missing, collapse = ", ")),
+      class = "oceancube_bad_cube"
+    )
+  }
+
+  .check_cube_coordinates(x$lon, x$lat, x$depth, x$time, x$vars)
+  shape <- stats::setNames(
+    as.integer(c(
+      length(x$lon),
+      length(x$lat),
+      length(x$depth),
+      length(x$time),
+      length(x$vars)
+    )),
+    .cube_axis_names()
+  )
+  is_netcdf_descriptor <- "storage" %in% names(x) &&
+    !"data" %in% names(x)
+  if (is_netcdf_descriptor) {
+    .validate_netcdf_storage(x$storage, check_file = FALSE)
+    if (!identical(shape, x$storage$dimensions$shape)) {
+      rlang::abort(
+        paste0(
+          "Invalid NetCDF cube header shape: expected [",
+          paste(x$storage$dimensions$shape, collapse = " x "),
+          "] from storage, obtained [",
+          paste(shape, collapse = " x "),
+          "] from logical coordinates."
+        ),
+        class = "oceancube_bad_cube"
+      )
+    }
+  }
+  shape
+}
+
 .check_cube <- function(x) {
   if (!inherits(x, "ocean_cube")) {
     rlang::abort("`x` must be an <ocean_cube> object.", class = "oceancube_bad_cube")
   }
-  required <- c("lon", "lat", "depth", "time", "vars", "data")
+  if (!is.list(x)) {
+    rlang::abort("An <ocean_cube> must be a list.", class = "oceancube_bad_cube")
+  }
+  required <- c("lon", "lat", "depth", "time", "vars")
   missing <- setdiff(required, names(x))
   if (length(missing) > 0L) {
     rlang::abort(
@@ -50,9 +211,104 @@
       class = "oceancube_bad_cube"
     )
   }
-  if (length(dim(x$data)) != 5L) {
-    rlang::abort("`x$data` must be a 5D array [lon, lat, depth, time, var].")
+
+  .check_cube_coordinates(x$lon, x$lat, x$depth, x$time, x$vars)
+  backend <- .cube_backend(x)
+  if (identical(backend, "memory")) {
+    .validate_memory_backend(x)
+  } else if (identical(backend, "netcdf")) {
+    .validate_netcdf_storage(x$storage, check_file = FALSE)
+    expected_shape <- stats::setNames(
+      as.integer(c(
+        length(x$lon),
+        length(x$lat),
+        length(x$depth),
+        length(x$time),
+        length(x$vars)
+      )),
+      .cube_axis_names()
+    )
+    if (!identical(expected_shape, x$storage$dimensions$shape)) {
+      rlang::abort(
+        "Invalid NetCDF cube: logical coordinates do not match the storage shape.",
+        class = "oceancube_bad_cube"
+      )
+    }
   }
+
+  if (!is.null(x$units)) {
+    if (!is.character(x$units) && !is.list(x$units)) {
+      .abort_badarg("units", "must be NULL, a character vector, or a list.")
+    }
+    if (length(x$units) != length(x$vars)) {
+      .abort_badarg("units", "length must match `vars`.")
+    }
+    unit_names <- names(x$units)
+    if (!is.null(unit_names)) {
+      if (anyDuplicated(unit_names)) {
+        .abort_badarg("units", "names must be unique.")
+      }
+      if (anyNA(unit_names) ||
+          any(!nzchar(unit_names)) ||
+          !setequal(unit_names, x$vars)) {
+        .abort_badarg("units", "names must match `vars` exactly.")
+      }
+    }
+  }
+
+  if (!is.null(x$spatial_extent)) {
+    extent <- x$spatial_extent
+    if (!is.numeric(extent) || length(extent) != 4L || any(!is.finite(extent))) {
+      .abort_badarg("spatial_extent", "must contain four finite numeric values.")
+    }
+    if (extent[1] > extent[2] || extent[3] > extent[4]) {
+      .abort_badarg("spatial_extent", "must be ordered as c(lon_min, lon_max, lat_min, lat_max).")
+    }
+    if (min(x$lon) < extent[1] ||
+        max(x$lon) > extent[2] ||
+        min(x$lat) < extent[3] ||
+        max(x$lat) > extent[4]) {
+      .abort_badarg("spatial_extent", "must contain the longitude and latitude coordinates.")
+    }
+  }
+
+  if (!is.null(x$temporal_extent)) {
+    extent <- x$temporal_extent
+    if (!inherits(extent, c("Date", "POSIXct")) ||
+        length(extent) != 2L ||
+        anyNA(extent)) {
+      .abort_badarg("temporal_extent", "must contain two non-missing Date or POSIXct values.")
+    }
+    extent_date <- as.Date(extent)
+    time_date <- as.Date(x$time)
+    if (extent_date[1] > extent_date[2]) {
+      .abort_badarg("temporal_extent", "must be ordered from start to end.")
+    }
+    if (min(time_date) < extent_date[1] || max(time_date) > extent_date[2]) {
+      .abort_badarg("temporal_extent", "must contain the time coordinate.")
+    }
+  }
+
+  if (!is.null(x$depth_extent)) {
+    extent <- x$depth_extent
+    is_surface_depth <- length(x$depth) == 1L && is.na(x$depth)
+    if (is_surface_depth) {
+      if (!is.numeric(extent) || length(extent) != 2L || !all(is.na(extent))) {
+        .abort_badarg("depth_extent", "must be c(NA, NA) for a surface cube.")
+      }
+    } else {
+      if (!is.numeric(extent) || length(extent) != 2L || any(!is.finite(extent))) {
+        .abort_badarg("depth_extent", "must contain two finite numeric values.")
+      }
+      if (extent[1] > extent[2]) {
+        .abort_badarg("depth_extent", "must be ordered as c(min, max).")
+      }
+      if (min(x$depth) < extent[1] || max(x$depth) > extent[2]) {
+        .abort_badarg("depth_extent", "must contain the depth coordinate.")
+      }
+    }
+  }
+
   invisible(TRUE)
 }
 

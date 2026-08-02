@@ -1,6 +1,7 @@
 # R session files
 .Rhistory
 .RData
+.RDataTmp
 .Ruserdata
 .Rproj.user/
 # Local data and outputs
@@ -38,11 +39,17 @@ cout/
 check/
 
 # Local outputs
+artifacts/
+docs/
 cin/
 cout/
 data-raw/tmp/
 tmp/
 temp/
+README_cache/
+README_files/
+vignettes/*_cache/
+vignettes/*_files/
 
 # NetCDF and heavy files
 *.nc
@@ -62,3 +69,5 @@ temp/
 # OS
 .DS_Store
 Thumbs.db
+/doc/
+/Meta/

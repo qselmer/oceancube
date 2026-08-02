@@ -74,15 +74,19 @@ print.ocean_mask <- function(x, ...) {
 #' @export
 crop_stock <- function(x, mask) {
   .check_cube(x)
+  cube_shape <- .cube_shape(x)
   if (!inherits(mask, "ocean_mask")) {
     rlang::abort("`mask` must be an <ocean_mask> object.")
   }
-  if (!identical(dim(mask$mask), dim(x$data)[1:3])) {
+  if (!identical(
+    unname(dim(mask$mask)),
+    unname(cube_shape[1:3])
+  )) {
     rlang::abort("Mask dimensions must match cube [lon, lat, depth] dimensions.")
   }
 
-  out_data <- x$data
-  d <- dim(out_data)
+  out_data <- .cube_read(x)
+  d <- unname(cube_shape)
   for (k in seq_len(d[5])) {
     for (t in seq_len(d[4])) {
       slice <- out_data[, , , t, k]
@@ -100,7 +104,7 @@ crop_stock <- function(x, mask) {
     data = out_data,
     units = x$units,
     source = x$source,
-    dataset_id = x$dataset_id,
+    dataset_id = x[["dataset_id"]],
     spatial_extent = x$spatial_extent,
     temporal_extent = x$temporal_extent,
     depth_extent = x$depth_extent,

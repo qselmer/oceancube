@@ -4,21 +4,28 @@
 #' `[longitude, latitude, depth, time, variable]`. Surface fields can be stored
 #' with a single depth level set to `NA_real_`.
 #'
-#' @param lon Numeric vector of longitudes.
-#' @param lat Numeric vector of latitudes.
-#' @param time Date vector.
+#' @param lon Non-empty finite numeric vector of longitudes, using either the
+#'   `[-180, 180]` or `[0, 360]` convention.
+#' @param lat Non-empty finite numeric vector of latitudes in `[-90, 90]`.
+#' @param time Non-empty `Date`, `POSIXct`, or character vector coercible to
+#'   `Date`. Values are stored as `Date`.
 #' @param data Numeric array. Preferred shape is 5D: `[lon, lat, depth, time, var]`.
 #'   A 4D array `[lon, lat, time, var]` is accepted and internally promoted to
 #'   a single-depth cube.
 #' @param depth Numeric vector of depth levels. If `NULL`, a single surface/no-depth
-#'   level is used.
-#' @param vars Character vector of variable names.
-#' @param units Optional named list or character vector of units.
+#'   level is used. A single `NA_real_` represents a surface cube without an
+#'   explicit depth coordinate.
+#' @param vars Non-empty character vector of unique variable names.
+#' @param units Optional character vector or list with one unit per variable.
+#'   If named, names must match `vars` uniquely.
 #' @param source Optional data source label.
 #' @param dataset_id Optional dataset identifier.
-#' @param spatial_extent Optional spatial extent.
-#' @param temporal_extent Optional temporal extent.
-#' @param depth_extent Optional depth extent.
+#' @param spatial_extent Optional finite
+#'   `c(lon_min, lon_max, lat_min, lat_max)` covering the coordinates.
+#' @param temporal_extent Optional ordered pair of `Date` or `POSIXct` values
+#'   covering `time`.
+#' @param depth_extent Optional finite ordered depth range covering `depth`, or
+#'   `c(NA_real_, NA_real_)` for a surface cube.
 #' @param mask Optional mask object.
 #' @param dc Optional distance-to-coast matrix in nautical miles.
 #' @param climatology Optional climatology object.
@@ -28,6 +35,33 @@
 #'
 #' @return An object of class `<ocean_cube>`.
 #' @export
+#'
+#' @details
+#' The stable dimensional contract is
+#' `[longitude, latitude, depth, time, variable]`. For current in-memory cubes:
+#'
+#' ```
+#' dim(data) == c(length(lon), length(lat), length(depth),
+#'                length(time), length(vars))
+#' ```
+#'
+#' Coordinate values are preserved in the supplied order; the constructor does
+#' not sort, deduplicate, or convert longitude conventions. Positive and
+#' negative depth values are accepted without inferring whether the vertical
+#' axis is positive upward or downward. Duplicate or non-monotonic coordinate
+#' values remain supported for compatibility, while variable names must be
+#' unique.
+#'
+#' Dimension lengths and axis order form the primary contract. Names attached to
+#' `dim(data)` or `dimnames(data)` are descriptive and are not used to determine
+#' axis meaning. The current `data` array is retained for compatibility, but the
+#' physical storage mechanism is an internal concern that may be represented by
+#' another backend in a future version.
+#'
+#' Optional metadata do not alter dimensional validity. The schemas of
+#' `provenance` and `qa` are intentionally not formalized yet. Non-Gregorian CF
+#' calendars and vertical positive-direction metadata require an explicit
+#' future policy and are not inferred by this constructor.
 #'
 #' @examples
 #' lon <- seq(-82, -80, length.out = 3)
@@ -42,10 +76,15 @@ ocean_cube <- function(lon, lat, time, data, depth = NULL, vars = NULL, units = 
                        temporal_extent = NULL, depth_extent = NULL, mask = NULL,
                        dc = NULL, climatology = NULL, anomaly = NULL,
                        provenance = NULL, qa = NULL) {
-  .check_numeric_vector(lon, "lon")
-  .check_numeric_vector(lat, "lat")
-
-  time <- as.Date(time)
+  if (!inherits(time, c("Date", "POSIXct")) && !is.character(time)) {
+    .abort_badarg("time", "must be Date, POSIXct, or character data coercible to Date.")
+  }
+  time <- tryCatch(
+    as.Date(time),
+    error = function(e) {
+      .abort_badarg("time", "must be Date, POSIXct, or character data coercible to Date.")
+    }
+  )
   if (anyNA(time)) {
     .abort_badarg("time", "must be coercible to Date without NA values.")
   }
@@ -74,19 +113,12 @@ ocean_cube <- function(lon, lat, time, data, depth = NULL, vars = NULL, units = 
     depth <- if (data_dim[3] == 1L) NA_real_ else seq_len(data_dim[3])
   }
 
-  .check_numeric_vector(depth, "depth", allow_na = TRUE)
-
-  if (length(lon) != data_dim[1]) .abort_badarg("lon", "length must match dim(data)[1].")
-  if (length(lat) != data_dim[2]) .abort_badarg("lat", "length must match dim(data)[2].")
-  if (length(depth) != data_dim[3]) .abort_badarg("depth", "length must match dim(data)[3].")
-  if (length(time) != data_dim[4]) .abort_badarg("time", "length must match dim(data)[4].")
-
   if (is.null(vars)) {
     vars <- paste0("var", seq_len(data_dim[5]))
   }
-  if (!is.character(vars) || length(vars) != data_dim[5]) {
-    .abort_badarg("vars", "must be a character vector with length dim(data)[5].")
-  }
+
+  .check_cube_coordinates(lon, lat, depth, time, vars)
+  .check_cube_dimensions(data, lon, lat, depth, time, vars)
 
   dimnames(data) <- list(
     lon = as.character(lon),
@@ -104,7 +136,13 @@ ocean_cube <- function(lon, lat, time, data, depth = NULL, vars = NULL, units = 
   )
 
   temporal_extent <- temporal_extent %||% range(time, na.rm = TRUE)
-  depth_extent <- depth_extent %||% range(depth, na.rm = TRUE)
+  if (is.null(depth_extent)) {
+    depth_extent <- if (all(is.na(depth))) {
+      c(NA_real_, NA_real_)
+    } else {
+      range(depth, na.rm = TRUE)
+    }
+  }
 
   out <- list(
     lon = lon,
@@ -135,11 +173,17 @@ ocean_cube <- function(lon, lat, time, data, depth = NULL, vars = NULL, units = 
 #' @export
 print.ocean_cube <- function(x, ...) {
   .check_cube(x)
+  cube_shape <- .cube_shape(x)
+  depth_range <- if (length(x$depth) == 0L || all(is.na(x$depth))) {
+    c(NA_real_, NA_real_)
+  } else {
+    range(x$depth, na.rm = TRUE)
+  }
   cat("<ocean_cube>\n")
-  cat("  dimensions : ", paste(dim(x$data), collapse = " x "), " [lon x lat x depth x time x var]\n", sep = "")
+  cat("  dimensions : ", paste(cube_shape, collapse = " x "), " [lon x lat x depth x time x var]\n", sep = "")
   cat("  lon        : ", min(x$lon), " to ", max(x$lon), " (n = ", length(x$lon), ")\n", sep = "")
   cat("  lat        : ", min(x$lat), " to ", max(x$lat), " (n = ", length(x$lat), ")\n", sep = "")
-  cat("  depth      : ", paste(range(x$depth, na.rm = TRUE), collapse = " to "), " (n = ", length(x$depth), ")\n", sep = "")
+  cat("  depth      : ", paste(depth_range, collapse = " to "), " (n = ", length(x$depth), ")\n", sep = "")
   cat("  time       : ", paste(range(x$time), collapse = " to "), " (n = ", length(x$time), ")\n", sep = "")
   cat("  variables  : ", paste(x$vars, collapse = ", "), "\n", sep = "")
   invisible(x)
@@ -148,11 +192,16 @@ print.ocean_cube <- function(x, ...) {
 #' @export
 summary.ocean_cube <- function(object, ...) {
   .check_cube(object)
+  depth_range <- if (length(object$depth) == 0L || all(is.na(object$depth))) {
+    c(NA_real_, NA_real_)
+  } else {
+    range(object$depth, na.rm = TRUE)
+  }
   out <- data.frame(
     field = c("longitude", "latitude", "depth", "time", "variable"),
     n = c(length(object$lon), length(object$lat), length(object$depth), length(object$time), length(object$vars)),
-    min = c(min(object$lon), min(object$lat), min(object$depth, na.rm = TRUE), as.character(min(object$time)), NA_character_),
-    max = c(max(object$lon), max(object$lat), max(object$depth, na.rm = TRUE), as.character(max(object$time)), NA_character_),
+    min = c(min(object$lon), min(object$lat), depth_range[1], as.character(min(object$time)), NA_character_),
+    max = c(max(object$lon), max(object$lat), depth_range[2], as.character(max(object$time)), NA_character_),
     stringsAsFactors = FALSE
   )
   out
