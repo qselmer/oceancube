@@ -1,0 +1,48 @@
+---
+title: "oceancube 0.2.0 documentation policy"
+output: html_document
+---
+
+# Decision
+
+oceancube will use a layered documentation model with one declared source of truth per purpose. Generated products are retained when required for package distribution or publication, but they are never edited as the canonical source.
+
+## Function reference
+
+Roxygen blocks beside R source are the canonical reference for public and internal function contracts. They own arguments, values, lifecycle state, examples and cross-references. The man/ directory is generated output from roxygen and must not be edited manually. A future roxygen regeneration requires a dedicated commit and a clean generated diff.
+
+## Complete workflows
+
+Vignettes are canonical for end-to-end, executable workflows. Each core workflow should start from a supported ingestion path, validate an ocean_cube, perform one scientific operation and produce or save an output. Expensive or network-dependent steps must use cached fixtures or non-evaluated acquisition chunks paired with an executable local equivalent.
+
+## README and published site
+
+README is the minimal entry point: installation, one short local workflow, links to lifecycle and vignettes, and no second copy of the complete reference manual. README.Rmd is canonical when present and README.md is its reviewed generated result. Pkgdown is the published site assembled from roxygen reference, vignettes and selected articles; pkgdown output is generated and should not become an independent source.
+
+## Roadmap and decisions
+
+docs/roadmap contains scope, audit and approved decision records. These documents explain why changes are authorized; they do not define runtime behavior and must not duplicate full function reference pages.
+
+## Handbook decision
+
+Decision: merge the handbook gradually into vignettes while retaining the handbook source until topic-level parity is demonstrated and approved. The handbook is not deleted, archived or treated as the permanent independent source during 0.2.0. Each migrated topic needs an owner, destination vignette, link audit and executable example check. Rendered handbook output is reproducible publication material, not canonical prose.
+
+## inst/examples decision
+
+Executable examples in inst/examples remain available during the transition. Narrative examples migrate to vignettes; compact behavior contracts migrate to tests; user-facing minimal examples may remain in inst/examples when runtime data and execution cost are controlled. No example is removed until its destination is executable and linked.
+
+## Duplicate documentation
+
+When the same material appears in roxygen, man, README, handbook, vignette and rendered HTML, select the canonical source by purpose above, replace secondary copies with concise links, and preserve unique scientific explanation before merging. Automated similarity is evidence for review, not approval to delete.
+
+## Executable examples
+
+Core examples must be deterministic, offline-capable, bounded in runtime and based on redistributable fixtures. Network credentials, local absolute paths and operational datasets are prohibited. Acquisition examples should support dry-run or mocked metadata paths. Every public core function needs at least one tested example or direct test covering its documented contract.
+
+## Generated HTML
+
+Generated HTML from vignettes, handbook or pkgdown is ignored or published from a clean build location. Track it only when the selected hosting mechanism requires committed output and that exception is documented. Never repair generated HTML by hand; regenerate it from its canonical source in a dedicated documentation commit.
+
+## Change control
+
+Documentation consolidation occurs before functional API expansion. Every migration records source, destination, links, examples and rollback. Deletion always requires a separate human approval after parity has been verified.

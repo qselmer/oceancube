@@ -1,0 +1,78 @@
+---
+title: "oceancube 0.2.0 cleanup decision"
+output: html_document
+---
+
+# 1. Repository state
+
+Decision analysis started on branch dev-0.2.0 at c8d018195dd40b91e76309fb27ceb48df9bf2fb7. The protected main and v0.1.0 references both resolve to 93d2a79b11a6ae7622443ae068e6e2a2709c9324. The input tree was clean; this phase writes only under docs/roadmap/decision-0.2.0/.
+
+# 2. Count confirmation
+
+The previous counts are confirmed: 182 top-level oceancube functions in R/*.R, 27 exports and 155 unexported top-level functions. The apparent inflation concern is resolved by AST scope: 3 named nested functions are reported separately, anonymous callbacks are excluded, and NAMESPACE contains 0 explicitly imported functions. The four S3 methods are top-level oceancube definitions and part of the 155 unexported functions.
+
+# 3. Decisions for the 27 exports
+
+All 27 NAMESPACE exports have an individual decision in 03-current-export-decisions.csv: 21 retain, 3 retain-and-expand, 3 rename-with-alias, 0 deprecate-later, 0 internalize and 0 review.
+
+# 4. Resolution of the four prior review exports
+
+annual_index, coast_dist, crop_stock and stock_mask are resolved as retain. annual_index is not treated as an implementation of generic to_year because its threshold-indicator semantics differ. The three spatial/stock functions remain compatible specialized extensions outside the mandatory core. Any later internalization or deprecation requires replacement parity, usage evidence and human approval.
+
+# 5. Aliases and deprecation
+
+download_nc to download_copernicus, layer_mean to cube_vertical_mean and link_events to cube_join use behavior-identical wrappers. Old names remain functional and silent throughout initial 0.2.0 development. A warning can begin only in a later 0.2.x after adoption review; no removal version is approved.
+
+# 6. Realistic 0.2.0 core
+
+The proposed API is reduced from 114 simultaneous targets to 42 core functions. The core covers Copernicus and local NetCDF ingestion, public validation/inspection, crop/slice/extract/transect, five required static visualizations, time aggregation, climatology, anomaly, change, locate/join, NetCDF/table/plot/GIF output and map animation. ocean_cube, cube_collect, Copernicus setup/connect and cube_vertical_mean are included as foundations or compatibility commitments.
+
+# 7. Deferred functions
+
+62 functions are post-core 0.2.x and 10 are future. STAC, Zarr, THREDDS, regridding/resampling, vector visualization and advanced gradients are not core dependencies. UGRID, swath and unstructured-grid support are not introduced implicitly.
+
+# 8. Internal functions
+
+All 155 current internal top-level functions have individual evidence in 07-internal-function-decisions.csv. 155 are retain-internal and 0 require review because no static consumer was established. No existing internal is mislabeled internalize and no removal candidate is approved without affirmative duplication/obsolescence evidence.
+
+# 9. File decisions
+
+08-file-cleanup-decisions.csv re-inventories 2551 current files outside the decision output directory and replaces the prior blanket-like review signal. The previous audit had 1375 review rows. Current decisions are evidence-based and conservative: 178 retain, 142 relocate-later, 61 merge-later, 2073 ignore, 89 review and 8 remove-candidate. Every removal candidate still requires human approval; no file is deleted.
+
+# 10. Documentation policy
+
+Roxygen is canonical for function reference; man is generated. Vignettes own complete workflows, README is minimal entry, pkgdown is published assembly and docs/roadmap records decisions. The handbook will merge gradually into vignettes but is retained until parity approval. inst/examples are routed to vignettes or tests according to purpose. Generated HTML is rebuilt, not hand-edited.
+
+# 11. Modularization
+
+Current files remain in place. The only proposed physical changes are later, test-gated splits of backend-netcdf.R and utils-internal.R plus later file renames aligned with the three compatibility aliases. Every other current R file remains until the core contract is stable.
+
+# 12. Cleanup sequence
+
+Future work is divided into reversible commits: ignore rules, approved artifact relocation, documentation consolidation, compatibility aliases, behavior-preserving R reorganization, baseline certification, public validation/inspection, viz.map, then remaining modules in dependency order. 11-cleanup-execution-plan.Rmd defines scope, prohibitions, tests and rollback for each.
+
+# 13. Risks
+
+- Static call analysis cannot prove absence of dynamic get/do.call use or external consumers.
+- Provider and NetCDF backends can force optional dependencies into core unless interfaces stay narrow.
+- Scientific aggregation, climatology, anomaly and change contracts need explicit calendar, missingness, units and depth semantics.
+- Documentation consolidation can lose unique scientific context unless parity is reviewed topic by topic.
+- Compatibility aliases can drift if wrappers are not tested for values, attributes, errors and all arguments.
+- Artifact classification can confuse operational data with reproducible output; checksums and provenance are required before relocation.
+
+# 14. Human approvals still required
+
+- Approve the exact .gitignore and .Rbuildignore additions for the first cleanup commit.
+- Approve explicit path lists and destinations before any artifact relocation or removal candidate action.
+- Approve handbook topic migrations only after content and executable-example parity.
+- Approve the later start of deprecation warnings and any eventual alias removal version.
+- Approve semantics for calendars, seasons, missing values, uncertainty, depth direction and units before scientific core implementations.
+- Approve optional backend dependencies and storage policy for NetCDF/RDS operational data.
+
+# 15. First functional modification proposal
+
+After the non-functional cleanup commits, the first API modification should be the three behavior-identical compatibility aliases in one isolated commit. The first genuinely new capability should then be cube_validate plus cube_inspect, because every later visualization and scientific module depends on a stable public cube contract. viz.map follows as the first visualization.
+
+# Decision
+
+Approve the tables as the cleanup decision baseline. The next authorized phase is limited to the first ignore-rule commit and must begin with human approval of its exact rows.

@@ -1,0 +1,8 @@
+"metric","previous_count","verified_count","difference","explanation"
+"source-defined-top-level-functions",182,182,0,"Parsed only top-level name <- function or name = function expressions in R/*.R; imports, tests, examples, anonymous callbacks and nested definitions are excluded."
+"exported-functions",27,27,0,"Every export() entry in NAMESPACE resolves to one verified top-level definition in R/*.R."
+"internal-top-level-functions",155,155,0,"Computed as verified top-level definitions minus the 27 exports; this includes four registered but unexported S3 methods."
+"local-functions",,3,,"Named nested function assignments found recursively inside top-level function bodies; reported separately and excluded from the 182."
+"S3-methods",4,4,0,"Four top-level definitions match the four S3method() registrations in NAMESPACE."
+"namespace-functions",31,31,0,"Unique callable registrations in NAMESPACE: 27 export() names plus four S3 methods; this is not a count of all namespace objects."
+"imported-functions",0,0,0,"Explicit imported functions from importFrom(): 0; import() directives: 0. Calls to other packages are not oceancube definitions."

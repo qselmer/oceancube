@@ -1,0 +1,102 @@
+---
+title: "oceancube 0.2.0 cleanup execution plan"
+output: html_document
+---
+
+# Guardrails
+
+Execute one approved commit at a time on dev-0.2.0. Begin each commit from a clean tree, keep main and v0.1.0 unchanged, run the stated checks, inspect the complete diff and stop on scope drift. A rollback means reverting only that commit after preserving diagnostic evidence.
+
+## Commit 1 — align ignore rules
+
+- Objective: update .gitignore and .Rbuildignore from approved rows in 08-file-cleanup-decisions.csv.
+- Files affected: .gitignore and .Rbuildignore only.
+- Allowed behavior: ignore reproducible local artifacts and exclude approved non-package inputs from source builds.
+- Prohibited behavior: deleting files, broad wildcards that hide source/tests/docs, or changing package runtime.
+- Required checks: git check-ignore samples; git ls-files verification; R CMD build inclusion inspection.
+- Rollback criterion: any tracked source, fixture, vignette or required metadata becomes unintentionally ignored/excluded.
+- Proposed commit: chore: align oceancube artifact ignore rules
+
+## Commit 2 — relocate approved artifacts
+
+- Objective: relocate only rows later approved as relocate-later, preserving provenance and checksums.
+- Files affected: an explicit human-approved path list plus manifest and ignore rules.
+- Allowed behavior: reversible moves with unchanged content and documented destination.
+- Prohibited behavior: deleting operational data, bulk-moving all prior review files, or touching R code.
+- Required checks: before/after checksums, git name-status review, fixture path tests and package build inventory.
+- Rollback criterion: checksum mismatch, broken fixture/document link, or any unapproved path in the diff.
+- Proposed commit: chore: relocate approved oceancube artifacts
+
+## Commit 3 — consolidate documentation
+
+- Objective: migrate one approved handbook or example topic at a time to its canonical destination.
+- Files affected: the selected handbook/inst example, destination vignette, links and documentation tests.
+- Allowed behavior: preserve scientific meaning while replacing duplicate prose with links.
+- Prohibited behavior: deleting the handbook, editing generated man pages directly, or changing function behavior.
+- Required checks: render the affected source, execute bounded examples, verify links and inspect visual output.
+- Rollback criterion: lost unique content, broken links, failed example or unreviewable generated churn.
+- Proposed commit: docs: consolidate one oceancube workflow
+
+## Commit 4 — introduce compatibility aliases
+
+- Objective: add download_copernicus, cube_vertical_mean and cube_join as behavior-identical public entry points while retaining old names.
+- Files affected: dedicated wrapper source, NAMESPACE through roxygen, tests and lifecycle documentation.
+- Allowed behavior: exact argument forwarding and identical values, classes, attributes and errors.
+- Prohibited behavior: warning from old names in initial 0.2.0, signature drift, alias removal or unrelated refactor.
+- Required checks: wrapper parity tests, current test suite, examples and package checks.
+- Rollback criterion: any observable result differs through the alias or existing user code warns/fails.
+- Proposed commit: feat: add 0.2.0 compatibility aliases
+
+## Commit 5 — reorganize R files without behavior change
+
+- Objective: perform one approved split or rename from 10-module-migration-plan.csv.
+- Files affected: one current R file, its proposed destination files and roxygen/test references.
+- Allowed behavior: move unchanged definitions with stable load order and exports.
+- Prohibited behavior: modifying signatures, algorithms, messages, defaults or exported names.
+- Required checks: normalized definition inventory before/after, full tests, package load/check and documentation diff.
+- Rollback criterion: inventory mismatch, load-order failure, changed output or documentation loss.
+- Proposed commit: refactor: modularize one oceancube source unit
+
+## Commit 6 — certify the reorganized baseline
+
+- Objective: run and record the complete baseline verification after approved structural changes.
+- Files affected: test/certification evidence only unless a separately scoped defect fix is approved.
+- Allowed behavior: execute tests, package build/check and static inventories.
+- Prohibited behavior: bundling fixes with certification or rewriting snapshots without review.
+- Required checks: testthat suite, R CMD build/check, exported API comparison and clean generated diff.
+- Rollback criterion: any regression without a separately approved corrective commit.
+- Proposed commit: test: certify oceancube 0.2.0 cleanup baseline
+
+## Commit 7 — expose public validation
+
+- Objective: implement cube_validate and cube_inspect as the first new public core contract.
+- Files affected: validation source, roxygen/NAMESPACE, focused tests, fixture and one vignette section.
+- Allowed behavior: non-destructive inspection and explicit validation diagnostics.
+- Prohibited behavior: silently mutating cubes, adding optional backends or broad metadata standardization.
+- Required checks: valid/invalid cube fixtures, class and diagnostic contract tests, package checks.
+- Rollback criterion: nondeterministic diagnostics, silent mutation or incompatible behavior for existing ocean_cube objects.
+- Proposed commit: feat: add public cube validation and inspection
+
+## Commit 8 — implement viz.map
+
+- Objective: add the first thin visualization wrapper over the stabilized cube contract.
+- Files affected: visualization source, tests, roxygen/NAMESPACE and one executable example.
+- Allowed behavior: return a documented plot object from validated 2D selections.
+- Prohibited behavior: implementing the full viz family, animation, backend downloads or hidden data transformation.
+- Required checks: object contract tests, representative visual snapshots where stable, examples and package checks.
+- Rollback criterion: plot output depends on undocumented state or requires expansion of the core data model.
+- Proposed commit: feat: add viz.map for validated cubes
+
+## Commit 9 and later — continue functional modules
+
+- Objective: implement remaining core tiers in dependency order: selection/extraction, aggregation, climatology, anomaly, change, matching, visualization, export and animation.
+- Files affected: one function or cohesive micro-module per commit with its own tests and documentation.
+- Allowed behavior: only the contract approved in 06-api-release-tiers.csv.
+- Prohibited behavior: pulling future STAC, Zarr, UGRID, swath or unstructured-grid support into core.
+- Required checks: focused scientific fixtures, backend error tests, full regression suite and package checks at module boundaries.
+- Rollback criterion: scientific contract ambiguity, optional backend becoming mandatory, or regression outside the module.
+- Proposed commit: feat: implement one approved oceancube core function
+
+# Execution gate
+
+This document authorizes no cleanup by itself. The next phase may execute only Commit 1 after a human approves the exact ignore-rule rows and diff.
