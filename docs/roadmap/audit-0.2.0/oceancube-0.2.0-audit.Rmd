@@ -1,0 +1,108 @@
+---
+title: "oceancube 0.2.0 — Auditoría reproducible del repositorio 0.1.0"
+author: "Auditoría estática asistida"
+date: "2026-08-03"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+---
+
+# 1. Estado inicial
+
+La auditoría parte de `dev-0.2.0` en `10814a6430398f966d6c4d8cf61d2796ad23c4cb`. `main` y `v0.1.0` permanecen en `93d2a79b11a6ae7622443ae068e6e2a2709c9324`. El árbol estaba limpio.
+
+# 2. Metodología
+
+Se usaron inventarios de Git, clasificación por ruta/tipo, `parse()` de R para definiciones superiores, análisis de símbolos de llamadas, NAMESPACE, Rd, pruebas, ejemplos y el roadmap. Los CSV son reproducibles mediante `generate-audit.R`. No se cargó ni ejecutó código del paquete.
+
+# 3. Limitaciones del análisis
+
+El análisis estático puede omitir dispatch S3, funciones locales, `get()`, `do.call()`, evaluación no estándar y llamadas dinámicas. Una aparición textual no equivale a una prueba directa. `review` se usa cuando la evidencia no permite una decisión segura.
+
+# 4. Inventario del repositorio
+
+Se revisaron 2538 archivos visibles fuera de `.git`: 194 rastreados y 2344 ignorados. Véase `01-file-inventory.csv`.
+
+# 5. API pública actual
+
+NAMESPACE expone exactamente 27 funciones. La tabla `03-public-api-current.csv` vincula fuente, contrato Rd, pruebas, ejemplos y decisión del roadmap.
+
+# 6. Funciones internas propias
+
+R/*.R contiene 182 funciones superiores definidas por el paquete; 155 son internas y 4 son métodos S3 registrados.
+
+# 7. Mapa de pruebas
+
+Se mapearon 32 archivos R de tests/helpers. `06-test-map.csv` distingue llamada parseada, helper/fixture y ausencia de llamada; los conteos de expectativas son por archivo, no por función.
+
+# 8. Mapa documental
+
+Se revisaron 114 archivos de README, man, vignettes, handbook, ejemplos, docs y NEWS. `07-documentation-map.csv` identifica grupos de solapamiento sin ordenar eliminaciones.
+
+# 9. Artefactos y datos generados
+
+`08-artifact-audit.csv` separa tracked/ignored, reproducibilidad, necesidad para paquete/tests, tamaño y señales de rutas locales o nombres sensibles. No se imprimieron credenciales.
+
+# 10. Duplicación
+
+Los principales grupos para revisión son: roxygen/man frente a fichas del handbook; README.Rmd frente a README.md; QMD/Rmd frente a HTML renderizado; y ejemplos instalables frente a narrativas. Solapamiento no significa obsolescencia.
+
+# 11. API actual frente al roadmap
+
+El roadmap propone 114 funciones únicas. `04-public-api-proposed.csv` y `05-api-transition.csv` documentan existencia, equivalencias, prioridad y compatibilidad.
+
+# 12. Funciones a conservar
+
+La matriz pública marca 20 nombres como `retain`, sustentados por secciones 20 y 21.3 del roadmap o por coincidencia explícita de API.
+
+# 13. Funciones a renombrar
+
+El roadmap decide tres transiciones graduales: `download_nc()` → `download_copernicus()`, `layer_mean()` → `cube_vertical_mean()` y `link_events()` → `cube_join()`. Requieren alias y deprecación posterior, no cambios en esta fase.
+
+# 14. Funciones candidatas a deprecación
+
+No se declara ninguna eliminación inmediata. Las tres funciones renombradas son candidatas a deprecación gradual solo después de aprobar compatibilidad y cronograma.
+
+# 15. Funciones candidatas a internalización
+
+Se identificaron 155 funciones no exportadas. La etiqueta `internalize` conserva su estado interno; no implica moverlas ni borrarlas.
+
+# 16. Archivos candidatos a traslado
+
+Artefactos ignorados, builds, HTML renderizado, caches y datos operativos aparecen como `relocate` cuando la ruta/tipo aporta evidencia. Se debe confirmar su generador y necesidad antes de cualquier movimiento.
+
+# 17. Archivos que requieren revisión
+
+1375 archivos tienen recomendación `review`, principalmente por incertidumbre, salida de desarrollo o falta de una fuente canónica inequívoca.
+
+# 18. Brechas funcionales de 0.2.0
+
+81 funciones propuestas están marcadas `new`; las brechas dominantes son validación pública, metadatos CF, ingestión multifuente, visualización/animación, cambio temporal, asignación y exportación.
+
+# 19. Orden recomendado de implementación
+
+Seguir las fases del roadmap: aprobar limpieza; objeto/grilla/metadatos; validación; ingestión; selección/asignación; visualización; animación; agregación/climatología; anomalías/cambio; alineación/ponderación; exportación; documentación/publicación.
+
+# 20. Riesgos
+
+- Romper compatibilidad 0.1.0 al renombrar exports sin alias.
+- Confundir archivos ignorados con archivos eliminables.
+- Sobreestimar cobertura mediante coincidencia textual.
+- Perder semántica por dispatch o llamadas dinámicas no capturadas.
+- Duplicar documentación sin definir una fuente canónica.
+- Ampliar la API antes de estabilizar ocean_cube, metadatos y validación.
+
+# 21. Decisiones que requieren aprobación humana
+
+- Tabla definitiva retain/rename/deprecate/internalize/relocate.
+- Política y duración de aliases.
+- Fuente canónica de README/handbook/vignettes.
+- Tratamiento de artifacts, HTML y datos operativos.
+- Alcance core frente a future-extension.
+- Modularización física de R/*.R.
+
+# 22. Propuesta para la siguiente fase
+
+Aprobar explícitamente una tabla de decisiones de limpieza controlada basada en estos CSV. Solo después deben autorizarse movimientos, deprecaciones o eliminaciones, cada uno con pruebas y diff independiente.
