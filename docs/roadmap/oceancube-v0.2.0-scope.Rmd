@@ -1,0 +1,1819 @@
+---
+title: "oceancube 0.2.0 — Alcance funcional, arquitectura pública y plan de reconstrucción"
+author: "Elmer Quispe-Salazar"
+date: "2026-08-03"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    number_sections: true
+    theme: readable
+  github_document:
+    toc: true
+editor_options:
+  chunk_output_type: console
+---
+
+# 0. Prompt inicial para colocar este documento en el repositorio
+
+Copiar y ejecutar este prompt antes de modificar funciones del paquete:
+
+```text
+Trabaja en el repositorio local D:\.packages\oceancube y en el repositorio remoto qselmer/oceancube.
+
+Objetivo único de esta tarea:
+incorporar el documento de planificación de oceancube 0.2.0 al repositorio, sin realizar todavía limpieza, refactorización ni cambios funcionales.
+
+Reglas obligatorias:
+
+1. Verifica que el repositorio local esté limpio.
+2. Verifica que la rama actual y el commit correspondan al estado publicado de oceancube 0.1.0.
+3. No modifiques ni elimines la etiqueta v0.1.0.
+4. Crea una rama nueva llamada dev-0.2.0 a partir de main.
+5. Crea, si no existe, la carpeta:
+   docs/roadmap/
+6. Copia el archivo:
+   oceancube-v0.2.0-scope-roadmap-revised.Rmd
+   como:
+   docs/roadmap/oceancube-v0.2.0-scope.Rmd
+7. No modifiques DESCRIPTION, NAMESPACE, R/, tests/, man/, vignettes/, README.md ni NEWS.md.
+8. No borres archivos.
+9. No regeneres documentación.
+10. No ejecutes cambios automáticos de estilo.
+11. Revisa el diff y confirma que solo se añadió el Rmd de planificación.
+12. Realiza el commit:
+    docs: add oceancube 0.2.0 scope and roadmap
+13. Muestra:
+    - rama actual;
+    - commit inicial;
+    - archivos modificados;
+    - diff resumido;
+    - commit creado;
+    - git status final.
+14. Detente después del commit. La limpieza del repositorio será una tarea posterior y separada.
+
+Criterio de aceptación:
+la rama dev-0.2.0 debe contener únicamente la incorporación del documento de planificación, mientras main y v0.1.0 permanecen intactos.
+```
+
+# 1. Propósito
+
+Este documento define el alcance funcional, la API pública, la arquitectura del objeto, la limpieza del repositorio, las fases de implementación y los criterios de aceptación de `oceancube` versión `0.2.0`.
+
+El paquete debe cubrir un flujo oceanográfico completo y reproducible:
+
+```text
+fuente o catálogo
+  → descubrimiento
+  → descarga o conexión remota
+  → lectura y estandarización
+  → validación del ocean_cube
+  → selección y extracción
+  → agregación temporal
+  → climatología
+  → anomalía
+  → visualización estática o animada
+  → cambio temporal y pendiente
+  → asignación a observaciones externas
+  → exportación
+```
+
+La versión `0.2.0` se desarrollará en el mismo repositorio. La publicación `v0.1.0`, su etiqueta y su historial permanecerán intactos.
+
+# 2. Evidencia y estándares considerados
+
+La reconstrucción debe alinearse con prácticas internacionales para datos oceanográficos y geoespaciales:
+
+- Convenciones Climate and Forecast para coordenadas, calendarios, límites de celdas, métodos de agregación, climatologías, medidas de área y volumen, variables auxiliares, incertidumbre y banderas de calidad.
+- Modelo de datos NetCDF para dimensiones, variables, atributos, grupos, compresión y chunking.
+- OPeNDAP, ERDDAP y THREDDS para descubrimiento, subsetting y acceso remoto.
+- Copernicus Marine Toolbox para metadatos, descarga de originales y subsets NetCDF o Zarr.
+- STAC para descubrimiento y catalogación de activos espacio-temporales.
+- UGRID para una posible ampliación futura a mallas no estructuradas.
+- Productos satelitales L2 tipo swath y L3/L4 gridded.
+- `ggplot2` y `gganimate` para figuras estáticas y animaciones reproducibles.
+
+# 3. Principios de diseño
+
+1. La API debe reflejar tareas reales del usuario.
+2. El objeto central será `ocean_cube`.
+3. El contrato principal seguirá siendo:
+
+```text
+longitude × latitude × depth × time × variable
+```
+
+4. Después de la ingestión, el análisis debe ser independiente de la fuente.
+5. Toda coincidencia espacial, vertical o temporal será explícita.
+6. Toda transformación conservará procedencia.
+7. Las salidas principales serán `ocean_cube`, `ocean_clim`, `ocean_match`, `data.frame`, `ggplot` y objetos de animación.
+8. Ninguna función agregará, interpolará, rellenará o reordenará silenciosamente.
+9. Las operaciones sobre NetCDF remoto o local evitarán materializaciones completas innecesarias.
+10. Las funciones internas no formarán parte del flujo normal del usuario.
+11. Las funciones de visualización usarán el patrón `viz.xxxxx()`.
+12. Los nombres públicos restantes estarán en inglés y seguirán una convención consistente.
+13. Los métodos científicos serán configurables y quedarán registrados en metadatos.
+14. La incertidumbre y las banderas de calidad se conservarán cuando existan.
+15. Las funciones de resumen describirán datos; no impondrán interpretaciones ecológicas.
+16. El paquete será extensible a nuevas fuentes mediante adaptadores, sin reescribir el núcleo.
+17. Cada función pública tendrá pruebas, documentación y al menos un ejemplo reproducible.
+18. Toda operación que pueda producir salidas grandes deberá estimar tamaño y advertir al usuario.
+19. Las figuras no se guardarán automáticamente; las funciones de exportación serán explícitas.
+20. Las animaciones se generarán solo cuando se soliciten y deberán poder exportarse a GIF.
+
+# 4. Alcance funcional
+
+## 4.1 Incluido
+
+`oceancube` deberá incluir:
+
+- descubrimiento de productos y variables;
+- descarga desde Copernicus Marine;
+- descarga y conexión a NOAA, ERDDAP, OPeNDAP y THREDDS;
+- descarga desde URL NetCDF;
+- soporte extensible para futuras plataformas;
+- lectura de NetCDF local;
+- lectura remota cuando el backend lo permita;
+- soporte planificado para Zarr;
+- inspección de metadatos CF;
+- estandarización de dimensiones, coordenadas, variables, unidades y calendarios;
+- validación e inspección del cubo;
+- conservación de `standard_name`, `long_name`, `cell_methods`, `cell_measures`, `bounds`, `grid_mapping` y atributos auxiliares;
+- conservación de banderas de calidad e incertidumbre;
+- selección espacial, vertical, temporal y por variable;
+- extracción de puntos, perfiles, series, tablas y transectos;
+- agregación diaria, semanal, mensual, estacional y anual;
+- ninguna escala menor que un día en `0.2.0`;
+- climatologías diarias, semanales, mensuales, estacionales, anuales y personalizadas;
+- climatologías con media, mediana, media recortada y cuantiles;
+- climatologías con ponderación por observación o por año;
+- climatologías suavizadas;
+- anomalías absolutas, relativas, porcentuales, estandarizadas, robustas y percentiles;
+- señal-ruido;
+- anomalías acumuladas;
+- diferencias, tasas de cambio y pendientes por celda;
+- resúmenes móviles;
+- visualización horizontal, temporal, vertical, distancia–profundidad y Hovmöller;
+- visualización de valores absolutos, climatologías, anomalías, pendientes, cobertura e incertidumbre;
+- animación temporal o vertical;
+- exportación a GIF cuando el usuario la solicite;
+- asignación de valores a estaciones, lances, eventos y posiciones;
+- coincidencia por celda, vecino más cercano o interpolación explícita;
+- resúmenes ponderados por área, espesor y volumen;
+- alineación, regrillado y combinación controlada de cubos;
+- exportación de cubos, tablas, metadatos, figuras y animaciones;
+- diagnósticos de cobertura, valores faltantes y calidad;
+- registro completo de procedencia.
+
+## 4.2 Fuera del núcleo
+
+El paquete no será un marco general de modelación, inferencia o evaluación pesquera. No incluirá como responsabilidades centrales:
+
+- modelos de evaluación de stock;
+- modelos de distribución de especies;
+- modelos de comunidades;
+- detección o clasificación de regímenes ecológicos;
+- reglas de decisión;
+- entrenamiento de modelos de machine learning;
+- análisis específicos de manuscritos;
+- clasificaciones ecológicas impuestas por el paquete;
+- índices biológicos o pesqueros predeterminados;
+- inferencia causal;
+- pruebas múltiples especializadas;
+- detección automática de estructuras oceanográficas como producto final.
+
+El paquete podrá preparar cubos, tablas, gradientes y covariables para análisis posteriores, pero no impondrá la interpretación científica final.
+
+# 5. Tipos de datos oceanográficos
+
+## 5.1 Soporte obligatorio en `0.2.0`
+
+### Grilla rectilínea regular
+
+```text
+longitude: vector 1D regular
+latitude : vector 1D regular
+depth    : vector 1D
+time     : vector 1D
+```
+
+### Grilla rectilínea irregular
+
+Los ejes siguen siendo 1D, pero el espaciamiento puede variar.
+
+### Producto superficial
+
+El eje `depth` tendrá longitud uno y podrá representarse mediante `NA` o una profundidad nominal documentada.
+
+### Cubo tridimensional o cuatridimensional en el espacio-tiempo
+
+Campos superficiales o con múltiples niveles verticales.
+
+### Datos diarios y agregados
+
+Productos diarios, semanales, mensuales, estacionales y anuales.
+
+## 5.2 Soporte experimental
+
+### Grilla curvilínea
+
+Longitud y latitud como matrices 2D auxiliares.
+
+Debe incorporarse mediante un componente `grid` y no forzarse dentro del contrato 1D existente.
+
+### Datos satelitales tipo swath
+
+El soporte inicial será lectura, inspección, filtrado por calidad y conversión explícita a una grilla objetivo.
+
+No se tratará un swath L2 como si fuera una grilla L3.
+
+### Mallas no estructuradas
+
+Se considerarán en una versión posterior mediante un contrato compatible con UGRID.
+
+## 5.3 No confundir nivel de procesamiento con formato
+
+El paquete deberá registrar por separado:
+
+```text
+processing_level
+data_format
+grid_type
+temporal_resolution
+spatial_resolution
+source_platform
+sensor
+product_version
+```
+
+Un producto NetCDF puede ser satelital L2, L3, L4, modelo, reanálisis o dato in situ.
+
+# 6. Sistema de objetos
+
+## 6.1 `ocean_cube`
+
+Componentes principales:
+
+```text
+lon
+lat
+depth
+time
+vars
+units
+data o storage
+grid
+source
+dataset_id
+product_id
+product_version
+processing_level
+spatial_extent
+temporal_extent
+depth_extent
+metadata
+quality
+uncertainty
+provenance
+qa
+```
+
+Clase:
+
+```r
+c("ocean_cube", "list")
+```
+
+Backends previstos:
+
+```text
+memory
+netcdf
+opendap
+zarr
+```
+
+## 6.2 `ocean_grid`
+
+Nuevo componente para describir:
+
+```text
+grid_type
+crs
+grid_mapping
+x_bounds
+y_bounds
+lon_bounds
+lat_bounds
+depth_bounds
+cell_area
+cell_volume
+curvilinear_lon
+curvilinear_lat
+```
+
+## 6.3 `ocean_clim`
+
+Debe contener:
+
+```text
+scale
+period
+grouping
+method
+weighting
+smoothing
+mean
+median
+sd
+mad
+n
+n_years
+se
+quantiles
+coverage
+units
+metadata
+provenance
+```
+
+## 6.4 `ocean_anom`
+
+Subclase de `ocean_cube` con:
+
+```text
+method
+formula
+reference_scale
+reference_period
+reference_method
+reference_object
+```
+
+## 6.5 `ocean_match`
+
+Tabla de asignación a observaciones externas con:
+
+```text
+requested coordinates
+matched coordinates
+indices
+inside_domain
+inside_cell
+horizontal_distance
+vertical_distance
+temporal_distance
+method
+weights
+value
+unit
+variable
+quality
+uncertainty
+```
+
+## 6.6 `ocean_animation`
+
+Objeto que conserva:
+
+```text
+plot specification
+frame variable
+frame values
+fps
+duration
+dimensions
+renderer
+output format
+provenance
+```
+
+# 7. Descubrimiento, descarga y conexión
+
+## 7.1 API propuesta
+
+```r
+source_search()
+source_info()
+source_variables()
+download_copernicus()
+download_erddap()
+download_url()
+read_opendap()
+read_thredds()
+read_stac()
+cube_ingest()
+```
+
+## 7.2 Descubrimiento
+
+`source_search()` deberá buscar productos por:
+
+```text
+source
+variable
+standard_name
+keyword
+bounding box
+date range
+depth range
+processing level
+temporal resolution
+spatial resolution
+platform
+sensor
+```
+
+La salida será una tabla de candidatos; el paquete no seleccionará silenciosamente un producto.
+
+## 7.3 `cube_ingest()`
+
+Interfaz de alto nivel:
+
+```r
+cube_ingest(
+  source = c(
+    "copernicus",
+    "erddap",
+    "opendap",
+    "thredds",
+    "stac",
+    "url",
+    "local"
+  ),
+  dataset_id = NULL,
+  url = NULL,
+  file = NULL,
+  vars = NULL,
+  lon = NULL,
+  lat = NULL,
+  depth = NULL,
+  time = NULL,
+  outdir = ".",
+  backend = c("memory", "netcdf", "opendap", "zarr"),
+  dry_run = FALSE
+)
+```
+
+## 7.4 Comportamiento obligatorio
+
+- `dry_run` para solicitudes remotas;
+- estimación de tamaño;
+- verificación de variables y cobertura antes de descargar;
+- nombre de archivo reproducible;
+- checksum opcional;
+- reanudación cuando sea posible;
+- control de sobrescritura;
+- registro de URL, dataset, versión y consulta;
+- credenciales fuera del repositorio;
+- manejo de errores de red;
+- posibilidad de reutilizar archivos existentes.
+
+# 8. Lectura, estandarización y metadatos CF
+
+## 8.1 API
+
+```r
+read_nc()
+read_opendap()
+read_zarr()
+ocean_cube()
+cube_standardize()
+cube_units()
+cube_calendar()
+cube_lon_convention()
+cube_depth_positive()
+cube_cf_metadata()
+```
+
+## 8.2 Metadatos que deben conservarse
+
+```text
+standard_name
+long_name
+units
+calendar
+axis
+positive
+bounds
+climatology
+cell_methods
+cell_measures
+grid_mapping
+coordinates
+ancillary_variables
+flag_values
+flag_masks
+flag_meanings
+valid_min
+valid_max
+valid_range
+_FillValue
+missing_value
+scale_factor
+add_offset
+source attributes
+global attributes
+```
+
+## 8.3 Coordenadas verticales
+
+El paquete distinguirá:
+
+- profundidad métrica;
+- altura;
+- presión;
+- niveles nominales;
+- sigma;
+- s-coordinate;
+- coordenadas híbridas.
+
+No convertirá una coordenada paramétrica en profundidad métrica sin las variables y fórmulas necesarias.
+
+# 9. Validación, inspección, calidad e incertidumbre
+
+## 9.1 API
+
+```r
+cube_validate()
+cube_inspect()
+cube_inventory()
+cube_coverage()
+cube_missing()
+cube_quality()
+cube_uncertainty()
+cube_qc_filter()
+```
+
+## 9.2 `cube_validate()`
+
+Debe devolver una tabla estructurada:
+
+```text
+check
+status
+severity
+component
+message
+repairable
+suggested_action
+```
+
+## 9.3 Comprobaciones
+
+- clase y componentes;
+- orden y tamaño de ejes;
+- coordenadas finitas;
+- convención longitudinal;
+- límites latitudinales;
+- tiempo y calendario;
+- profundidad y dirección positiva;
+- variables únicas;
+- unidades y nombres;
+- bounds;
+- forma lógica y física;
+- backend;
+- archivo remoto o local;
+- metadatos CF;
+- banderas de calidad;
+- incertidumbre;
+- cobertura;
+- duplicados;
+- resolución temporal;
+- memoria estimada.
+
+## 9.4 Calidad
+
+`cube_qc_filter()` permitirá:
+
+```r
+cube_qc_filter(
+  x,
+  variable,
+  quality_variable = NULL,
+  accept = NULL,
+  reject = NULL,
+  action = c("mask", "flag", "drop")
+)
+```
+
+La función nunca asumirá que un valor numérico específico significa “bueno” sin leer o recibir `flag_meanings`.
+
+# 10. Selección, extracción y alineación
+
+## 10.1 API principal
+
+```r
+cube_crop()
+cube_slice()
+cube_extract()
+cube_transect()
+cube_collect()
+```
+
+## 10.2 Alineación de múltiples productos
+
+```r
+cube_align()
+cube_regrid()
+cube_resample()
+cube_stack()
+cube_merge()
+```
+
+## 10.3 Reglas
+
+- `cube_crop()`: rangos continuos;
+- `cube_slice()`: posiciones discretas y devuelve cubo;
+- `cube_extract()`: devuelve tabla;
+- `cube_transect()`: conserva pares ordenados;
+- `cube_align()`: verifica compatibilidad;
+- `cube_regrid()`: cambia grilla de forma explícita;
+- `cube_resample()`: cambia resolución temporal o espacial;
+- `cube_stack()`: combina variables compatibles;
+- `cube_merge()`: combina períodos o fuentes con reglas explícitas.
+
+## 10.4 Métodos de regrillado
+
+```text
+nearest
+bilinear
+conservative
+area_weighted
+```
+
+El método conservativo requerirá límites de celda o una geometría equivalente.
+
+# 11. Agregación temporal
+
+## 11.1 API
+
+```r
+to_day()
+to_week()
+to_month()
+to_season()
+to_year()
+cube_roll()
+```
+
+## 11.2 Alcance temporal
+
+La versión `0.2.0` no agregará a escalas inferiores a un día.
+
+## 11.3 Métodos semanales
+
+```r
+week_method = c(
+  "iso",
+  "fixed_7day",
+  "centered_7day"
+)
+```
+
+## 11.4 Argumentos comunes
+
+```r
+fun = mean
+min_n = 1L
+min_coverage = 0
+na_rm = TRUE
+weighting = NULL
+```
+
+## 11.5 Metadatos de agregación
+
+Toda salida registrará:
+
+```text
+original_resolution
+target_resolution
+group definition
+aggregation function
+minimum observations
+minimum coverage
+cell_methods
+time bounds
+```
+
+# 12. Climatologías
+
+## 12.1 API
+
+```r
+clim_day()
+clim_week()
+clim_month()
+clim_season()
+clim_year()
+clim_custom()
+```
+
+## 12.2 Métodos centrales
+
+```r
+method = c(
+  "mean",
+  "median",
+  "trimmed_mean",
+  "quantile"
+)
+```
+
+## 12.3 Ponderación
+
+```r
+weighting = c(
+  "equal_observation",
+  "equal_year"
+)
+```
+
+### Observaciones con igual peso
+
+Todos los datos válidos contribuyen directamente.
+
+### Años con igual peso
+
+Primero se resume cada año-grupo y luego se combinan los años.
+
+## 12.4 Climatología mensual
+
+Debe aceptar:
+
+- cubos diarios;
+- cubos semanales;
+- cubos mensuales.
+
+El método y la ponderación quedarán explícitos.
+
+## 12.5 Climatología semanal
+
+Debe registrar:
+
+- definición de semana;
+- presencia de semana 53;
+- año asociado;
+- número de años válidos.
+
+## 12.6 Climatología diaria
+
+```r
+leap = c(
+  "feb28",
+  "drop",
+  "keep"
+)
+```
+
+Suavizado:
+
+```r
+smooth = c(
+  "none",
+  "moving",
+  "harmonic",
+  "cyclic_spline"
+)
+```
+
+## 12.7 Estadísticos climatológicos
+
+```text
+mean
+median
+trimmed mean
+sd
+mad
+n
+n_years
+se
+minimum
+maximum
+quantiles
+coverage
+```
+
+# 13. Anomalías
+
+## 13.1 API
+
+```r
+anom_diff()
+anom_percent()
+anom_ratio()
+anom_z()
+anom_robust()
+anom_percentile()
+signal_noise()
+anom_cumsum()
+anom_class()
+```
+
+## 13.2 Definiciones
+
+### Absoluta
+
+```text
+x - climatology
+```
+
+### Porcentual
+
+```text
+100 × (x - climatology) / climatology
+```
+
+### Razón
+
+```text
+x / climatology
+```
+
+### Estandarizada
+
+```text
+(x - mean_clim) / sd_clim
+```
+
+### Estandarizada robusta
+
+```text
+(x - median_clim) / MAD_clim
+```
+
+### Percentil
+
+Posición empírica respecto de la distribución climatológica correspondiente.
+
+### Señal-ruido
+
+```text
+abs(x - climatology) / sd_clim
+```
+
+### Acumulada
+
+```text
+cumsum(anomaly)
+```
+
+## 13.3 Reglas
+
+- proteger denominadores cero;
+- conservar unidades solo cuando corresponda;
+- registrar período y método climatológico;
+- no asignar etiquetas ecológicas por defecto;
+- permitir clasificación mediante umbrales definidos por el usuario.
+
+# 14. Cambio temporal, gradientes y pendientes
+
+## 14.1 API
+
+```r
+cube_diff()
+cube_rate()
+cube_slope()
+cube_rolling_slope()
+cube_detrend()
+cube_gradient()
+cube_vertical_gradient()
+```
+
+## 14.2 Alcance
+
+Estas funciones describen transformación o cambio del campo. No realizarán detección de regímenes ni interpretación ecológica.
+
+## 14.3 Pendiente
+
+```r
+cube_slope(
+  x,
+  period = NULL,
+  method = c("lm", "theil_sen"),
+  time_unit = c("day", "week", "month", "year"),
+  min_n = 3L,
+  return = c("slope", "full")
+)
+```
+
+## 14.4 Diferencia y tasa
+
+```text
+difference = x[t] - x[t-1]
+rate       = difference / elapsed_time
+```
+
+## 14.5 Gradientes
+
+Se admitirán gradientes genéricos horizontales y verticales, sin detectar automáticamente frentes, estructuras o categorías.
+
+# 15. Resúmenes espaciales, verticales y ponderados
+
+## 15.1 API
+
+```r
+cube_cell_area()
+cube_layer_thickness()
+cube_cell_volume()
+cube_polygon_weights()
+cube_area_mean()
+cube_volume_mean()
+cube_vertical_integral()
+cube_vertical_mean()
+cube_region_summary()
+```
+
+## 15.2 Estadísticos generales
+
+```r
+cube_mean()
+cube_median()
+cube_sd()
+cube_min()
+cube_max()
+cube_quantile()
+cube_count()
+cube_exceedance()
+```
+
+Toda reducción deberá indicar explícitamente las dimensiones eliminadas.
+
+# 16. Asignación de valores a observaciones externas
+
+## 16.1 API
+
+```r
+cube_locate()
+cube_assign()
+cube_join()
+```
+
+## 16.2 Métodos espaciales
+
+```text
+cell
+nearest_axis
+nearest_geodesic
+bilinear
+```
+
+## 16.3 Métodos verticales
+
+```text
+exact
+nearest
+linear
+```
+
+## 16.4 Métodos temporales
+
+```text
+exact
+nearest
+linear
+```
+
+## 16.5 Límites y tolerancias
+
+El usuario podrá definir:
+
+```text
+maximum horizontal distance
+maximum vertical distance
+maximum temporal distance
+outside-domain policy
+land/ocean policy
+```
+
+## 16.6 Diagnóstico obligatorio
+
+La salida conservará:
+
+- posición solicitada;
+- posición seleccionada;
+- índices;
+- distancias;
+- celda contenedora;
+- dentro o fuera del dominio;
+- método;
+- pesos;
+- valores;
+- unidades;
+- calidad;
+- incertidumbre.
+
+# 17. Visualización estática
+
+Todas las funciones devolverán `ggplot`.
+
+## 17.1 API
+
+```r
+viz.map()
+viz.series()
+viz.profile()
+viz.section()
+viz.hovmoller()
+viz.climatology()
+viz.anomaly()
+viz.slope()
+viz.coverage()
+viz.quality()
+viz.uncertainty()
+viz.vector()
+viz.compare()
+viz.save()
+```
+
+## 17.2 `viz.map()`
+
+Debe admitir:
+
+- raster;
+- contornos;
+- costa;
+- polígonos;
+- puntos;
+- transectos;
+- flechas vectoriales;
+- facetas por tiempo, profundidad o variable;
+- límites comunes entre paneles;
+- escala divergente para anomalías;
+- escala secuencial para valores absolutos;
+- grilla regular o irregular;
+- títulos y unidades automáticos.
+
+## 17.3 `viz.series()`
+
+Debe admitir:
+
+- punto;
+- media regional;
+- media ponderada por área;
+- climatología;
+- anomalía;
+- bandas de variabilidad;
+- línea horizontal;
+- línea vertical;
+- múltiples eventos;
+- etiquetas;
+- facetas.
+
+## 17.4 `viz.profile()`
+
+Debe admitir:
+
+- profundidad invertida;
+- múltiples tiempos;
+- múltiples posiciones;
+- climatología;
+- anomalía;
+- incertidumbre;
+- líneas horizontales y verticales.
+
+## 17.5 `viz.section()`
+
+Debe admitir:
+
+- distancia–profundidad;
+- longitud–profundidad;
+- latitud–profundidad;
+- contornos;
+- estaciones;
+- líneas verticales;
+- líneas de profundidad;
+- fondo marino cuando exista;
+- valores absolutos y anomalías.
+
+## 17.6 `viz.hovmoller()`
+
+Combinaciones:
+
+```text
+longitude × time
+latitude × time
+depth × time
+distance × time
+```
+
+## 17.7 `viz.vector()`
+
+Para corrientes y viento:
+
+- componentes `u` y `v`;
+- flechas;
+- velocidad;
+- dirección;
+- submuestreo visual;
+- escala vectorial.
+
+# 18. Animaciones y GIF
+
+## 18.1 API
+
+```r
+viz.animate()
+viz.animate_map()
+viz.animate_profile()
+viz.animate_section()
+viz.animate_hovmoller()
+viz.save_gif()
+```
+
+## 18.2 Reglas
+
+- la animación se genera solo cuando el usuario la solicita;
+- el objeto animado debe poder imprimirse antes de guardarse;
+- el usuario controla tiempo, profundidad o variable como eje de animación;
+- la escala visual podrá fijarse globalmente para evitar cambios engañosos;
+- cada frame mostrará fecha, profundidad o categoría;
+- los GIF conservarán dimensiones, resolución, fps y duración en procedencia;
+- no se interpolarán frames científicos salvo que el usuario solicite una transición visual;
+- se distinguirá transición visual de interpolación de datos.
+
+## 18.3 Ejemplo conceptual
+
+```r
+anim <- viz.animate_map(
+  x,
+  variable = "thetao",
+  depth = 0,
+  time = as.Date(c("2020-01-01", "2020-01-31")),
+  limits = "global"
+)
+
+viz.save_gif(
+  anim,
+  filename = "thetao-daily.gif",
+  fps = 5,
+  width = 1000,
+  height = 700
+)
+```
+
+# 19. Exportación
+
+## 19.1 API
+
+```r
+write_nc()
+write_zarr()
+write_rds()
+write_table()
+write_metadata()
+write_stac()
+viz.save()
+viz.save_gif()
+```
+
+## 19.2 NetCDF
+
+`write_nc()` preservará:
+
+- dimensiones;
+- coordenadas;
+- bounds;
+- calendarios;
+- unidades;
+- `standard_name`;
+- `cell_methods`;
+- `cell_measures`;
+- calidad;
+- incertidumbre;
+- compresión;
+- chunking;
+- procedencia.
+
+## 19.3 Tablas
+
+Formatos:
+
+```text
+csv
+parquet
+feather
+rds
+```
+
+## 19.4 Catálogo
+
+`write_stac()` podrá crear metadatos de activos exportados sin convertir a `oceancube` toda la lógica de un catálogo remoto.
+
+# 20. Funciones públicas propuestas para `0.2.0`
+
+## 20.1 Núcleo obligatorio
+
+### Ingestión
+
+```text
+cm_setup
+cm_connect
+source_search
+source_info
+source_variables
+download_copernicus
+download_erddap
+download_url
+read_nc
+read_opendap
+cube_ingest
+```
+
+### Objeto y control
+
+```text
+ocean_cube
+cube_validate
+cube_inspect
+cube_inventory
+cube_coverage
+cube_missing
+cube_quality
+cube_uncertainty
+cube_qc_filter
+cube_collect
+```
+
+### Selección
+
+```text
+cube_crop
+cube_slice
+cube_extract
+cube_transect
+cube_align
+cube_stack
+cube_merge
+```
+
+### Agregación
+
+```text
+to_day
+to_week
+to_month
+to_season
+to_year
+cube_roll
+```
+
+### Climatología
+
+```text
+clim_day
+clim_week
+clim_month
+clim_season
+clim_year
+clim_custom
+```
+
+### Anomalía
+
+```text
+anom_diff
+anom_percent
+anom_ratio
+anom_z
+anom_robust
+anom_percentile
+signal_noise
+anom_cumsum
+anom_class
+```
+
+### Cambio
+
+```text
+cube_diff
+cube_rate
+cube_slope
+cube_rolling_slope
+cube_detrend
+```
+
+### Asignación
+
+```text
+cube_locate
+cube_assign
+cube_join
+```
+
+### Visualización
+
+```text
+viz.map
+viz.series
+viz.profile
+viz.section
+viz.hovmoller
+viz.climatology
+viz.anomaly
+viz.slope
+viz.coverage
+viz.quality
+viz.uncertainty
+viz.vector
+viz.compare
+viz.save
+viz.animate
+viz.animate_map
+viz.animate_profile
+viz.animate_section
+viz.animate_hovmoller
+viz.save_gif
+```
+
+### Exportación
+
+```text
+write_nc
+write_rds
+write_table
+write_metadata
+viz.save
+viz.save_gif
+```
+
+## 20.2 Extensiones planificadas
+
+```text
+read_zarr
+write_zarr
+read_thredds
+read_stac
+write_stac
+cube_regrid
+cube_resample
+cube_gradient
+cube_vertical_gradient
+curvilinear grids
+satellite swaths
+unstructured meshes
+```
+
+# 21. Estrategia de limpieza
+
+## 21.1 Regla principal
+
+No se eliminará nada antes de completar una auditoría reproducible.
+
+## 21.2 Clasificación obligatoria
+
+Cada archivo y función actual se marcará como:
+
+```text
+retain
+rename
+deprecate
+merge
+internalize
+relocate
+remove
+```
+
+## 21.3 Conservar
+
+Se conservarán los conceptos válidos de:
+
+```text
+ocean_cube
+read_nc
+cube_collect
+cube_crop
+cube_slice
+cube_extract
+cube_transect
+cube_mask
+cube_cell_area
+cube_layer_thickness
+cube_cell_volume
+cube_polygon_weights
+to_month
+clim_day
+clim_month
+anom_diff
+anom_z
+signal_noise
+layer_mean
+link_events
+cm_setup
+cm_connect
+```
+
+## 21.4 Renombrar o reemplazar
+
+| Actual | Propuesto | Transición |
+|---|---|---|
+| `download_nc()` | `download_copernicus()` | deprecación gradual |
+| `layer_mean()` | `cube_vertical_mean()` | alias temporal |
+| `link_events()` | `cube_join()` | alias temporal |
+
+## 21.5 Eliminar o mover
+
+Candidatos:
+
+- resultados generados;
+- NetCDF descargados;
+- RDS operativos;
+- logs;
+- HTML duplicado;
+- informes de desarrollo;
+- rutas locales absolutas;
+- credenciales;
+- entornos Python;
+- cachés;
+- artefactos;
+- scripts temporales;
+- ejemplos repetidos;
+- documentación duplicada.
+
+## 21.6 Documentación canónica
+
+```text
+roxygen2 → man/
+vignettes/ → flujos completos
+README.md → entrada mínima
+pkgdown → publicación
+docs/roadmap/ → decisiones y versiones futuras
+```
+
+No se mantendrá el mismo contenido manualmente en cuatro ubicaciones.
+
+# 22. Estructura propuesta
+
+```text
+oceancube/
+├── DESCRIPTION
+├── NAMESPACE
+├── LICENSE
+├── README.md
+├── NEWS.md
+├── _pkgdown.yml
+├── R/
+│   ├── cube-class.R
+│   ├── cube-grid.R
+│   ├── cube-validate.R
+│   ├── cube-inspect.R
+│   ├── cube-quality.R
+│   ├── source-catalog.R
+│   ├── io-copernicus.R
+│   ├── io-erddap.R
+│   ├── io-url.R
+│   ├── io-netcdf.R
+│   ├── io-opendap.R
+│   ├── cube-standardize.R
+│   ├── cube-select.R
+│   ├── cube-extract.R
+│   ├── cube-transect.R
+│   ├── cube-align.R
+│   ├── cube-match.R
+│   ├── cube-mask.R
+│   ├── cube-aggregate.R
+│   ├── cube-climatology.R
+│   ├── cube-anomaly.R
+│   ├── cube-change.R
+│   ├── cube-geometry.R
+│   ├── cube-summary.R
+│   ├── viz-map.R
+│   ├── viz-series.R
+│   ├── viz-profile.R
+│   ├── viz-section.R
+│   ├── viz-hovmoller.R
+│   ├── viz-climatology.R
+│   ├── viz-anomaly.R
+│   ├── viz-quality.R
+│   ├── viz-animation.R
+│   ├── export.R
+│   └── utils-internal.R
+├── tests/
+│   └── testthat/
+├── vignettes/
+│   ├── 01-discover-and-ingest.Rmd
+│   ├── 02-copernicus-workflow.Rmd
+│   ├── 03-erddap-opendap-workflow.Rmd
+│   ├── 04-inspect-select-extract.Rmd
+│   ├── 05-static-visualization.Rmd
+│   ├── 06-animation-gif.Rmd
+│   ├── 07-climatology-anomaly.Rmd
+│   └── 08-assign-values.Rmd
+├── inst/
+│   └── extdata/
+│       └── small-example.nc
+└── docs/
+    └── roadmap/
+        └── oceancube-v0.2.0-scope.Rmd
+```
+
+# 23. Fases de implementación
+
+## Fase 0 — Incorporar el plan
+
+- crear `dev-0.2.0`;
+- incorporar este Rmd;
+- no modificar código;
+- no eliminar archivos.
+
+## Fase 1 — Auditoría y limpieza controlada
+
+- inventario de archivos;
+- inventario de exports;
+- mapa de pruebas;
+- mapa de documentación;
+- clasificación retain/rename/deprecate/merge/internalize/relocate/remove;
+- propuesta de limpieza;
+- aprobación antes de borrar.
+
+## Fase 2 — Objeto, grilla y metadatos
+
+- ampliar `ocean_cube`;
+- crear `ocean_grid`;
+- conservar metadatos CF;
+- mejorar procedencia;
+- mantener compatibilidad con `0.1.0`.
+
+## Fase 3 — Validación pública
+
+Implementar:
+
+```text
+cube_validate
+cube_inspect
+cube_inventory
+cube_coverage
+cube_missing
+cube_quality
+cube_uncertainty
+```
+
+## Fase 4 — Ingestión multifuente
+
+Implementar:
+
+```text
+source_search
+source_info
+download_copernicus
+download_erddap
+download_url
+read_opendap
+cube_ingest
+```
+
+Casos reales mínimos:
+
+- Copernicus;
+- NOAA/ERDDAP;
+- URL NetCDF;
+- archivo local.
+
+## Fase 5 — Selección y asignación
+
+Completar:
+
+```text
+cube_crop
+cube_slice
+cube_extract
+cube_transect
+cube_locate
+cube_assign
+cube_join
+```
+
+## Fase 6 — Visualización estática
+
+Prioridad:
+
+```text
+viz.map
+viz.series
+viz.profile
+viz.section
+viz.hovmoller
+```
+
+## Fase 7 — Animaciones
+
+Implementar:
+
+```text
+viz.animate
+viz.animate_map
+viz.animate_profile
+viz.animate_section
+viz.animate_hovmoller
+viz.save_gif
+```
+
+## Fase 8 — Agregación y climatologías
+
+Implementar:
+
+```text
+to_day
+to_week
+to_month
+to_season
+to_year
+clim_day
+clim_week
+clim_month
+clim_season
+clim_year
+clim_custom
+```
+
+## Fase 9 — Anomalías y cambio
+
+Implementar:
+
+```text
+anom_diff
+anom_percent
+anom_ratio
+anom_z
+anom_robust
+anom_percentile
+signal_noise
+anom_cumsum
+cube_diff
+cube_rate
+cube_slope
+cube_rolling_slope
+```
+
+## Fase 10 — Alineación y ponderación
+
+Implementar:
+
+```text
+cube_align
+cube_stack
+cube_merge
+cube_area_mean
+cube_volume_mean
+cube_vertical_integral
+cube_region_summary
+```
+
+## Fase 11 — Exportación
+
+Implementar:
+
+```text
+write_nc
+write_rds
+write_table
+write_metadata
+viz.save
+viz.save_gif
+```
+
+## Fase 12 — Documentación y publicación
+
+- pruebas completas;
+- vignettes;
+- migración desde `0.1.0`;
+- pkgdown;
+- `R CMD check`;
+- release `v0.2.0`.
+
+# 24. Criterios de aceptación
+
+La versión `0.2.0` será aceptada cuando un usuario pueda ejecutar, sin funciones internas:
+
+```r
+library(oceancube)
+
+products <- source_search(
+  source = "copernicus",
+  variable = "sea_water_temperature",
+  lon = c(-82, -76),
+  lat = c(-15, -8)
+)
+
+x <- cube_ingest(
+  source = "copernicus",
+  dataset_id = products$dataset_id[1],
+  vars = "thetao",
+  lon = c(-82, -76),
+  lat = c(-15, -8),
+  depth = c(0, 50),
+  time = as.Date(c("1993-01-01", "2020-12-31"))
+)
+
+cube_validate(x)
+cube_inspect(x)
+
+p <- viz.map(
+  x,
+  variable = "thetao",
+  time = as.Date("2020-01-03"),
+  depth = 0
+)
+
+viz.save(
+  p,
+  "thetao-map.png"
+)
+
+gif <- viz.animate_map(
+  x,
+  variable = "thetao",
+  depth = 0,
+  time = as.Date(c("2020-01-01", "2020-01-31"))
+)
+
+viz.save_gif(
+  gif,
+  "thetao-daily.gif"
+)
+
+x_month <- to_month(x)
+
+clim_monthly <- clim_month(
+  x_month,
+  weighting = "equal_year"
+)
+
+clim_daily <- clim_day(
+  x,
+  period = as.Date(c("1993-01-01", "2020-12-31")),
+  leap = "feb28",
+  smooth = "moving",
+  window = 31
+)
+
+anom <- anom_diff(
+  x,
+  clim_daily
+)
+
+slope <- cube_slope(
+  anom,
+  time_unit = "year"
+)
+
+matched <- cube_join(
+  anom,
+  data = fishing_sets,
+  vars = "thetao",
+  lon_col = "longitude",
+  lat_col = "latitude",
+  time_col = "date",
+  spatial = "cell",
+  temporal = "nearest",
+  keep_match = TRUE
+)
+
+write_table(
+  matched,
+  "matched-anomalies.csv"
+)
+```
+
+El flujo deberá:
+
+- funcionar después de reiniciar R;
+- conservar unidades y metadatos;
+- documentar la fuente;
+- distinguir solicitud y celda seleccionada;
+- evitar interpolación implícita;
+- devolver figuras `ggplot`;
+- producir GIF cuando se solicite;
+- registrar método climatológico;
+- registrar método de anomalía;
+- registrar pendiente y unidad temporal;
+- operar sobre datos Copernicus y NOAA con el mismo contrato posterior;
+- producir errores comprensibles;
+- pasar `R CMD check`.
+
+# 25. Decisión
+
+El objetivo será:
+
+```text
+oceancube 0.2.0
+```
+
+La versión tendrá:
+
+- API pública orientada al usuario;
+- ingestión multifuente;
+- metadatos CF;
+- soporte de calidad e incertidumbre;
+- validación pública;
+- selección y asignación explícitas;
+- visualización estática completa;
+- animación y GIF;
+- agregación diaria a anual;
+- climatologías múltiples;
+- anomalías ampliadas;
+- diferencias, tasas y pendientes;
+- alineación de cubos;
+- resúmenes ponderados;
+- exportación reproducible;
+- repositorio limpio y documentado.
