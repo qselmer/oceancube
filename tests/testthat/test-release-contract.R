@@ -43,7 +43,9 @@ test_that("the public API surface includes the approved 0.2 additions", {
                 "time_name", "source", "dataset_id"),
     signal_noise = c("x", "clim", "signed"),
     stock_mask = c("x", "stock", "lat", "dc", "depth"),
-    to_month = c("x", "fun")
+    to_month = c("x", "fun"),
+    viz.map = c("x", "variable", "time", "depth", "limits", "na.rm",
+                "coastline", "title", "subtitle", "caption")
   )
 
   exports <- getNamespaceExports("oceancube")
