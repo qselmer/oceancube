@@ -24,13 +24,13 @@ Depends:
     R (>= 4.2.0)
 Imports:
     cli,
+    ggplot2,
     ncdf4,
     rlang,
     reticulate,
     stats,
     utils
 Suggests:
-    ggplot2,
     knitr,
     rmarkdown,
     sf,
