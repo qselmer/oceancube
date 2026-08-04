@@ -2,9 +2,10 @@ test_that("only the four approved geometry primitives extend the API", {
   exports_before <- c(
     "annual_index", "anom_diff", "anom_z", "clim_day", "clim_month",
     "cm_connect", "cm_setup", "coast_dist", "crop_stock", "cube_collect",
-    "cube_crop", "cube_extract", "cube_mask", "cube_slice",
+    "cube_crop", "cube_extract", "cube_inspect", "cube_mask", "cube_slice",
     "cube_transect", "download_nc", "layer_mean", "link_events",
-    "ocean_cube", "read_nc", "signal_noise", "stock_mask", "to_month"
+    "cube_validate", "ocean_cube", "read_nc", "signal_noise", "stock_mask",
+    "to_month"
   )
   approved <- c(
     "cube_cell_area",

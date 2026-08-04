@@ -1,4 +1,4 @@
-test_that("the 0.1 public API surface and signatures stay frozen", {
+test_that("the public API surface includes the approved 0.2 additions", {
   expected <- list(
     annual_index = c("x", "threshold_pos", "threshold_neg"),
     anom_diff = c("x", "clim"),
@@ -17,6 +17,7 @@ test_that("the 0.1 public API surface and signatures stay frozen", {
     cube_extract = c("x", "longitude", "latitude", "depth", "time",
                      "variable", "by", "match", "tolerance", "mode",
                      "format", "keep_index", "keep_distance"),
+    cube_inspect = c("x", "missing"),
     cube_layer_thickness = c("x", "depth_bounds", "unit"),
     cube_mask = c("x", "polygons", "crs", "keep", "boundary"),
     cube_polygon_weights = c("x", "polygons", "id_col", "crs",
@@ -26,6 +27,7 @@ test_that("the 0.1 public API surface and signatures stay frozen", {
     cube_transect = c("x", "path", "lon_col", "lat_col", "id_col",
                       "depth", "time", "variable", "by", "match",
                       "tolerance", "mode", "format", "keep_index"),
+    cube_validate = c("x", "strict"),
     download_nc = c("dataset_id", "vars", "lon", "lat", "time", "depth",
                     "outdir", "fmt", "overwrite", "skip_existing",
                     "dry_run", "filename", "verbose"),
