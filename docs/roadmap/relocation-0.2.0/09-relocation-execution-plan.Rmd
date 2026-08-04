@@ -1,0 +1,310 @@
+---
+title: "oceancube 0.2.0 reversible artifact relocation execution plan"
+output: html_document
+---
+
+# Execution boundary
+
+This plan was prepared from clean commit e5a4796ebca8301acef9afaa31bd40e7c8e0b805. It authorizes no move, copy, archive or deletion. Every future batch begins from a clean tree and is independently approved, tested and reversible.
+
+## B00-no-action-operational
+
+- Objective: Keep ignored, untracked operational data in place and outside Git.
+- Prerequisites: clean dev-0.2.0 tree; exact current path inventory; current checksums; human approval; protected refs unchanged.
+- Destinations: .RData; artifacts/h24-final/cache/R/pkgdown/http/918fb91ebd579178c7691d8e95bbddae.rds; artifacts/h24-final/library/oceancube/help/aliases.rds; artifacts/h24-final/library/oceancube/help/paths.rds; artifacts/h24-final/library/oceancube/Meta/features.rds; artifacts/h24-final/library/oceancube/Meta/hsearch.rds; artifacts/h24-final/library/oceancube/Meta/links.rds; artifacts/h24-final/library/oceancube/Meta/nsInfo.rds; artifacts/h24-final/library/oceancube/Meta/package.rds; artifacts/h24-final/library/oceancube/Meta/Rd.rds; artifacts/h24-final/library/oceancube/Meta/vignette.rds; artifacts/h24-final/oceancube.Rcheck/00_pkg_src/oceancube/build/vignette.rds; artifacts/h24-final/oceancube.Rcheck/oceancube/help/aliases.rds; artifacts/h24-final/oceancube.Rcheck/oceancube/help/paths.rds; artifacts/h24-final/oceancube.Rcheck/oceancube/Meta/features.rds; artifacts/h24-final/oceancube.Rcheck/oceancube/Meta/hsearch.rds; artifacts/h24-final/oceancube.Rcheck/oceancube/Meta/links.rds; artifacts/h24-final/oceancube.Rcheck/oceancube/Meta/nsInfo.rds; artifacts/h24-final/oceancube.Rcheck/oceancube/Meta/package.rds; artifacts/h24-final/oceancube.Rcheck/oceancube/Meta/Rd.rds; artifacts/h24-final/oceancube.Rcheck/oceancube/Meta/vignette.rds; artifacts/h24-final/source/auxdata/layer_sp.Rdata; artifacts/h24-final/source/auxdata/PER_ADM0.RData; artifacts/h24-preversion/library/oceancube/help/aliases.rds; artifacts/h24-preversion/library/oceancube/help/paths.rds; artifacts/h24-preversion/library/oceancube/Meta/features.rds; artifacts/h24-preversion/library/oceancube/Meta/hsearch.rds; artifacts/h24-preversion/library/oceancube/Meta/links.rds; artifacts/h24-preversion/library/oceancube/Meta/nsInfo.rds; artifacts/h24-preversion/library/oceancube/Meta/package.rds; artifacts/h24-preversion/library/oceancube/Meta/Rd.rds; artifacts/h24-preversion/library/oceancube/Meta/vignette.rds; artifacts/h24-preversion/oceancube.Rcheck/00_pkg_src/oceancube/build/vignette.rds; artifacts/h24-preversion/oceancube.Rcheck/oceancube/help/aliases.rds; artifacts/h24-preversion/oceancube.Rcheck/oceancube/help/paths.rds; artifacts/h24-preversion/oceancube.Rcheck/oceancube/Meta/features.rds; artifacts/h24-preversion/oceancube.Rcheck/oceancube/Meta/hsearch.rds; artifacts/h24-preversion/oceancube.Rcheck/oceancube/Meta/links.rds; artifacts/h24-preversion/oceancube.Rcheck/oceancube/Meta/nsInfo.rds; artifacts/h24-preversion/oceancube.Rcheck/oceancube/Meta/package.rds; artifacts/h24-preversion/oceancube.Rcheck/oceancube/Meta/Rd.rds; artifacts/h24-preversion/oceancube.Rcheck/oceancube/Meta/vignette.rds; artifacts/h24-preversion/source/auxdata/layer_sp.Rdata; artifacts/h24-preversion/source/auxdata/PER_ADM0.RData; artifacts/h24-release-force/oceancube.Rcheck/00_pkg_src/oceancube/build/vignette.rds; artifacts/h24-release-force/oceancube.Rcheck/oceancube/help/aliases.rds; artifacts/h24-release-force/oceancube.Rcheck/oceancube/help/paths.rds; artifacts/h24-release-force/oceancube.Rcheck/oceancube/Meta/features.rds; artifacts/h24-release-force/oceancube.Rcheck/oceancube/Meta/hsearch.rds; artifacts/h24-release-force/oceancube.Rcheck/oceancube/Meta/links.rds; artifacts/h24-release-force/oceancube.Rcheck/oceancube/Meta/nsInfo.rds; artifacts/h24-release-force/oceancube.Rcheck/oceancube/Meta/package.rds; artifacts/h24-release-force/oceancube.Rcheck/oceancube/Meta/Rd.rds; artifacts/h24-release-force/oceancube.Rcheck/oceancube/Meta/vignette.rds; artifacts/h24-release/library/oceancube/help/aliases.rds; artifacts/h24-release/library/oceancube/help/paths.rds; artifacts/h24-release/library/oceancube/Meta/features.rds; artifacts/h24-release/library/oceancube/Meta/hsearch.rds; artifacts/h24-release/library/oceancube/Meta/links.rds; artifacts/h24-release/library/oceancube/Meta/nsInfo.rds; artifacts/h24-release/library/oceancube/Meta/package.rds; artifacts/h24-release/library/oceancube/Meta/Rd.rds; artifacts/h24-release/library/oceancube/Meta/vignette.rds; artifacts/h24-release/oceancube.Rcheck/00_pkg_src/oceancube/build/vignette.rds; artifacts/h24-release/oceancube.Rcheck/oceancube/help/aliases.rds; artifacts/h24-release/oceancube.Rcheck/oceancube/help/paths.rds; artifacts/h24-release/oceancube.Rcheck/oceancube/Meta/features.rds; artifacts/h24-release/oceancube.Rcheck/oceancube/Meta/hsearch.rds; artifacts/h24-release/oceancube.Rcheck/oceancube/Meta/links.rds; artifacts/h24-release/oceancube.Rcheck/oceancube/Meta/nsInfo.rds; artifacts/h24-release/oceancube.Rcheck/oceancube/Meta/package.rds; artifacts/h24-release/oceancube.Rcheck/oceancube/Meta/Rd.rds; artifacts/h24-release/oceancube.Rcheck/oceancube/Meta/vignette.rds; artifacts/h24-release/source/auxdata/layer_sp.Rdata; artifacts/h24-release/source/auxdata/PER_ADM0.RData; artifacts/h26-consolidation/dev-check/oceancube.Rcheck/00_pkg_src/oceancube/build/vignette.rds; artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/help/aliases.rds; artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/help/paths.rds; artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/Meta/features.rds; artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/Meta/hsearch.rds; artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/Meta/links.rds; artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/Meta/nsInfo.rds; artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/Meta/package.rds; artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/Meta/Rd.rds; artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/Meta/vignette.rds; artifacts/h26-consolidation/handbook-library/oceancube/help/aliases.rds; artifacts/h26-consolidation/handbook-library/oceancube/help/paths.rds; artifacts/h26-consolidation/handbook-library/oceancube/Meta/features.rds; artifacts/h26-consolidation/handbook-library/oceancube/Meta/hsearch.rds; artifacts/h26-consolidation/handbook-library/oceancube/Meta/links.rds; artifacts/h26-consolidation/handbook-library/oceancube/Meta/nsInfo.rds; artifacts/h26-consolidation/handbook-library/oceancube/Meta/package.rds; artifacts/h26-consolidation/handbook-library/oceancube/Meta/Rd.rds; artifacts/h26-consolidation/handbook-library/oceancube/Meta/vignette.rds; artifacts/h26-consolidation/main-check/oceancube.Rcheck/00_pkg_src/oceancube/build/vignette.rds; artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/help/aliases.rds; artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/help/paths.rds; artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/Meta/features.rds; artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/Meta/hsearch.rds; artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/Meta/links.rds; artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/Meta/nsInfo.rds; artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/Meta/package.rds; artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/Meta/Rd.rds; artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/Meta/vignette.rds; artifacts/maintainer-case/copernicus-peru-phy/cin/processed/copernicus-peru-phy-20200101-20200107.rds; artifacts/maintainer-case/copernicus-peru-phy/cin/raw/copernicus-peru-phy-20200101-20200107.nc; artifacts/maintainer-case/copernicus-peru-phy/cout/audit/audit-summary.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/audit/coordinate-summary.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/audit/cube-shape.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/audit/depth-coverage.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/audit/depth.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/audit/dimname-checks.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/audit/example-block.rds; artifacts/maintainer-case/copernicus-peru-phy/cout/audit/first-finite-cell.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/audit/latitude.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/audit/longitude.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/audit/memory-summary.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/audit/object-components.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/audit/time.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/audit/variable-summary.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/audit/variables.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/log/netcdf-dimensions.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/log/netcdf-variables.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/log/ocean-cube-summary.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/validation/validation-cases.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/validation/validation-functions.csv; artifacts/maintainer-case/copernicus-peru-phy/cout/validation/validation-summary.csv; artifacts/maintainer-map/stage-00/function-centrality.csv; artifacts/maintainer-map/stage-00/function-dependencies.csv; artifacts/maintainer-map/stage-00/function-source-map.csv; artifacts/maintainer-map/stage-00/internal-functions.csv; artifacts/maintainer-map/stage-00/package-summary.csv; artifacts/maintainer-map/stage-00/public-api.csv; artifacts/maintainer-map/stage-00/r-files.csv; artifacts/maintainer-map/stage-00/s3-methods.csv; artifacts/maintainer-map/stage-01/functions/ocean_cube/direct-callees.csv; artifacts/maintainer-map/stage-01/functions/ocean_cube/direct-callers.csv; artifacts/maintainer-map/stage-01/functions/ocean_cube/references.csv; artifacts/maintainer-map/stage-01/functions/ocean_cube/subgraph-edges.csv; artifacts/maintainer-map/stage-01/study-plan.csv
+- References requiring updates: none established; re-scan at execution time
+- Files authorized to modify: only exact paths listed below and explicitly enumerated reference files after separate approval.
+- Files prohibited: DESCRIPTION, NAMESPACE, R/, tests/, man/, vignettes/, inst/, handbook/, .gitignore and .Rbuildignore unless a later prompt names one explicitly.
+- Proposed Git commands: planning text only; do not execute in this phase.
+- none; this batch is not executable without a new approval
+- Pre-validation: git status, git ls-files, git check-ignore, Rbuildignore evaluation, SHA-256, exact/basename reference search.
+- Required tests: none; no repository change
+- Acceptance: only approved paths change; checksums/provenance preserved; required content remains available; tests pass; clean final tree.
+- Rollback: not applicable; file remains in place
+- Proposed commit message: none: no repository action
+
+### Exact file list
+
+- .RData
+- artifacts/h24-final/cache/R/pkgdown/http/918fb91ebd579178c7691d8e95bbddae.rds
+- artifacts/h24-final/library/oceancube/help/aliases.rds
+- artifacts/h24-final/library/oceancube/help/paths.rds
+- artifacts/h24-final/library/oceancube/Meta/features.rds
+- artifacts/h24-final/library/oceancube/Meta/hsearch.rds
+- artifacts/h24-final/library/oceancube/Meta/links.rds
+- artifacts/h24-final/library/oceancube/Meta/nsInfo.rds
+- artifacts/h24-final/library/oceancube/Meta/package.rds
+- artifacts/h24-final/library/oceancube/Meta/Rd.rds
+- artifacts/h24-final/library/oceancube/Meta/vignette.rds
+- artifacts/h24-final/oceancube.Rcheck/00_pkg_src/oceancube/build/vignette.rds
+- artifacts/h24-final/oceancube.Rcheck/oceancube/help/aliases.rds
+- artifacts/h24-final/oceancube.Rcheck/oceancube/help/paths.rds
+- artifacts/h24-final/oceancube.Rcheck/oceancube/Meta/features.rds
+- artifacts/h24-final/oceancube.Rcheck/oceancube/Meta/hsearch.rds
+- artifacts/h24-final/oceancube.Rcheck/oceancube/Meta/links.rds
+- artifacts/h24-final/oceancube.Rcheck/oceancube/Meta/nsInfo.rds
+- artifacts/h24-final/oceancube.Rcheck/oceancube/Meta/package.rds
+- artifacts/h24-final/oceancube.Rcheck/oceancube/Meta/Rd.rds
+- artifacts/h24-final/oceancube.Rcheck/oceancube/Meta/vignette.rds
+- artifacts/h24-final/source/auxdata/layer_sp.Rdata
+- artifacts/h24-final/source/auxdata/PER_ADM0.RData
+- artifacts/h24-preversion/library/oceancube/help/aliases.rds
+- artifacts/h24-preversion/library/oceancube/help/paths.rds
+- artifacts/h24-preversion/library/oceancube/Meta/features.rds
+- artifacts/h24-preversion/library/oceancube/Meta/hsearch.rds
+- artifacts/h24-preversion/library/oceancube/Meta/links.rds
+- artifacts/h24-preversion/library/oceancube/Meta/nsInfo.rds
+- artifacts/h24-preversion/library/oceancube/Meta/package.rds
+- artifacts/h24-preversion/library/oceancube/Meta/Rd.rds
+- artifacts/h24-preversion/library/oceancube/Meta/vignette.rds
+- artifacts/h24-preversion/oceancube.Rcheck/00_pkg_src/oceancube/build/vignette.rds
+- artifacts/h24-preversion/oceancube.Rcheck/oceancube/help/aliases.rds
+- artifacts/h24-preversion/oceancube.Rcheck/oceancube/help/paths.rds
+- artifacts/h24-preversion/oceancube.Rcheck/oceancube/Meta/features.rds
+- artifacts/h24-preversion/oceancube.Rcheck/oceancube/Meta/hsearch.rds
+- artifacts/h24-preversion/oceancube.Rcheck/oceancube/Meta/links.rds
+- artifacts/h24-preversion/oceancube.Rcheck/oceancube/Meta/nsInfo.rds
+- artifacts/h24-preversion/oceancube.Rcheck/oceancube/Meta/package.rds
+- artifacts/h24-preversion/oceancube.Rcheck/oceancube/Meta/Rd.rds
+- artifacts/h24-preversion/oceancube.Rcheck/oceancube/Meta/vignette.rds
+- artifacts/h24-preversion/source/auxdata/layer_sp.Rdata
+- artifacts/h24-preversion/source/auxdata/PER_ADM0.RData
+- artifacts/h24-release-force/oceancube.Rcheck/00_pkg_src/oceancube/build/vignette.rds
+- artifacts/h24-release-force/oceancube.Rcheck/oceancube/help/aliases.rds
+- artifacts/h24-release-force/oceancube.Rcheck/oceancube/help/paths.rds
+- artifacts/h24-release-force/oceancube.Rcheck/oceancube/Meta/features.rds
+- artifacts/h24-release-force/oceancube.Rcheck/oceancube/Meta/hsearch.rds
+- artifacts/h24-release-force/oceancube.Rcheck/oceancube/Meta/links.rds
+- artifacts/h24-release-force/oceancube.Rcheck/oceancube/Meta/nsInfo.rds
+- artifacts/h24-release-force/oceancube.Rcheck/oceancube/Meta/package.rds
+- artifacts/h24-release-force/oceancube.Rcheck/oceancube/Meta/Rd.rds
+- artifacts/h24-release-force/oceancube.Rcheck/oceancube/Meta/vignette.rds
+- artifacts/h24-release/library/oceancube/help/aliases.rds
+- artifacts/h24-release/library/oceancube/help/paths.rds
+- artifacts/h24-release/library/oceancube/Meta/features.rds
+- artifacts/h24-release/library/oceancube/Meta/hsearch.rds
+- artifacts/h24-release/library/oceancube/Meta/links.rds
+- artifacts/h24-release/library/oceancube/Meta/nsInfo.rds
+- artifacts/h24-release/library/oceancube/Meta/package.rds
+- artifacts/h24-release/library/oceancube/Meta/Rd.rds
+- artifacts/h24-release/library/oceancube/Meta/vignette.rds
+- artifacts/h24-release/oceancube.Rcheck/00_pkg_src/oceancube/build/vignette.rds
+- artifacts/h24-release/oceancube.Rcheck/oceancube/help/aliases.rds
+- artifacts/h24-release/oceancube.Rcheck/oceancube/help/paths.rds
+- artifacts/h24-release/oceancube.Rcheck/oceancube/Meta/features.rds
+- artifacts/h24-release/oceancube.Rcheck/oceancube/Meta/hsearch.rds
+- artifacts/h24-release/oceancube.Rcheck/oceancube/Meta/links.rds
+- artifacts/h24-release/oceancube.Rcheck/oceancube/Meta/nsInfo.rds
+- artifacts/h24-release/oceancube.Rcheck/oceancube/Meta/package.rds
+- artifacts/h24-release/oceancube.Rcheck/oceancube/Meta/Rd.rds
+- artifacts/h24-release/oceancube.Rcheck/oceancube/Meta/vignette.rds
+- artifacts/h24-release/source/auxdata/layer_sp.Rdata
+- artifacts/h24-release/source/auxdata/PER_ADM0.RData
+- artifacts/h26-consolidation/dev-check/oceancube.Rcheck/00_pkg_src/oceancube/build/vignette.rds
+- artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/help/aliases.rds
+- artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/help/paths.rds
+- artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/Meta/features.rds
+- artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/Meta/hsearch.rds
+- artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/Meta/links.rds
+- artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/Meta/nsInfo.rds
+- artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/Meta/package.rds
+- artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/Meta/Rd.rds
+- artifacts/h26-consolidation/dev-check/oceancube.Rcheck/oceancube/Meta/vignette.rds
+- artifacts/h26-consolidation/handbook-library/oceancube/help/aliases.rds
+- artifacts/h26-consolidation/handbook-library/oceancube/help/paths.rds
+- artifacts/h26-consolidation/handbook-library/oceancube/Meta/features.rds
+- artifacts/h26-consolidation/handbook-library/oceancube/Meta/hsearch.rds
+- artifacts/h26-consolidation/handbook-library/oceancube/Meta/links.rds
+- artifacts/h26-consolidation/handbook-library/oceancube/Meta/nsInfo.rds
+- artifacts/h26-consolidation/handbook-library/oceancube/Meta/package.rds
+- artifacts/h26-consolidation/handbook-library/oceancube/Meta/Rd.rds
+- artifacts/h26-consolidation/handbook-library/oceancube/Meta/vignette.rds
+- artifacts/h26-consolidation/main-check/oceancube.Rcheck/00_pkg_src/oceancube/build/vignette.rds
+- artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/help/aliases.rds
+- artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/help/paths.rds
+- artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/Meta/features.rds
+- artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/Meta/hsearch.rds
+- artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/Meta/links.rds
+- artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/Meta/nsInfo.rds
+- artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/Meta/package.rds
+- artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/Meta/Rd.rds
+- artifacts/h26-consolidation/main-check/oceancube.Rcheck/oceancube/Meta/vignette.rds
+- artifacts/maintainer-case/copernicus-peru-phy/cin/processed/copernicus-peru-phy-20200101-20200107.rds
+- artifacts/maintainer-case/copernicus-peru-phy/cin/raw/copernicus-peru-phy-20200101-20200107.nc
+- artifacts/maintainer-case/copernicus-peru-phy/cout/audit/audit-summary.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/audit/coordinate-summary.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/audit/cube-shape.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/audit/depth-coverage.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/audit/depth.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/audit/dimname-checks.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/audit/example-block.rds
+- artifacts/maintainer-case/copernicus-peru-phy/cout/audit/first-finite-cell.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/audit/latitude.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/audit/longitude.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/audit/memory-summary.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/audit/object-components.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/audit/time.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/audit/variable-summary.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/audit/variables.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/log/netcdf-dimensions.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/log/netcdf-variables.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/log/ocean-cube-summary.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/validation/validation-cases.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/validation/validation-functions.csv
+- artifacts/maintainer-case/copernicus-peru-phy/cout/validation/validation-summary.csv
+- artifacts/maintainer-map/stage-00/function-centrality.csv
+- artifacts/maintainer-map/stage-00/function-dependencies.csv
+- artifacts/maintainer-map/stage-00/function-source-map.csv
+- artifacts/maintainer-map/stage-00/internal-functions.csv
+- artifacts/maintainer-map/stage-00/package-summary.csv
+- artifacts/maintainer-map/stage-00/public-api.csv
+- artifacts/maintainer-map/stage-00/r-files.csv
+- artifacts/maintainer-map/stage-00/s3-methods.csv
+- artifacts/maintainer-map/stage-01/functions/ocean_cube/direct-callees.csv
+- artifacts/maintainer-map/stage-01/functions/ocean_cube/direct-callers.csv
+- artifacts/maintainer-map/stage-01/functions/ocean_cube/references.csv
+- artifacts/maintainer-map/stage-01/functions/ocean_cube/subgraph-edges.csv
+- artifacts/maintainer-map/stage-01/study-plan.csv
+
+## B01-safe-generated-artifacts
+
+- Objective: Relocate only tracked, generated, reproducible, unreferenced artifacts with a reversible destination.
+- Prerequisites: clean dev-0.2.0 tree; exact current path inventory; current checksums; human approval; protected refs unchanged.
+- Destinations: none approved
+- References requiring updates: none established; re-scan at execution time
+- Files authorized to modify: only exact paths listed below and explicitly enumerated reference files after separate approval.
+- Files prohibited: DESCRIPTION, NAMESPACE, R/, tests/, man/, vignettes/, inst/, handbook/, .gitignore and .Rbuildignore unless a later prompt names one explicitly.
+- Proposed Git commands: planning text only; do not execute in this phase.
+- none; this batch is not executable without a new approval
+- Pre-validation: git status, git ls-files, git check-ignore, Rbuildignore evaluation, SHA-256, exact/basename reference search.
+- Required tests: none
+- Acceptance: only approved paths change; checksums/provenance preserved; required content remains available; tests pass; clean final tree.
+- Rollback: not applicable
+- Proposed commit message: chore: relocate approved generated artifacts
+
+### Exact file list
+
+- none
+
+## B02-development-scripts
+
+- Objective: Review development scripts individually before any location change.
+- Prerequisites: clean dev-0.2.0 tree; exact current path inventory; current checksums; human approval; protected refs unchanged.
+- Destinations: none approved
+- References requiring updates: none established; re-scan at execution time
+- Files authorized to modify: only exact paths listed below and explicitly enumerated reference files after separate approval.
+- Files prohibited: DESCRIPTION, NAMESPACE, R/, tests/, man/, vignettes/, inst/, handbook/, .gitignore and .Rbuildignore unless a later prompt names one explicitly.
+- Proposed Git commands: planning text only; do not execute in this phase.
+- none; this batch is not executable without a new approval
+- Pre-validation: git status, git ls-files, git check-ignore, Rbuildignore evaluation, SHA-256, exact/basename reference search.
+- Required tests: script-specific smoke tests
+- Acceptance: only approved paths change; checksums/provenance preserved; required content remains available; tests pass; clean final tree.
+- Rollback: not applicable until a path is approved
+- Proposed commit message: chore: relocate approved development scripts
+
+### Exact file list
+
+- none
+
+## B03-duplicated-documentation
+
+- Objective: Consolidate only documentation with an approved canonical source and content parity.
+- Prerequisites: clean dev-0.2.0 tree; exact current path inventory; current checksums; human approval; protected refs unchanged.
+- Destinations: none approved
+- References requiring updates: none established; re-scan at execution time
+- Files authorized to modify: only exact paths listed below and explicitly enumerated reference files after separate approval.
+- Files prohibited: DESCRIPTION, NAMESPACE, R/, tests/, man/, vignettes/, inst/, handbook/, .gitignore and .Rbuildignore unless a later prompt names one explicitly.
+- Proposed Git commands: planning text only; do not execute in this phase.
+- none; this batch is not executable without a new approval
+- Pre-validation: git status, git ls-files, git check-ignore, Rbuildignore evaluation, SHA-256, exact/basename reference search.
+- Required tests: render and link checks
+- Acceptance: only approved paths change; checksums/provenance preserved; required content remains available; tests pass; clean final tree.
+- Rollback: not applicable until a path is approved
+- Proposed commit message: docs: consolidate approved duplicate documentation
+
+### Exact file list
+
+- none
+
+## B04-handbook-review
+
+- Objective: Preserve the tracked handbook pending topic-level vignette parity.
+- Prerequisites: clean dev-0.2.0 tree; exact current path inventory; current checksums; human approval; protected refs unchanged.
+- Destinations: vignettes/ topic by topic
+- References requiring updates: none established; re-scan at execution time
+- Files authorized to modify: only exact paths listed below and explicitly enumerated reference files after separate approval.
+- Files prohibited: DESCRIPTION, NAMESPACE, R/, tests/, man/, vignettes/, inst/, handbook/, .gitignore and .Rbuildignore unless a later prompt names one explicitly.
+- Proposed Git commands: planning text only; do not execute in this phase.
+- none; this batch is not executable without a new approval
+- Pre-validation: git status, git ls-files, git check-ignore, Rbuildignore evaluation, SHA-256, exact/basename reference search.
+- Required tests: render, executable examples and link checks
+- Acceptance: only approved paths change; checksums/provenance preserved; required content remains available; tests pass; clean final tree.
+- Rollback: restore the prior handbook source from Git
+- Proposed commit message: docs: migrate one approved handbook topic
+
+### Exact file list
+
+- handbook/
+
+## B05-example-and-fixture-review
+
+- Objective: Resolve provenance and ownership of tracked legacy data before classifying it as fixture or archive material.
+- Prerequisites: clean dev-0.2.0 tree; exact current path inventory; current checksums; human approval; protected refs unchanged.
+- Destinations: external-archive/oceancube-legacy/layer_sp.Rdata; external-archive/oceancube-legacy/PER_ADM0.RData
+- References requiring updates: none established; re-scan at execution time
+- Files authorized to modify: only exact paths listed below and explicitly enumerated reference files after separate approval.
+- Files prohibited: DESCRIPTION, NAMESPACE, R/, tests/, man/, vignettes/, inst/, handbook/, .gitignore and .Rbuildignore unless a later prompt names one explicitly.
+- Proposed Git commands: planning text only; do not execute in this phase.
+- none; this batch is not executable without a new approval
+- Pre-validation: git status, git ls-files, git check-ignore, Rbuildignore evaluation, SHA-256, exact/basename reference search.
+- Required tests: build/check, examples and data-load smoke tests
+- Acceptance: only approved paths change; checksums/provenance preserved; required content remains available; tests pass; clean final tree.
+- Rollback: restore from Git and archive checksum
+- Proposed commit message: chore: archive approved legacy data fixture
+
+### Exact file list
+
+- auxdata/layer_sp.Rdata
+- auxdata/PER_ADM0.RData
+
+## B06-remove-candidate-review
+
+- Objective: Remove only explicitly approved reproducible caches after a fresh reference and existence check.
+- Prerequisites: clean dev-0.2.0 tree; exact current path inventory; current checksums; human approval; protected refs unchanged.
+- Destinations: none approved
+- References requiring updates: none established; re-scan at execution time
+- Files authorized to modify: only exact paths listed below and explicitly enumerated reference files after separate approval.
+- Files prohibited: DESCRIPTION, NAMESPACE, R/, tests/, man/, vignettes/, inst/, handbook/, .gitignore and .Rbuildignore unless a later prompt names one explicitly.
+- Proposed Git commands: planning text only; do not execute in this phase.
+- Remove-Item -LiteralPath 'artifacts/h24-final/cache/R/pkgdown/bootstrap-toc/1.0.1/bootstrap-toc.min.js' -Force
+- Remove-Item -LiteralPath 'artifacts/h24-final/cache/R/pkgdown/clipboard.js/2.0.11/clipboard.min.js' -Force
+- Remove-Item -LiteralPath 'artifacts/h24-final/cache/R/pkgdown/headroom/0.11.0/headroom.min.js' -Force
+- Remove-Item -LiteralPath 'artifacts/h24-final/cache/R/pkgdown/headroom/0.11.0/jQuery.headroom.min.js' -Force
+- Remove-Item -LiteralPath 'artifacts/h24-final/cache/R/pkgdown/search/1.0.0/autocomplete.jquery.min.js' -Force
+- Remove-Item -LiteralPath 'artifacts/h24-final/cache/R/pkgdown/search/1.0.0/fuse.min.js' -Force
+- Remove-Item -LiteralPath 'artifacts/h24-final/cache/R/pkgdown/search/1.0.0/mark.min.js' -Force
+- Remove-Item -LiteralPath 'artifacts/h24-final/cache/R/sass/239dca29cf53d3dbd4cb157aefcb5b9e' -Force
+- Pre-validation: git status, git ls-files, git check-ignore, Rbuildignore evaluation, SHA-256, exact/basename reference search.
+- Required tests: re-run package documentation/site build after explicit approval
+- Acceptance: only approved paths change; checksums/provenance preserved; required content remains available; tests pass; clean final tree.
+- Rollback: regenerate pkgdown or sass cache from canonical inputs
+- Proposed commit message: chore: remove approved generated cache files
+
+### Exact file list
+
+- artifacts/h24-final/cache/R/pkgdown/bootstrap-toc/1.0.1/bootstrap-toc.min.js
+- artifacts/h24-final/cache/R/pkgdown/clipboard.js/2.0.11/clipboard.min.js
+- artifacts/h24-final/cache/R/pkgdown/headroom/0.11.0/headroom.min.js
+- artifacts/h24-final/cache/R/pkgdown/headroom/0.11.0/jQuery.headroom.min.js
+- artifacts/h24-final/cache/R/pkgdown/search/1.0.0/autocomplete.jquery.min.js
+- artifacts/h24-final/cache/R/pkgdown/search/1.0.0/fuse.min.js
+- artifacts/h24-final/cache/R/pkgdown/search/1.0.0/mark.min.js
+- artifacts/h24-final/cache/R/sass/239dca29cf53d3dbd4cb157aefcb5b9e
+
+# Recommended first executable batch
+
+B01 is intentionally empty because no tracked relocation candidate satisfies every safety condition. The smallest executable future cleanup is B06-remove-candidate-review: eight ignored, untracked, reproducible cache files. It is low risk and non-functional, but still requires explicit human approval and a new exact-path reference check. It creates no Git deletion because the files are untracked; the proposed commit message applies only if tracked policy/evidence files are separately authorized.
+
+# Stop condition
+
+Stop if a path is missing, tracked state changes, a new active reference is found, a checksum differs, a destination is not approved, or the diff includes any path outside the approved batch.

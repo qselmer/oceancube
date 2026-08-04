@@ -1,0 +1,81 @@
+---
+title: "oceancube 0.2.0 artifact relocation proposal"
+output: html_document
+---
+
+# 1. Initial state
+
+Analysis began on branch dev-0.2.0 at e5a4796ebca8301acef9afaa31bd40e7c8e0b805 with latest message chore: define repository and build ignore rules. The tracked and untracked working tree was clean. main and v0.1.0 both remained at 93d2a79b11a6ae7622443ae068e6e2a2709c9324.
+
+# 2. Methodology
+
+The proposal reconciles Git tracked, untracked and ignored inventories with current disk state and the prior audit/decision tables. Classification uses path, tracked state, package/test/documentation role, generation evidence, operational location, exact-path references and basename references. Extension alone never authorizes relocation or deletion.
+
+# 3. Real file state
+
+2503 existing files were examined: 221 tracked, 0 non-ignored untracked and 2282 ignored. 62 historical inventory paths are absent and remain represented as missing review evidence rather than actionable files.
+
+# 4. Tracked, ignored and operational distinctions
+
+Tracked files require Git-aware, reversible operations. Untracked ignored operational files remain local and are never moved with Git. Generated output is not automatically disposable. Package fixtures remain tracked and minimal; operational inputs and outputs remain outside the package and require upstream or generation provenance.
+
+# 5. Review of 142 relocation rows
+
+All 142 prior relocate-later rows were rechecked. Results: 0 verified relocate, 140 leave-local, 0 merge-later, 0 retain and 2 review. The 140 leave-local files are ignored and untracked operational/generated content. The two review rows are tracked legacy RData under auxdata/ with no approved provenance or destination.
+
+# 6. Review of eight removal candidates
+
+All eight prior candidates are ignored, untracked pkgdown/sass cache files. 8 meet the evidence threshold for remove-after-approval and 0 remain review. None is deleted or approved now; execution requires a fresh existence and reference check.
+
+# 7. References
+
+0 candidate paths have non-roadmap literal references and 0 reference rows would require future updates if their targets moved. 150 targets retain a dynamic-reference risk because static analysis cannot observe external scripts, constructed paths, load(), get() or other runtime indirection.
+
+# 8. Operational data policy
+
+cin/, cout/, downloads/, data-raw/downloads/ and artifacts/ remain local, ignored and outside the source package. They are recreated or reacquired and never moved with git mv.
+
+# 9. Fixture policy
+
+Only small, licensed, provenance-documented files directly used by tests or examples belong in inst/extdata/ or tests/testthat/fixtures/. NetCDF, JSON, CSV, RDS and images are allowed there when their role—not their extension—justifies tracking.
+
+# 10. Rendered documentation policy
+
+Rmd/Qmd and roxygen are canonical sources; Markdown, HTML, images and pkgdown output are generated or distribution forms with explicit ownership. No tracked handbook or published docs output is deleted by this proposal.
+
+# 11. Proposed batches
+
+Seven batches are defined. B00 records no-action operational paths. B01 is deliberately empty. B02-B05 are review gates for scripts, duplicate docs, handbook and legacy data. B06 contains the eight generated cache candidates but requires approval.
+
+# 12. Concrete destinations
+
+No destination is invented for ignored local files; they remain at current paths. The two tracked auxdata RData files have a conceptual external-archive destination only, pending provenance, license, ownership, checksum and retention approval. Cache candidates are regenerated on demand rather than moved.
+
+# 13. Risks
+
+- Static search can miss constructed paths, external scripts and runtime loading.
+- Legacy RData may contain unique or licensed objects despite no literal consumer.
+- Moving ignored operational files can silently break local workflows without producing a Git diff.
+- Archiving without checksums, ownership and retention policy can create unrecoverable provenance gaps.
+- Documentation consolidation can remove unique scientific context.
+- Cache deletion is low risk but still depends on the ability to regenerate the site toolchain.
+
+# 14. Files that must not be touched
+
+DESCRIPTION, NAMESPACE, .gitignore, .Rbuildignore, R/, tests/, man/, vignettes/, inst/, handbook/, existing docs/roadmap records, protected refs main and v0.1.0, and every operational path not explicitly approved remain unchanged.
+
+# 15. Human decisions
+
+10 candidate-level approvals remain: two tracked legacy-data classifications and eight cache-removal decisions. Human decisions must also define archive ownership/retention and confirm the site cache is reproducible in the current toolchain.
+
+# 16. First batch recommendation
+
+B01 has 0 files and cannot be executed. Recommend B06-remove-candidate-review as the first executable future batch: eight exact untracked cache paths, low risk, non-functional and reversible by regeneration. Approval remains mandatory.
+
+# 17. Next prompt proposal
+
+The next prompt should approve or reject B06, repeat branch/clean-tree/existence/tracked/reference checks for the exact eight paths, authorize only explicit literal-path deletion when all checks pass, prohibit git clean and commits unless a tracked policy file is separately authorized, and verify the final tree.
+
+# Decision
+
+This proposal approves no file operation. The next authorized phase is to approve or reject the proposed first executable batch.

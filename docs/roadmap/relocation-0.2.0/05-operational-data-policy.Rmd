@@ -1,0 +1,37 @@
+---
+title: "oceancube 0.2.0 operational data and generated artifact policy"
+output: html_document
+---
+
+# Purpose
+
+This policy separates local operational data, package fixtures, development results and rendered documentation. Location, provenance, references and build role determine treatment; file extension alone never does.
+
+## Local operational data
+
+The directories cin/, cout/, downloads/, data-raw/downloads/ and artifacts/ remain outside version control and outside the source-package tarball. They are recreated by documented scripts or external acquisition processes, never moved with git mv, and never confused with small package fixtures. Existing ignored and untracked files stay local unless a separate non-Git archival workflow is approved.
+
+Operational inputs require an owner, upstream identifier, acquisition date, checksum, license and recreation command. Operational outputs require the producing script, software version, parameters and input provenance. Neither category is a package source of truth.
+
+## Package fixtures
+
+Fixtures belong in inst/extdata/ or tests/testthat/fixtures/. They may be small NetCDF, JSON, CSV, RDS or image files when directly required by tests or examples. Every fixture must be tracked, minimal, redistributable, licensed, provenance-documented and referenced by an executable test or example. Large or operational datasets must not be relabeled as fixtures merely to place them in Git.
+
+## Development results
+
+Artifacts, logs, cache and temporary directories remain ignored. They are not sources of truth and do not enter future commits. Reproducible caches may become remove-after-approval candidates only after an exact-path recheck confirms that code, tests, documentation, configuration, build and check do not require them.
+
+## Rendered documentation
+
+- Rmd or Qmd source is canonical for narrative documentation.
+- Markdown is tracked only when it is the reviewed distribution format or an intentional generated README.
+- HTML is generated publication output and is not edited as source.
+- Generated images belong with their canonical Rmd/Qmd source only when publication requires tracking them.
+- The pkgdown site is generated from roxygen, vignettes and configuration.
+- docs/roadmap stores decisions and evidence, not runtime documentation.
+
+The tracked handbook/ source and any published docs/ site are not approved for deletion in this phase. Consolidation requires a separate parity review.
+
+## Decision gate
+
+No row in this proposal authorizes movement or deletion. Every external archive, Git move or cache removal requires an explicit path list, current checksums, reference updates, tests and human approval.
