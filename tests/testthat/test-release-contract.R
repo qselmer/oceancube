@@ -45,7 +45,10 @@ test_that("the public API surface includes the approved 0.2 additions", {
     stock_mask = c("x", "stock", "lat", "dc", "depth"),
     to_month = c("x", "fun"),
     viz.map = c("x", "variable", "time", "depth", "limits", "na.rm",
-                "coastline", "title", "subtitle", "caption")
+                "coastline", "title", "subtitle", "caption"),
+    viz.section = c("x", "variable", "section", "time", "longitude",
+                    "latitude", "depth", "limits", "na.rm",
+                    "reverse_depth", "title", "subtitle", "caption")
   )
 
   exports <- getNamespaceExports("oceancube")
