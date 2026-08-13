@@ -21,6 +21,9 @@
   `cube_validate(strict = TRUE)`.
 * Adds `viz.transect()` for static horizontal and distance-by-depth transect
   plots driven exclusively by the stabilized `cube_transect()` data contract.
+* Adds `viz.timeseries()` for raw, stable-chronological point series driven by
+  selective `cube_extract(mode = "series")` calls, with explicit closed time
+  bounds and no aggregation, smoothing, or interpolation.
 
 ## Masks
 
