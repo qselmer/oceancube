@@ -9,6 +9,323 @@
   )
 }
 
+.time_timezone <- function(x) {
+  zone <- attr(x, "tzone", exact = TRUE)
+  if (is.null(zone) || length(zone) == 0L || is.na(zone[[1L]]) ||
+      !nzchar(zone[[1L]])) {
+    return(NA_character_)
+  }
+  as.character(zone[[1L]])
+}
+
+.as_utc_posixct <- function(x) {
+  as.POSIXct(as.numeric(x), origin = "1970-01-01", tz = "UTC")
+}
+
+.parse_explicit_datetime <- function(x, arg = "time") {
+  pattern <- paste0(
+    "^([0-9]{4}-[0-9]{2}-[0-9]{2})[T ]",
+    "([0-9]{2}):([0-9]{2}):([0-9]{2}(?:\\.[0-9]+)?)",
+    "(Z|[+-][0-9]{2}:?[0-9]{2})$"
+  )
+  parsed <- numeric(length(x))
+  offsets <- character(length(x))
+  for (i in seq_along(x)) {
+    groups <- regmatches(x[[i]], regexec(pattern, x[[i]], perl = TRUE))[[1L]]
+    if (length(groups) == 0L) {
+      .abort_badarg(
+        arg,
+        paste(
+          "datetime strings must include seconds and an explicit `Z` or",
+          "numeric UTC offset, for example `2026-08-13T12:30:00Z`."
+        )
+      )
+    }
+    wall_text <- paste0(
+      groups[[2L]], " ", groups[[3L]], ":", groups[[4L]], ":", groups[[5L]]
+    )
+    wall <- suppressWarnings(as.POSIXct(
+      strptime(wall_text, format = "%Y-%m-%d %H:%M:%OS", tz = "UTC")
+    ))
+    if (is.na(wall)) {
+      .abort_badarg(arg, paste0("cannot parse datetime `", x[[i]], "`."))
+    }
+    offset <- groups[[6L]]
+    offset_seconds <- 0
+    if (!identical(offset, "Z")) {
+      sign <- if (substr(offset, 1L, 1L) == "+") 1 else -1
+      digits <- gsub(":", "", substring(offset, 2L), fixed = TRUE)
+      hours <- as.integer(substr(digits, 1L, 2L))
+      minutes <- as.integer(substr(digits, 3L, 4L))
+      if (is.na(hours) || is.na(minutes) || hours > 23L || minutes > 59L) {
+        .abort_badarg(arg, paste0("contains an invalid UTC offset in `", x[[i]], "`."))
+      }
+      offset_seconds <- sign * (hours * 3600 + minutes * 60)
+    }
+    parsed[[i]] <- as.numeric(wall) - offset_seconds
+    offsets[[i]] <- offset
+  }
+  list(
+    values = as.POSIXct(parsed, origin = "1970-01-01", tz = "UTC"),
+    offsets = unique(offsets)
+  )
+}
+
+.validate_time_axis <- function(time, arg = "time", require_canonical_utc = TRUE,
+                                abort = TRUE) {
+  valid_class <- inherits(time, "Date") || inherits(time, "POSIXct")
+  nonempty <- valid_class && is.null(dim(time)) && length(time) > 0L
+  numeric_time <- if (nonempty) as.numeric(time) else numeric()
+  complete <- nonempty && !anyNA(time) && all(is.finite(numeric_time))
+  duplicated_time <- complete && anyDuplicated(numeric_time) > 0L
+  increasing <- complete && !duplicated_time &&
+    (length(numeric_time) <= 1L || all(diff(numeric_time) > 0))
+  timezone_utc <- !inherits(time, "POSIXct") ||
+    identical(.time_timezone(time), "UTC")
+  result <- list(
+    valid_class = valid_class,
+    nonempty = nonempty,
+    complete = complete,
+    duplicated = duplicated_time,
+    strictly_increasing = increasing,
+    timezone_utc = timezone_utc
+  )
+  if (isTRUE(abort)) {
+    if (!valid_class || !is.null(dim(time))) {
+      .abort_badarg(arg, "must be a Date or POSIXct vector.")
+    }
+    if (!nonempty) .abort_badarg(arg, "must not be empty.")
+    if (!complete) .abort_badarg(arg, "must contain only finite, non-missing values.")
+    if (duplicated_time) {
+      .abort_badarg(
+        arg,
+        paste(
+          "must contain unique values; resolve duplicate coordinates explicitly",
+          "without dropping or aggregating aligned data silently."
+        )
+      )
+    }
+    if (!increasing) {
+      .abort_badarg(
+        arg,
+        paste(
+          "must be strictly increasing; reorder the time axis and aligned data",
+          "explicitly rather than sorting coordinates alone."
+        )
+      )
+    }
+    if (isTRUE(require_canonical_utc) && !timezone_utc) {
+      .abort_badarg(arg, "stored POSIXct values must use the canonical UTC timezone.")
+    }
+  }
+  result
+}
+
+.canonicalize_time <- function(time, arg = "time", validate_axis = TRUE) {
+  source_class <- if (inherits(time, "Date")) {
+    "Date"
+  } else if (inherits(time, "POSIXct")) {
+    "POSIXct"
+  } else if (is.character(time)) {
+    "character"
+  } else {
+    NA_character_
+  }
+  if (is.na(source_class)) {
+    .abort_badarg(arg, "must be Date, POSIXct, or unambiguous ISO character data.")
+  }
+
+  source_timezone <- if (inherits(time, "POSIXct")) .time_timezone(time) else NA_character_
+  source_offset <- if (inherits(time, "POSIXct") && length(time) > 0L) {
+    unique(format(time, "%z"))
+  } else {
+    character()
+  }
+  normalization <- "preserved"
+  if (inherits(time, "Date")) {
+    values <- time
+  } else if (inherits(time, "POSIXct")) {
+    values <- .as_utc_posixct(time)
+    normalization <- "POSIXct instant normalized to UTC"
+  } else {
+    date_only <- grepl("^[0-9]{4}-[0-9]{2}-[0-9]{2}$", time)
+    explicit_datetime <- grepl(
+      "[T ][0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:?[0-9]{2})$",
+      time,
+      perl = TRUE
+    )
+    if (all(date_only)) {
+      values <- suppressWarnings(as.Date(time, format = "%Y-%m-%d"))
+      normalization <- "ISO date character decoded as Date"
+    } else if (all(explicit_datetime)) {
+      decoded <- .parse_explicit_datetime(time, arg = arg)
+      values <- decoded$values
+      source_offset <- decoded$offsets
+      source_timezone <- "explicit character offset"
+      normalization <- "explicit-offset datetime character decoded and normalized to UTC"
+    } else if (any(date_only) || any(explicit_datetime)) {
+      .abort_badarg(arg, "must not mix date-only and datetime character semantics.")
+    } else {
+      .abort_badarg(
+        arg,
+        paste(
+          "datetime strings require an explicit `Z` or numeric UTC offset;",
+          "supply a timezone/offset or a POSIXct value."
+        )
+      )
+    }
+  }
+  if (anyNA(values) || any(!is.finite(as.numeric(values)))) {
+    .abort_badarg(arg, "contains missing, non-finite, or undecodable values.")
+  }
+  if (isTRUE(validate_axis)) .validate_time_axis(values, arg = arg)
+  list(
+    values = values,
+    provenance = list(
+      canonical_class = if (inherits(values, "Date")) "Date" else "POSIXct",
+      canonical_timezone = if (inherits(values, "POSIXct")) "UTC" else NA_character_,
+      source_class = source_class,
+      source_timezone = source_timezone,
+      source_offset = source_offset,
+      calendar = "proleptic_gregorian",
+      calendar_defaulted = FALSE,
+      decoder = "oceancube::.canonicalize_time",
+      decode_status = "decoded",
+      normalization = normalization
+    )
+  )
+}
+
+.attach_time_provenance <- function(provenance, time_provenance) {
+  if (is.null(provenance)) return(list(time = time_provenance))
+  if (!is.list(provenance)) {
+    return(list(parent = provenance, time = time_provenance))
+  }
+  existing <- provenance$time %||% .find_time_provenance(provenance)
+  provenance$time <- utils::modifyList(
+    time_provenance,
+    existing %||% list(),
+    keep.null = TRUE
+  )
+  provenance
+}
+
+.find_time_provenance <- function(provenance) {
+  if (!is.list(provenance)) return(NULL)
+  if (is.list(provenance$time)) return(provenance$time)
+  for (name in names(provenance)) {
+    found <- .find_time_provenance(provenance[[name]])
+    if (!is.null(found)) return(found)
+  }
+  NULL
+}
+
+.parse_cf_origin <- function(origin_text) {
+  origin_text <- trimws(origin_text)
+  if (grepl("^[0-9]{4}-[0-9]{2}-[0-9]{2}$", origin_text)) {
+    origin_text <- paste0(origin_text, "T00:00:00Z")
+  } else if (grepl("^[0-9]{4}-[0-9]{2}-[0-9]{2}[ T][0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?$", origin_text, perl = TRUE)) {
+    origin_text <- paste0(origin_text, "Z")
+  }
+  decoded <- tryCatch(
+    .parse_explicit_datetime(origin_text, arg = "NetCDF time origin"),
+    error = function(error) {
+      rlang::abort(
+        paste0("Cannot parse NetCDF time origin `", origin_text, "`: ", conditionMessage(error)),
+        class = "oceancube_netcdf_schema_error",
+        parent = error
+      )
+    }
+  )
+  list(value = decoded$values[[1L]], text = origin_text, offset = decoded$offsets[[1L]])
+}
+
+.decode_cf_time <- function(raw_values, units, calendar = NA_character_) {
+  calendar_defaulted <- length(calendar) != 1L || is.na(calendar) || !nzchar(calendar)
+  calendar <- if (calendar_defaulted) "standard" else tolower(trimws(calendar))
+  supported <- c("standard", "gregorian", "proleptic_gregorian")
+  if (!calendar %in% supported) {
+    rlang::abort(
+      paste0(
+        "Calendar `", calendar, "` is unsupported because R Date/POSIXct cannot ",
+        "represent it safely; reinterpretation as Gregorian is not performed."
+      ),
+      class = "oceancube_netcdf_schema_error"
+    )
+  }
+  if (!is.numeric(raw_values) || anyNA(raw_values) || any(!is.finite(raw_values))) {
+    rlang::abort(
+      "NetCDF time coordinate must contain finite numeric values.",
+      class = "oceancube_netcdf_schema_error"
+    )
+  }
+  pattern <- "^[[:space:]]*(seconds|minutes|hours|days)[[:space:]]+since[[:space:]]+(.+?)[[:space:]]*$"
+  if (!is.character(units) || length(units) != 1L || is.na(units)) {
+    rlang::abort(
+      "Time coordinate units must match '<seconds|minutes|hours|days> since <origin>'.",
+      class = "oceancube_netcdf_schema_error"
+    )
+  }
+  groups <- regmatches(units, regexec(pattern, units, ignore.case = TRUE, perl = TRUE))[[1L]]
+  if (length(groups) == 0L) {
+    rlang::abort(
+      "Time coordinate units must match '<seconds|minutes|hours|days> since <origin>'.",
+      class = "oceancube_netcdf_schema_error"
+    )
+  }
+  unit <- tolower(groups[[2L]])
+  origin <- .parse_cf_origin(groups[[3L]])
+  multiplier <- switch(unit, seconds = 1, minutes = 60, hours = 3600, days = 86400)
+  decoded <- as.POSIXct(
+    as.numeric(origin$value) + as.numeric(raw_values) * multiplier,
+    origin = "1970-01-01",
+    tz = "UTC"
+  )
+  if (calendar %in% c("standard", "gregorian") &&
+      any(decoded < as.POSIXct("1582-10-15 00:00:00", tz = "UTC"))) {
+    rlang::abort(
+      paste0(
+        "Calendar `", calendar, "` before 1582-10-15 requires mixed ",
+        "Julian/Gregorian semantics and is rejected rather than reinterpreted."
+      ),
+      class = "oceancube_netcdf_schema_error"
+    )
+  }
+  .validate_time_axis(decoded, arg = "NetCDF time coordinate")
+  list(
+    raw_values = as.numeric(raw_values),
+    units = units,
+    unit = unit,
+    calendar = calendar,
+    calendar_defaulted = calendar_defaulted,
+    origin = origin$value,
+    origin_text = groups[[3L]],
+    origin_offset = origin$offset,
+    decoded_values = decoded,
+    decoder = "oceancube::.decode_cf_time",
+    decode_status = "decoded",
+    normalization = "CF numeric offsets decoded as UTC POSIXct"
+  )
+}
+
+.cf_time_provenance <- function(time_descriptor) {
+  list(
+    canonical_class = "POSIXct",
+    canonical_timezone = "UTC",
+    source_class = "CF numeric time",
+    source_timezone = time_descriptor$origin_offset,
+    source_offset = time_descriptor$origin_offset,
+    calendar = time_descriptor$calendar,
+    source_calendar = time_descriptor$calendar,
+    calendar_defaulted = isTRUE(time_descriptor$calendar_defaulted),
+    cf_units = time_descriptor$units,
+    cf_origin = time_descriptor$origin_text,
+    decoder = time_descriptor$decoder,
+    decode_status = time_descriptor$decode_status,
+    normalization = time_descriptor$normalization
+  )
+}
+
 .message_info <- function(...) {
   cli::cli_inform(paste0(...))
 }
@@ -85,12 +402,7 @@
   if (!inherits(time, c("Date", "POSIXct"))) {
     .abort_badarg("time", "must inherit from Date or POSIXct.")
   }
-  if (length(time) == 0L) {
-    .abort_badarg("time", "must not be empty.")
-  }
-  if (anyNA(time)) {
-    .abort_badarg("time", "must not contain missing values.")
-  }
+  .validate_time_axis(time)
 
   if (!is.character(vars) || !is.null(dim(vars))) {
     .abort_badarg("vars", "must be a character vector.")
@@ -274,17 +586,22 @@
 
   if (!is.null(x$temporal_extent)) {
     extent <- x$temporal_extent
-    if (!inherits(extent, c("Date", "POSIXct")) ||
+    expected_time_class <- if (inherits(x$time, "Date")) "Date" else "POSIXct"
+    if (!inherits(extent, expected_time_class) ||
         length(extent) != 2L ||
-        anyNA(extent)) {
-      .abort_badarg("temporal_extent", "must contain two non-missing Date or POSIXct values.")
+        anyNA(extent) || any(!is.finite(as.numeric(extent)))) {
+      .abort_badarg(
+        "temporal_extent",
+        paste0("must contain two finite ", expected_time_class, " values matching `time`.")
+      )
     }
-    extent_date <- as.Date(extent)
-    time_date <- as.Date(x$time)
-    if (extent_date[1] > extent_date[2]) {
+    if (inherits(extent, "POSIXct") && !identical(.time_timezone(extent), "UTC")) {
+      .abort_badarg("temporal_extent", "POSIXct limits must use canonical UTC.")
+    }
+    if (extent[1] > extent[2]) {
       .abort_badarg("temporal_extent", "must be ordered from start to end.")
     }
-    if (min(time_date) < extent_date[1] || max(time_date) > extent_date[2]) {
+    if (min(x$time) < extent[1] || max(x$time) > extent[2]) {
       .abort_badarg("temporal_extent", "must contain the time coordinate.")
     }
   }
@@ -356,35 +673,8 @@
   NULL
 }
 
-.read_cf_time <- function(time_raw, units, calendar = "gregorian") {
-  if (is.null(units) || !grepl("since", units, fixed = TRUE)) {
-    rlang::abort("NetCDF time units must follow a '<unit> since <origin>' pattern.")
-  }
-
-  origin_txt <- sub(".*since\\s+", "", units)
-  origin <- as.POSIXct(origin_txt, tz = "UTC")
-
-  if (is.na(origin)) {
-    rlang::abort(paste0("Could not parse NetCDF time origin: ", origin_txt))
-  }
-
-  multiplier <- if (grepl("seconds since", units, ignore.case = TRUE)) {
-    1
-  } else if (grepl("minutes since", units, ignore.case = TRUE)) {
-    60
-  } else if (grepl("hours since", units, ignore.case = TRUE)) {
-    3600
-  } else if (grepl("days since", units, ignore.case = TRUE)) {
-    86400
-  } else {
-    rlang::abort(paste0("Unsupported NetCDF time units: ", units))
-  }
-
-  if (!tolower(calendar) %in% c("gregorian", "standard", "proleptic_gregorian")) {
-    cli::cli_warn("Calendar {.val {calendar}} is not fully supported; treating it as Gregorian.")
-  }
-
-  as.Date(origin + time_raw * multiplier)
+.read_cf_time <- function(time_raw, units, calendar = NA_character_) {
+  .decode_cf_time(time_raw, units, calendar)$decoded_values
 }
 
 .make_filename <- function(dataset_id, vars, lon = NULL, lat = NULL, time = NULL,

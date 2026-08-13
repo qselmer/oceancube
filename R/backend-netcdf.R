@@ -362,70 +362,7 @@
 }
 
 .decode_netcdf_time <- function(raw_values, units, calendar = "standard") {
-  supported_calendars <- c("gregorian", "standard", "proleptic_gregorian")
-  calendar <- tolower(.netcdf_optional_string(calendar))
-  if (is.na(calendar)) calendar <- "standard"
-  if (!calendar %in% supported_calendars) {
-    .netcdf_abort(
-      paste0(
-        "Calendar `",
-        calendar,
-        "` cannot be represented safely as R Date or POSIXct. ",
-        "The initial NetCDF backend does not support a specialized calendar class."
-      )
-    )
-  }
-  if (length(units) != 1L ||
-      is.na(units) ||
-      !grepl("^[[:space:]]*(seconds|minutes|hours|days)[[:space:]]+since[[:space:]]+",
-        units,
-        ignore.case = TRUE
-      )) {
-    .netcdf_abort(
-      "Time coordinate must have units matching '<seconds|minutes|hours|days> since <origin>'."
-    )
-  }
-  if (!is.numeric(raw_values) || anyNA(raw_values) || any(!is.finite(raw_values))) {
-    .netcdf_abort("NetCDF time coordinate must contain finite numeric values.")
-  }
-
-  unit <- tolower(sub(
-    "^[[:space:]]*([[:alpha:]]+)[[:space:]]+since.*$",
-    "\\1",
-    units
-  ))
-  origin_text <- sub(
-    "^[[:space:]]*[[:alpha:]]+[[:space:]]+since[[:space:]]+",
-    "",
-    units,
-    ignore.case = TRUE
-  )
-  origin <- suppressWarnings(as.POSIXct(origin_text, tz = "UTC"))
-  if (is.na(origin)) {
-    .netcdf_abort(
-      paste0("Cannot parse NetCDF time origin `", origin_text, "`.")
-    )
-  }
-  multiplier <- switch(
-    unit,
-    seconds = 1,
-    minutes = 60,
-    hours = 3600,
-    days = 86400
-  )
-
-  list(
-    raw_values = as.numeric(raw_values),
-    units = units,
-    calendar = calendar,
-    origin = origin,
-    decoded_values = as.POSIXct(
-      as.numeric(origin) + as.numeric(raw_values) * multiplier,
-      origin = "1970-01-01",
-      tz = "UTC"
-    ),
-    decode_status = "decoded"
-  )
+  .decode_cf_time(raw_values, units, calendar)
 }
 
 .validate_netcdf_variables_argument <- function(variables) {
@@ -678,12 +615,10 @@
     }
 
     time_metadata <- metadata[[resolved$time$name]]
-    calendar <- time_metadata$calendar
-    if (is.na(calendar)) calendar <- "standard"
     time <- .decode_netcdf_time(
       coordinate_values$time,
       units = time_metadata$units,
-      calendar = calendar
+      calendar = time_metadata$calendar
     )
 
     dimension_names <- list(
@@ -1096,8 +1031,12 @@
     "raw_values",
     "units",
     "calendar",
+    "calendar_defaulted",
     "origin",
+    "origin_text",
+    "origin_offset",
     "decoded_values",
+    "decoder",
     "decode_status"
   )
   if (!is.list(storage$time) ||
@@ -1107,6 +1046,17 @@
         length(storage$time$decoded_values)) {
     .netcdf_abort(
       "Invalid NetCDF time descriptor.",
+      class = "oceancube_bad_storage"
+    )
+  }
+  .validate_time_axis(
+    storage$time$decoded_values,
+    arg = "storage$time$decoded_values"
+  )
+  if (!storage$time$calendar %in%
+      c("standard", "gregorian", "proleptic_gregorian")) {
+    .netcdf_abort(
+      paste0("Invalid or unsupported NetCDF calendar `", storage$time$calendar, "`."),
       class = "oceancube_bad_storage"
     )
   }
@@ -1570,7 +1520,8 @@
       `[[`,
       "source_dimension_names"
     ),
-    constructed_utc = storage$options$created_utc
+    constructed_utc = storage$options$created_utc,
+    time = .cf_time_provenance(storage$time)
   )
   provenance <- if (is.null(provenance)) {
     netcdf_provenance

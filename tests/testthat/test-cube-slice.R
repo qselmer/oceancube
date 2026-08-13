@@ -96,7 +96,7 @@ test_that("cube_slice is exported with the intended public signature", {
   )
 })
 
-test_that("index mode preserves five dimensions, order, and coordinate duplicates", {
+test_that("index mode preserves non-time order and canonical time", {
   cube <- slice_baseline_cube()
   before <- cube
   result <- cube_slice(
@@ -104,7 +104,7 @@ test_that("index mode preserves five dimensions, order, and coordinate duplicate
     longitude = c(3L, 1L, 3L),
     latitude = 2L,
     depth = c(2L, 1L),
-    time = c(4L, 2L, 4L),
+    time = c(2L, 4L),
     variable = c(2L, 1L),
     by = "index"
   )
@@ -114,15 +114,15 @@ test_that("index mode preserves five dimensions, order, and coordinate duplicate
       longitude = c(3L, 1L, 3L),
       latitude = 2L,
       depth = c(2L, 1L),
-      time = c(4L, 2L, 4L),
+      time = c(2L, 4L),
       variable = c(2L, 1L)
     )
   )
 
   expect_identical(.cube_read(result), expected)
-  expect_identical(unname(dim(result$data)), c(3L, 1L, 2L, 3L, 2L))
+  expect_identical(unname(dim(result$data)), c(3L, 1L, 2L, 2L, 2L))
   expect_identical(result$lon, c(-78, -80, -78))
-  expect_identical(result$time, cube$time[c(4L, 2L, 4L)])
+  expect_identical(result$time, cube$time[c(2L, 4L)])
   expect_identical(result$vars, c("oxygen", "temperature"))
   expect_identical(.cube_backend(result), "memory")
   expect_identical(cube, before)
@@ -179,7 +179,7 @@ test_that("exact value mode reproduces the deterministic baseline selection", {
     longitude = c(-78, -80),
     latitude = -11,
     depth = 50,
-    time = as.Date(c("2021-02-01", "2020-01-01")),
+    time = as.Date(c("2020-01-01", "2021-02-01")),
     variable = c("oxygen", "temperature"),
     by = "value",
     match = "exact"
@@ -191,22 +191,22 @@ test_that("exact value mode reproduces the deterministic baseline selection", {
   expect_identical(result$depth, 50)
   expect_identical(
     result$time,
-    as.Date(c("2021-02-01", "2020-01-01"))
+    as.Date(c("2020-01-01", "2021-02-01"))
   )
   expect_identical(result$vars, c("oxygen", "temperature"))
-  expect_identical(result$data[1, 1, 1, 1, 1], 24223)
-  expect_identical(result$data[2, 1, 1, 1, 1], 24221)
-  expect_identical(result$data[1, 1, 1, 2, 2], 11223)
-  expect_identical(result$data[2, 1, 1, 2, 2], 11221)
+  expect_identical(result$data[1, 1, 1, 1, 1], 21223)
+  expect_identical(result$data[2, 1, 1, 1, 1], 21221)
+  expect_identical(result$data[1, 1, 1, 2, 2], 14223)
+  expect_identical(result$data[2, 1, 1, 2, 2], 14221)
 })
 
-test_that("exact value mode preserves coordinate order and duplicates", {
+test_that("exact value mode preserves spatial order and duplicates", {
   cube <- slice_baseline_cube()
   result <- cube_slice(
     cube,
     longitude = c(-78, -80, -78),
     depth = c(50, 0, 50),
-    time = as.Date(c("2021-02-01", "2020-01-01", "2021-02-01")),
+    time = as.Date(c("2020-01-01", "2021-02-01")),
     variable = c("oxygen", "temperature"),
     by = "value"
   )
@@ -215,7 +215,7 @@ test_that("exact value mode preserves coordinate order and duplicates", {
   expect_identical(result$depth, c(50, 0, 50))
   expect_identical(
     result$time,
-    as.Date(c("2021-02-01", "2020-01-01", "2021-02-01"))
+    as.Date(c("2020-01-01", "2021-02-01"))
   )
   expect_identical(
     result$provenance$cube_slice$resolved_indices$longitude,
@@ -339,12 +339,12 @@ test_that("nearest preserves first-position ties on all coordinate axes", {
   expect_identical(result$time, as.Date("2020-01-01"))
 })
 
-test_that("nearest works on descending axes without reordering them", {
+test_that("nearest works on descending spatial axes without reordering them", {
   cube <- ocean_cube(
     lon = c(-78, -79, -80),
     lat = c(-11, -12),
     depth = c(50, 0),
-    time = as.Date(c("2021-01-03", "2021-01-02", "2021-01-01")),
+    time = as.Date(c("2021-01-01", "2021-01-02", "2021-01-03")),
     vars = "temperature",
     data = array(seq_len(36), dim = c(3, 2, 2, 3, 1))
   )
@@ -364,7 +364,7 @@ test_that("nearest works on descending axes without reordering them", {
   expect_identical(result$time, as.Date("2021-01-01"))
   expect_identical(
     result$provenance$cube_slice$resolved_indices[1:4],
-    list(longitude = 3L, latitude = 2L, depth = 2L, time = 3L)
+    list(longitude = 3L, latitude = 2L, depth = 2L, time = 1L)
   )
 })
 
@@ -504,7 +504,7 @@ test_that("result units, extents, dimnames, classes, and metadata are aligned", 
     longitude = c(-78, -80),
     latitude = -11,
     depth = 50,
-    time = as.Date(c("2021-02-01", "2020-01-01")),
+    time = as.Date(c("2020-01-01", "2021-02-01")),
     variable = "oxygen",
     by = "value"
   )
@@ -610,7 +610,7 @@ test_that("cube_slice calls cube_read once after resolving all axes", {
   result <- cube_slice(
     cube,
     longitude = c(-78, -80),
-    time = as.Date(c("2021-02-01", "2020-01-01")),
+    time = as.Date(c("2020-01-01", "2021-02-01")),
     variable = "temperature",
     by = "value"
   )
@@ -626,7 +626,7 @@ test_that("memory and NetCDF slices are logically equivalent", {
     longitude = c(-78, -80),
     latitude = -11,
     depth = 50,
-    time = as.POSIXct(c("2021-02-01", "2020-01-01"), tz = "UTC"),
+    time = as.POSIXct(c("2020-01-01", "2021-02-01"), tz = "UTC"),
     variable = c("oxygen", "temperature"),
     by = "value",
     match = "exact"

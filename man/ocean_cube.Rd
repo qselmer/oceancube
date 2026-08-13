@@ -31,8 +31,10 @@ ocean_cube(
 
 \item{lat}{Non-empty finite numeric vector of latitudes in \verb{[-90, 90]}.}
 
-\item{time}{Non-empty \code{Date}, \code{POSIXct}, or character vector coercible to
-\code{Date}. Values are stored as \code{Date}.}
+\item{time}{Non-empty, unique, strictly increasing \code{Date}, \code{POSIXct}, or
+unambiguous ISO character vector. Civil dates remain \code{Date}; POSIXct
+instants retain sub-day precision and are normalized to UTC. Datetime
+strings must include \code{Z} or an explicit numeric UTC offset.}
 
 \item{data}{Numeric array. Preferred shape is 5D: \verb{[lon, lat, depth, time, var]}.
 A 4D array \verb{[lon, lat, time, var]} is accepted and internally promoted to
@@ -89,11 +91,11 @@ The stable dimensional contract is
 }\if{html}{\out{</div>}}
 
 Coordinate values are preserved in the supplied order; the constructor does
-not sort, deduplicate, or convert longitude conventions. Positive and
-negative depth values are accepted without inferring whether the vertical
-axis is positive upward or downward. Duplicate or non-monotonic coordinate
-values remain supported for compatibility, while variable names must be
-unique.
+not sort, deduplicate, or convert longitude conventions. Time is the
+exception to otherwise permissive coordinate ordering: it must be unique and
+strictly increasing so that temporal identity is unambiguous and aligned
+data are never reordered silently. Positive and negative depth values are
+accepted without inferring vertical direction. Variable names must be unique.
 
 Dimension lengths and axis order form the primary contract. Names attached to
 \code{dim(data)} or \code{dimnames(data)} are descriptive and are not used to determine
@@ -101,10 +103,11 @@ axis meaning. The current \code{data} array is retained for compatibility, but t
 physical storage mechanism is an internal concern that may be represented by
 another backend in a future version.
 
-Optional metadata do not alter dimensional validity. The schemas of
-\code{provenance} and \code{qa} are intentionally not formalized yet. Non-Gregorian CF
-calendars and vertical positive-direction metadata require an explicit
-future policy and are not inferred by this constructor.
+Canonical temporal provenance records class, timezone, source timezone or
+offset when known, calendar, decoder, and normalization. Memory inputs use
+proleptic-Gregorian R semantics. NetCDF calendar policy is applied by
+\code{\link[=read_nc]{read_nc()}} and the lazy backend before this constructor is reached.
+Vertical positive-direction metadata are not inferred here.
 }
 \examples{
 lon <- seq(-82, -80, length.out = 3)

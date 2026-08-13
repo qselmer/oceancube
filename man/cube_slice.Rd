@@ -50,13 +50,14 @@ must not be supplied.
 
 Exact numeric matching uses the values stored in the coordinate vector,
 without an implicit floating-point tolerance. Nearest-neighbour matching is
-independent on each axis, preserves the first position on ties, and rejects
+independent on each axis, chooses the earlier instant on temporal ties, and rejects
 requests outside the stored axis range. It is not interpolation and does not
 alter scientific values.
 
-Requested order and repeated spatial, depth, or time coordinates are
-preserved. Variable names remain unique according to the \verb{<ocean_cube>}
-contract, so repeated variable selections are rejected.
+Requested order and repeated spatial or depth coordinates are preserved.
+Resolved time coordinates must remain unique and strictly increasing because
+the result is itself a canonical cube. Variable names remain unique, so
+repeated variable selections are rejected.
 
 The result is always materialized in memory, but only after all selectors
 have been resolved and only through one indexed \code{.cube_read()} call.

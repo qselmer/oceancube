@@ -571,8 +571,8 @@ test_that("ambiguous stored axes and duplicate selectors are rejected", {
       duplicate_time, path, depth = 0, time = x$time[[1L]],
       variable = "temperature", match = "exact", mode = "horizontal"
     ),
-    "unique stored time",
-    class = "oceancube_transect_selection_error"
+    "validation failed",
+    class = "oceancube_validation_error"
   )
   duplicate_variable <- x
   duplicate_variable$vars <- c("temperature", "temperature")

@@ -138,12 +138,12 @@ test_that("numeric ranges validate type, length, values, and order", {
   )
 })
 
-test_that("ranges select actual values and preserve descending axis order", {
+test_that("ranges preserve non-time axis order and canonical time order", {
   cube <- ocean_cube(
     lon = c(-78, -79, -80),
     lat = c(-10, -11, -12),
     depth = c(50, 0, -50),
-    time = as.Date(c("2021-01-03", "2021-01-02", "2021-01-01")),
+    time = as.Date(c("2021-01-01", "2021-01-02", "2021-01-03")),
     vars = "temperature",
     data = array(seq_len(81), dim = c(3, 3, 3, 3, 1))
   )
@@ -160,7 +160,7 @@ test_that("ranges select actual values and preserve descending axis order", {
   expect_identical(result$depth, c(0, -50))
   expect_identical(
     result$time,
-    as.Date(c("2021-01-02", "2021-01-01"))
+    as.Date(c("2021-01-01", "2021-01-02"))
   )
   expect_identical(
     result$provenance$cube_crop$resolved_indices[1:4],
@@ -168,7 +168,7 @@ test_that("ranges select actual values and preserve descending axis order", {
       longitude = 2:3,
       latitude = 1:3,
       depth = 2:3,
-      time = 2:3
+      time = 1:2
     )
   )
 })
@@ -381,7 +381,7 @@ test_that("Date ranges preserve exact temporal semantics", {
   expect_identical(one$time, as.Date("2021-02-01"))
   expect_error(
     cube_crop(cube, time = c("2020-01-01", "2021-01-01")),
-    "must be a Date range"
+    "two-value Date range"
   )
   expect_error(
     cube_crop(
@@ -393,12 +393,12 @@ test_that("Date ranges preserve exact temporal semantics", {
 })
 
 test_that("POSIXct ranges preserve timezone and real instants", {
-  cube <- crop_baseline_cube()
-  cube$time <- as.POSIXct(cube$time, tz = "UTC")
-  attr(cube$time, "tzone") <- "UTC"
-  cube$temporal_extent <- range(cube$time)
-  dimnames(cube$data)$time <- as.character(cube$time)
-  .check_cube(cube)
+  base <- crop_baseline_cube()
+  cube <- ocean_cube(
+    lon = base$lon, lat = base$lat, depth = base$depth,
+    time = as.POSIXct(base$time, tz = "UTC"), vars = base$vars,
+    units = base$units, data = base$data
+  )
   result <- cube_crop(
     cube,
     time = as.POSIXct(
@@ -410,19 +410,17 @@ test_that("POSIXct ranges preserve timezone and real instants", {
   expect_s3_class(result$time, "POSIXct")
   expect_identical(attr(result$time, "tzone"), "UTC")
   expect_identical(length(result$time), 2L)
-  expect_error(
-    cube_crop(
-      cube,
-      time = as.POSIXct(
-        c("2020-02-01 00:00:00", "2021-01-01 00:00:00"),
-        tz = "America/Lima"
-      )
-    ),
-    "timezone.*does not match"
+  equivalent_zone <- cube_crop(
+    cube,
+    time = as.POSIXct(
+      c("2020-01-31 19:00:00", "2020-12-31 19:00:00"),
+      tz = "America/Lima"
+    )
   )
+  expect_identical(equivalent_zone$time, result$time)
   expect_error(
     cube_crop(cube, time = as.Date(c("2020-02-01", "2021-01-01"))),
-    "must be a POSIXct range"
+    "two-value POSIXct range"
   )
 })
 

@@ -68,6 +68,10 @@ Nearest matching chooses a stored cell and never interpolates. With
 \code{keep_distance = TRUE}, diagnostics distinguish requested values from the
 selected coordinates. This option is available only with
 \verb{by = "value", match = "nearest"}.
+Temporal matching keeps \code{Date} civil-date semantics separate from POSIXct
+instant semantics. POSIXct results remain UTC with sub-day precision.
+Equidistant temporal nearest matches choose the earlier instant, and time
+tolerances must be finite, non-negative scalar \code{difftime} values.
 
 A profile requires exactly one longitude, latitude, and time. A series
 requires exactly one longitude, latitude, and depth. Point and table modes do
@@ -78,6 +82,8 @@ through the backend. Only the selected envelope and variables are read.
 Extracting without selectors requests the complete cube and can create a
 large table; the expected rows and approximate array bytes are calculated
 before reading.
+Source temporal provenance is attached to the returned table without copying
+the backend's raw numeric time vector.
 
 Unlike \code{link_events()}, which enriches independent event rows,
 \code{cube_extract()} generates the Cartesian grid of its axis selectors.

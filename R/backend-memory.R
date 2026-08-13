@@ -500,7 +500,6 @@
     provenance = provenance,
     qa = x$qa
   )
-  out$time <- x$time
   dimnames(out$data) <- dimnames(data)
   .check_cube(out)
   out
@@ -526,10 +525,6 @@
     provenance = provenance,
     qa = auxiliary$qa
   )
-  # ocean_cube() currently normalizes POSIXct to Date. A selection retains the
-  # decoded class already validated on the source header.
-  out$time <- selected_time
-  out$temporal_extent <- range(selected_time)
   dimnames(out$data) <- dimnames(data)
   .check_cube(out)
   out

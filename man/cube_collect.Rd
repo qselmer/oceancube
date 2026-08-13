@@ -22,6 +22,10 @@ Collecting a NetCDF cube reads its complete logical 5D array and preserves
 coordinates, variables, units, scientific metadata, and prior provenance.
 The result no longer depends on the source file and can be modified with
 memory-backend operations; the NetCDF source remains read-only.
+In particular, UTC POSIXct values, sub-day precision, calendar, CF units,
+origin, decoder, and normalization provenance are preserved. Raw numeric
+source time remains a source-backend concern and is not redundantly copied
+into the collected cube.
 
 Before reading, \code{cube_collect()} estimates the minimum memory occupied by the
 materialized double array as \code{prod(.cube_shape(x)) * 8}. This estimate does

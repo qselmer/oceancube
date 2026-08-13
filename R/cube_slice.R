@@ -27,13 +27,14 @@
 #'
 #' Exact numeric matching uses the values stored in the coordinate vector,
 #' without an implicit floating-point tolerance. Nearest-neighbour matching is
-#' independent on each axis, preserves the first position on ties, and rejects
+#' independent on each axis, chooses the earlier instant on temporal ties, and rejects
 #' requests outside the stored axis range. It is not interpolation and does not
 #' alter scientific values.
 #'
-#' Requested order and repeated spatial, depth, or time coordinates are
-#' preserved. Variable names remain unique according to the `<ocean_cube>`
-#' contract, so repeated variable selections are rejected.
+#' Requested order and repeated spatial or depth coordinates are preserved.
+#' Resolved time coordinates must remain unique and strictly increasing because
+#' the result is itself a canonical cube. Variable names remain unique, so
+#' repeated variable selections are rejected.
 #'
 #' The result is always materialized in memory, but only after all selectors
 #' have been resolved and only through one indexed `.cube_read()` call.
@@ -111,6 +112,10 @@ cube_slice <- function(x, longitude = NULL, latitude = NULL, depth = NULL,
     by = by,
     method = method,
     tolerance = tolerance
+  )
+  .validate_time_axis(
+    x$time[resolved$index$time],
+    arg = "resolved time selection"
   )
 
   read_plan <- if (identical(backend_from, "netcdf")) {
@@ -436,7 +441,9 @@ cube_slice <- function(x, longitude = NULL, latitude = NULL, depth = NULL,
       .slice_outside_domain("time", requested[[i]], range(axis_values))
     }
     delta <- abs(axis_numeric - requested_numeric[[i]])
-    index[[i]] <- which.min(delta)
+    minimum <- min(delta)
+    tied <- which(delta == minimum)
+    index[[i]] <- tied[[which.min(axis_numeric[tied])]]
     distance_seconds[[i]] <- delta[[index[[i]]]]
     if (!is.null(tolerance_seconds) &&
         distance_seconds[[i]] > tolerance_seconds) {

@@ -1,5 +1,20 @@
 # oceancube 0.1.0
 
+## Time and calendar foundation (0.2.0 development)
+
+* Preserves `POSIXct` instants and sub-day/fractional-second precision instead
+  of truncating them to `Date`; stored `POSIXct` coordinates are normalized to
+  UTC without changing their epoch values.
+* Gives eager and lazy NetCDF readers the same UTC `POSIXct` CF-time decoder,
+  including seconds, minutes, hours, days, fractional/negative offsets, and
+  offset-bearing origins.
+* Defaults missing CF calendar metadata to `standard`, supports the approved
+  Gregorian-family scope, and now errors for unsupported non-Gregorian
+  calendars rather than reinterpreting them as Gregorian.
+* Requires canonical time axes to be unique and strictly increasing. Duplicate
+  and unsorted coordinates now error with migration guidance; coordinates and
+  aligned data are never sorted or repaired automatically.
+
 ## Core architecture
 
 * Defines a validated five-dimensional `ocean_cube` contract ordered as longitude, latitude, depth, time, and variable.

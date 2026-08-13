@@ -243,7 +243,8 @@ test_that("annual_index preserves missing-data and non-consecutive-year policies
 
   indicators <- annual_index(cube)
 
-  expect_s3_class(cube$time, "Date")
+  expect_s3_class(cube$time, "POSIXct")
+  expect_identical(attr(cube$time, "tzone"), "UTC")
   expect_identical(indicators$year, c(2018L, 2020L, 2021L, 2022L))
   expect_false(any(indicators$year == 2019L))
   expect_identical(indicators$n, c(1L, 1L, 0L, 1L))

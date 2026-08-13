@@ -206,46 +206,35 @@ test_that("invalid, reversed, and empty time ranges fail clearly", {
   )
 })
 
-test_that("POSIXct bounds must preserve the existing cube timezone contract", {
-  cube <- timeseries_test_cube()
-  cube$time <- as.POSIXct(cube$time, tz = "UTC")
-  attr(cube$time, "tzone") <- "UTC"
-  cube$temporal_extent <- range(cube$time)
+test_that("POSIXct bounds use instant semantics across display timezones", {
+  base <- timeseries_test_cube()
+  cube <- ocean_cube(
+    lon = base$lon, lat = base$lat, depth = base$depth,
+    time = as.POSIXct(base$time, tz = "UTC"), vars = base$vars,
+    units = base$units, data = base$data
+  )
   from <- cube$time[[2L]]
 
   plot <- viz.timeseries(cube, "temperature", time_from = from)
 
   expect_s3_class(plot$data$time, "POSIXct")
   expect_identical(attr(plot$data$time, "tzone"), "UTC")
-  expect_error(
-    viz.timeseries(
-      cube, "temperature",
-      time_from = as.POSIXct("2020-01-02", tz = "America/Lima")
-    ),
-    "timezone", class = "oceancube_viz_selection_error"
+  equivalent <- viz.timeseries(
+    cube, "temperature",
+    time_from = as.POSIXct("2020-01-01 19:00:00", tz = "America/Lima")
   )
+  expect_identical(equivalent$data$time, plot$data$time)
 })
 
-test_that("unsorted and duplicate times retain raw rows in stable chronological order", {
+test_that("canonical constructor rejects unsorted and duplicate plotting time", {
   time <- as.Date(c("2020-01-03", "2020-01-01", "2020-01-01", "2020-01-02"))
-  cube <- timeseries_test_cube(
-    time = time,
-    data = array(c(30, 10, 11, 20), dim = c(1, 1, 1, 4, 1))
+  expect_error(
+    timeseries_test_cube(
+      time = time,
+      data = array(c(30, 10, 11, 20), dim = c(1, 1, 1, 4, 1))
+    ),
+    "unique|strictly increasing"
   )
-  full <- viz.timeseries(cube, "temperature")
-  duplicate_bound <- viz.timeseries(
-    cube, "temperature", time_from = as.Date("2020-01-01"),
-    time_to = as.Date("2020-01-01")
-  )
-
-  expect_identical(
-    full$data$time,
-    as.Date(c("2020-01-01", "2020-01-01", "2020-01-02", "2020-01-03"))
-  )
-  expect_identical(full$data$value, c(10, 11, 20, 30))
-  expect_identical(duplicate_bound$data$time, rep(as.Date("2020-01-01"), 2))
-  expect_identical(duplicate_bound$data$value, c(10, 11))
-  expect_identical(attr(duplicate_bound, "oceancube_n_time"), 2L)
 })
 
 test_that("duplicate raw rows are retained without aggregation", {

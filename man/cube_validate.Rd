@@ -10,7 +10,9 @@ cube_validate(x, strict = FALSE)
 \item{x}{An object to validate as an \verb{<ocean_cube>}.}
 
 \item{strict}{A non-missing logical scalar. If \code{TRUE}, any failed check
-raises an error of class \code{oceancube_validation_error}; the condition
+raises an error of class \code{oceancube_validation_error}; this includes
+duplicate or non-increasing time, non-UTC stored POSIXct, unsupported
+calendar metadata, and inconsistent temporal provenance. The condition
 includes the complete report in its \code{report} field.}
 }
 \value{
@@ -23,6 +25,13 @@ A data frame with class \code{oceancube_validation} and columns \code{check},
 and coordinate contract of an ocean cube. Unlike \code{\link[=cube_inspect]{cube_inspect()}}, it
 returns one row per validation check and never reads a complete NetCDF data
 payload.
+}
+\details{
+Both modes diagnose temporal class, missing/non-finite values,
+uniqueness, strict ordering, canonical UTC, supported calendar metadata,
+and provenance consistency. \code{strict = FALSE} returns those failures as
+rows; \code{strict = TRUE} raises after assembling the complete report. No
+validation path sorts, deduplicates, or otherwise repairs scientific data.
 }
 \examples{
 values <- array(1:4, dim = c(2, 2, 1, 1, 1))

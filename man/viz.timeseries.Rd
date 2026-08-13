@@ -76,17 +76,15 @@ impute, or otherwise transform the selected observations.
 \details{
 The simple series contract is exactly one variable, one longitude, one
 latitude, one depth or surface, and multiple stored time positions. A bounded
-interval is inclusive. Stored observations are plotted in stable chronological
-order: duplicate times and duplicate raw rows are retained in their original
-relative order and are never averaged or deduplicated.
+interval is inclusive. Canonical cube time is already unique and strictly
+increasing; extracted rows are plotted in stable chronological order and are
+never averaged or deduplicated. POSIXct bounds use instant semantics and may
+be expressed in a display timezone other than canonical UTC.
 
 Data selection is delegated to \code{cube_extract(mode = "series")}. For a lazy
 NetCDF cube, a unique bounded time selection reads only the selected point,
 depth, times, and variable (or the backend's minimal physical envelope), not
-the complete cube. When the selected stored time values themselves are
-duplicated, value matching cannot distinguish their positions; in that case
-the complete point series is read and then bounded in memory so every duplicate
-observation is retained. This still does not materialize the complete cube.
+the complete cube.
 }
 \examples{
 if (requireNamespace("ggplot2", quietly = TRUE)) {

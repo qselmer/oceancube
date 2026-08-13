@@ -7,7 +7,9 @@
 #' @param x A valid `<ocean_cube>` using the memory or NetCDF backend.
 #' @param longitude,latitude,depth Optional numeric ranges `c(lower, upper)`.
 #'   `NULL` keeps the complete axis.
-#' @param time Optional `Date` or `POSIXct` range compatible with `x$time`.
+#' @param time Optional two-value `Date` or `POSIXct` range compatible with
+#'   `x$time`. POSIXct limits match elapsed instants and may use a display
+#'   timezone other than the cube's canonical UTC.
 #' @param variable Optional exact variable names. `NULL` keeps all variables.
 #' @param bbox Optional numeric vector named exactly `xmin`, `ymin`, `xmax`,
 #'   and `ymax`. It is an alternative to `longitude` and `latitude`.
@@ -19,8 +21,9 @@
 #'
 #' @details
 #' Ranges are closed: cell centres exactly equal to either limit are included.
-#' Limits must be supplied as `c(lower, upper)` even when a stored axis is
-#' descending; output coordinates retain their original order. A range that
+#' Limits must be supplied as `c(lower, upper)`. The public API retains this
+#' two-limit contract; the shared internal time resolver also supports one open
+#' bound for bounded downstream workflows. A range that
 #' intersects the numeric domain but contains no stored centre is an error.
 #' No nearest-neighbour adjustment, interpolation, cell-bound calculation, or
 #' coordinate generation is performed.
@@ -428,53 +431,64 @@ cube_crop <- function(x, longitude = NULL, latitude = NULL, depth = NULL,
       clipped = FALSE
     ))
   }
-  if (!inherits(requested, expected_class) || !is.null(dim(requested))) {
-    .abort_badarg(
-      "time",
-      paste0(
-        "must be a ", expected_class,
-        " range compatible with the cube time axis; use the same class or",
-        " `cube_slice(..., by = \"index\")`."
+  open_bounds <- is.list(requested) &&
+    !inherits(requested, c("Date", "POSIXct"))
+  if (open_bounds) {
+    if (length(requested) != 2L || all(vapply(requested, is.null, logical(1)))) {
+      .abort_badarg(
+        "time",
+        "internal open ranges require two bounds with at least one supplied value."
       )
-    )
-  }
-  if (length(requested) != 2L) {
-    .abort_badarg("time", "must contain exactly two temporal limits.")
-  }
-  if (anyNA(requested) || any(!is.finite(as.numeric(requested)))) {
-    .abort_badarg("time", "must contain finite, non-missing temporal limits.")
-  }
-  if (identical(expected_class, "POSIXct")) {
-    axis_tz <- .crop_posix_timezone(axis_values)
-    requested_tz <- .crop_posix_timezone(requested)
-    if (!identical(axis_tz, requested_tz)) {
+    }
+    supplied <- requested
+  } else {
+    if (length(requested) != 2L ||
+        !inherits(requested, expected_class) || !is.null(dim(requested))) {
       .abort_badarg(
         "time",
         paste0(
-          "timezone `", requested_tz, "` does not match cube timezone `",
-          axis_tz, "`; supply limits using the cube timezone."
+          "must be a two-value ", expected_class,
+          " range compatible with the cube time axis."
         )
       )
     }
+    supplied <- list(requested[[1L]], requested[[2L]])
   }
-  if (requested[[1L]] > requested[[2L]]) {
+  for (bound in supplied) {
+    if (is.null(bound)) next
+    if (!inherits(bound, expected_class) || length(bound) != 1L ||
+        is.na(bound) || !is.finite(as.numeric(bound))) {
+      .abort_badarg(
+        "time",
+        paste0("bounds must be finite, non-missing ", expected_class, " values.")
+      )
+    }
+  }
+  lower <- supplied[[1L]] %||% domain[[1L]]
+  upper <- supplied[[2L]] %||% domain[[2L]]
+  if (identical(expected_class, "POSIXct")) {
+    lower <- .as_utc_posixct(lower)
+    upper <- .as_utc_posixct(upper)
+  }
+  bounds <- c(lower, upper)
+  if (identical(expected_class, "POSIXct")) bounds <- .as_utc_posixct(bounds)
+  if (bounds[[1L]] > bounds[[2L]]) {
     .abort_badarg(
       "time",
       "limits must be ordered from the earlier to the later instant."
     )
   }
 
-  exceeds <- requested[[1L]] < domain[[1L]] ||
-    requested[[2L]] > domain[[2L]]
+  exceeds <- bounds[[1L]] < domain[[1L]] || bounds[[2L]] > domain[[2L]]
   if (identical(outside, "error") && exceeds) {
-    .crop_range_outside("time", requested, domain)
+    .crop_range_outside("time", bounds, domain)
   }
-  applied <- requested
+  applied <- bounds
   if (identical(outside, "clip")) {
-    if (requested[[1L]] < domain[[1L]]) applied[[1L]] <- domain[[1L]]
-    if (requested[[2L]] > domain[[2L]]) applied[[2L]] <- domain[[2L]]
+    if (bounds[[1L]] < domain[[1L]]) applied[[1L]] <- domain[[1L]]
+    if (bounds[[2L]] > domain[[2L]]) applied[[2L]] <- domain[[2L]]
     if (applied[[1L]] > applied[[2L]]) {
-      .crop_range_no_overlap("time", requested, domain)
+      .crop_range_no_overlap("time", bounds, domain)
     }
   }
   index <- which(axis_values >= applied[[1L]] & axis_values <= applied[[2L]])
@@ -487,6 +501,6 @@ cube_crop <- function(x, longitude = NULL, latitude = NULL, depth = NULL,
     requested = requested,
     applied = applied,
     domain = domain,
-    clipped = isTRUE(any(as.numeric(applied) != as.numeric(requested)))
+    clipped = isTRUE(any(as.numeric(applied) != as.numeric(bounds)))
   )
 }

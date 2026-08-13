@@ -59,12 +59,6 @@ test_that("supported coordinate conventions are preserved without reordering", {
     lat = c(-12, -12),
     depth = c(0, 0)
   )
-  repeated_time <- make_contract_cube(
-    time = as.Date(c(
-      "2020-02-01", "2020-01-01",
-      "2020-01-01", "2021-01-01"
-    ))
-  )
   posix_time <- make_contract_cube(
     time = as.POSIXct(c(
       "2020-01-01", "2020-02-01",
@@ -78,11 +72,14 @@ test_that("supported coordinate conventions are preserved without reordering", {
   expect_identical(duplicated_coordinates$lon, c(-80, -80, -79))
   expect_identical(duplicated_coordinates$lat, c(-12, -12))
   expect_identical(duplicated_coordinates$depth, c(0, 0))
-  expect_identical(
-    repeated_time$time,
-    as.Date(c("2020-02-01", "2020-01-01", "2020-01-01", "2021-01-01"))
+  expect_error(
+    make_contract_cube(time = as.Date(c(
+      "2020-02-01", "2020-01-01", "2020-01-01", "2021-01-01"
+    ))),
+    "unique|strictly increasing"
   )
-  expect_s3_class(posix_time$time, "Date")
+  expect_s3_class(posix_time$time, "POSIXct")
+  expect_identical(attr(posix_time$time, "tzone"), "UTC")
 })
 
 test_that("optional metadata and units are preserved without changing dimensions", {
@@ -110,7 +107,9 @@ test_that("optional metadata and units are preserved without changing dimensions
   expect_identical(cube$dataset_id, "contract-fixture")
   expect_identical(cube$mask, mask)
   expect_identical(cube$dc, dc)
-  expect_identical(cube$provenance, provenance)
+  expect_identical(cube$provenance$provider, provenance$provider)
+  expect_identical(cube$provenance$request, provenance$request)
+  expect_identical(cube$provenance$time$canonical_class, "Date")
   expect_identical(cube$qa, qa)
   expect_identical(cube$units, list(oxygen = "mmol m-3", temperature = "degC"))
   expect_true(.check_cube(cube))
@@ -165,7 +164,7 @@ test_that("invalid coordinate values and variable names are rejected clearly", {
   )
   expect_error(
     make_contract_cube(time = c(1, 2, 3, 4)),
-    "Invalid `time`: must be Date, POSIXct, or character"
+    "Invalid `time`: must be Date, POSIXct, or unambiguous ISO character"
   )
   expect_error(
     make_contract_cube(vars = c("temperature", "temperature"), units = NULL),

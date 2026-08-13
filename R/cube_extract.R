@@ -37,6 +37,10 @@
 #' `keep_distance = TRUE`, diagnostics distinguish requested values from the
 #' selected coordinates. This option is available only with
 #' `by = "value", match = "nearest"`.
+#' Temporal matching keeps `Date` civil-date semantics separate from POSIXct
+#' instant semantics. POSIXct results remain UTC with sub-day precision.
+#' Equidistant temporal nearest matches choose the earlier instant, and time
+#' tolerances must be finite, non-negative scalar `difftime` values.
 #'
 #' A profile requires exactly one longitude, latitude, and time. A series
 #' requires exactly one longitude, latitude, and depth. Point and table modes do
@@ -47,6 +51,8 @@
 #' Extracting without selectors requests the complete cube and can create a
 #' large table; the expected rows and approximate array bytes are calculated
 #' before reading.
+#' Source temporal provenance is attached to the returned table without copying
+#' the backend's raw numeric time vector.
 #'
 #' Unlike `link_events()`, which enriches independent event rows,
 #' `cube_extract()` generates the Cartesian grid of its axis selectors.
@@ -230,6 +236,8 @@ cube_extract <- function(x, longitude = NULL, latitude = NULL, depth = NULL,
     keep_distance = keep_distance,
     source = x$source,
     dataset_id = x$dataset_id,
+    time = .find_time_provenance(x$provenance),
+    source_provenance = x$provenance,
     netcdf_read = if (is.null(read_plan)) {
       NULL
     } else {

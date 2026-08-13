@@ -7,8 +7,10 @@
 #' @param lon Non-empty finite numeric vector of longitudes, using either the
 #'   `[-180, 180]` or `[0, 360]` convention.
 #' @param lat Non-empty finite numeric vector of latitudes in `[-90, 90]`.
-#' @param time Non-empty `Date`, `POSIXct`, or character vector coercible to
-#'   `Date`. Values are stored as `Date`.
+#' @param time Non-empty, unique, strictly increasing `Date`, `POSIXct`, or
+#'   unambiguous ISO character vector. Civil dates remain `Date`; POSIXct
+#'   instants retain sub-day precision and are normalized to UTC. Datetime
+#'   strings must include `Z` or an explicit numeric UTC offset.
 #' @param data Numeric array. Preferred shape is 5D: `[lon, lat, depth, time, var]`.
 #'   A 4D array `[lon, lat, time, var]` is accepted and internally promoted to
 #'   a single-depth cube.
@@ -46,11 +48,11 @@
 #' ```
 #'
 #' Coordinate values are preserved in the supplied order; the constructor does
-#' not sort, deduplicate, or convert longitude conventions. Positive and
-#' negative depth values are accepted without inferring whether the vertical
-#' axis is positive upward or downward. Duplicate or non-monotonic coordinate
-#' values remain supported for compatibility, while variable names must be
-#' unique.
+#' not sort, deduplicate, or convert longitude conventions. Time is the
+#' exception to otherwise permissive coordinate ordering: it must be unique and
+#' strictly increasing so that temporal identity is unambiguous and aligned
+#' data are never reordered silently. Positive and negative depth values are
+#' accepted without inferring vertical direction. Variable names must be unique.
 #'
 #' Dimension lengths and axis order form the primary contract. Names attached to
 #' `dim(data)` or `dimnames(data)` are descriptive and are not used to determine
@@ -58,10 +60,11 @@
 #' physical storage mechanism is an internal concern that may be represented by
 #' another backend in a future version.
 #'
-#' Optional metadata do not alter dimensional validity. The schemas of
-#' `provenance` and `qa` are intentionally not formalized yet. Non-Gregorian CF
-#' calendars and vertical positive-direction metadata require an explicit
-#' future policy and are not inferred by this constructor.
+#' Canonical temporal provenance records class, timezone, source timezone or
+#' offset when known, calendar, decoder, and normalization. Memory inputs use
+#' proleptic-Gregorian R semantics. NetCDF calendar policy is applied by
+#' [read_nc()] and the lazy backend before this constructor is reached.
+#' Vertical positive-direction metadata are not inferred here.
 #'
 #' @examples
 #' lon <- seq(-82, -80, length.out = 3)
@@ -76,17 +79,22 @@ ocean_cube <- function(lon, lat, time, data, depth = NULL, vars = NULL, units = 
                        temporal_extent = NULL, depth_extent = NULL, mask = NULL,
                        dc = NULL, climatology = NULL, anomaly = NULL,
                        provenance = NULL, qa = NULL) {
-  if (!inherits(time, c("Date", "POSIXct")) && !is.character(time)) {
-    .abort_badarg("time", "must be Date, POSIXct, or character data coercible to Date.")
-  }
-  time <- tryCatch(
-    as.Date(time),
-    error = function(e) {
-      .abort_badarg("time", "must be Date, POSIXct, or character data coercible to Date.")
+  canonical_time <- .canonicalize_time(time)
+  time <- canonical_time$values
+  provenance <- .attach_time_provenance(provenance, canonical_time$provenance)
+  if (!is.null(temporal_extent)) {
+    temporal_extent <- .canonicalize_time(
+      temporal_extent,
+      arg = "temporal_extent",
+      validate_axis = FALSE
+    )$values
+    expected_class <- if (inherits(time, "Date")) "Date" else "POSIXct"
+    if (!inherits(temporal_extent, expected_class)) {
+      .abort_badarg(
+        "temporal_extent",
+        paste0("must use the same ", expected_class, " semantics as `time`.")
+      )
     }
-  )
-  if (anyNA(time)) {
-    .abort_badarg("time", "must be coercible to Date without NA values.")
   }
 
   if (!is.array(data) || !is.numeric(data)) {

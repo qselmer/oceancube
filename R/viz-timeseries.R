@@ -40,17 +40,15 @@
 #' @details
 #' The simple series contract is exactly one variable, one longitude, one
 #' latitude, one depth or surface, and multiple stored time positions. A bounded
-#' interval is inclusive. Stored observations are plotted in stable chronological
-#' order: duplicate times and duplicate raw rows are retained in their original
-#' relative order and are never averaged or deduplicated.
+#' interval is inclusive. Canonical cube time is already unique and strictly
+#' increasing; extracted rows are plotted in stable chronological order and are
+#' never averaged or deduplicated. POSIXct bounds use instant semantics and may
+#' be expressed in a display timezone other than canonical UTC.
 #'
 #' Data selection is delegated to `cube_extract(mode = "series")`. For a lazy
 #' NetCDF cube, a unique bounded time selection reads only the selected point,
 #' depth, times, and variable (or the backend's minimal physical envelope), not
-#' the complete cube. When the selected stored time values themselves are
-#' duplicated, value matching cannot distinguish their positions; in that case
-#' the complete point series is read and then bounded in memory so every duplicate
-#' observation is retained. This still does not materialize the complete cube.
+#' the complete cube.
 #'
 #' @export
 #' @seealso [cube_extract()], [cube_crop()], [viz.profile()], [viz.transect()],
@@ -155,16 +153,6 @@ viz.timeseries <- function(
         "oceancube_viz_selection_error"
       )
     }
-    if (identical(expected_class, "POSIXct") &&
-        !identical(time_zone(value), expected_zone)) {
-      abort_viz(
-        paste0(
-          "`", argument, "` timezone `", time_zone(value),
-          "` does not match cube timezone `", expected_zone, "`."
-        ),
-        "oceancube_viz_selection_error"
-      )
-    }
     invisible(TRUE)
   }
   horizontal_distance_km <- function(lon_from, lat_from, lon_to, lat_to) {
@@ -251,6 +239,10 @@ viz.timeseries <- function(
   }
   validate_time_bound(time_from, "time_from", expected_time_class, expected_zone)
   validate_time_bound(time_to, "time_to", expected_time_class, expected_zone)
+  if (identical(expected_time_class, "POSIXct")) {
+    if (!is.null(time_from)) time_from <- .as_utc_posixct(time_from)
+    if (!is.null(time_to)) time_to <- .as_utc_posixct(time_to)
+  }
   if (!is.null(time_from) && !is.null(time_to) && time_from > time_to) {
     abort_viz(
       "`time_from` must be earlier than or equal to `time_to`.",

@@ -1,6 +1,6 @@
 #' Inspect an ocean cube
 #'
-#' `cube_inspect()` validates a cube strictly and returns a compact structural
+#' `cube_inspect()` returns a compact structural and diagnostic
 #' summary. It complements [cube_validate()] by describing dimensions, ranges,
 #' resolution, estimated size, missing values, and safe provenance metadata.
 #'
@@ -12,6 +12,10 @@
 #'
 #' @return A list with class `ocean_cube_inspection` containing structural,
 #'   coordinate, storage, missing-value, validation, and provenance summaries.
+#'   `time_summary` reports class, count, range, timezone, calendar, duplicate
+#'   and ordering flags, regularity, and minimum/median/maximum positive
+#'   intervals. Legacy duplicate or unsorted axes can be diagnosed without
+#'   being reordered or repaired.
 #' @export
 #' @seealso [cube_validate()], [ocean_cube()]
 #'
@@ -24,7 +28,27 @@
 #' cube_inspect(cube)
 cube_inspect <- function(x, missing = c("auto", "none", "full")) {
   missing <- match.arg(missing)
-  validation <- cube_validate(x, strict = TRUE)
+  validation <- cube_validate(x, strict = FALSE)
+  temporal_diagnostics <- c(
+    "time_unique", "time_strictly_increasing", "time_timezone",
+    "time_calendar", "time_provenance"
+  )
+  blocking_failures <- validation$status == "FAIL" &
+    !validation$check %in% temporal_diagnostics
+  if (any(blocking_failures)) {
+    rlang::abort(
+      paste0(
+        "Ocean cube validation failed ", sum(blocking_failures),
+        " non-temporal structural check(s)."
+      ),
+      class = "oceancube_validation_error",
+      report = validation
+    )
+  }
+  legacy_temporal_axis <- any(
+    validation$status == "FAIL" & validation$check %in%
+      c("time_unique", "time_strictly_increasing", "time_timezone")
+  )
   backend <- .cube_backend(x)
   axes <- c("longitude", "latitude", "depth", "time", "variable")
   dimensions <- stats::setNames(
@@ -39,10 +63,12 @@ cube_inspect <- function(x, missing = c("auto", "none", "full")) {
     }
     numeric_values <- if (time_axis) as.numeric(values) else as.numeric(values)
     differences <- diff(numeric_values)
-    regular <- length(differences) <= 1L || isTRUE(all.equal(
+    positive <- differences[is.finite(differences) & differences > 0]
+    increasing <- length(differences) == 0L || all(differences > 0)
+    regular <- increasing && (length(differences) <= 1L || isTRUE(all.equal(
       differences, rep(differences[[1L]], length(differences)),
       tolerance = sqrt(.Machine$double.eps), check.attributes = FALSE
-    ))
+    )))
     resolution <- if (length(differences) == 0L) {
       NA_real_
     } else if (regular) {
@@ -54,6 +80,9 @@ cube_inspect <- function(x, missing = c("auto", "none", "full")) {
       differences = differences,
       regular = regular,
       resolution = resolution,
+      minimum_positive = if (length(positive)) min(positive) else NA_real_,
+      median_positive = if (length(positive)) stats::median(positive) else NA_real_,
+      maximum_positive = if (length(positive)) max(positive) else NA_real_,
       unit = if (time_axis) {
         if (inherits(values, "Date")) "days" else "seconds"
       } else {
@@ -75,6 +104,22 @@ cube_inspect <- function(x, missing = c("auto", "none", "full")) {
     depth = axis_resolution(x$depth, surface = surface),
     time = axis_resolution(x$time, time_axis = TRUE)
   )
+  time_provenance <- .find_time_provenance(x$provenance)
+  time_numeric <- as.numeric(x$time)
+  time_summary <- list(
+    class = if (inherits(x$time, "Date")) "Date" else "POSIXct",
+    n = length(x$time),
+    range = range(x$time),
+    timezone = if (inherits(x$time, "POSIXct")) .time_timezone(x$time) else NA_character_,
+    calendar = if (is.list(time_provenance)) time_provenance$calendar %||% NA_character_ else NA_character_,
+    duplicates = anyDuplicated(time_numeric) > 0L,
+    strictly_increasing = length(time_numeric) <= 1L || all(diff(time_numeric) > 0),
+    regular = coordinate_resolution$time$regular,
+    minimum_positive_interval = coordinate_resolution$time$minimum_positive,
+    median_positive_interval = coordinate_resolution$time$median_positive,
+    maximum_positive_interval = coordinate_resolution$time$maximum_positive,
+    interval_unit = coordinate_resolution$time$unit
+  )
 
   units <- x$units
   if (is.null(units)) {
@@ -85,11 +130,15 @@ cube_inspect <- function(x, missing = c("auto", "none", "full")) {
     units <- units[x$vars]
   }
 
-  estimated_bytes <- .cube_estimated_bytes(x)
+  estimated_bytes <- .cube_product_as_double(
+    dimensions,
+    "logical cube elements"
+  ) * 8
 
   total_by_variable <- rep(prod(as.double(dimensions[seq_len(4L)])), length(x$vars))
   missing_values <- NULL
-  compute_missing <- identical(backend, "memory") && missing %in% c("auto", "full")
+  compute_missing <- identical(backend, "memory") &&
+    missing %in% c("auto", "full") && !legacy_temporal_axis
   if (identical(backend, "netcdf") && identical(missing, "full")) {
     warning(
       "`missing = \"full\"` materializes the complete NetCDF cube in memory.",
@@ -123,7 +172,13 @@ cube_inspect <- function(x, missing = c("auto", "none", "full")) {
     )
   } else {
     missing_summary <- list(
-      status = if (identical(missing, "none")) "not requested" else "not materialized",
+      status = if (identical(missing, "none")) {
+        "not requested"
+      } else if (legacy_temporal_axis) {
+        "not materialized: legacy temporal axis"
+      } else {
+        "not materialized"
+      },
       computed = FALSE,
       total = sum(total_by_variable),
       missing = NA_real_,
@@ -162,6 +217,7 @@ cube_inspect <- function(x, missing = c("auto", "none", "full")) {
       depth = x$depth_extent
     ),
     time_resolution = coordinate_resolution$time,
+    time_summary = time_summary,
     depth_resolution = coordinate_resolution$depth,
     estimated_bytes = estimated_bytes,
     missing = missing_summary,
@@ -201,6 +257,11 @@ print.ocean_cube_inspection <- function(x, ...) {
   cat("  variables   : ", paste0(x$variables, " [", unit_values, "]", collapse = ", "), "\n", sep = "")
   cat("  time        : ", range_text(x$coordinate_ranges$time),
       " (", resolution_text(x$time_resolution), ")\n", sep = "")
+  cat("  time class  : ", x$time_summary$class,
+      if (!is.na(x$time_summary$timezone)) paste0(" [", x$time_summary$timezone, "]") else "",
+      "; calendar=", x$time_summary$calendar,
+      "; increasing=", x$time_summary$strictly_increasing,
+      "; duplicates=", x$time_summary$duplicates, "\n", sep = "")
   cat("  depth       : ", range_text(x$coordinate_ranges$depth),
       " (", resolution_text(x$depth_resolution), ")\n", sep = "")
   cat("  est. bytes  : ", format(x$estimated_bytes, scientific = FALSE), "\n", sep = "")

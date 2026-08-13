@@ -7,12 +7,20 @@
 #'
 #' @param x An object to validate as an `<ocean_cube>`.
 #' @param strict A non-missing logical scalar. If `TRUE`, any failed check
-#'   raises an error of class `oceancube_validation_error`; the condition
+#'   raises an error of class `oceancube_validation_error`; this includes
+#'   duplicate or non-increasing time, non-UTC stored POSIXct, unsupported
+#'   calendar metadata, and inconsistent temporal provenance. The condition
 #'   includes the complete report in its `report` field.
 #'
 #' @return A data frame with class `oceancube_validation` and columns `check`,
 #'   `status`, `severity`, `component`, `message`, `repairable`, and
 #'   `suggested_action`.
+#'
+#' @details Both modes diagnose temporal class, missing/non-finite values,
+#'   uniqueness, strict ordering, canonical UTC, supported calendar metadata,
+#'   and provenance consistency. `strict = FALSE` returns those failures as
+#'   rows; `strict = TRUE` raises after assembling the complete report. No
+#'   validation path sorts, deduplicates, or otherwise repairs scientific data.
 #' @export
 #' @seealso [cube_inspect()], [ocean_cube()]
 #'
@@ -176,6 +184,76 @@ cube_validate <- function(x, strict = FALSE) {
     "Time contains missing or undecodable values.",
     repairable = TRUE,
     suggested_action = "Repair or remove missing time coordinates."
+  )
+  time_numeric <- if (time_complete) as.numeric(time) else numeric()
+  time_finite <- time_complete && all(is.finite(time_numeric))
+  add(
+    "time_finite", time_finite, "time",
+    "Time contains only finite values.",
+    "Time contains non-finite values.",
+    repairable = TRUE,
+    suggested_action = "Repair or remove non-finite time coordinates explicitly."
+  )
+  time_unique <- time_finite && anyDuplicated(time_numeric) == 0L
+  add(
+    "time_unique", time_unique, "time",
+    "Time coordinates are unique.",
+    "Time contains duplicate coordinates.",
+    repairable = TRUE,
+    suggested_action = paste(
+      "Resolve duplicate coordinates and aligned observations explicitly;",
+      "do not silently deduplicate or aggregate."
+    )
+  )
+  time_increasing <- time_unique &&
+    (length(time_numeric) <= 1L || all(diff(time_numeric) > 0))
+  add(
+    "time_strictly_increasing", time_increasing, "time",
+    "Time coordinates are strictly increasing.",
+    "Time coordinates are not strictly increasing.",
+    repairable = TRUE,
+    suggested_action = paste(
+      "Reorder the time axis and aligned data explicitly;",
+      "do not sort the coordinate alone."
+    )
+  )
+  time_timezone_ok <- time_class &&
+    (!inherits(time, "POSIXct") || identical(.time_timezone(time), "UTC"))
+  add(
+    "time_timezone", time_timezone_ok, "time",
+    if (inherits(time, "POSIXct")) "Stored POSIXct time uses canonical UTC." else "Date time has no timezone semantics.",
+    "Stored POSIXct time must use canonical UTC.",
+    repairable = TRUE,
+    suggested_action = "Normalize POSIXct instants to UTC without changing their numeric epoch values."
+  )
+
+  time_provenance <- .find_time_provenance(value("provenance"))
+  supported_calendars <- c("standard", "gregorian", "proleptic_gregorian")
+  time_calendar <- if (is.list(time_provenance)) time_provenance$calendar else NULL
+  calendar_ok <- is.character(time_calendar) && length(time_calendar) == 1L &&
+    !is.na(time_calendar) && time_calendar %in% supported_calendars
+  add(
+    "time_calendar", calendar_ok, "time",
+    paste0("Time calendar `", time_calendar, "` is supported."),
+    if (is.null(time_calendar)) {
+      "Canonical time calendar metadata are missing."
+    } else {
+      paste0("Time calendar `", time_calendar, "` is unsupported or invalid.")
+    },
+    repairable = TRUE,
+    suggested_action = "Restore supported calendar provenance; never reinterpret an unsupported calendar as Gregorian."
+  )
+  expected_class <- if (inherits(time, "Date")) "Date" else if (inherits(time, "POSIXct")) "POSIXct" else NA_character_
+  provenance_consistent <- calendar_ok &&
+    identical(time_provenance$canonical_class, expected_class) &&
+    (!identical(expected_class, "POSIXct") ||
+       identical(time_provenance$canonical_timezone, "UTC"))
+  add(
+    "time_provenance", provenance_consistent, "provenance",
+    "Temporal provenance matches the canonical time class and timezone.",
+    "Temporal provenance is missing or inconsistent with the stored time axis.",
+    repairable = TRUE,
+    suggested_action = "Reconstruct temporal provenance from a trustworthy source descriptor."
   )
 
   depth_numeric <- is.numeric(depth) && is.null(dim(depth)) && length(depth) > 0L
@@ -346,10 +424,11 @@ cube_validate <- function(x, strict = FALSE) {
   temporal <- value("temporal_extent")
   temporal_ok <- time_complete &&
     (is.null(temporal) ||
-       (inherits(temporal, c("Date", "POSIXct")) && length(temporal) == 2L &&
-          !anyNA(temporal) && as.Date(temporal[1L]) <= as.Date(temporal[2L]) &&
-          min(as.Date(time)) >= as.Date(temporal[1L]) &&
-          max(as.Date(time)) <= as.Date(temporal[2L])))
+       (inherits(temporal, expected_class) && length(temporal) == 2L &&
+          !anyNA(temporal) && all(is.finite(as.numeric(temporal))) &&
+          (!inherits(temporal, "POSIXct") || identical(.time_timezone(temporal), "UTC")) &&
+          temporal[1L] <= temporal[2L] &&
+          min(time) >= temporal[1L] && max(time) <= temporal[2L]))
   add(
     "temporal_extent", temporal_ok, "temporal_extent",
     if (is.null(temporal)) "Temporal extent is absent and can be derived from time." else "Temporal extent is ordered and covers time.",

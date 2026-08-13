@@ -17,9 +17,13 @@ materializing the complete cube.}
 \value{
 A list with class \code{ocean_cube_inspection} containing structural,
 coordinate, storage, missing-value, validation, and provenance summaries.
+\code{time_summary} reports class, count, range, timezone, calendar, duplicate
+and ordering flags, regularity, and minimum/median/maximum positive
+intervals. Legacy duplicate or unsorted axes can be diagnosed without
+being reordered or repaired.
 }
 \description{
-\code{cube_inspect()} validates a cube strictly and returns a compact structural
+\code{cube_inspect()} returns a compact structural and diagnostic
 summary. It complements \code{\link[=cube_validate]{cube_validate()}} by describing dimensions, ranges,
 resolution, estimated size, missing values, and safe provenance metadata.
 }

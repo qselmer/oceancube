@@ -21,7 +21,9 @@ cube_crop(
 \item{longitude, latitude, depth}{Optional numeric ranges \code{c(lower, upper)}.
 \code{NULL} keeps the complete axis.}
 
-\item{time}{Optional \code{Date} or \code{POSIXct} range compatible with \code{x$time}.}
+\item{time}{Optional two-value \code{Date} or \code{POSIXct} range compatible with
+\code{x$time}. POSIXct limits match elapsed instants and may use a display
+timezone other than the cube's canonical UTC.}
 
 \item{variable}{Optional exact variable names. \code{NULL} keeps all variables.}
 
@@ -42,8 +44,9 @@ memory-backed \verb{<ocean_cube>}.
 }
 \details{
 Ranges are closed: cell centres exactly equal to either limit are included.
-Limits must be supplied as \code{c(lower, upper)} even when a stored axis is
-descending; output coordinates retain their original order. A range that
+Limits must be supplied as \code{c(lower, upper)}. The public API retains this
+two-limit contract; the shared internal time resolver also supports one open
+bound for bounded downstream workflows. A range that
 intersects the numeric domain but contains no stored centre is an error.
 No nearest-neighbour adjustment, interpolation, cell-bound calculation, or
 coordinate generation is performed.

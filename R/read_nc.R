@@ -13,7 +13,14 @@
 #' @param source Optional source label.
 #' @param dataset_id Optional dataset identifier.
 #'
-#' @return An `<ocean_cube>` object.
+#' @return An `<ocean_cube>` object. CF time is decoded as UTC `POSIXct`
+#'   without truncating sub-day or fractional-second precision.
+#'
+#' @details CF units in seconds, minutes, hours, or days since an offset-aware
+#'   origin are supported. `standard` and `gregorian` are accepted on or after
+#'   1582-10-15, and `proleptic_gregorian` is supported explicitly. Missing
+#'   calendar metadata defaults to `standard`. Other calendars error rather
+#'   than being reinterpreted as Gregorian.
 #' @export
 read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
                     depth_name = NULL, time_name = NULL, source = "netcdf",
@@ -37,9 +44,10 @@ read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
   time_units <- ncdf4::ncatt_get(nc, time_name, "units")$value
   time_calendar <- tryCatch({
     calendar_attr <- ncdf4::ncatt_get(nc, time_name, "calendar")
-    if (isTRUE(calendar_attr$hasatt)) calendar_attr$value else "gregorian"
-  }, error = function(e) "gregorian")
-  time <- .read_cf_time(time_raw, time_units, calendar = time_calendar)
+    if (isTRUE(calendar_attr$hasatt)) calendar_attr$value else NA_character_
+  }, error = function(e) NA_character_)
+  time_descriptor <- .decode_cf_time(time_raw, time_units, calendar = time_calendar)
+  time <- time_descriptor$decoded_values
 
   all_vars <- names(nc$var)
   coord_vars <- c(lon_name, lat_name, depth_name, time_name)
@@ -107,10 +115,17 @@ read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
     units = units,
     source = source,
     dataset_id = dataset_id,
-    provenance = .make_provenance(
-      fun = "read_nc",
-      args = list(file = file, vars = vars),
-      extra = list(time_units = time_units, calendar = time_calendar)
+    provenance = .attach_time_provenance(
+      .make_provenance(
+        fun = "read_nc",
+        args = list(file = file, vars = vars),
+        extra = list(
+          time_units = time_descriptor$units,
+          calendar = time_descriptor$calendar,
+          time_origin = time_descriptor$origin_text
+        )
+      ),
+      .cf_time_provenance(time_descriptor)
     )
   )
 }

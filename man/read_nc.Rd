@@ -34,9 +34,17 @@ variables are read.}
 \item{dataset_id}{Optional dataset identifier.}
 }
 \value{
-An \verb{<ocean_cube>} object.
+An \verb{<ocean_cube>} object. CF time is decoded as UTC \code{POSIXct}
+without truncating sub-day or fractional-second precision.
 }
 \description{
 Reads selected NetCDF variables and standardizes them as a 5D
 \verb{[lon, lat, depth, time, var]} array.
+}
+\details{
+CF units in seconds, minutes, hours, or days since an offset-aware
+origin are supported. \code{standard} and \code{gregorian} are accepted on or after
+1582-10-15, and \code{proleptic_gregorian} is supported explicitly. Missing
+calendar metadata defaults to \code{standard}. Other calendars error rather
+than being reinterpreted as Gregorian.
 }

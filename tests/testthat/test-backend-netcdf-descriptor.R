@@ -366,7 +366,7 @@ test_that("time decoding is strict and preserves source metadata", {
   withr::local_file(unsupported)
   expect_error(
     .new_netcdf_storage(unsupported, "temperature"),
-    "Calendar `360_day` cannot be represented safely"
+    "Calendar `360_day` is unsupported.*reinterpretation as Gregorian is not performed"
   )
 })
 
