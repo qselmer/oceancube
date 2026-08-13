@@ -325,3 +325,80 @@ test_that("NetCDF sections read only the selected vertical plane", {
   ))
   expect_identical(attr(plot, "oceancube_backend"), "netcdf")
 })
+
+test_that("viz.section does not mutate its input cube", {
+  skip_if_not_installed("ggplot2")
+  cube <- section_test_cube(lat = -11)
+  before <- serialize(cube, NULL)
+
+  viz.section(cube, "temperature")
+
+  expect_identical(serialize(cube, NULL), before)
+})
+
+test_that("irregular horizontal spacing uses tiles", {
+  skip_if_not_installed("ggplot2")
+  cube <- section_test_cube(
+    lon = c(-80, -79, -77), lat = -11, depth = c(0, 25, 50, 75)
+  )
+
+  plot <- viz.section(cube, "temperature")
+
+  expect_true(inherits(plot$layers[[1L]]$geom, "GeomTile"))
+  expect_false(inherits(plot$layers[[1L]]$geom, "GeomRaster"))
+})
+
+test_that("fixed coordinates must match stored coordinates exactly", {
+  skip_if_not_installed("ggplot2")
+  cube <- section_test_cube()
+
+  expect_error(
+    viz.section(cube, "temperature", latitude = -10.5),
+    "Could not select",
+    class = "oceancube_viz_selection_error"
+  )
+})
+
+test_that("duplicate depth axes are rejected before plotting", {
+  skip_if_not_installed("ggplot2")
+  cube <- section_test_cube(lat = -11, depth = c(0, 10, 10, 20))
+
+  expect_error(
+    viz.section(cube, "temperature"),
+    class = "oceancube_viz_selection_error"
+  )
+})
+
+test_that("partially missing depth axes are rejected before plotting", {
+  skip_if_not_installed("ggplot2")
+  cube <- section_test_cube(lat = -11)
+  cube$depth <- c(0, 10, NA_real_, 30)
+
+  expect_error(
+    viz.section(cube, "temperature"),
+    class = "oceancube_validation_error"
+  )
+})
+
+test_that("zero-row extractions abort instead of returning an empty plot", {
+  skip_if_not_installed("ggplot2")
+  cube <- section_test_cube(lat = -11)
+  local_mocked_bindings(
+    cube_extract = function(...) {
+      out <- data.frame(
+        longitude = numeric(), latitude = numeric(), depth = numeric(),
+        time = as.Date(character()), variable = character(),
+        unit = character(), value = numeric()
+      )
+      attr(out, "oceancube_backend") <- "memory"
+      out
+    },
+    .package = "oceancube"
+  )
+
+  expect_error(
+    viz.section(cube, "temperature"),
+    "empty",
+    class = "oceancube_viz_data_error"
+  )
+})
