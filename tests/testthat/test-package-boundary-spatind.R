@@ -5,7 +5,7 @@ test_that("only the four approved geometry primitives extend the API", {
     "cube_crop", "cube_extract", "cube_inspect", "cube_mask", "cube_slice",
     "cube_transect", "download_nc", "layer_mean", "link_events",
     "cube_validate", "ocean_cube", "read_nc", "signal_noise", "stock_mask",
-    "to_month", "viz.map", "viz.section"
+    "to_month", "viz.map", "viz.profile", "viz.section"
   )
   approved <- c(
     "cube_cell_area",
