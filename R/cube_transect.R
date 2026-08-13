@@ -1,11 +1,15 @@
 #' Extract an ordered ocean transect as a table
 #'
-#' `cube_transect()` resolves the rows of `path` as ordered longitude-latitude
-#' pairs and extracts one time, one or more depths, and selected variables.
-#' Unlike [cube_extract()], spatial coordinates never form a Cartesian product.
+#' `cube_transect()` is an experimental API being stabilized for 0.2.0. It
+#' resolves the rows of `path` as ordered longitude-latitude pairs and extracts
+#' one time, one or more depths, and selected variables. Unlike
+#' [cube_extract()], spatial coordinates never form a Cartesian product.
 #'
 #' @param x A valid `<ocean_cube>` using the memory or NetCDF backend.
-#' @param path A data frame (or matrix) with one row per ordered point.
+#' @param path A data frame (or matrix) with one row per ordered point. Values
+#'   are interpreted as geographic longitude and latitude in degrees. Objects
+#'   inheriting from `sf` or `sfc` are rejected explicitly; convert them to an
+#'   ordinary longitude-latitude table in EPSG:4326 first.
 #' @param lon_col,lat_col Column names containing longitude and latitude values,
 #'   or one-based positions when `by = "index"`.
 #' @param id_col Optional column name used as `point_id`. Factors are converted
@@ -17,7 +21,9 @@
 #'   `"index"` positions.
 #' @param match `"nearest"` selects the closest stored coordinate within each
 #'   axis domain; `"exact"` requires a stored coordinate. Ties select the first
-#'   stored position. This argument is not supplied with `by = "index"`.
+#'   stored position. This argument is not supplied with `by = "index"`. The
+#'   historical default is nearest; omitting `match` emits a compatibility
+#'   warning so new code makes the scientific choice explicit.
 #' @param tolerance Optional fully named list of non-negative maximum distances
 #'   for nearest matching. Spatial and depth tolerances are numeric; time uses
 #'   `difftime`.
@@ -26,26 +32,51 @@
 #'   depths. `"auto"` infers these rules.
 #' @param format `"long"` returns point-depth-variable rows. `"wide"` returns
 #'   one point-depth-time row and one column per variable.
-#' @param keep_index Include global one-based cube indices.
+#' @param keep_index Include global one-based cube indices for longitude,
+#'   latitude, depth, time, and variable. The default remains `FALSE` for
+#'   backward-compatible schemas.
 #'
-#' @return A fully materialized base `data.frame`. Requested and matched
-#'   cumulative horizontal distances are in kilometres.
+#' @return A fully materialized base `data.frame`. Long output contains
+#'   `point_id`, `point_order`, `longitude_requested`, `latitude_requested`,
+#'   `longitude`, `latitude`, `match_distance_km`, `requested_distance_km`,
+#'   `matched_distance_km`, `depth`, `time`, `variable`, `unit`, and `value`.
+#'   When `keep_index = TRUE`, global `longitude_index`, `latitude_index`,
+#'   `depth_index`, `time_index`, and `variable_index` columns are appended.
 #'
 #' @details
-#' Row order in long format is point, then depth, then variable. Point order,
-#' repeated points, selected depth order, and variable order are preserved.
-#' Wide output rejects duplicated variables and keeps scientific names without
+#' Row order in long format is point, then depth, then variable. Supplied
+#' vertices are not densified. Point order, repeated vertices, zero-length
+#' segments, selected depth order, and variable order are preserved without
+#' aggregation. A path of two or more points whose total requested distance is
+#' zero produces a warning; a single point remains valid as a profile. Wide
+#' output rejects duplicated variables and keeps scientific names without
 #' syntactic conversion.
 #'
-#' Both distances use the spherical Haversine formula with mean Earth radius
-#' 6371.0088 km. This is not exact ellipsoidal distance. Antimeridian crossings
-#' (a segment with an absolute longitude change greater than 180 degrees) are
-#' rejected; longitudes are not normalized. Vertical distance is not added.
+#' All distances use the spherical Haversine formula with mean Earth radius
+#' 6371.0088 km. `requested_distance_km` is cumulative distance along the user
+#' path, `matched_distance_km` is cumulative distance along matched grid cells,
+#' and `match_distance_km` is the pointwise displacement from each requested
+#' coordinate to its matched grid coordinate. This is not exact ellipsoidal
+#' distance. Antimeridian crossings (a segment with an absolute longitude
+#' change greater than 180 degrees, including 359 to 1) are rejected;
+#' longitudes are not normalized. Vertical distance is not added.
 #'
 #' Nearest matching selects cells independently on the longitude and latitude
-#' axes. It does not interpolate or densify a path. `requested_distance_km`
-#' follows input coordinates, while `matched_distance_km` follows selected grid
-#' cells. With `by = "index"` both paths use the selected cube coordinates.
+#' axes. It does not interpolate spatially, vertically, or temporally. Explicit
+#' nearest matching without `tolerance` emits a scientific warning; supplied
+#' per-axis tolerances retain their existing units and semantics. Exact matching
+#' never falls back to nearest. With `by = "index"`, requested and matched paths
+#' use the selected cube coordinates and `match_distance_km` is zero.
+#'
+#' Ordinary path tables must use one recognized longitude convention,
+#' `[-180, 180]` or `[0, 360]`, compatible with the cube. Latitude must lie in
+#' `[-90, 90]`. CRS-bearing objects are never interpreted silently.
+#'
+#' Duplicate stored depth or time coordinates and duplicate explicit depth,
+#' time, or variable selectors are rejected as ambiguous. The approved
+#' singleton `NA_real_` surface-depth representation remains valid. Exactly one
+#' time must resolve; `time = NULL` is therefore valid only for singleton time.
+#' Fully and partially outside paths error; boundary points remain valid.
 #'
 #' NetCDF reads use one connection per call, one physical block per unique
 #' spatial pair and unique selected variable, and reconstruct repeated points.
@@ -89,7 +120,8 @@ cube_transect <- function(x, path, lon_col = "longitude",
                           mode = c("auto", "horizontal", "section", "profile"),
                           format = c("long", "wide"), keep_index = FALSE) {
   match_was_missing <- missing(match)
-  .check_cube(x)
+  cube_validate(x, strict = TRUE)
+  .transect_validate_cube_axes(x)
   backend <- .cube_backend(x)
   by <- base::match.arg(by)
   method <- base::match.arg(match)
@@ -111,13 +143,31 @@ cube_transect <- function(x, path, lon_col = "longitude",
       "is available only with `by = \"value\", match = \"nearest\"`."
     )
   }
-
   plan <- .plan_cube_transect(
     x = x, path = path, lon_col = lon_col, lat_col = lat_col,
     id_col = id_col, depth = depth, time = time, variable = variable,
     by = by, method = method, tolerance = tolerance, mode = mode,
     format = format
   )
+  if (identical(by, "value")) {
+    if (isTRUE(match_was_missing)) {
+      rlang::warn(
+        paste(
+          "`cube_transect()` preserved its legacy implicit nearest matching.",
+          "For 0.2.0, specify `match = \"exact\"` or `match = \"nearest\"` explicitly."
+        ),
+        class = "oceancube_transect_compat_warning"
+      )
+    } else if (identical(method, "nearest") && is.null(tolerance)) {
+      rlang::warn(
+        paste(
+          "`match = \"nearest\"` has no explicit maximum tolerance.",
+          "Supply per-axis `tolerance` values when unrestricted snapping is not scientifically appropriate."
+        ),
+        class = "oceancube_transect_matching_warning"
+      )
+    }
+  }
   values <- .cube_read_spatial_pairs(
     x,
     plan$points$longitude_index,
@@ -163,6 +213,10 @@ cube_transect <- function(x, path, lon_col = "longitude",
       plan$requested_distance_km[[length(plan$requested_distance_km)]],
     matched_path_length_km =
       plan$matched_distance_km[[length(plan$matched_distance_km)]],
+    maximum_match_distance_km = max(plan$match_distance_km),
+    match_distance_method =
+      "spherical Haversine; mean Earth radius 6371.0088 km",
+    tolerance = tolerance,
     physical_reads = read_metrics,
     source = x$source,
     dataset_id = x$dataset_id
@@ -187,6 +241,89 @@ cube_transect <- function(x, path, lon_col = "longitude",
 
 .transect_point_label <- function(order, id) {
   paste0("path point_order ", order, " (point_id ", encodeString(id), ")")
+}
+
+.transect_validate_cube_axes <- function(x) {
+  surface <- length(x$depth) == 1L && is.na(x$depth[[1L]]) &&
+    !is.nan(x$depth[[1L]])
+  if (!surface && anyDuplicated(x$depth)) {
+    rlang::abort(
+      paste(
+        "`cube_transect()` requires unique stored depth coordinates;",
+        "the cube contains duplicated depth values."
+      ),
+      class = c(
+        "oceancube_transect_selection_error",
+        "oceancube_transect_error"
+      )
+    )
+  }
+  if (anyDuplicated(x$time)) {
+    rlang::abort(
+      paste(
+        "`cube_transect()` requires unique stored time coordinates;",
+        "the cube contains duplicated time values."
+      ),
+      class = c(
+        "oceancube_transect_selection_error",
+        "oceancube_transect_error"
+      )
+    )
+  }
+  invisible(TRUE)
+}
+
+.transect_validate_selector_duplicates <- function(depth, time, variable) {
+  selectors <- list(depth = depth, time = time, variable = variable)
+  duplicated <- names(selectors)[vapply(
+    selectors,
+    function(value) !is.null(value) && anyDuplicated(value) > 0L,
+    logical(1)
+  )]
+  if (length(duplicated)) {
+    detail <- if (identical(duplicated[[1L]], "variable")) {
+      "Duplicate selector: duplicate variables are ambiguous in `cube_transect()`; supply each requested variable once."
+    } else {
+      paste0(
+        "Duplicate `", duplicated[[1L]], "` selectors are ambiguous in ",
+        "`cube_transect()`; supply each requested position once."
+      )
+    }
+    rlang::abort(
+      detail,
+      class = c(
+        "oceancube_transect_selection_error",
+        "oceancube_transect_error"
+      )
+    )
+  }
+  invisible(TRUE)
+}
+
+.transect_validate_longitude_convention <- function(requested, stored) {
+  recognized <- all(requested >= -180 & requested <= 180) ||
+    all(requested >= 0 & requested <= 360)
+  if (!recognized) {
+    rlang::abort(
+      paste(
+        "Path longitude values must use one recognized geographic convention:",
+        "[-180, 180] or [0, 360]."
+      ),
+      class = c("oceancube_transect_crs_error", "oceancube_transect_error")
+    )
+  }
+  incompatible <- (any(stored < 0) && any(requested > 180)) ||
+    (any(stored > 180) && any(requested < 0))
+  if (incompatible) {
+    rlang::abort(
+      paste(
+        "Path and cube longitudes use incompatible geographic conventions.",
+        "Convert the path explicitly before extraction."
+      ),
+      class = c("oceancube_transect_crs_error", "oceancube_transect_error")
+    )
+  }
+  invisible(TRUE)
 }
 
 .transect_resolve_spatial <- function(axis_values, requested, axis, method,
@@ -220,6 +357,16 @@ cube_transect <- function(x, path, lon_col = "longitude",
 .plan_cube_transect <- function(x, path, lon_col, lat_col, id_col,
                                 depth, time, variable, by, method,
                                 tolerance, mode, format) {
+  if (inherits(path, "sf") || inherits(path, "sfc")) {
+    rlang::abort(
+      paste(
+        "`cube_transect()` does not yet accept sf/sfc paths because their CRS",
+        "must not be ignored. Transform to EPSG:4326 and convert explicitly",
+        "to an ordinary data.frame with longitude/latitude columns in degrees."
+      ),
+      class = c("oceancube_transect_crs_error", "oceancube_transect_error")
+    )
+  }
   if (is.matrix(path)) {
     path <- as.data.frame(path, stringsAsFactors = FALSE, check.names = FALSE)
   }
@@ -260,6 +407,8 @@ cube_transect <- function(x, path, lon_col = "longitude",
     .abort_badarg("id_col", "must identify an atomic vector column.")
   }
   if (is.factor(point_id)) point_id <- as.character(point_id)
+
+  .transect_validate_selector_duplicates(depth, time, variable)
 
   selectors <- list(
     longitude = requested_lon,
@@ -309,6 +458,7 @@ cube_transect <- function(x, path, lon_col = "longitude",
         class = "oceancube_transect_point"
       )
     }
+    .transect_validate_longitude_convention(requested_lon, x$lon)
     lon_resolved <- .transect_resolve_spatial(
       x$lon, requested_lon, "longitude", method,
       validated_tolerance$longitude, point_id
@@ -361,6 +511,18 @@ cube_transect <- function(x, path, lon_col = "longitude",
     requested_lon_geo, requested_lat_geo
   )
   matched_distance <- .transect_cumulative_distance(matched_lon, matched_lat)
+  match_distance <- .transect_point_distance(
+    requested_lon_geo, requested_lat_geo, matched_lon, matched_lat
+  )
+  if (nrow(path) > 1L && requested_distance[[length(requested_distance)]] == 0) {
+    rlang::warn(
+      paste(
+        "The supplied transect has zero total requested distance.",
+        "Repeated vertices are retained for backward compatibility."
+      ),
+      class = "oceancube_transect_zero_length_warning"
+    )
+  }
   inferred_mode <- .transect_mode(
     mode, nrow(path), length(resolved$index$depth)
   )
@@ -387,6 +549,7 @@ cube_transect <- function(x, path, lon_col = "longitude",
     variable_index = resolved$index$variable,
     requested_distance_km = requested_distance,
     matched_distance_km = matched_distance,
+    match_distance_km = match_distance,
     mode = inferred_mode,
     output_shape = c(
       point = nrow(path), depth = length(resolved$index$depth),
@@ -444,16 +607,24 @@ cube_transect <- function(x, path, lon_col = "longitude",
 
 .transect_cumulative_distance <- function(longitude, latitude) {
   if (length(longitude) == 1L) return(0)
+  segment <- .transect_point_distance(
+    longitude[-length(longitude)], latitude[-length(latitude)],
+    longitude[-1L], latitude[-1L]
+  )
+  c(0, cumsum(segment))
+}
+
+.transect_point_distance <- function(longitude1, latitude1,
+                                     longitude2, latitude2) {
   radians <- pi / 180
-  lon1 <- longitude[-length(longitude)] * radians
-  lon2 <- longitude[-1L] * radians
-  lat1 <- latitude[-length(latitude)] * radians
-  lat2 <- latitude[-1L] * radians
+  lon1 <- longitude1 * radians
+  lon2 <- longitude2 * radians
+  lat1 <- latitude1 * radians
+  lat2 <- latitude2 * radians
   a <- sin((lat2 - lat1) / 2)^2 +
     cos(lat1) * cos(lat2) * sin((lon2 - lon1) / 2)^2
   a <- pmin(1, pmax(0, a))
-  segment <- 2 * 6371.0088 * asin(sqrt(a))
-  c(0, cumsum(segment))
+  2 * 6371.0088 * asin(sqrt(a))
 }
 
 .cube_transect_long <- function(x, plan, values, units, keep_index) {
@@ -477,6 +648,7 @@ cube_transect <- function(x, path, lon_col = "longitude",
     latitude_requested = points$latitude_requested,
     longitude = points$longitude,
     latitude = points$latitude,
+    match_distance_km = plan$match_distance_km[point_position],
     requested_distance_km =
       plan$requested_distance_km[point_position],
     matched_distance_km = plan$matched_distance_km[point_position],
@@ -512,6 +684,7 @@ cube_transect <- function(x, path, lon_col = "longitude",
     latitude_requested = points$latitude_requested,
     longitude = points$longitude,
     latitude = points$latitude,
+    match_distance_km = plan$match_distance_km[point_position],
     requested_distance_km =
       plan$requested_distance_km[point_position],
     matched_distance_km = plan$matched_distance_km[point_position],

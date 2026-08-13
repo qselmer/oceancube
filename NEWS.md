@@ -13,6 +13,12 @@
 ## Selection and extraction
 
 * Adds discrete slices, closed-range crops, point/profile/series extraction, and ordered transects without interpolation.
+* Stabilizes `cube_transect()` for the 0.2.0 contract while preserving its
+  public signature and ordered extraction semantics: CRS-bearing paths can no
+  longer be ignored, matching warnings expose legacy or unbounded nearest
+  selection, requested-to-matched Haversine distance is retained, ambiguous
+  duplicate axes/selectors are rejected, and validation enters through
+  `cube_validate(strict = TRUE)`.
 
 ## Masks
 

@@ -24,7 +24,10 @@ cube_transect(
 \arguments{
 \item{x}{A valid \verb{<ocean_cube>} using the memory or NetCDF backend.}
 
-\item{path}{A data frame (or matrix) with one row per ordered point.}
+\item{path}{A data frame (or matrix) with one row per ordered point. Values
+are interpreted as geographic longitude and latitude in degrees. Objects
+inheriting from \code{sf} or \code{sfc} are rejected explicitly; convert them to an
+ordinary longitude-latitude table in EPSG:4326 first.}
 
 \item{lon_col, lat_col}{Column names containing longitude and latitude values,
 or one-based positions when \code{by = "index"}.}
@@ -41,7 +44,9 @@ is valid only for a singleton time axis.}
 
 \item{match}{\code{"nearest"} selects the closest stored coordinate within each
 axis domain; \code{"exact"} requires a stored coordinate. Ties select the first
-stored position. This argument is not supplied with \code{by = "index"}.}
+stored position. This argument is not supplied with \code{by = "index"}. The
+historical default is nearest; omitting \code{match} emits a compatibility
+warning so new code makes the scientific choice explicit.}
 
 \item{tolerance}{Optional fully named list of non-negative maximum distances
 for nearest matching. Spatial and depth tolerances are numeric; time uses
@@ -54,32 +59,58 @@ depths. \code{"auto"} infers these rules.}
 \item{format}{\code{"long"} returns point-depth-variable rows. \code{"wide"} returns
 one point-depth-time row and one column per variable.}
 
-\item{keep_index}{Include global one-based cube indices.}
+\item{keep_index}{Include global one-based cube indices for longitude,
+latitude, depth, time, and variable. The default remains \code{FALSE} for
+backward-compatible schemas.}
 }
 \value{
-A fully materialized base \code{data.frame}. Requested and matched
-cumulative horizontal distances are in kilometres.
+A fully materialized base \code{data.frame}. Long output contains
+\code{point_id}, \code{point_order}, \code{longitude_requested}, \code{latitude_requested},
+\code{longitude}, \code{latitude}, \code{match_distance_km}, \code{requested_distance_km},
+\code{matched_distance_km}, \code{depth}, \code{time}, \code{variable}, \code{unit}, and \code{value}.
+When \code{keep_index = TRUE}, global \code{longitude_index}, \code{latitude_index},
+\code{depth_index}, \code{time_index}, and \code{variable_index} columns are appended.
 }
 \description{
-\code{cube_transect()} resolves the rows of \code{path} as ordered longitude-latitude
-pairs and extracts one time, one or more depths, and selected variables.
-Unlike \code{\link[=cube_extract]{cube_extract()}}, spatial coordinates never form a Cartesian product.
+\code{cube_transect()} is an experimental API being stabilized for 0.2.0. It
+resolves the rows of \code{path} as ordered longitude-latitude pairs and extracts
+one time, one or more depths, and selected variables. Unlike
+\code{\link[=cube_extract]{cube_extract()}}, spatial coordinates never form a Cartesian product.
 }
 \details{
-Row order in long format is point, then depth, then variable. Point order,
-repeated points, selected depth order, and variable order are preserved.
-Wide output rejects duplicated variables and keeps scientific names without
+Row order in long format is point, then depth, then variable. Supplied
+vertices are not densified. Point order, repeated vertices, zero-length
+segments, selected depth order, and variable order are preserved without
+aggregation. A path of two or more points whose total requested distance is
+zero produces a warning; a single point remains valid as a profile. Wide
+output rejects duplicated variables and keeps scientific names without
 syntactic conversion.
 
-Both distances use the spherical Haversine formula with mean Earth radius
-6371.0088 km. This is not exact ellipsoidal distance. Antimeridian crossings
-(a segment with an absolute longitude change greater than 180 degrees) are
-rejected; longitudes are not normalized. Vertical distance is not added.
+All distances use the spherical Haversine formula with mean Earth radius
+6371.0088 km. \code{requested_distance_km} is cumulative distance along the user
+path, \code{matched_distance_km} is cumulative distance along matched grid cells,
+and \code{match_distance_km} is the pointwise displacement from each requested
+coordinate to its matched grid coordinate. This is not exact ellipsoidal
+distance. Antimeridian crossings (a segment with an absolute longitude
+change greater than 180 degrees, including 359 to 1) are rejected;
+longitudes are not normalized. Vertical distance is not added.
 
 Nearest matching selects cells independently on the longitude and latitude
-axes. It does not interpolate or densify a path. \code{requested_distance_km}
-follows input coordinates, while \code{matched_distance_km} follows selected grid
-cells. With \code{by = "index"} both paths use the selected cube coordinates.
+axes. It does not interpolate spatially, vertically, or temporally. Explicit
+nearest matching without \code{tolerance} emits a scientific warning; supplied
+per-axis tolerances retain their existing units and semantics. Exact matching
+never falls back to nearest. With \code{by = "index"}, requested and matched paths
+use the selected cube coordinates and \code{match_distance_km} is zero.
+
+Ordinary path tables must use one recognized longitude convention,
+\verb{[-180, 180]} or \verb{[0, 360]}, compatible with the cube. Latitude must lie in
+\verb{[-90, 90]}. CRS-bearing objects are never interpreted silently.
+
+Duplicate stored depth or time coordinates and duplicate explicit depth,
+time, or variable selectors are rejected as ambiguous. The approved
+singleton \code{NA_real_} surface-depth representation remains valid. Exactly one
+time must resolve; \code{time = NULL} is therefore valid only for singleton time.
+Fully and partially outside paths error; boundary points remain valid.
 
 NetCDF reads use one connection per call, one physical block per unique
 spatial pair and unique selected variable, and reconstruct repeated points.
