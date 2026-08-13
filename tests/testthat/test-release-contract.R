@@ -51,7 +51,11 @@ test_that("the public API surface includes the approved 0.2 additions", {
                     "title", "subtitle", "caption"),
     viz.section = c("x", "variable", "section", "time", "longitude",
                     "latitude", "depth", "limits", "na.rm",
-                    "reverse_depth", "title", "subtitle", "caption")
+                    "reverse_depth", "title", "subtitle", "caption"),
+    viz.transect = c("x", "path", "variable", "time", "depth", "lon_col",
+                     "lat_col", "id_col", "match", "tolerance", "mode",
+                     "distance", "limits", "na.rm", "reverse_depth",
+                     "points", "title", "subtitle", "caption")
   )
 
   exports <- getNamespaceExports("oceancube")

@@ -19,6 +19,8 @@
   selection, requested-to-matched Haversine distance is retained, ambiguous
   duplicate axes/selectors are rejected, and validation enters through
   `cube_validate(strict = TRUE)`.
+* Adds `viz.transect()` for static horizontal and distance-by-depth transect
+  plots driven exclusively by the stabilized `cube_transect()` data contract.
 
 ## Masks
 
