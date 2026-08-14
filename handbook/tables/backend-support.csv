@@ -2,6 +2,7 @@
 "annual_index",TRUE,TRUE,TRUE,FALSE,FALSE,FALSE,"Summarise a cube by calendar year."
 "cube_aggregate_time",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Aggregate only time through bounded period/block reads; output is a memory cube."
 "cube_climatology",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Compute recurrent climatology through bounded period/block reads; output is a memory cube."
+"cube_trend",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Compute per-cell elapsed-time OLS slopes in one bounded scientific pass; output is a memory cube."
 "anom_diff",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Compatibility wrapper over bounded canonical difference anomalies."
 "anom_z",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Compatibility wrapper over bounded canonical standardized anomalies."
 "cube_anomaly",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Compute canonical anomalies with bounded reads; output is a memory cube."

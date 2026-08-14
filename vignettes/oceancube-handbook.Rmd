@@ -22,4 +22,9 @@ signal-to-noise ratio. Use `signal_noise(x, clim, signed = TRUE)` to retain the
 canonical signed z anomaly, or use `cube_anomaly()` directly with canonical and
 seasonal climatologies.
 
+`cube_trend()` computes a descriptive per-cell linear slope against actual
+elapsed Date or UTC POSIXct time. It accepts raw, aggregated, and anomaly cubes
+but rejects climatology pseudo-time; it performs no Sen/Mann--Kendall testing,
+inference, change-point, or regime analysis.
+
 Main flows: construct/read → slice/crop → extract/transect/mask → climatology/anomalies → geometry/weights. `spatind` consumes prepared values and weights; it owns indicators and inference.

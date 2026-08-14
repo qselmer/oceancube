@@ -14,6 +14,8 @@ C --> I[link_events]
 C --> J[cube_mask]
 C --> K[cube_climatology]
 K --> L[cube_anomaly]
+C --> T[cube_trend]
+L --> T
 C --> R[clim_day / clim_month]
 R --> S[anom_diff / anom_z / signal_noise]
 C --> M[cube_cell_area]
@@ -31,3 +33,5 @@ workflows. The parallel wrapper route exists for compatibility and delegates
 its anomaly calculation to the same core. On that wrapper route,
 `signal_noise()` means standardized anomaly magnitude (`abs(z)`) by default,
 not a generic signal-to-noise ratio; `signed = TRUE` retains canonical `z`.
+Raw, aggregated, anomaly, and standardized-anomaly cubes can then enter
+`cube_trend()` while recurrent climatology pseudo-time cannot.

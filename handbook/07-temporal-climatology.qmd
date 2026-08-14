@@ -55,4 +55,17 @@ for canonical or seasonal climatologies. `annual_index()` remains a specialised
 post-core annual table, not a yearly cube wrapper.
 `layer_mean()` provides vertical summaries.
 
+`cube_trend()` computes a descriptive OLS slope independently for every
+longitude, latitude, depth, and variable cell against actual elapsed historical
+time. Date uses civil-day differences and POSIXct retains UTC subdaily
+precision; a year is exactly 365.2425 days. Irregular spacing is accepted with
+one equal weight per finite stored observation, so aggregate first with
+`cube_aggregate_time()` when equal-period weighting is intended. The output is
+an in-memory cube whose time axis is the representational midpoint of the
+selected timestamp range and whose units are source-unit per selected time
+unit. Recurrent climatology pseudo-time is rejected. Optional diagnostics add
+finite count, cell time span, fitted value at the anchor, R2, and residual SD;
+the core provides no Sen slope, Mann--Kendall test, inference, change metric, or
+breakpoint. Lazy NetCDF sources are processed in bounded blocks in one pass.
+
 Always inspect time coverage, missingness, sample counts, and units before interpreting climatology products.

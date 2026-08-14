@@ -87,6 +87,9 @@ reads. Its `data` contains the climatological mean and `climatology$sd` contains
 aligned sample SD. `clim_month()` and `clim_day()` remain compatibility
 wrappers. New workflows use the canonical climatology directly with
 `cube_anomaly()`; legacy anomaly wrappers delegate to the same engine.
+`cube_trend()` adds descriptive per-cell OLS slopes against actual elapsed
+historical time. It accepts raw, aggregated, and anomaly cubes, but rejects
+recurrent climatology pseudo-time.
 
 ```{r temporal}
 monthly <- cube_aggregate_time(x, by = "month")
@@ -100,6 +103,8 @@ clim
 dim(monthly$data)
 dim(difference$data)
 dim(standardized$data)
+trend <- cube_trend(x, time_unit = "year")
+dim(trend$data)
 ```
 
 Geometry functions provide cell areas, vertical thicknesses, volumes, and
@@ -109,8 +114,9 @@ the optional-`sf` workflow.
 ## Responsibility and limitations
 
 `oceancube` owns representation, local reading, selection, extraction,
-transects, masks, climatologies, anomalies, geometry, and weights. Spatial
-indicators and inference belong to `spatind`.
+transects, masks, climatologies, anomalies, descriptive per-cell temporal
+slopes, geometry, and weights. Spatial indicators, trend inference, change
+points, and regimes belong to downstream analysis such as `spatind`.
 
 Version 0.1.0 is limited to local rectilinear data. It does not write NetCDF,
 read OPeNDAP or THREDDS, interpolate, regrid, process curvilinear meshes, or

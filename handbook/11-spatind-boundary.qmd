@@ -1,8 +1,16 @@
 # Boundary with spatind
 ## oceancube produces
-Cubes, values, coordinates, indices, masks, areas, thicknesses, volumes, intersections, weights, units, and provenance.
+Cubes, values, coordinates, indices, masks, areas, thicknesses, volumes,
+intersections, weights, units, provenance, and descriptive per-cell temporal
+slopes from `cube_trend()`.
 
 ## spatind will calculate
-2-D and 3-D indicators, centres of gravity, occupied area/volume, dispersion, inertia, elongation, isotropy, concentration, Gini, patchiness, trends, uncertainty, regimes, and inference.
+2-D and 3-D indicators, centres of gravity, occupied area/volume, dispersion,
+inertia, elongation, isotropy, concentration, Gini, patchiness, spatial or
+indicator-level trend interpretation, uncertainty, regimes, and inference.
+
+The `oceancube` trend core is a descriptive transformation of each historical
+cube cell. It does not assign significance, aggregate spatial indicators,
+detect change points, or infer regimes.
 
 These are architectural responsibilities, not a claim that future `spatind` functions already exist.

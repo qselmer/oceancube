@@ -15,6 +15,7 @@ test_that("only approved 0.2 APIs extend the boundary", {
     "cube_aggregate_time",
     "cube_anomaly",
     "cube_climatology",
+    "cube_trend",
     "viz.timeseries"
   )
   observed <- getNamespaceExports("oceancube")
@@ -33,6 +34,14 @@ test_that("indicator and summary APIs remain outside oceancube", {
     "cube_volume_occupied"
   )
   expect_false(any(forbidden %in% getNamespaceExports("oceancube")))
+})
+
+test_that("oceancube owns descriptive per-cell trends but not spatial inference", {
+  expect_true("cube_trend" %in% getNamespaceExports("oceancube"))
+  expect_false(any(c(
+    "cube_trend_significance", "cube_change", "cube_breakpoints",
+    "cube_regimes", "cube_spatial_trend"
+  ) %in% getNamespaceExports("oceancube")))
 })
 
 test_that("new APIs expose geometry arguments but no indicator inputs", {

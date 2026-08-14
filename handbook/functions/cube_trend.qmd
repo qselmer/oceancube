@@ -1,0 +1,47 @@
+# `cube_trend()`
+**Category:** Time and climatology
+**Status:** experimental
+
+## Purpose
+Compute a descriptive linear temporal slope independently for every longitude,
+latitude, depth, and variable cell of a historical ocean cube.
+
+## Real signature
+```r
+cube_trend(
+  x,
+  method = "linear",
+  period = NULL,
+  time_unit = "year",
+  min_n = 3L,
+  diagnostics = FALSE
+)
+```
+
+## Scientific contract
+The predictor is actual elapsed time, not observation position. Date uses exact
+civil days and POSIXct uses exact UTC instants, including subdaily and
+fractional-second spacing. Output units may be per year (exactly 365.2425 days),
+day, hour, or second. Every finite stored observation has equal weight;
+irregular sampling is accepted and recorded, and explicit preaggregation is
+required when equal-period weighting is desired.
+
+Only `method = "linear"` is available. `min_n` is a per-cell finite count.
+Optional diagnostics contain aligned finite counts, cell time spans, fitted
+values at the analysis anchor, R2, and residual SD. No Sen slope,
+Mann--Kendall test, p-value, confidence interval, change metric, breakpoint, or
+regime detection is calculated.
+
+## Input and output
+Raw, temporally aggregated, difference-anomaly, z-anomaly, and `signal_noise()`
+cubes retain historical time and are valid inputs. Recurrent
+`cube_climatology()` pseudo-time and identifiable descendants are rejected.
+The output is an in-memory `ocean_cube` with time collapsed to the
+representational midpoint of the selected stored timestamp range. Other axes,
+variable order, and source-unit meaning are preserved.
+
+## Backend support
+Memory: **TRUE**. NetCDF: **TRUE**. Lazy values are reduced through bounded
+spatial, depth, variable, and time blocks in one scientific pass. The full lazy
+source is never materialised at once; the singleton-time output is materialised
+in memory.

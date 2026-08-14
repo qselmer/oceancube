@@ -2,6 +2,15 @@
 
 ## Time and calendar foundation (0.2.0 development)
 
+* Adds `cube_trend()` for descriptive per-cell linear temporal slopes against
+  actual elapsed time, with exact Date and UTC POSIXct/subdaily semantics and
+  selectable year, day, hour, or second output units.
+* Supports closed reference-period restriction, finite-value and per-cell
+  `min_n` rules, equal-observation weighting, optional aligned OLS diagnostics,
+  explicit pseudo-time climatology rejection, and compact QA/provenance.
+  Lazy NetCDF inputs use one bounded scientific pass without materialising the
+  full source. Sen/Mann--Kendall methods, inference, change metrics,
+  breakpoints, and regimes are not part of this core.
 * Stabilizes `signal_noise()` as the legacy standardized climatological
   anomaly-magnitude helper: the default is `abs(z)` and `signed = TRUE`
   returns the canonical signed z anomaly. The argument is now strictly a

@@ -13,6 +13,7 @@
 "cube_cell_volume","cube_cell_area + cube_layer_thickness","integration","Combine cell area and layer thickness into volume."
 "cube_aggregate_time","ocean_cube","clim_month/annual_index/analysis","Aggregate only the time dimension into canonical calendar periods."
 "cube_climatology","ocean_cube","cube_anomaly/clim_day/clim_month","Compute two-stage recurrent climatology means and sample SD."
+"cube_trend","ocean_cube/cube_aggregate_time/cube_anomaly/signal_noise","viz.map/analysis","Compute descriptive per-cell linear slopes against actual elapsed time."
 "cube_collect","read_nc","cube_slice/cube_crop","Materialise a lazy cube in memory."
 "cube_crop","ocean_cube","cube_extract","Crop continuous coordinate intervals."
 "cube_extract","cube_slice/cube_crop","spatind/data analysis","Extract values as tidy tables, series, or profiles."

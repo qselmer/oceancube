@@ -22,6 +22,7 @@ The cards below document the public package boundary.
 - [cube_polygon_weights()`](functions/cube_polygon_weights.qmd)
 - [cube_slice()`](functions/cube_slice.qmd)
 - [cube_transect()`](functions/cube_transect.qmd)
+- [cube_trend()`](functions/cube_trend.qmd)
 - [download_nc()`](functions/download_nc.qmd)
 - [layer_mean()`](functions/layer_mean.qmd)
 - [link_events()`](functions/link_events.qmd)

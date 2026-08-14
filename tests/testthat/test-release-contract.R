@@ -14,6 +14,7 @@ test_that("the public API surface includes the approved 0.2 additions", {
     cube_aggregate_time = c("x", "by", "method", "na.rm", "min_n", "diagnostics"),
     cube_anomaly = c("x", "climatology", "type"),
     cube_climatology = c("x", "by", "period", "leap", "min_n", "diagnostics"),
+    cube_trend = c("x", "method", "period", "time_unit", "min_n", "diagnostics"),
     cube_collect = "x",
     cube_crop = c("x", "longitude", "latitude", "depth", "time",
                   "variable", "bbox", "outside"),

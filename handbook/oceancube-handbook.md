@@ -3,14 +3,14 @@ OceanCube Handbook is the executable guide to **oceancube 0.1.0**. It complement
 
 - Canonical contract: `longitude × latitude × depth × time × variable`
 - Backends: in-memory and read-only local NetCDF
-- Frozen public API: 27 exports
-- Experimental in 0.x: `cube_transect()` and `cube_polygon_weights()`
+- Current 0.2.0 development API: 38 exports
+- Experimental in 0.x: `cube_transect()`, `cube_polygon_weights()`, and `cube_trend()`
 
 Start with @sec-introduction, then use the workflow and function-reference chapters.
 # Introduction {#sec-introduction}
 `oceancube` gives ocean observations one validated five-dimensional shape while allowing storage to remain in memory or in a local NetCDF file. It solves a recurring problem: scientific operations should not depend on how values happen to be stored.
 
-The package constructs, reads, selects, extracts, masks, summarises, and describes geometry. It deliberately does **not** calculate spatial indicators or inference; that responsibility belongs to `spatind`.
+The package constructs, reads, selects, extracts, masks, summarises, computes descriptive per-cell temporal slopes, and describes geometry. It deliberately does **not** calculate spatial indicators or inference; that responsibility belongs to `spatind`.
 
 ## Design goals
 Reproducibility, explicit dimensions, read-only external data access, small composable operations, serialisable provenance, and stable outputs.
@@ -65,13 +65,18 @@ They are not interchangeable: slice/crop preserve cube semantics, extract/transe
 # Time, climatology, and anomalies
 `to_month()` aggregates time to months. `clim_month()` and `clim_day()` estimate reference means and variability. `anom_diff()` returns absolute departures, `anom_z()` standardised departures, and `signal_noise()` standardized climatological anomaly magnitude (`abs(z)`) by default or signed `z` on request. It is not a general signal-to-noise ratio. `annual_index()` and `layer_mean()` provide annual and vertical summaries.
 
+`cube_trend()` computes descriptive per-cell OLS slopes against actual elapsed
+Date or UTC POSIXct time. It accepts raw, aggregated, and anomaly cubes, rejects
+recurrent climatology pseudo-time, and provides no Sen/Mann--Kendall testing,
+inference, change-point, or regime analysis.
+
 Always inspect time coverage, missingness, sample counts, and units before interpreting climatology products.
 # Grid geometry and weights
 For rectilinear grids, `cube_cell_area()` returns horizontal area, `cube_layer_thickness()` derives vertical thickness, and `cube_cell_volume()` combines both. `cube_polygon_weights()` returns sparse intersections suitable for downstream aggregation.
 
 CRS must be known and compatible. Curvilinear/unstructured grids and general antimeridian handling are outside 0.1.0. Polygon weights are experimental during the 0.x series.
 # Public function reference
-The 27 cards below use signatures extracted from the installed 0.1.0 namespace.
+The function cards document the current public namespace, including the 38-export 0.2.0 development boundary.
 
 - [annual_index()`](functions/annual_index.qmd)
 - [anom_diff()`](functions/anom_diff.qmd)
@@ -92,6 +97,7 @@ The 27 cards below use signatures extracted from the installed 0.1.0 namespace.
 - [cube_polygon_weights()`](functions/cube_polygon_weights.qmd)
 - [cube_slice()`](functions/cube_slice.qmd)
 - [cube_transect()`](functions/cube_transect.qmd)
+- [cube_trend()`](functions/cube_trend.qmd)
 - [download_nc()`](functions/download_nc.qmd)
 - [layer_mean()`](functions/layer_mean.qmd)
 - [link_events()`](functions/link_events.qmd)
@@ -116,6 +122,8 @@ C --> I[link_events]
 C --> J[cube_mask]
 C --> K[clim_day / clim_month]
 K --> L[anom_diff / anom_z]
+C --> T[cube_trend]
+L --> T
 C --> M[cube_cell_area]
 C --> N[cube_layer_thickness]
 M --> O[cube_cell_volume]
@@ -127,10 +135,14 @@ P --> Q
 ```
 # Boundary with spatind
 ## oceancube produces
-Cubes, values, coordinates, indices, masks, areas, thicknesses, volumes, intersections, weights, units, and provenance.
+Cubes, values, coordinates, indices, masks, areas, thicknesses, volumes,
+intersections, weights, units, provenance, and descriptive per-cell temporal
+slopes.
 
 ## spatind will calculate
-2-D and 3-D indicators, centres of gravity, occupied area/volume, dispersion, inertia, elongation, isotropy, concentration, Gini, patchiness, trends, uncertainty, regimes, and inference.
+2-D and 3-D indicators, centres of gravity, occupied area/volume, dispersion,
+inertia, elongation, isotropy, concentration, Gini, patchiness, spatial or
+indicator-level trend interpretation, uncertainty, regimes, and inference.
 
 These are architectural responsibilities, not a claim that future `spatind` functions already exist.
 # Git and release workflow
@@ -170,6 +182,7 @@ Never force the history of `main`. Use annotated tags for versions and attach Gi
 | mask | `cube_mask()` |
 | monthly/daily climatology | `clim_month()` / `clim_day()` |
 | absolute/standard anomaly | `anom_diff()` / `anom_z()` |
+| descriptive per-cell temporal slope | `cube_trend()` |
 | area/thickness/volume | `cube_cell_area()` / `cube_layer_thickness()` / `cube_cell_volume()` |
 | polygon weights | `cube_polygon_weights()` |
 | spatial indicators | `spatind` |
