@@ -48,7 +48,7 @@ dropped explicitly and recorded.
 
 ## Stability
 
-The 0.2.0 development API is frozen at 38 exports. Constructor, reading,
+The 0.2.0 API is frozen at 38 exports. Constructor, reading,
 collection, selection, extraction, masks, compatibility helpers, and grid
 geometry retain their established contracts. New validation, inspection,
 visualization, canonical temporal, anomaly, and trend engines are documented

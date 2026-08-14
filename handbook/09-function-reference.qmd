@@ -1,6 +1,6 @@
 # Public function reference
 
-The 38 cards below document the frozen development API. Canonical engines are
+The 38 cards below document the frozen 0.2.0 API. Canonical engines are
 listed before compatibility helpers.
 
 ## Connection and download

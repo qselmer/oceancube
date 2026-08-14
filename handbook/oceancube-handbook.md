@@ -1,9 +1,9 @@
 # Welcome
-This tracked consolidated compatibility surface summarizes the **oceancube 0.2.0 development core**. It is neither authoritative nor reproducibly generated; the Quarto chapter, function-card, and table sources listed in `_quarto.yml` are authoritative.
+This tracked consolidated compatibility surface summarizes the **oceancube 0.2.0 core**. It is neither authoritative nor reproducibly generated; the Quarto chapter, function-card, and table sources listed in `_quarto.yml` are authoritative.
 
 - Canonical contract: `longitude × latitude × depth × time × variable`
 - Backends: in-memory and read-only local NetCDF
-- Current 0.2.0 development API: 38 exports
+- Current 0.2.0 API: 38 exports
 - Experimental in 0.x: `cube_transect()`, `cube_polygon_weights()`, and `cube_trend()`
 
 Start with @sec-introduction, then use the workflow and function-reference chapters.

@@ -3,7 +3,7 @@ project:
   output-dir: ../docs/handbook
 book:
   title: "OceanCube Handbook"
-  subtitle: "Development documentation for 0.2.0"
+  subtitle: "Documentation for version 0.2.0"
   repo-url: https://github.com/qselmer/oceancube
   chapters:
     - index.qmd

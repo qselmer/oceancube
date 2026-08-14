@@ -6,15 +6,15 @@ output: github_document
 
 `oceancube` represents rectilinear ocean data with one validated contract and a
 canonical dimension order: longitude, latitude, depth, time, and variable. The
-development branch for oceancube 0.2.0 freezes a 38-export API for validation,
+oceancube 0.2.0 release freezes a 38-export API for validation,
 inspection, storage-aware selection and extraction, visualization, temporal
 processing, masking, and grid geometry in reproducible marine workflows.
 
 ## Status and installation
 
-The current repository is the development source for oceancube 0.2.0; its
-`DESCRIPTION` version remains 0.1.0 until final release preparation. It is not
-on CRAN. Install the development repository with:
+This source tree is prepared as oceancube 0.2.0. It is not on CRAN, and this
+status does not imply that a Git tag or GitHub release exists. Install the
+repository with:
 
 ```r
 # install.packages("remotes")

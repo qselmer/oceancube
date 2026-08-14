@@ -1,8 +1,5 @@
 # oceancube 0.2.0
 
-These are development release notes. Package metadata remains at version 0.1.0
-until the separate final release-preparation phase.
-
 ## Validation, inspection, and visualization
 
 * Adds `cube_validate()` for non-destructive contract diagnostics and

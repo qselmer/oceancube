@@ -4,8 +4,8 @@ type: software
 authors:
   - family-names: Quispe-Salazar
     given-names: Elmer
-version: 0.1.0
-date-released: 2026-08-02
+version: 0.2.0
+date-released: 2026-08-14
 message: "If you use oceancube, please cite it."
 license: MIT
 repository-code: "https://github.com/qselmer/oceancube"
