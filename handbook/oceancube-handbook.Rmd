@@ -69,7 +69,7 @@ They are not interchangeable: slice/crop preserve cube semantics, extract/transe
 
 `stock_mask()`, `crop_stock()`, and `coast_dist()` preserve established spatial-context workflows.
 # Time, climatology, and anomalies
-`to_month()` aggregates time to months. `clim_month()` and `clim_day()` estimate reference means and variability. `anom_diff()` returns absolute departures, `anom_z()` standardised departures, and `signal_noise()` a signal-to-noise representation. `annual_index()` and `layer_mean()` provide annual and vertical summaries.
+`to_month()` aggregates time to months. `clim_month()` and `clim_day()` estimate reference means and variability. `anom_diff()` returns absolute departures, `anom_z()` standardised departures, and `signal_noise()` standardized climatological anomaly magnitude (`abs(z)`) by default or signed `z` on request. It is not a general signal-to-noise ratio. `annual_index()` and `layer_mean()` provide annual and vertical summaries.
 
 Always inspect time coverage, missingness, sample counts, and units before interpreting climatology products.
 # Grid geometry and weights
@@ -180,4 +180,4 @@ Never force the history of `main`. Use annotated tags for versions and attach Gi
 | polygon weights | `cube_polygon_weights()` |
 | spatial indicators | `spatind` |
 
-Other exports cover Copernicus setup/download, stock context, coast distance, vertical/annual summaries, signal-to-noise, and monthly aggregation. See the function cards for exact signatures.
+Other exports cover Copernicus setup/download, stock context, coast distance, vertical/annual summaries, and monthly aggregation. See the function cards for exact signatures.

@@ -19,7 +19,7 @@ link_events(
 }
 \arguments{
 \item{x}{An \verb{<ocean_cube>} object. This can be a raw variable cube, an absolute
-anomaly cube, a z-score cube, or a signal-to-noise cube.}
+anomaly cube, a z-score cube, or a standardized-anomaly-magnitude cube.}
 
 \item{events}{A data frame with event coordinates and dates.}
 

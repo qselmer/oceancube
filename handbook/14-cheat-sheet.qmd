@@ -13,8 +13,11 @@
 | legacy monthly/daily climatology | `clim_month()` / `clim_day()` |
 | canonical difference/standard anomaly | `cube_anomaly()` |
 | legacy difference/standard anomaly | `anom_diff()` / `anom_z()` |
+| legacy standardized anomaly magnitude (`abs(z)`) | `signal_noise()` |
 | area/thickness/volume | `cube_cell_area()` / `cube_layer_thickness()` / `cube_cell_volume()` |
 | polygon weights | `cube_polygon_weights()` |
 | spatial indicators | `spatind` |
 
-Other exports cover Copernicus setup/download, stock context, coast distance, vertical/annual summaries, signal-to-noise, and monthly aggregation. See the function cards for exact signatures.
+Other exports cover Copernicus setup/download, stock context, coast distance,
+vertical/annual summaries, and monthly aggregation. See the function cards for
+exact signatures.

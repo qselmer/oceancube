@@ -2,7 +2,7 @@
 % Please edit documentation in R/anom_diff.R
 \name{signal_noise}
 \alias{signal_noise}
-\title{Compute signal-to-noise anomaly magnitude}
+\title{Standardized climatological anomaly magnitude}
 \usage{
 signal_noise(x, clim, signed = FALSE)
 }
@@ -11,11 +11,29 @@ signal_noise(x, clim, signed = FALSE)
 
 \item{clim}{An ocean_clim object created by \code{\link[=clim_month]{clim_month()}} or \code{\link[=clim_day]{clim_day()}}.}
 
-\item{signed}{Logical. If FALSE, returns absolute signal-to-noise magnitude.}
+\item{signed}{A single non-missing logical. If \code{FALSE}, return the magnitude
+of the standardized climatological anomaly. If \code{TRUE}, retain its sign.}
 }
 \value{
-An ocean_anom object with signal-to-noise values.
+An ocean_anom compatibility object with dimensionless unit \code{"1"}.
 }
 \description{
-Compute signal-to-noise anomaly magnitude
+Standardized climatological anomaly magnitude
+}
+\details{
+Despite its historical name, \code{signal_noise()} is not a general
+signal-to-noise ratio estimator. It first obtains the canonical signed
+standardized anomaly
+\deqn{z = (x - mean_clim) / sd_clim}
+through \code{\link[=cube_anomaly]{cube_anomaly()}}. The numerator is the deviation from the
+climatological mean. The denominator is the climatological sample standard
+deviation across equally weighted day-year or month-year replicates. The
+default returns \code{abs(z)}; \code{signed = TRUE} returns \code{z} unchanged.
+
+Only safe modern \code{ocean_clim} objects from \code{\link[=clim_day]{clim_day()}} or \code{\link[=clim_month]{clim_month()}} are
+accepted. Canonical daily, monthly, or seasonal climatologies should use
+\code{cube_anomaly(x, climatology, type = "z")} directly. Zero or non-finite SD
+produces \code{NA}, negative finite SD is an error, and every positive finite SD
+is valid. Exact alignment, leap handling, finite masking, and bounded lazy
+NetCDF reads are inherited from the canonical anomaly engine.
 }

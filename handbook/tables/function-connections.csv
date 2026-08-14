@@ -26,6 +26,6 @@
 "link_events","events + ocean_cube","analysis","Attach nearest cube values to event rows."
 "ocean_cube","array/read_nc","cube_slice","Construct and validate a canonical five-dimensional cube."
 "read_nc","download_nc","cube_collect","Create a read-only local NetCDF-backed cube."
-"signal_noise","clim_day/clim_month","analysis","Compute signal-to-noise from climatological summaries."
+"signal_noise","clim_day/clim_month","analysis","Compute standardized climatological anomaly magnitude abs(z), or signed z on request."
 "stock_mask","geometry","crop_stock","Create a legacy stock mask."
 "to_month","ocean_cube","clim_month","Compatibility wrapper for monthly temporal aggregation."

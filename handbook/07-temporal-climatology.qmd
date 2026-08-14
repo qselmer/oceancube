@@ -45,9 +45,14 @@ sources are read in bounded blocks before the result is materialised in memory.
 
 `anom_diff()` and `anom_z()` are compatibility wrappers over this engine for
 modern `clim_day()`/`clim_month()` results. Incomplete historical climatology
-objects must be recomputed. `signal_noise()` retains its absolute or signed z
-anomaly meaning through the same compatibility path. `annual_index()` remains
-a specialised post-core annual table, not a yearly cube wrapper.
+objects must be recomputed. `signal_noise()` is the legacy standardized
+climatological anomaly-magnitude helper: it returns `abs(z)` by default and
+canonical `z` when `signed = TRUE`. Its numerator is the deviation from the
+climatological mean and its denominator is the two-stage sample SD described
+above; despite the historical name it is not a general signal-to-noise ratio.
+It accepts daily/monthly `ocean_clim` objects only; use `cube_anomaly()` directly
+for canonical or seasonal climatologies. `annual_index()` remains a specialised
+post-core annual table, not a yearly cube wrapper.
 `layer_mean()` provides vertical summaries.
 
 Always inspect time coverage, missingness, sample counts, and units before interpreting climatology products.

@@ -28,4 +28,6 @@ P --> Q
 
 Use the canonical `cube_climatology()` to `cube_anomaly()` route for new
 workflows. The parallel wrapper route exists for compatibility and delegates
-its anomaly calculation to the same core.
+its anomaly calculation to the same core. On that wrapper route,
+`signal_noise()` means standardized anomaly magnitude (`abs(z)`) by default,
+not a generic signal-to-noise ratio; `signed = TRUE` retains canonical `z`.

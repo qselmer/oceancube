@@ -5,7 +5,7 @@
 #' fishing sets, lances, survey stations, biological samples, or occurrence records.
 #'
 #' @param x An `<ocean_cube>` object. This can be a raw variable cube, an absolute
-#'   anomaly cube, a z-score cube, or a signal-to-noise cube.
+#'   anomaly cube, a z-score cube, or a standardized-anomaly-magnitude cube.
 #' @param events A data frame with event coordinates and dates.
 #' @param lon_col Name of the longitude column in `events`.
 #' @param lat_col Name of the latitude column in `events`.

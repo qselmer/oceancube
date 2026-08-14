@@ -26,6 +26,6 @@
 "link_events",TRUE,TRUE,FALSE,TRUE,FALSE,FALSE,"Attach nearest cube values to event rows."
 "ocean_cube",TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,"Construct and validate a canonical five-dimensional cube."
 "read_nc",FALSE,TRUE,FALSE,FALSE,FALSE,FALSE,"Create a read-only local NetCDF-backed cube."
-"signal_noise",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Compute signal-to-noise through the canonical z-anomaly engine."
+"signal_noise",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Compute abs(z), or signed z, through one bounded canonical z-anomaly calculation; output is a memory cube."
 "stock_mask",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,"Create a legacy stock mask."
 "to_month",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Supported reducers delegate to selective temporal aggregation; deprecated custom functions may read the full cube."

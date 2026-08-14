@@ -26,6 +26,6 @@
 "link_events","events + ocean_cube","data.frame",FALSE,FALSE,FALSE,"Attach nearest cube values to event rows."
 "ocean_cube","coordinates + array/backend","ocean_cube",TRUE,FALSE,FALSE,"Construct and validate a canonical five-dimensional cube."
 "read_nc","NetCDF path","ocean_cube",TRUE,FALSE,FALSE,"Create a read-only local NetCDF-backed cube."
-"signal_noise","climatology","ocean_cube",TRUE,FALSE,FALSE,"Compute signal-to-noise from climatological summaries."
+"signal_noise","ocean_cube + daily/monthly climatology","ocean_anom",TRUE,FALSE,FALSE,"Preserve the source 5-D shape and time while returning abs(z) by default or signed z on request."
 "stock_mask","stock geometry","mask",TRUE,FALSE,FALSE,"Create a legacy stock mask."
 "to_month","ocean_cube","ocean_cube",FALSE,TRUE,FALSE,"Aggregate daily or irregular observations to months."

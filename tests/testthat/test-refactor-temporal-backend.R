@@ -250,8 +250,11 @@ test_that("signal_noise preserves absolute and signed scientific meanings", {
   expect_identical(class(signed), class(absolute))
   expect_equal(absolute$data[1, 1, 1, 1, 1], abs(expected_signed))
   expect_equal(signed$data[1, 1, 1, 1, 1], expected_signed)
-  expect_identical(absolute$anomaly$method, "signal_to_noise")
-  expect_identical(signed$anomaly$method, "signed_signal_to_noise")
+  expect_identical(
+    absolute$anomaly$method,
+    "standardized_anomaly_magnitude"
+  )
+  expect_identical(signed$anomaly$method, "standardized_anomaly")
   expected_units <- stats::setNames(rep("1", length(cube$vars)), cube$vars)
   expect_identical(absolute$units, expected_units)
   expect_identical(signed$units, expected_units)

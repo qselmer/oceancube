@@ -2,6 +2,12 @@
 
 ## Time and calendar foundation (0.2.0 development)
 
+* Stabilizes `signal_noise()` as the legacy standardized climatological
+  anomaly-magnitude helper: the default is `abs(z)` and `signed = TRUE`
+  returns the canonical signed z anomaly. The argument is now strictly a
+  single non-missing logical, and compact transformation metadata is recorded
+  in QA and provenance. Despite its historical name, this is not a general
+  signal-to-noise ratio estimator.
 * Adds `cube_anomaly()` as the canonical difference and standardized-anomaly
   engine for intact `cube_climatology()` results. It enforces exact recurring
   group, coordinate, variable, unit, calendar, and time-class alignment;

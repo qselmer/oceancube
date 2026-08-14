@@ -3,14 +3,20 @@
 **Status:** stable
 
 ## Purpose
-Compute absolute or signed standardized anomalies through the canonical anomaly
-engine's legacy compatibility path.
+Compute a standardized climatological anomaly magnitude, `abs(z)`, or retain
+the canonical signed z anomaly when `signed = TRUE`. Despite its historical
+name, this is not a general signal-to-noise ratio estimator.
 
 ## When to use
-Use it when its declared input and output match the workflow. Prefer a narrower selection before any operation that may materialise values.
+Use it with a modern `ocean_clim` returned by `clim_day()` or `clim_month()`
+when a legacy-compatible magnitude is required. Prefer the canonical
+`cube_anomaly(x, climatology, type = "z")` route for new workflows, seasonal
+climatologies, or an intact canonical climatology cube.
 
 ## When not to use
-Do not use it to calculate `spatind` indicators or to bypass coordinate, CRS, unit, and provenance checks.
+Do not use it as a generic signal/noise estimator, with an intact canonical
+climatology cube, or for seasonal climatologies. It does not bypass coordinate,
+unit, calendar, source-time-class, finite-value, or provenance checks.
 
 ## Real signature
 ```r
@@ -18,35 +24,50 @@ signal_noise(x, clim, signed = FALSE)
 ```
 
 ## Arguments
-- `x`: see the installed Rd manual for validation and defaults.
-- `clim`: see the installed Rd manual for validation and defaults.
-- `signed`: see the installed Rd manual for validation and defaults.
+- `x`: an `ocean_cube` whose coordinates and scientific metadata align exactly
+  with the source used to construct `clim`.
+- `clim`: a safe modern `ocean_clim` from `clim_day()` or `clim_month()`.
+- `signed`: one non-missing logical value. `FALSE` returns `abs(z)`; `TRUE`
+  returns `z`. Numeric, character, missing, vector, empty, and `NULL` values are
+  rejected.
 
 ## Input and output
-Input: **climatology**. Output: **ocean_cube**.
+Input: **ocean_cube + daily/monthly ocean_clim**. Output: **ocean_anom** (also
+an `ocean_cube` and list) with the source shape and timestamps and unit `"1"`.
 
 ## Backend support
 Memory: **TRUE**. NetCDF: **TRUE**. Lazy sources use bounded reads and the
 result is materialised in memory.
 
 ## Dimensional effect
-Preserves the relevant cube contract or returns metadata/geometry without silently dropping axes.
+Preserves all five dimensions and the source time coordinate. The result is a
+materialised memory cube even when `x` is backed by NetCDF.
 
 ## Metadata
-Units, coordinates, provenance, masks, and QA metadata are retained or reported where meaningful.
+Canonical anomaly QA and provenance are retained. `qa$signal_noise` records
+`base_operation`, `signed`, and `transformation`; the corresponding provenance
+record also identifies the public operation as `signal_noise`.
 
 ## Minimal executable check
 ```r
 library(oceancube)
-stopifnot(is.function(oceancube::signal_noise))
-names(formals(oceancube::signal_noise))
+stopifnot(identical(names(formals(signal_noise)), c("x", "clim", "signed")))
+# magnitude <- signal_noise(x, clim)              # abs(z)
+# signed_z  <- signal_noise(x, clim, signed=TRUE) # z
 ```
 
 ## Example in a workflow
-Typical position: `clim_day/clim_month` → `signal_noise()` → `analysis`. See the workflow scripts for a checked end-to-end example.
+Typical position: `clim_day()` / `clim_month()` -> `signal_noise()` ->
+analysis. The calculation delegates once to the canonical z-anomaly engine;
+the default then applies an in-memory absolute-value transformation.
 
 ## Frequent errors and limitations
-Invalid dimensions, selectors, units, CRS, source-file identity, optional dependencies, or unsupported grids are rejected explicitly. Read the function Rd page for exact diagnostics.
+The numerator is `x - climatological_mean`. The denominator is the sample SD
+across equally weighted day-year or month-year replicates used by the modern
+climatology engine. Zero or non-finite SD yields `NA`, negative finite SD is an
+error, and every positive finite SD is valid. Daily leap rules and exact
+alignment are inherited from `cube_anomaly()`.
 
 ## Related functions
-Previous: `clim_day/clim_month`. Next: `analysis`.
+Previous: `clim_day()` / `clim_month()`. Canonical alternative:
+`cube_anomaly()`. Next: analysis.

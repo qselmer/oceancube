@@ -26,6 +26,6 @@
 "link_events","Selection and extraction","stable","events + ocean_cube","data.frame","true","true","true","false","true"
 "ocean_cube","Construction and backend","stable","coordinates + array/backend","ocean_cube","true","false","false","true","false"
 "read_nc","Connection and acquisition","stable","NetCDF path","ocean_cube","false","true","false","true","false"
-"signal_noise","Time and climatology","stable","climatology","ocean_cube","true","true","false","true","false"
+"signal_noise","Time and climatology","stable","ocean_cube + daily/monthly climatology","ocean_anom","true","true","false","true","false"
 "stock_mask","Masks and context","stable","stock geometry","mask","true","true","false","false","false"
 "to_month","Time and climatology","stable","ocean_cube","ocean_cube","true","true","true","true","false"

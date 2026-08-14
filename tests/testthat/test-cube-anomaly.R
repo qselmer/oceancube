@@ -634,8 +634,11 @@ test_that("signal_noise remains absolute z by default and signed on request", {
   signed <- signal_noise(x, clim, signed = TRUE)
   expect_equal(absolute$data, abs(z$data))
   expect_equal(signed$data, z$data)
-  expect_identical(absolute$anomaly$method, "signal_to_noise")
-  expect_identical(signed$anomaly$method, "signed_signal_to_noise")
+  expect_identical(
+    absolute$anomaly$method,
+    "standardized_anomaly_magnitude"
+  )
+  expect_identical(signed$anomaly$method, "standardized_anomaly")
   expect_identical(absolute$units, c(temperature = "1"))
   expect_identical(signed$units, c(temperature = "1"))
 })

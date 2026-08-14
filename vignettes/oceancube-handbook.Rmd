@@ -16,4 +16,10 @@ x <- ocean_cube(lon=c(-80,-79),lat=-12,depth=0,time=as.Date('2020-01-01'),vars='
 stopifnot(length(dim(x$data)) == 5L)
 ```
 
+For modern daily or monthly legacy climatologies, `signal_noise(x, clim)` is a
+standardized climatological anomaly magnitude (`abs(z)`), not a general
+signal-to-noise ratio. Use `signal_noise(x, clim, signed = TRUE)` to retain the
+canonical signed z anomaly, or use `cube_anomaly()` directly with canonical and
+seasonal climatologies.
+
 Main flows: construct/read → slice/crop → extract/transect/mask → climatology/anomalies → geometry/weights. `spatind` consumes prepared values and weights; it owns indicators and inference.
