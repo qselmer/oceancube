@@ -1,6 +1,3 @@
-if (!"oceancube" %in% loadedNamespaces()) {
-  pkgload::load_all(".", quiet = TRUE)
-}
 if (!exists("make_netcdf_backend_fixture", mode = "function")) {
   source("tests/testthat/helper-netcdf-backend.R", local = TRUE)
 }

@@ -1,7 +1,3 @@
-if (!exists("ocean_cube", mode = "function")) {
-  pkgload::load_all(".", quiet = TRUE)
-}
-
 aggregate_test_cube <- function(time, values, lon = -80, lat = -12,
                                 depth = 0, vars = "value", units = "unit") {
   shape <- c(length(lon), length(lat), length(depth), length(time), length(vars))
