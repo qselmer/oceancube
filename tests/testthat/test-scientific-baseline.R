@@ -26,7 +26,9 @@ test_that("z scores are missing rather than infinite when climatological sd is z
     vars = "temperature"
   )
 
-  z <- anom_z(constant_cube, suppressWarnings(clim_month(constant_cube)))
+  z <- suppressWarnings(
+    anom_z(constant_cube, suppressWarnings(clim_month(constant_cube)))
+  )
 
   expect_true(all(is.na(z$data)))
   expect_false(any(is.infinite(z$data)))
@@ -131,6 +133,8 @@ test_that("daily climatology documents leap handling and prints its real scale",
   expect_equal(drop$mean[1, 1, 1, j_drop, 1], 70 / 3)
   expect_equal(keep$mean[1, 1, 1, j_keep28, 1], 70 / 3)
   expect_equal(keep$mean[1, 1, 1, j_keep29, 1], 30)
-  expect_true(is.na(anom_diff(daily_cube, drop)$data[1, 1, 1, 3, 1]))
+  expect_true(is.na(
+    suppressWarnings(anom_diff(daily_cube, drop))$data[1, 1, 1, 3, 1]
+  ))
   expect_match(capture.output(print(keep))[1], "day climatology", fixed = TRUE)
 })

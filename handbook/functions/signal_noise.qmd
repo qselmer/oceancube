@@ -3,7 +3,8 @@
 **Status:** stable
 
 ## Purpose
-Compute signal-to-noise from climatological summaries.
+Compute absolute or signed standardized anomalies through the canonical anomaly
+engine's legacy compatibility path.
 
 ## When to use
 Use it when its declared input and output match the workflow. Prefer a narrower selection before any operation that may materialise values.
@@ -25,7 +26,8 @@ signal_noise(x, clim, signed = FALSE)
 Input: **climatology**. Output: **ocean_cube**.
 
 ## Backend support
-Memory: **TRUE**. NetCDF: **TRUE**. Backend operations retain read-only semantics; materialisation is explicit.
+Memory: **TRUE**. NetCDF: **TRUE**. Lazy sources use bounded reads and the
+result is materialised in memory.
 
 ## Dimensional effect
 Preserves the relevant cube contract or returns metadata/geometry without silently dropping axes.

@@ -2,6 +2,7 @@
 "annual_index","Time and climatology","stable","ocean_cube","annual summary","true","true","true","false","false"
 "anom_diff","Time and climatology","stable","ocean_cube","ocean_cube","true","true","false","true","false"
 "anom_z","Time and climatology","stable","ocean_cube","ocean_cube","true","true","false","true","false"
+"cube_anomaly","Time and climatology","experimental","ocean_cube + climatology","ocean_cube","true","true","false","true","false"
 "clim_day","Time and climatology","stable","ocean_cube","climatology","true","true","true","false","false"
 "clim_month","Time and climatology","stable","ocean_cube","climatology","true","true","true","false","false"
 "cm_connect","Connection and acquisition","stable","configuration","connection","false","false","false","false","false"

@@ -2,6 +2,19 @@
 
 ## Time and calendar foundation (0.2.0 development)
 
+* Adds `cube_anomaly()` as the canonical difference and standardized-anomaly
+  engine for intact `cube_climatology()` results. It enforces exact recurring
+  group, coordinate, variable, unit, calendar, and time-class alignment;
+  applies explicit leap-day rules; and returns a memory cube with QA and
+  provenance diagnostics.
+* Processes lazy NetCDF sources with bounded selective reads. `anom_diff()` and
+  `anom_z()` now adapt compatible legacy climatologies and delegate to this
+  single scientific engine; `signal_noise()` retains its signed/absolute
+  standardized-anomaly definition through the same path.
+* Corrects unsafe legacy anomaly alignment: older workflows could accept grids
+  whose axes had equal lengths but different coordinate values. Anomalies now
+  require exact longitude, latitude, depth, variable order, unit, calendar, and
+  source time-class compatibility.
 * Adds `cube_climatology()` for recurrent daily, monthly, and DJF/MAM/JJA/SON
   climatologies. It first forms day-year, month-year, or season-year means and
   then gives each valid replicate equal weight, avoiding pooled-observation
@@ -76,7 +89,9 @@
 
 ## Climatology and anomalies
 
-* Preserves monthly and daily climatologies, absolute and standardized anomalies, vertical summaries, and event linkage through the backend interface.
+* Provides canonical daily, monthly, and seasonal difference or standardized
+  anomalies, while preserving legacy anomaly wrappers, vertical summaries,
+  and event linkage through the backend interface.
 
 ## Documentation
 

@@ -13,6 +13,7 @@ test_that("only approved 0.2 APIs extend the boundary", {
     "cube_cell_volume",
     "cube_polygon_weights",
     "cube_aggregate_time",
+    "cube_anomaly",
     "cube_climatology",
     "viz.timeseries"
   )

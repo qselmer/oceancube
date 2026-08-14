@@ -87,6 +87,17 @@
   invisible(stats::setNames(as.integer(actual), axes))
 }
 
+.cube_memory_dimension_names <- function(x) {
+  if (!identical(.cube_backend(x), "memory")) {
+    rlang::abort(
+      "Dimension names can only be inspected directly for the memory backend.",
+      class = "oceancube_unsupported_backend"
+    )
+  }
+  .validate_memory_backend(x)
+  names(dim(x$data))
+}
+
 .cube_storage_shape <- function(x) {
   backend <- .cube_backend(x)
   if (identical(backend, "memory")) {

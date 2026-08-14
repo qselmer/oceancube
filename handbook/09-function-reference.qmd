@@ -12,6 +12,7 @@ The cards below document the public package boundary.
 - [crop_stock()`](functions/crop_stock.qmd)
 - [cube_cell_area()`](functions/cube_cell_area.qmd)
 - [cube_cell_volume()`](functions/cube_cell_volume.qmd)
+- [cube_anomaly()`](functions/cube_anomaly.qmd)
 - [cube_climatology()`](functions/cube_climatology.qmd)
 - [cube_collect()`](functions/cube_collect.qmd)
 - [cube_crop()`](functions/cube_crop.qmd)

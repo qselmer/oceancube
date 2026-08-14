@@ -12,6 +12,7 @@ test_that("the public API surface includes the approved 0.2 additions", {
     cube_cell_area = c("x", "unit"),
     cube_cell_volume = c("x", "depth_bounds", "unit"),
     cube_aggregate_time = c("x", "by", "method", "na.rm", "min_n", "diagnostics"),
+    cube_anomaly = c("x", "climatology", "type"),
     cube_climatology = c("x", "by", "period", "leap", "min_n", "diagnostics"),
     cube_collect = "x",
     cube_crop = c("x", "longitude", "latitude", "depth", "time",

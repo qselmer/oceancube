@@ -2,18 +2,25 @@
 % Please edit documentation in R/anom_diff.R
 \name{anom_z}
 \alias{anom_z}
-\title{Compute standardized anomalies from a climatology}
+\title{Compute standardized anomalies from a legacy climatology}
 \usage{
 anom_z(x, clim)
 }
 \arguments{
-\item{x}{An \verb{<ocean_cube>} object.}
+\item{x}{An ocean_cube object.}
 
-\item{clim}{An \verb{<ocean_clim>} object created by \code{clim_month()} or \code{clim_day()}.}
+\item{clim}{An ocean_clim object created by \code{\link[=clim_month]{clim_month()}} or \code{\link[=clim_day]{clim_day()}}.}
 }
 \value{
-An \verb{<ocean_cube>} with standardized anomaly values \code{(x - climatology) / sd_clim}.
+An ocean_anom compatibility object containing standardized anomaly
+values and dimensionless unit "1".
 }
 \description{
-Compute standardized anomalies from a climatology
+Compute standardized anomalies from a legacy climatology
+}
+\details{
+This compatibility wrapper delegates to \code{\link[=cube_anomaly]{cube_anomaly()}}. Zero or
+non-finite SD produces NA; every finite positive SD is valid. Exact
+canonical alignment is required, and historical climatologies without the
+required metadata must be recomputed.
 }

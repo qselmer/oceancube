@@ -7,14 +7,14 @@
 signal_noise(x, clim, signed = FALSE)
 }
 \arguments{
-\item{x}{An \verb{<ocean_cube>} object.}
+\item{x}{An ocean_cube object.}
 
-\item{clim}{An \verb{<ocean_clim>} object created by \code{clim_month()} or \code{clim_day()}.}
+\item{clim}{An ocean_clim object created by \code{\link[=clim_month]{clim_month()}} or \code{\link[=clim_day]{clim_day()}}.}
 
-\item{signed}{Logical. If \code{FALSE}, returns absolute signal-to-noise magnitude.}
+\item{signed}{Logical. If FALSE, returns absolute signal-to-noise magnitude.}
 }
 \value{
-An \verb{<ocean_cube>} with signal-to-noise values.
+An ocean_anom object with signal-to-noise values.
 }
 \description{
 Compute signal-to-noise anomaly magnitude

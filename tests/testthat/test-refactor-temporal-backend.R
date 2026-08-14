@@ -215,7 +215,10 @@ test_that("absolute and standardized anomalies remain structurally and numerical
   expect_identical(difference$time, cube$time)
   expect_identical(difference$vars, cube$vars)
   expect_identical(difference$units, cube$units)
-  expect_null(z_score$units)
+  expect_identical(
+    z_score$units,
+    stats::setNames(rep("1", length(cube$vars)), cube$vars)
+  )
   expect_identical(difference$source, cube$source)
   expect_identical(difference$dataset_id, cube$dataset_id)
   expect_identical(difference$spatial_extent, cube$spatial_extent)
@@ -227,7 +230,8 @@ test_that("absolute and standardized anomalies remain structurally and numerical
   expect_identical(difference$anomaly$method, "difference")
   expect_identical(z_score$anomaly$method, "z_score")
   expect_identical(difference$provenance$extra$parent, cube$provenance)
-  expect_null(difference$qa)
+  expect_true(is.list(difference$qa))
+  expect_true(is.list(difference$qa$anomaly))
   expect_identical(.cube_backend(difference), "memory")
   expect_identical(.cube_backend(z_score), "memory")
   expect_identical(cube, before)
@@ -248,8 +252,9 @@ test_that("signal_noise preserves absolute and signed scientific meanings", {
   expect_equal(signed$data[1, 1, 1, 1, 1], expected_signed)
   expect_identical(absolute$anomaly$method, "signal_to_noise")
   expect_identical(signed$anomaly$method, "signed_signal_to_noise")
-  expect_null(absolute$units)
-  expect_null(signed$units)
+  expected_units <- stats::setNames(rep("1", length(cube$vars)), cube$vars)
+  expect_identical(absolute$units, expected_units)
+  expect_identical(signed$units, expected_units)
   expect_identical(dim(absolute$data), dim(cube$data))
   expect_identical(dimnames(absolute$data), dimnames(cube$data))
   expect_identical(.cube_backend(absolute), "memory")
@@ -267,7 +272,9 @@ test_that("zero climatological variation stays missing rather than non-finite", 
     vars = "temperature"
   )
 
-  z_score <- anom_z(cube, suppressWarnings(clim_month(cube)))
+  z_score <- suppressWarnings(
+    anom_z(cube, suppressWarnings(clim_month(cube)))
+  )
 
   expect_true(all(is.na(z_score$data)))
   expect_false(any(is.infinite(z_score$data)))

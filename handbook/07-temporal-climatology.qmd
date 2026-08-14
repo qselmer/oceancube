@@ -32,9 +32,22 @@ intermediate.
 results use the same two-stage science; in particular, they no longer pool raw
 observations and `clim_day()` no longer double-weights leap years under
 `leap = "feb28"`.
-`anom_diff()` returns absolute departures, `anom_z()` standardised departures,
-and `signal_noise()` a signal-to-noise representation. `annual_index()` remains
-a specialised post-core annual table, not a yearly cube wrapper. `layer_mean()`
-provides vertical summaries.
+
+`cube_anomaly(x, climatology, type)` is the canonical anomaly engine. It uses
+the climatology's recurrent group key, never pseudo-time proximity, and
+requires exact coordinates, variables, units, calendar, and source time class.
+`type = "difference"` preserves source units; `type = "z"` returns unit `"1"`.
+Non-finite inputs or climatological means produce missing output. For z
+anomalies, zero or non-finite SD also produces missing output, every positive
+finite SD remains valid, and negative finite SD is rejected as an invalid
+climatology. The source shape and timestamps are preserved, and lazy NetCDF
+sources are read in bounded blocks before the result is materialised in memory.
+
+`anom_diff()` and `anom_z()` are compatibility wrappers over this engine for
+modern `clim_day()`/`clim_month()` results. Incomplete historical climatology
+objects must be recomputed. `signal_noise()` retains its absolute or signed z
+anomaly meaning through the same compatibility path. `annual_index()` remains
+a specialised post-core annual table, not a yearly cube wrapper.
+`layer_mean()` provides vertical summaries.
 
 Always inspect time coverage, missingness, sample counts, and units before interpreting climatology products.

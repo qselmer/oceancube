@@ -12,8 +12,10 @@ C --> G[cube_extract]
 C --> H[cube_transect]
 C --> I[link_events]
 C --> J[cube_mask]
-C --> K[cube_climatology / clim_day / clim_month]
-K --> L[anom_diff / anom_z]
+C --> K[cube_climatology]
+K --> L[cube_anomaly]
+C --> R[clim_day / clim_month]
+R --> S[anom_diff / anom_z / signal_noise]
 C --> M[cube_cell_area]
 C --> N[cube_layer_thickness]
 M --> O[cube_cell_volume]
@@ -23,3 +25,7 @@ N --> P
 G --> Q[spatind]
 P --> Q
 ```
+
+Use the canonical `cube_climatology()` to `cube_anomaly()` route for new
+workflows. The parallel wrapper route exists for compatibility and delegates
+its anomaly calculation to the same core.

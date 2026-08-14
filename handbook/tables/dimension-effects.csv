@@ -2,6 +2,7 @@
 "annual_index","ocean_cube","annual summary",FALSE,TRUE,FALSE,"Summarise a cube by calendar year."
 "anom_diff","ocean_cube","ocean_cube",TRUE,FALSE,FALSE,"Compute absolute anomalies from a climatology."
 "anom_z","ocean_cube","ocean_cube",TRUE,FALSE,FALSE,"Compute standardised anomalies."
+"cube_anomaly","ocean_cube + climatology","ocean_cube",TRUE,FALSE,FALSE,"Preserve the source 5-D shape and replace values with canonical anomalies."
 "clim_day","ocean_cube","climatology",FALSE,FALSE,FALSE,"Estimate daily climatology."
 "clim_month","ocean_cube","climatology",FALSE,FALSE,FALSE,"Estimate monthly climatology."
 "cm_connect","configuration","connection",TRUE,FALSE,FALSE,"Connect to the configured Copernicus client."

@@ -85,14 +85,16 @@ aggregation with equal observation weights and selective NetCDF reads.
 baselines through equally weighted period-year replicates and bounded NetCDF
 reads. Its `data` contains the climatological mean and `climatology$sd` contains
 aligned sample SD. `clim_month()` and `clim_day()` remain compatibility
-wrappers; anomalies retain their existing contract.
+wrappers. New workflows use the canonical climatology directly with
+`cube_anomaly()`; legacy anomaly wrappers delegate to the same engine.
 
 ```{r temporal}
 monthly <- cube_aggregate_time(x, by = "month")
 clim_cube <- suppressWarnings(cube_climatology(x, by = "month"))
 clim <- suppressWarnings(clim_month(x))
-difference <- anom_diff(x, clim)
-standardized <- anom_z(x, clim)
+difference <- cube_anomaly(x, clim_cube, type = "difference")
+standardized <- cube_anomaly(x, clim_cube, type = "z")
+legacy_difference <- anom_diff(x, clim)
 clim_cube
 clim
 dim(monthly$data)

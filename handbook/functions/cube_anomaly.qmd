@@ -1,0 +1,41 @@
+# `cube_anomaly()`
+**Category:** Time and climatology
+**Status:** experimental
+
+## Purpose
+Compute pointwise difference or standardized anomalies from an intact canonical
+recurrent climatology.
+
+## Real signature
+```r
+cube_anomaly(x, climatology, type = c("difference", "z"))
+```
+
+## Scientific contract
+Source observations match `climatology$climatology$group_key` exactly by
+recurrent day, calendar month, or meteorological season. There is no nearest
+matching, interpolation, coordinate tolerance, unit conversion, subsetting, or
+variable reordering. Coordinates, variables, units, calendar, and source time
+class must agree exactly.
+
+Difference output is `x - mean` and retains source units. Z output is
+`(x - mean) / sd` and has unit `"1"`. Non-finite source or mean values become
+missing. Zero or non-finite SD becomes missing, any positive finite SD is
+valid, and negative finite SD is an error. Daily matching obeys the
+climatology's `feb28`, `drop`, or `keep` leap policy.
+
+## Input and output
+`x` may use memory or lazy local NetCDF storage. `climatology` must be the
+unaltered in-memory result of `cube_climatology()`. The output is an in-memory
+`ocean_cube` with the source dimensions, coordinates, timestamps, mask, and
+context metadata plus anomaly QA and provenance records.
+
+## Backend support
+Memory: **TRUE**. NetCDF: **TRUE**. Lazy values are read by bounded time and
+spatial/depth/variable blocks; the complete lazy source is not materialised as
+an intermediate.
+
+## Compatibility
+`anom_diff()` and `anom_z()` adapt current `clim_day()` or `clim_month()`
+objects and delegate to this engine. Historical objects lacking canonical
+provenance must be recomputed.

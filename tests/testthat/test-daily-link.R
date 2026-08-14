@@ -14,8 +14,8 @@ test_that("clim_day and daily anomalies work", {
   cube <- ocean_cube(lon = lon, lat = lat, depth = depth, time = time, data = data, vars = "thetao")
 
   clim <- clim_day(cube, period = c("2001-01-01", "2002-12-31"))
-  anom <- anom_diff(cube, clim)
-  z <- anom_z(cube, clim)
+  anom <- suppressWarnings(anom_diff(cube, clim))
+  z <- suppressWarnings(anom_z(cube, clim))
 
   expect_s3_class(clim, "ocean_clim")
   expect_s3_class(anom, "ocean_anom")

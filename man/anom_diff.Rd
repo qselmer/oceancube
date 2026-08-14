@@ -2,18 +2,24 @@
 % Please edit documentation in R/anom_diff.R
 \name{anom_diff}
 \alias{anom_diff}
-\title{Compute absolute anomalies from a climatology}
+\title{Compute signed difference anomalies from a legacy climatology}
 \usage{
 anom_diff(x, clim)
 }
 \arguments{
-\item{x}{An \verb{<ocean_cube>} object.}
+\item{x}{An ocean_cube object.}
 
-\item{clim}{An \verb{<ocean_clim>} object created by \code{clim_month()} or \code{clim_day()}.}
+\item{clim}{An ocean_clim object created by \code{\link[=clim_month]{clim_month()}} or \code{\link[=clim_day]{clim_day()}}.}
 }
 \value{
-An \verb{<ocean_cube>} with anomaly values \code{x - climatology}.
+An ocean_anom compatibility object containing x minus climatology.
 }
 \description{
-Compute absolute anomalies from a climatology
+Compute signed difference anomalies from a legacy climatology
+}
+\details{
+This compatibility wrapper adapts a modern ocean_clim and delegates
+to \code{\link[=cube_anomaly]{cube_anomaly()}}. Exact coordinate, variable, unit, calendar, and source
+time-class validation is enforced. Historical climatologies without
+sufficient canonical metadata must be recomputed.
 }
