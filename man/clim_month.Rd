@@ -9,11 +9,15 @@ clim_month(x, period = NULL)
 \arguments{
 \item{x}{An \verb{<ocean_cube>} object.}
 
-\item{period}{Optional base period \code{c(start, end)}.}
+\item{period}{Optional closed base period \code{c(start, end)}. Date and exact UTC
+POSIXct semantics follow the source cube.}
 }
 \value{
 An object of class \verb{<ocean_clim>}.
 }
 \description{
-Compute monthly climatology from an ocean cube
+\code{clim_month()} is the compatibility wrapper for
+\code{cube_climatology(x, by = "month")}. Since 0.2.0 it first computes one
+month-year mean and then gives every valid yearly replicate equal weight,
+rather than pooling every raw observation across years.
 }

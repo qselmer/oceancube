@@ -12,6 +12,7 @@ test_that("the public API surface includes the approved 0.2 additions", {
     cube_cell_area = c("x", "unit"),
     cube_cell_volume = c("x", "depth_bounds", "unit"),
     cube_aggregate_time = c("x", "by", "method", "na.rm", "min_n", "diagnostics"),
+    cube_climatology = c("x", "by", "period", "leap", "min_n", "diagnostics"),
     cube_collect = "x",
     cube_crop = c("x", "longitude", "latitude", "depth", "time",
                   "variable", "bbox", "outside"),
@@ -115,7 +116,7 @@ test_that("public transformations do not mutate their input cube", {
   invisible(cube_slice(x, longitude = 2L, by = "index"))
   invisible(cube_crop(x, longitude = c(-80, -79)))
   invisible(cube_extract(x, longitude = -79, latitude = -11, by = "value"))
-  invisible(clim_month(x))
+  invisible(suppressWarnings(clim_month(x)))
   invisible(to_month(x))
 
   expect_identical(serialize(x, NULL), before)

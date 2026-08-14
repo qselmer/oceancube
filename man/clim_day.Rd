@@ -9,22 +9,26 @@ clim_day(x, period = NULL, leap = c("feb28", "drop", "keep"), min_n = 1L)
 \arguments{
 \item{x}{An \verb{<ocean_cube>} object.}
 
-\item{period}{Optional base period \code{c(start, end)} used to compute the climatology.
-Values are coerced to \code{Date}.}
+\item{period}{Optional closed base period \code{c(start, end)} used to compute the
+climatology. Date and exact UTC POSIXct semantics follow the source cube.}
 
-\item{leap}{How to handle February 29. \code{"feb28"} maps February 29 to February 28;
+\item{leap}{How to handle February 29. \code{"feb28"} combines the February 28 and
+February 29 daily aggregates within each leap year before that year enters
+the climatology, preventing leap-year double weighting;
 \code{"drop"} removes February 29 from the base climatology and returns \code{NA} for
 February 29 anomalies unless handled externally; \code{"keep"} keeps February 29
 as an additional climatological day.}
 
-\item{min_n}{Minimum number of finite observations required to compute the
-climatological mean and standard deviation for each cell/day/variable.}
+\item{min_n}{Minimum number of finite yearly daily replicates required to
+compute the climatological mean for each cell/day/variable. SD requires at
+least two valid replicates.}
 }
 \value{
 An object of class \verb{<ocean_clim>}.
 }
 \description{
-\code{clim_day()} computes a day-of-year climatology from an \verb{<ocean_cube>}.
-It is intended for daily NetCDF products and event-level linkage, for example
-matching daily temperature anomalies to fishing sets or survey stations.
+\code{clim_day()} is the compatibility wrapper for
+\code{cube_climatology(x, by = "day")}. Since 0.2.0 it first computes one daily
+replicate per year and then gives every valid yearly replicate equal weight.
+It is intended for daily NetCDF products and event-level linkage.
 }

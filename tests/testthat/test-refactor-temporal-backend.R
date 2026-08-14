@@ -96,7 +96,7 @@ test_that("clim_month preserves independent monthly statistics and structure", {
   before <- cube
   january <- c(11111, 13111)
 
-  clim <- clim_month(cube)
+  clim <- suppressWarnings(clim_month(cube))
 
   expect_s3_class(clim, "ocean_clim")
   expect_identical(class(clim), c("ocean_clim", "list"))
@@ -146,9 +146,9 @@ test_that("clim_day preserves feb28, drop, and keep leap policies", {
   )
   before <- cube
 
-  feb28 <- clim_day(cube, leap = "feb28")
-  drop <- clim_day(cube, leap = "drop")
-  keep <- clim_day(cube, leap = "keep")
+  feb28 <- suppressWarnings(clim_day(cube, leap = "feb28"))
+  drop <- suppressWarnings(clim_day(cube, leap = "drop"))
+  keep <- suppressWarnings(clim_day(cube, leap = "keep"))
   j_feb28 <- match("02-28", feb28$day)
   j_drop <- match("02-28", drop$day)
   j_keep28 <- match("02-28", keep$day)
@@ -171,8 +171,8 @@ test_that("clim_day preserves feb28, drop, and keep leap policies", {
   expect_identical(length(drop$day), 365L)
   expect_identical(length(keep$day), 366L)
   expect_equal(feb28$mean[1, 1, 1, j_feb28, 1], mean(values))
-  expect_equal(feb28$sd[1, 1, 1, j_feb28, 1], stats::sd(values))
-  expect_identical(feb28$n[1, 1, 1, j_feb28, 1], 4L)
+  expect_equal(feb28$sd[1, 1, 1, j_feb28, 1], stats::sd(c(10, 25, 40)))
+  expect_identical(feb28$n[1, 1, 1, j_feb28, 1], 3L)
   expect_equal(drop$mean[1, 1, 1, j_drop, 1], mean(c(10, 20, 40)))
   expect_identical(drop$n[1, 1, 1, j_drop, 1], 3L)
   expect_equal(keep$mean[1, 1, 1, j_keep28, 1], mean(c(10, 20, 40)))
@@ -189,7 +189,7 @@ test_that("clim_day preserves feb28, drop, and keep leap policies", {
 test_that("absolute and standardized anomalies remain structurally and numerically equivalent", {
   cube <- .make_temporal_metadata_cube()
   before <- cube
-  clim <- clim_month(cube)
+  clim <- suppressWarnings(clim_month(cube))
   january <- c(11111, 13111)
   expected_diff <- january[[1]] - mean(january)
   expected_z <- expected_diff / stats::sd(january)
@@ -235,7 +235,7 @@ test_that("absolute and standardized anomalies remain structurally and numerical
 
 test_that("signal_noise preserves absolute and signed scientific meanings", {
   cube <- .make_baseline_fixture()$cube
-  clim <- clim_month(cube)
+  clim <- suppressWarnings(clim_month(cube))
   january <- c(11111, 13111)
   expected_signed <- (january[[1]] - mean(january)) / stats::sd(january)
 
@@ -267,7 +267,7 @@ test_that("zero climatological variation stays missing rather than non-finite", 
     vars = "temperature"
   )
 
-  z_score <- anom_z(cube, clim_month(cube))
+  z_score <- anom_z(cube, suppressWarnings(clim_month(cube)))
 
   expect_true(all(is.na(z_score$data)))
   expect_false(any(is.infinite(z_score$data)))
@@ -276,7 +276,7 @@ test_that("zero climatological variation stays missing rather than non-finite", 
 
 test_that("temporal functions fail through backend dispatch for an unknown backend", {
   cube <- .make_baseline_fixture()$cube
-  monthly_clim <- clim_month(cube)
+  monthly_clim <- suppressWarnings(clim_month(cube))
 
   local_mocked_bindings(
     .cube_backend = function(x) "unknown",

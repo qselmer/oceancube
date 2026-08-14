@@ -9,7 +9,8 @@
 | extract table/profile/series | `cube_extract()` |
 | transect/events | `cube_transect()` / `link_events()` |
 | mask | `cube_mask()` |
-| monthly/daily climatology | `clim_month()` / `clim_day()` |
+| recurrent day/month/season climatology | `cube_climatology()` |
+| legacy monthly/daily climatology | `clim_month()` / `clim_day()` |
 | absolute/standard anomaly | `anom_diff()` / `anom_z()` |
 | area/thickness/volume | `cube_cell_area()` / `cube_layer_thickness()` / `cube_cell_volume()` |
 | polygon weights | `cube_polygon_weights()` |

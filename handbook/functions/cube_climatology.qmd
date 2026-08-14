@@ -1,0 +1,36 @@
+# `cube_climatology()`
+**Category:** Time and climatology
+**Status:** experimental
+
+## Purpose
+Compute recurrent daily, monthly, or meteorological-season climatology means
+and sample SD from equally weighted period-year replicates.
+
+## Real signature
+```r
+cube_climatology(x, by, period = NULL,
+                 leap = c("feb28", "drop", "keep"),
+                 min_n = 1L, diagnostics = FALSE)
+```
+
+## Scientific contract
+Finite observations are first averaged within each day-year, month-year, or
+season-year. The climatological mean and sample SD are then computed across
+those replicates with equal weights. `data` contains the mean and
+`climatology$sd` contains aligned SD.
+
+The output is a complete 365/366-day, 12-month, or DJF/MAM/JJA/SON pseudo-time
+cycle. Requested and effective reference periods are retained separately.
+`diagnostics = TRUE` adds `n_clim_valid` and replicate coverage. Daily
+`leap = "feb28"` merges February 28 and 29 inside each leap year before that
+year contributes one replicate.
+
+## Backend support
+Memory: **TRUE**. NetCDF: **TRUE**. Lazy NetCDF values are read by bounded
+source-period and spatial/depth/variable blocks without materializing a full
+chronological intermediate.
+
+## Workflow note
+Apply `cube_slice()` or `cube_crop()` before climatology when selection is
+needed, because those operations intentionally discard dimensional scientific
+metadata and record the discard in provenance.

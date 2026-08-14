@@ -3,7 +3,7 @@
 **Status:** stable
 
 ## Purpose
-Estimate daily climatology.
+Estimate a two-stage daily climatology through `cube_climatology()`.
 
 ## When to use
 Use it when its declared input and output match the workflow. Prefer a narrower selection before any operation that may materialise values.
@@ -26,13 +26,15 @@ clim_day(x, period = NULL, leap = c("feb28", "drop", "keep"),      min_n = 1L)
 Input: **ocean_cube**. Output: **climatology**.
 
 ## Backend support
-Memory: **TRUE**. NetCDF: **TRUE**. Backend operations retain read-only semantics; materialisation is explicit.
+Memory: **TRUE**. NetCDF: **TRUE**. The core uses bounded period/block reads.
 
 ## Dimensional effect
 May change shape or return a non-cube analytical object; inspect dimensions/rows.
 
 ## Metadata
-Units, coordinates, provenance, masks, and QA metadata are retained or reported where meaningful.
+Since 0.2.0, each year contributes at most one replicate per recurrent day.
+`leap = "feb28"` merges February 28 and 29 inside a leap year, and `min_n`
+counts valid yearly daily replicates rather than raw observations.
 
 ## Minimal executable check
 ```r

@@ -11,6 +11,7 @@
 "cube_cell_area","Grid geometry","stable","ocean_cube","matrix","true","true","false","false","false"
 "cube_cell_volume","Grid geometry","stable","ocean_cube","array","true","true","false","false","false"
 "cube_aggregate_time","Time and climatology","experimental","ocean_cube","ocean_cube","true","true","true","true","false"
+"cube_climatology","Time and climatology","experimental","ocean_cube","ocean_cube","true","true","true","true","false"
 "cube_collect","Grid geometry","stable","ocean_cube","ocean_cube","true","true","true","true","false"
 "cube_crop","Selection and extraction","stable","ocean_cube","ocean_cube","true","true","true","true","false"
 "cube_extract","Selection and extraction","stable","ocean_cube","data.frame","true","true","true","false","true"

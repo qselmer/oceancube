@@ -6,7 +6,7 @@ test_that("monthly climatology and anomalies are computed", {
   data <- array(1, dim = c(2, 2, 1, length(time), 1))
 
   cube <- ocean_cube(lon = lon, lat = lat, depth = depth, time = time, data = data, vars = "thetao")
-  clim <- clim_month(cube)
+  clim <- suppressWarnings(clim_month(cube))
   anom <- anom_diff(cube, clim)
 
   expect_s3_class(clim, "ocean_clim")

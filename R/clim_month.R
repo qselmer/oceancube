@@ -1,50 +1,31 @@
 #' Compute monthly climatology from an ocean cube
 #'
+#' `clim_month()` is the compatibility wrapper for
+#' `cube_climatology(x, by = "month")`. Since 0.2.0 it first computes one
+#' month-year mean and then gives every valid yearly replicate equal weight,
+#' rather than pooling every raw observation across years.
+#'
 #' @param x An `<ocean_cube>` object.
-#' @param period Optional base period `c(start, end)`.
+#' @param period Optional closed base period `c(start, end)`. Date and exact UTC
+#'   POSIXct semantics follow the source cube.
 #'
 #' @return An object of class `<ocean_clim>`.
 #' @export
 clim_month <- function(x, period = NULL) {
-  .check_cube(x)
-
-  if (!is.null(period)) {
-    if (length(period) != 2L) .abort_badarg("period", "must have length 2.")
-    period <- as.Date(period)
-    idx_base <- x$time >= period[1] & x$time <= period[2]
-  } else {
-    period <- range(x$time)
-    idx_base <- rep(TRUE, length(x$time))
-  }
-
-  if (!any(idx_base)) {
-    rlang::abort("Base period has no observations.")
-  }
-
-  mon <- as.integer(format(x$time, "%m"))
-  d <- unname(.cube_shape(x))
-  values <- .cube_read(x)
-
-  clim_mean <- array(NA_real_, dim = c(d[1], d[2], d[3], 12L, d[5]))
-  clim_sd <- array(NA_real_, dim = c(d[1], d[2], d[3], 12L, d[5]))
-  clim_n <- array(0L, dim = c(d[1], d[2], d[3], 12L, d[5]))
-
-  for (m in 1:12) {
-    idx <- which(mon == m & idx_base)
-    if (length(idx) == 0L) next
-    sub <- values[, , , idx, , drop = FALSE]
-    clim_mean[, , , m, ] <- apply(sub, c(1, 2, 3, 5), .safe_mean)
-    clim_sd[, , , m, ] <- apply(sub, c(1, 2, 3, 5), .safe_sd)
-    clim_n[, , , m, ] <- apply(sub, c(1, 2, 3, 5), function(z) sum(is.finite(z)))
-  }
-
-  dimnames(clim_mean) <- list(
-    lon = as.character(x$lon),
-    lat = as.character(x$lat),
-    depth = as.character(x$depth),
-    month = sprintf("%02d", 1:12),
-    var = x$vars
+  core <- cube_climatology(
+    x,
+    by = "month",
+    period = period,
+    min_n = 1L,
+    diagnostics = TRUE
   )
+  clim_mean <- core$data
+  clim_sd <- core$climatology$sd
+  clim_n <- core$qa$climatology$n_clim_valid
+  monthly_dimnames <- dimnames(clim_mean)
+  names(monthly_dimnames)[[4L]] <- "month"
+  monthly_dimnames[[4L]] <- core$climatology$group_key
+  dimnames(clim_mean) <- monthly_dimnames
   dimnames(clim_sd) <- dimnames(clim_mean)
   dimnames(clim_n) <- dimnames(clim_mean)
 
@@ -53,14 +34,18 @@ clim_month <- function(x, period = NULL) {
     lat = x$lat,
     depth = x$depth,
     vars = x$vars,
-    period = period,
+    period = core$climatology$effective_period,
     mean = clim_mean,
     sd = clim_sd,
     n = clim_n,
     units = x$units,
     source = x$source,
     dataset_id = x[["dataset_id"]],
-    provenance = .make_provenance("clim_month", args = list(period = period), extra = list(parent = x$provenance))
+    provenance = .make_provenance(
+      "clim_month",
+      args = list(period = core$climatology$effective_period),
+      extra = list(parent = x$provenance, core = core$provenance$cube_climatology)
+    )
   )
 
   class(out) <- c("ocean_clim", "list")

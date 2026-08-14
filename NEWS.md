@@ -2,6 +2,19 @@
 
 ## Time and calendar foundation (0.2.0 development)
 
+* Adds `cube_climatology()` for recurrent daily, monthly, and DJF/MAM/JJA/SON
+  climatologies. It first forms day-year, month-year, or season-year means and
+  then gives each valid replicate equal weight, avoiding pooled-observation
+  sampling-density bias.
+* Returns climatological means in `data` and aligned sample SD in
+  `climatology$sd`, with complete canonical Date or UTC POSIXct pseudo-time
+  cycles, explicit reference-period clipping, optional replicate counts and
+  coverage, and bounded lazy-NetCDF execution.
+* Migrates `clim_day()` and `clim_month()` to compatibility wrappers over the
+  new core. This is a scientific behavior change: `min_n` now counts valid
+  yearly daily replicates, monthly observations are aggregated within year
+  before climatology, and `leap = "feb28"` merges February 28 and 29 inside a
+  leap year so that the year contributes only one replicate.
 * Adds `cube_aggregate_time()` for time-only day, ISO-week, calendar-month,
   DJF/MAM/JJA/SON season, and calendar-year aggregation. Date output remains
   Date; POSIXct output remains UTC POSIXct; internal empty periods are retained.

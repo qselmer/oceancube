@@ -721,7 +721,7 @@ test_that("NetCDF slice is independent after source deletion", {
   expect_identical(unlink(fixture$file), 0L)
   expect_identical(.cube_backend(result), "memory")
   expect_identical(.cube_read(result), expected)
-  expect_s3_class(clim_month(result), "ocean_clim")
+  expect_s3_class(suppressWarnings(clim_month(result)), "ocean_clim")
   expect_error(
     .cube_read(fixture$cube),
     "no longer exists",

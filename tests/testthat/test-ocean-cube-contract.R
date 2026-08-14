@@ -316,7 +316,7 @@ test_that("construction is observably immutable and the public signature is stab
 
 test_that("existing scientific operations remain compatible with memory cubes", {
   cube <- .make_baseline_fixture()$cube
-  monthly <- clim_month(cube)
+  monthly <- suppressWarnings(clim_month(cube))
   layer <- layer_mean(cube, c(0, 50))
   linked <- link_events(
     cube,

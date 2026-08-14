@@ -11,7 +11,27 @@ the selective core, while a deprecated arbitrary `fun` may still materialise the
 complete cube. The wrapper preserves its historical POSIXct-to-Date output;
 call `cube_aggregate_time()` when POSIXct must remain POSIXct.
 
-`clim_month()` and `clim_day()` estimate reference means and variability.
+`cube_climatology()` is the canonical recurrent climatology core for day,
+month, and DJF/MAM/JJA/SON season cycles. It first averages finite observations
+within each day-year, month-year, or season-year and then gives every valid
+replicate one equal climatological weight. This differs from pooling all raw
+observations across years. The mean is stored in `data`; aligned sample SD is
+always available in `climatology$sd`.
+
+Climatology outputs contain complete 365/366-day, 12-month, or four-season
+pseudo-time cycles while requested and effective reference periods remain
+separate metadata. Date inputs retain Date; POSIXct inputs retain UTC POSIXct.
+`diagnostics = TRUE` adds replicate counts and coverage, where `min_n` counts
+valid period-year replicates. For daily climatology, `drop` omits February 29,
+`keep` preserves it, and corrected `feb28` handling merges February 28 and 29
+inside each leap year before the year enters the climatology. Lazy NetCDF input
+is processed by bounded period/block reads without a full chronological
+intermediate.
+
+`clim_month()` and `clim_day()` remain compatibility wrappers. Their 0.2.0
+results use the same two-stage science; in particular, they no longer pool raw
+observations and `clim_day()` no longer double-weights leap years under
+`leap = "feb28"`.
 `anom_diff()` returns absolute departures, `anom_z()` standardised departures,
 and `signal_noise()` a signal-to-noise representation. `annual_index()` remains
 a specialised post-core annual table, not a yearly cube wrapper. `layer_mean()`

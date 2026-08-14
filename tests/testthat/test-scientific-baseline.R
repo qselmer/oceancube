@@ -1,6 +1,6 @@
 test_that("monthly climatology and anomaly calculations match hand calculations", {
   cube <- .make_baseline_fixture()$cube
-  clim <- clim_month(cube)
+  clim <- suppressWarnings(clim_month(cube))
   anom <- anom_diff(cube, clim)
   z <- anom_z(cube, clim)
   sn <- signal_noise(cube, clim)
@@ -26,7 +26,7 @@ test_that("z scores are missing rather than infinite when climatological sd is z
     vars = "temperature"
   )
 
-  z <- anom_z(constant_cube, clim_month(constant_cube))
+  z <- anom_z(constant_cube, suppressWarnings(clim_month(constant_cube)))
 
   expect_true(all(is.na(z$data)))
   expect_false(any(is.infinite(z$data)))
@@ -117,9 +117,9 @@ test_that("daily climatology documents leap handling and prints its real scale",
     vars = "temperature"
   )
 
-  feb28 <- clim_day(daily_cube, leap = "feb28")
-  drop <- clim_day(daily_cube, leap = "drop")
-  keep <- clim_day(daily_cube, leap = "keep")
+  feb28 <- suppressWarnings(clim_day(daily_cube, leap = "feb28"))
+  drop <- suppressWarnings(clim_day(daily_cube, leap = "drop"))
+  keep <- suppressWarnings(clim_day(daily_cube, leap = "keep"))
 
   j_feb28 <- match("02-28", feb28$day)
   j_drop <- match("02-28", drop$day)
@@ -127,7 +127,7 @@ test_that("daily climatology documents leap handling and prints its real scale",
   j_keep29 <- match("02-29", keep$day)
 
   expect_equal(feb28$mean[1, 1, 1, j_feb28, 1], 25)
-  expect_equal(feb28$n[1, 1, 1, j_feb28, 1], 4)
+  expect_equal(feb28$n[1, 1, 1, j_feb28, 1], 3)
   expect_equal(drop$mean[1, 1, 1, j_drop, 1], 70 / 3)
   expect_equal(keep$mean[1, 1, 1, j_keep28, 1], 70 / 3)
   expect_equal(keep$mean[1, 1, 1, j_keep29, 1], 30)

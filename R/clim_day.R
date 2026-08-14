@@ -1,87 +1,42 @@
 #' Compute daily climatology from an ocean cube
 #'
-#' `clim_day()` computes a day-of-year climatology from an `<ocean_cube>`.
-#' It is intended for daily NetCDF products and event-level linkage, for example
-#' matching daily temperature anomalies to fishing sets or survey stations.
+#' `clim_day()` is the compatibility wrapper for
+#' `cube_climatology(x, by = "day")`. Since 0.2.0 it first computes one daily
+#' replicate per year and then gives every valid yearly replicate equal weight.
+#' It is intended for daily NetCDF products and event-level linkage.
 #'
 #' @param x An `<ocean_cube>` object.
-#' @param period Optional base period `c(start, end)` used to compute the climatology.
-#'   Values are coerced to `Date`.
-#' @param leap How to handle February 29. `"feb28"` maps February 29 to February 28;
+#' @param period Optional closed base period `c(start, end)` used to compute the
+#'   climatology. Date and exact UTC POSIXct semantics follow the source cube.
+#' @param leap How to handle February 29. `"feb28"` combines the February 28 and
+#'   February 29 daily aggregates within each leap year before that year enters
+#'   the climatology, preventing leap-year double weighting;
 #'   `"drop"` removes February 29 from the base climatology and returns `NA` for
 #'   February 29 anomalies unless handled externally; `"keep"` keeps February 29
 #'   as an additional climatological day.
-#' @param min_n Minimum number of finite observations required to compute the
-#'   climatological mean and standard deviation for each cell/day/variable.
+#' @param min_n Minimum number of finite yearly daily replicates required to
+#'   compute the climatological mean for each cell/day/variable. SD requires at
+#'   least two valid replicates.
 #'
 #' @return An object of class `<ocean_clim>`.
 #' @export
 clim_day <- function(x, period = NULL, leap = c("feb28", "drop", "keep"), min_n = 1L) {
-  .check_cube(x)
-
   leap <- match.arg(leap)
-  min_n <- as.integer(min_n)
-  if (length(min_n) != 1L || is.na(min_n) || min_n < 1L) {
-    .abort_badarg("min_n", "must be a positive integer.")
-  }
-
-  time <- as.Date(x$time)
-
-  if (!is.null(period)) {
-    if (length(period) != 2L) .abort_badarg("period", "must have length 2.")
-    period <- as.Date(period)
-    idx_base <- time >= period[1] & time <= period[2]
-  } else {
-    period <- range(time, na.rm = TRUE)
-    idx_base <- rep(TRUE, length(time))
-  }
-
-  if (!any(idx_base)) {
-    rlang::abort("Base period has no observations.")
-  }
-
-  key <- .date_key(time, leap = leap)
-  idx_base <- idx_base & !is.na(key)
-
-  if (!any(idx_base)) {
-    rlang::abort("Base period has no valid daily keys after leap-day handling.")
-  }
-
-  days <- .daily_keys(leap = leap)
-  d <- unname(.cube_shape(x))
-  values <- .cube_read(x)
-
-  clim_mean <- array(NA_real_, dim = c(d[1], d[2], d[3], length(days), d[5]))
-  clim_sd   <- array(NA_real_, dim = c(d[1], d[2], d[3], length(days), d[5]))
-  clim_n    <- array(0L,       dim = c(d[1], d[2], d[3], length(days), d[5]))
-
-  for (j in seq_along(days)) {
-    idx <- which(idx_base & key == days[j])
-    if (length(idx) == 0L) next
-
-    sub <- values[, , , idx, , drop = FALSE]
-    n_j <- apply(sub, c(1, 2, 3, 5), function(z) sum(is.finite(z)))
-
-    clim_n[, , , j, ] <- n_j
-
-    mean_j <- apply(sub, c(1, 2, 3, 5), .safe_mean)
-    sd_j   <- apply(sub, c(1, 2, 3, 5), .safe_sd)
-
-    mean_j[n_j < min_n] <- NA_real_
-    sd_j[n_j < max(2L, min_n)] <- NA_real_
-
-    clim_mean[, , , j, ] <- mean_j
-    clim_sd[, , , j, ] <- sd_j
-  }
-
-  dn <- list(
-    lon = as.character(x$lon),
-    lat = as.character(x$lat),
-    depth = as.character(x$depth),
-    day = days,
-    var = x$vars
+  core <- cube_climatology(
+    x,
+    by = "day",
+    period = period,
+    leap = leap,
+    min_n = min_n,
+    diagnostics = TRUE
   )
-
+  days <- core$climatology$group_key
+  dn <- dimnames(core$data)
+  names(dn)[[4L]] <- "day"
+  dn[[4L]] <- days
+  clim_mean <- core$data
+  clim_sd <- core$climatology$sd
+  clim_n <- core$qa$climatology$n_clim_valid
   dimnames(clim_mean) <- dn
   dimnames(clim_sd) <- dn
   dimnames(clim_n) <- dn
@@ -92,7 +47,7 @@ clim_day <- function(x, period = NULL, leap = c("feb28", "drop", "keep"), min_n 
     lat = x$lat,
     depth = x$depth,
     vars = x$vars,
-    period = period,
+    period = core$climatology$effective_period,
     day = days,
     leap = leap,
     min_n = min_n,
@@ -104,8 +59,12 @@ clim_day <- function(x, period = NULL, leap = c("feb28", "drop", "keep"), min_n 
     dataset_id = x[["dataset_id"]],
     provenance = .make_provenance(
       "clim_day",
-      args = list(period = period, leap = leap, min_n = min_n),
-      extra = list(parent = x$provenance)
+      args = list(
+        period = core$climatology$effective_period,
+        leap = leap,
+        min_n = as.integer(min_n)
+      ),
+      extra = list(parent = x$provenance, core = core$provenance$cube_climatology)
     )
   )
 

@@ -311,7 +311,7 @@ test_that("memory reads preserve missing values and storage mode", {
 
 test_that("the new backend layer does not alter scientific results", {
   cube <- .make_baseline_fixture()$cube
-  clim <- clim_month(cube)
+  clim <- suppressWarnings(clim_month(cube))
   layer <- layer_mean(cube, c(0, 50))
   linked <- link_events(
     cube,

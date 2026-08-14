@@ -3,7 +3,7 @@
 **Status:** stable
 
 ## Purpose
-Estimate monthly climatology.
+Estimate a two-stage monthly climatology through `cube_climatology()`.
 
 ## When to use
 Use it when its declared input and output match the workflow. Prefer a narrower selection before any operation that may materialise values.
@@ -24,13 +24,14 @@ clim_month(x, period = NULL)
 Input: **ocean_cube**. Output: **climatology**.
 
 ## Backend support
-Memory: **TRUE**. NetCDF: **TRUE**. Backend operations retain read-only semantics; materialisation is explicit.
+Memory: **TRUE**. NetCDF: **TRUE**. The core uses bounded period/block reads.
 
 ## Dimensional effect
 May change shape or return a non-cube analytical object; inspect dimensions/rows.
 
 ## Metadata
-Units, coordinates, provenance, masks, and QA metadata are retained or reported where meaningful.
+Since 0.2.0, raw observations are averaged within each month-year before valid
+yearly replicates receive equal climatological weights.
 
 ## Minimal executable check
 ```r
