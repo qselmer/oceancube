@@ -1,9 +1,9 @@
 # Welcome
-OceanCube Handbook is the executable guide to **oceancube 0.1.0**. It complements the Rd reference with concepts, decisions, workflows, and operational policy.
+OceanCube Handbook is the executable guide to the **oceancube 0.2.0 development core**. It complements the Rd reference with concepts, decisions, workflows, and operational policy; the package version remains 0.1.0 until final release preparation.
 
 - Canonical contract: `longitude × latitude × depth × time × variable`
 - Backends: in-memory and read-only local NetCDF
-- Frozen public API: 27 exports
-- Experimental in 0.x: `cube_transect()` and `cube_polygon_weights()`
+- Frozen development API: 38 exports
+- Canonical workflow: validate and inspect, select, visualize, aggregate, calculate climatology/anomaly or descriptive trend
 
 Start with @sec-introduction, then use the workflow and function-reference chapters.

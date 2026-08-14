@@ -1,11 +1,11 @@
 ---
-title: "OceanCube Handbook 0.1.0"
+title: "OceanCube Handbook — 0.2.0 development core"
 output: html_document
 toc: true
 ---
 
 # Welcome
-OceanCube Handbook is the executable guide to **oceancube 0.1.0**. It complements the Rd reference with concepts, decisions, workflows, and operational policy.
+This tracked consolidated compatibility surface summarizes the **oceancube 0.2.0 development core**. It is neither authoritative nor reproducibly generated; the Quarto chapter, function-card, and table sources listed in `_quarto.yml` are authoritative.
 
 - Canonical contract: `longitude × latitude × depth × time × variable`
 - Backends: in-memory and read-only local NetCDF
@@ -16,7 +16,11 @@ Start with @sec-introduction, then use the workflow and function-reference chapt
 # Introduction {#sec-introduction}
 `oceancube` gives ocean observations one validated five-dimensional shape while allowing storage to remain in memory or in a local NetCDF file. It solves a recurring problem: scientific operations should not depend on how values happen to be stored.
 
-The package constructs, reads, selects, extracts, masks, summarises, computes descriptive per-cell temporal slopes, and describes geometry. It deliberately does **not** calculate spatial indicators or inference; that responsibility belongs to `spatind`.
+The package constructs, reads, validates, inspects, selects, extracts,
+visualizes, masks, aggregates, computes climatologies, anomalies, and
+descriptive per-cell temporal slopes, and describes geometry. It deliberately
+does **not** calculate spatial indicators, significance, or structural change;
+those responsibilities belong to downstream analysis such as `spatind`.
 
 ## Design goals
 Reproducibility, explicit dimensions, read-only external data access, small composable operations, serialisable provenance, and stable outputs.
@@ -69,7 +73,13 @@ They are not interchangeable: slice/crop preserve cube semantics, extract/transe
 
 `stock_mask()`, `crop_stock()`, and `coast_dist()` preserve established spatial-context workflows.
 # Time, climatology, and anomalies
-`to_month()` aggregates time to months. `clim_month()` and `clim_day()` estimate reference means and variability. `anom_diff()` returns absolute departures, `anom_z()` standardised departures, and `signal_noise()` standardized climatological anomaly magnitude (`abs(z)`) by default or signed `z` on request. It is not a general signal-to-noise ratio. `annual_index()` and `layer_mean()` provide annual and vertical summaries.
+`cube_aggregate_time()`, `cube_climatology()`, and `cube_anomaly()` are the
+canonical aggregation, recurrent-reference, and anomaly engines.
+`to_month()`, `clim_month()`, `clim_day()`, `anom_diff()`, and `anom_z()` remain
+compatibility helpers. `signal_noise()` returns standardized climatological
+anomaly magnitude (`abs(z)`) by default or signed `z` on request; it is not a
+general signal-to-noise ratio. `annual_index()` and `layer_mean()` provide
+annual and vertical summaries.
 
 `cube_trend()` computes descriptive per-cell OLS slopes against actual elapsed
 Date or UTC POSIXct time. It accepts raw, aggregated, and anomaly cubes, rejects
@@ -80,65 +90,18 @@ Always inspect time coverage, missingness, sample counts, and units before inter
 # Grid geometry and weights
 For rectilinear grids, `cube_cell_area()` returns horizontal area, `cube_layer_thickness()` derives vertical thickness, and `cube_cell_volume()` combines both. `cube_polygon_weights()` returns sparse intersections suitable for downstream aggregation.
 
-CRS must be known and compatible. Curvilinear/unstructured grids and general antimeridian handling are outside 0.1.0. Polygon weights are experimental during the 0.x series.
+CRS must be known and compatible. Curvilinear/unstructured grids and general antimeridian handling are outside the current core. Polygon weights are experimental during the 0.x series.
 # Public function reference
-The function cards document the current public namespace, including the 38-export 0.2.0 development boundary.
-
-- [annual_index()`](functions/annual_index.qmd)
-- [anom_diff()`](functions/anom_diff.qmd)
-- [anom_z()`](functions/anom_z.qmd)
-- [clim_day()`](functions/clim_day.qmd)
-- [clim_month()`](functions/clim_month.qmd)
-- [cm_connect()`](functions/cm_connect.qmd)
-- [cm_setup()`](functions/cm_setup.qmd)
-- [coast_dist()`](functions/coast_dist.qmd)
-- [crop_stock()`](functions/crop_stock.qmd)
-- [cube_cell_area()`](functions/cube_cell_area.qmd)
-- [cube_cell_volume()`](functions/cube_cell_volume.qmd)
-- [cube_collect()`](functions/cube_collect.qmd)
-- [cube_crop()`](functions/cube_crop.qmd)
-- [cube_extract()`](functions/cube_extract.qmd)
-- [cube_layer_thickness()`](functions/cube_layer_thickness.qmd)
-- [cube_mask()`](functions/cube_mask.qmd)
-- [cube_polygon_weights()`](functions/cube_polygon_weights.qmd)
-- [cube_slice()`](functions/cube_slice.qmd)
-- [cube_transect()`](functions/cube_transect.qmd)
-- [cube_trend()`](functions/cube_trend.qmd)
-- [download_nc()`](functions/download_nc.qmd)
-- [layer_mean()`](functions/layer_mean.qmd)
-- [link_events()`](functions/link_events.qmd)
-- [ocean_cube()`](functions/ocean_cube.qmd)
-- [read_nc()`](functions/read_nc.qmd)
-- [signal_noise()`](functions/signal_noise.qmd)
-- [stock_mask()`](functions/stock_mask.qmd)
-- [to_month()`](functions/to_month.qmd)
+The authoritative, categorized 38-export index is
+[handbook/09-function-reference.qmd](09-function-reference.qmd). It links to
+one card per public export and lists canonical engines before compatibility
+helpers; this consolidated surface does not duplicate that index.
 # Integrated workflows
-Twelve executable patterns are represented by the scripts in `handbook/scripts/`: construct memory cubes; read NetCDF; slice; crop; extract series; extract profiles; transects; events; masks; climatology/anomalies; 3-D geometry; and preparation for `spatind`.
-
-```mermaid
-flowchart TD
-A[External or local data] --> B[download_nc / read_nc]
-B --> C[ocean_cube]
-C --> D[cube_collect]
-C --> E[cube_slice]
-C --> F[cube_crop]
-C --> G[cube_extract]
-C --> H[cube_transect]
-C --> I[link_events]
-C --> J[cube_mask]
-C --> K[clim_day / clim_month]
-K --> L[anom_diff / anom_z]
-C --> T[cube_trend]
-L --> T
-C --> M[cube_cell_area]
-C --> N[cube_layer_thickness]
-M --> O[cube_cell_volume]
-N --> O
-M --> P[cube_polygon_weights]
-N --> P
-G --> Q[spatind]
-P --> Q
-```
+The authoritative workflows are maintained in
+[handbook/10-workflows.qmd](10-workflows.qmd). New users follow
+construct/read -> validate/inspect -> select/extract -> visualize -> optional
+aggregation -> climatology/anomaly or descriptive trend. Compatibility helpers
+are secondary. Recurrent climatology pseudo-time is never a trend input.
 # Boundary with spatind
 ## oceancube produces
 Cubes, values, coordinates, indices, masks, areas, thicknesses, volumes,
@@ -169,28 +132,14 @@ Never force the history of `main`. Use annotated tags for versions and attach Gi
 | depth bounds absent | thickness cannot be inferred safely | supply bounds |
 | unknown units | metadata incomplete | assign verified units |
 | polygon has no centres | cell-centre mask selects none | inspect polygon/grid |
-| curvilinear grid | unsupported in 0.1.0 | regrid outside oceancube |
+| curvilinear grid | unsupported by the current core | regrid outside oceancube |
 | materialisation too large | full cube exceeds memory | select/crop before collect |
 | experimental function | 0.x evolution | pin version and test outputs |
 | Quarto/HTML unavailable | toolchain/configuration | run `quarto check` and render locally |
 | branch not integrated/deletion rejected | ancestry check fails | merge first; never use `-D` |
 | tag already exists | version collision | inspect tag; never overwrite published tag |
 # Cheat sheet
-| Goal | Function |
-|---|---|
-| create cube | `ocean_cube()` |
-| read NetCDF | `read_nc()` |
-| materialise | `cube_collect()` |
-| select coordinates | `cube_slice()` |
-| crop domain | `cube_crop()` |
-| extract table/profile/series | `cube_extract()` |
-| transect/events | `cube_transect()` / `link_events()` |
-| mask | `cube_mask()` |
-| monthly/daily climatology | `clim_month()` / `clim_day()` |
-| absolute/standard anomaly | `anom_diff()` / `anom_z()` |
-| descriptive per-cell temporal slope | `cube_trend()` |
-| area/thickness/volume | `cube_cell_area()` / `cube_layer_thickness()` / `cube_cell_volume()` |
-| polygon weights | `cube_polygon_weights()` |
-| spatial indicators | `spatind` |
-
-Other exports cover Copernicus setup/download, stock context, coast distance, vertical/annual summaries, and monthly aggregation. See the function cards for exact signatures.
+The authoritative canonical-first quick reference is
+[handbook/14-cheat-sheet.qmd](14-cheat-sheet.qmd). It covers create/read,
+validate/inspect, selection, all five visualizations, aggregation, climatology,
+anomaly, descriptive trend, geometry, and the secondary compatibility helpers.

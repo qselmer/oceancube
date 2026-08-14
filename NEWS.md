@@ -1,119 +1,105 @@
-# oceancube 0.1.0
+# oceancube 0.2.0
 
-## Time and calendar foundation (0.2.0 development)
+These are development release notes. Package metadata remains at version 0.1.0
+until the separate final release-preparation phase.
 
-* Adds `cube_trend()` for descriptive per-cell linear temporal slopes against
-  actual elapsed time, with exact Date and UTC POSIXct/subdaily semantics and
-  selectable year, day, hour, or second output units.
-* Supports closed reference-period restriction, finite-value and per-cell
-  `min_n` rules, equal-observation weighting, optional aligned OLS diagnostics,
-  explicit pseudo-time climatology rejection, and compact QA/provenance.
-  Lazy NetCDF inputs use one bounded scientific pass without materialising the
-  full source. Sen/Mann--Kendall methods, inference, change metrics,
-  breakpoints, and regimes are not part of this core.
-* Stabilizes `signal_noise()` as the legacy standardized climatological
-  anomaly-magnitude helper: the default is `abs(z)` and `signed = TRUE`
-  returns the canonical signed z anomaly. The argument is now strictly a
-  single non-missing logical, and compact transformation metadata is recorded
-  in QA and provenance. Despite its historical name, this is not a general
-  signal-to-noise ratio estimator.
-* Adds `cube_anomaly()` as the canonical difference and standardized-anomaly
-  engine for intact `cube_climatology()` results. It enforces exact recurring
-  group, coordinate, variable, unit, calendar, and time-class alignment;
-  applies explicit leap-day rules; and returns a memory cube with QA and
-  provenance diagnostics.
-* Processes lazy NetCDF sources with bounded selective reads. `anom_diff()` and
-  `anom_z()` now adapt compatible legacy climatologies and delegate to this
-  single scientific engine; `signal_noise()` retains its signed/absolute
-  standardized-anomaly definition through the same path.
-* Corrects unsafe legacy anomaly alignment: older workflows could accept grids
-  whose axes had equal lengths but different coordinate values. Anomalies now
-  require exact longitude, latitude, depth, variable order, unit, calendar, and
-  source time-class compatibility.
-* Adds `cube_climatology()` for recurrent daily, monthly, and DJF/MAM/JJA/SON
-  climatologies. It first forms day-year, month-year, or season-year means and
-  then gives each valid replicate equal weight, avoiding pooled-observation
-  sampling-density bias.
-* Returns climatological means in `data` and aligned sample SD in
-  `climatology$sd`, with complete canonical Date or UTC POSIXct pseudo-time
-  cycles, explicit reference-period clipping, optional replicate counts and
-  coverage, and bounded lazy-NetCDF execution.
-* Migrates `clim_day()` and `clim_month()` to compatibility wrappers over the
-  new core. This is a scientific behavior change: `min_n` now counts valid
-  yearly daily replicates, monthly observations are aggregated within year
-  before climatology, and `leap = "feb28"` merges February 28 and 29 inside a
-  leap year so that the year contributes only one replicate.
-* Adds `cube_aggregate_time()` for time-only day, ISO-week, calendar-month,
-  DJF/MAM/JJA/SON season, and calendar-year aggregation. Date output remains
-  Date; POSIXct output remains UTC POSIXct; internal empty periods are retained.
-* Provides controlled mean, sampled-value sum, min, max, and exact median
-  reducers with finite-value and `min_n` rules, equal observation weighting,
-  irregular-sampling warnings, and optional cell-aligned observation-count
-  diagnostics.
-* Aggregates lazy NetCDF cubes through selective bounded period/block reads
-  instead of materializing the complete multi-period cube.
-* Makes `to_month()` a compatibility wrapper over the core for supported
-  reducers. Arbitrary functions remain temporarily available through a warned,
-  deprecated legacy full-read path; the wrapper also documents its legacy
-  POSIXct-to-Date output exception.
-* Preserves `POSIXct` instants and sub-day/fractional-second precision instead
-  of truncating them to `Date`; stored `POSIXct` coordinates are normalized to
-  UTC without changing their epoch values.
-* Gives eager and lazy NetCDF readers the same UTC `POSIXct` CF-time decoder,
-  including seconds, minutes, hours, days, fractional/negative offsets, and
-  offset-bearing origins.
-* Defaults missing CF calendar metadata to `standard`, supports the approved
-  Gregorian-family scope, and now errors for unsupported non-Gregorian
-  calendars rather than reinterpreting them as Gregorian.
-* Requires canonical time axes to be unique and strictly increasing. Duplicate
-  and unsorted coordinates now error with migration guidance; coordinates and
-  aligned data are never sorted or repaired automatically.
+## Validation, inspection, and visualization
 
-## Core architecture
-
-* Defines a validated five-dimensional `ocean_cube` contract ordered as longitude, latitude, depth, time, and variable.
-* Keeps physical storage behind a shared backend interface while preserving public results and legacy workflows.
-
-## Backends
-
-* Supports in-memory arrays and serializable descriptors for read-only local NetCDF files.
-* Adds controlled block reads, non-contiguous selections, materialization with `cube_collect()`, and explicit file-change diagnostics.
+* Adds `cube_validate()` for non-destructive contract diagnostics and
+  `cube_inspect()` for compact dimension, coordinate, storage, missingness, and
+  provenance summaries.
+* Adds `viz.map()`, `viz.section()`, `viz.profile()`, `viz.transect()`, and
+  `viz.timeseries()`. They return static `ggplot` objects from explicit cube
+  selections without interpolation, smoothing, imputation, or animation.
 
 ## Selection and extraction
 
-* Adds discrete slices, closed-range crops, point/profile/series extraction, and ordered transects without interpolation.
-* Stabilizes `cube_transect()` for the 0.2.0 contract while preserving its
-  public signature and ordered extraction semantics: CRS-bearing paths can no
-  longer be ignored, matching warnings expose legacy or unbounded nearest
-  selection, requested-to-matched Haversine distance is retained, ambiguous
-  duplicate axes/selectors are rejected, and validation enters through
-  `cube_validate(strict = TRUE)`.
-* Adds `viz.transect()` for static horizontal and distance-by-depth transect
-  plots driven exclusively by the stabilized `cube_transect()` data contract.
-* Adds `viz.timeseries()` for raw, stable-chronological point series driven by
-  selective `cube_extract(mode = "series")` calls, with explicit closed time
-  bounds and no aggregation, smoothing, or interpolation.
+* Stabilizes the backward-compatible `cube_transect()` contract. CRS-bearing
+  paths can no longer be silently ignored, matching diagnostics retain
+  requested-to-cell distance, and ambiguous axes or selectors are rejected.
 
-## Masks
+## Time and calendar foundation
 
-* Adds polygon cell-centre masks and retains the established stock-mask workflow.
+* Adds `cube_aggregate_time()` for day, ISO-week, calendar-month,
+  meteorological-season, and calendar-year aggregation with finite-value and
+  `min_n` policies. Date stays Date and POSIXct stays UTC POSIXct.
+* Adds `cube_climatology()` for recurrent daily, monthly, and seasonal cycles.
+  Period-year replicates receive equal weight; explicit leap-day policies,
+  reference-period clipping, sample SD, and optional coverage diagnostics are
+  retained with the recurring pseudo-time cycle.
+* Adds `cube_anomaly()` for difference and standardized anomalies. Coordinates,
+  variables, units, calendars, and Date/POSIXct source classes must align
+  exactly. Non-finite values are masked; zero or non-finite SD produces a
+  missing standardized anomaly, while negative finite SD is invalid.
+* Adds `cube_trend()` for descriptive per-cell linear slopes against actual
+  elapsed historical time. Date and irregular/subdaily UTC POSIXct sampling
+  are supported, with output units per year, day, hour, or second. The method
+  performs no significance inference, Sen/Theil--Sen slope, Mann--Kendall test,
+  breakpoint, change-point, or regime analysis. Recurring climatology
+  pseudo-time is rejected.
+* Preserves POSIXct instants and fractional-second precision, normalizes stored
+  timestamps to UTC without changing instants, supports the approved
+  Gregorian-family calendars, and rejects duplicate, unsorted, or unsupported
+  time axes instead of silently repairing them.
 
-## Geometry and weights
+## Compatibility and corrected behavior
 
-* Adds horizontal cell area, layer thickness, cell volume, and sparse polygon weights for rectilinear grids.
+* `to_month()`, `clim_day()`, and `clim_month()` delegate supported workflows
+  to the canonical aggregation and climatology engines. Climatology `min_n`
+  counts valid period-year replicates, and `leap = "feb28"` no longer
+  double-weights leap years.
+* `anom_diff()` and `anom_z()` adapt compatible legacy climatologies and
+  delegate to `cube_anomaly()`. This corrects legacy acceptance of equal-sized
+  but coordinate-, variable-, unit-, calendar-, or time-class-misaligned data.
+* `signal_noise()` retains its historical name for compatibility but documents
+  its quantity precisely as the standardized climatological anomaly magnitude,
+  `abs(z)`, by default. `signed = TRUE` returns signed `z`; it is not a generic
+  signal-to-noise ratio estimator.
 
-## Climatology and anomalies
+## Backends and package boundary
 
-* Provides canonical daily, monthly, and seasonal difference or standardized
-  anomalies, while preserving legacy anomaly wrappers, vertical summaries,
-  and event linkage through the backend interface.
-
-## Documentation
-
-* Expands the README, reference manuals, educational scripts, citation metadata, architecture boundary, and release vignettes.
+* Temporal engines and visualization selections use bounded reads from lazy
+  local NetCDF sources rather than materializing the full source. Analytical
+  cube outputs are materialized in memory where their contracts require it.
+* `oceancube` owns descriptive cube transformations. Spatial indicators,
+  inference, uncertainty, and structural/regime analysis remain downstream
+  responsibilities such as `spatind`.
 
 ## Known limitations
 
-* NetCDF access is read-only and local. Writing, OPeNDAP, THREDDS, Zarr, cloud stores, parallel reading, and chunk pipelines are not implemented.
-* Grids must be rectilinear. Curvilinear and unstructured grids, interpolation, regridding, and general antimeridian handling are outside this release.
-* Geometry features require the optional `sf` package. Spatial indicators and inference belong to the separate `spatind` package.
+* NetCDF access is read-only and local. Writing, OPeNDAP, THREDDS, Zarr, cloud
+  stores, and unstructured or curvilinear-grid analytics are not implemented.
+
+# oceancube 0.1.0
+
+## Core architecture
+
+* Defines a validated five-dimensional `ocean_cube` contract ordered as
+  longitude, latitude, depth, time, and variable.
+* Keeps physical storage behind a shared backend interface while preserving
+  public results and legacy workflows.
+
+## Backends
+
+* Supports in-memory arrays and serializable descriptors for read-only local
+  NetCDF files.
+* Adds controlled block reads, non-contiguous selections, materialization with
+  `cube_collect()`, and explicit file-change diagnostics.
+
+## Selection, masks, and geometry
+
+* Adds discrete slices, closed-range crops, point/profile/series extraction,
+  ordered transects, polygon cell-centre masks, horizontal cell area, layer
+  thickness, cell volume, and sparse polygon weights for rectilinear grids.
+
+## Climatology and anomalies
+
+* Preserves monthly and daily climatologies, absolute and standardized
+  anomalies, vertical summaries, and event linkage through the backend
+  interface.
+
+## Known limitations
+
+* NetCDF access is read-only and local. Grids must be rectilinear. Geometry
+  features require the optional `sf` package; spatial indicators and inference
+  belong to the separate `spatind` package.

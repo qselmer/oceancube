@@ -1,0 +1,30 @@
+# `viz.section()`
+
+**Category:** Visualization
+**Status:** experimental
+
+## Purpose
+
+Draw a stored longitude-depth or latitude-depth plane at one historical time.
+
+## Real signature
+
+```r
+viz.section(x, variable,
+            section = c("longitude-depth", "latitude-depth"),
+            time = NULL, longitude = NULL, latitude = NULL, depth = NULL,
+            limits = NULL, na.rm = TRUE, reverse_depth = TRUE,
+            title = NULL, subtitle = NULL, caption = NULL)
+```
+
+The result is a `ggplot` object. The function fixes the complementary
+horizontal coordinate, requires at least two depth levels, and neither
+aggregates nor interpolates. A lazy NetCDF source reads only the selected
+plane.
+
+## Minimal executable check
+
+```r
+library(oceancube)
+stopifnot(is.function(viz.section))
+```

@@ -11,8 +11,14 @@
 | antimeridian | unsupported geometry | split/normalise before use |
 | depth bounds absent | thickness cannot be inferred safely | supply bounds |
 | unknown units | metadata incomplete | assign verified units |
+| coordinate mismatch in anomaly | source and climatology axes differ | rebuild the climatology from the exact source grid |
+| unit or variable mismatch | anomaly inputs are not scientifically aligned | correct metadata or rebuild the reference; no automatic conversion/reordering occurs |
+| calendar or Date/POSIXct mismatch | source and climatology time contracts differ | rebuild the climatology with the compatible time class and calendar |
+| climatology supplied to trend | recurring pseudo-time is not historical time | run `cube_trend()` on raw, aggregated, anomaly, or `signal_noise()` data |
+| clipped/empty reference period | requested dates do not overlap stored time | inspect the requested and effective period before calculation |
+| legacy climatology rejected | object lacks canonical provenance/alignment | recompute it with the current `clim_day()` or `clim_month()` wrapper |
 | polygon has no centres | cell-centre mask selects none | inspect polygon/grid |
-| curvilinear grid | unsupported in 0.1.0 | regrid outside oceancube |
+| curvilinear grid | unsupported by the current core | regrid outside oceancube |
 | materialisation too large | full cube exceeds memory | select/crop before collect |
 | experimental function | 0.x evolution | pin version and test outputs |
 | Quarto/HTML unavailable | toolchain/configuration | run `quarto check` and render locally |

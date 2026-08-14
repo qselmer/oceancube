@@ -1,24 +1,23 @@
 # Cheat sheet
-| Goal | Function |
-|---|---|
-| create cube | `ocean_cube()` |
-| read NetCDF | `read_nc()` |
-| materialise | `cube_collect()` |
-| select coordinates | `cube_slice()` |
-| crop domain | `cube_crop()` |
-| extract table/profile/series | `cube_extract()` |
-| transect/events | `cube_transect()` / `link_events()` |
-| mask | `cube_mask()` |
-| recurrent day/month/season climatology | `cube_climatology()` |
-| legacy monthly/daily climatology | `clim_month()` / `clim_day()` |
-| canonical difference/standard anomaly | `cube_anomaly()` |
-| legacy difference/standard anomaly | `anom_diff()` / `anom_z()` |
-| legacy standardized anomaly magnitude (`abs(z)`) | `signal_noise()` |
-| descriptive per-cell temporal slope | `cube_trend()` |
-| area/thickness/volume | `cube_cell_area()` / `cube_layer_thickness()` / `cube_cell_volume()` |
-| polygon weights | `cube_polygon_weights()` |
-| spatial indicators | `spatind` |
 
-Other exports cover Copernicus setup/download, stock context, coast distance,
-vertical/annual summaries, and monthly aggregation. See the function cards for
-exact signatures.
+| Goal | Canonical function |
+|---|---|
+| create a memory cube | `ocean_cube()` |
+| read local NetCDF | `read_nc()` |
+| materialize a lazy cube | `cube_collect()` |
+| validate / inspect | `cube_validate()` / `cube_inspect()` |
+| select / crop | `cube_slice()` / `cube_crop()` |
+| extract point, profile, series, or path | `cube_extract()` / `cube_transect()` |
+| map / section / profile | `viz.map()` / `viz.section()` / `viz.profile()` |
+| plot transect / raw time series | `viz.transect()` / `viz.timeseries()` |
+| aggregate historical time | `cube_aggregate_time()` |
+| recurrent day/month/season climatology | `cube_climatology()` |
+| difference or standardized anomaly | `cube_anomaly()` |
+| descriptive per-cell temporal slope | `cube_trend()` |
+| mask / area / thickness / volume | `cube_mask()` / `cube_cell_area()` / `cube_layer_thickness()` / `cube_cell_volume()` |
+| polygon weights | `cube_polygon_weights()` |
+| spatial indicators and inference | downstream `spatind` |
+
+Compatibility helpers are `to_month()`, `clim_day()`, `clim_month()`,
+`anom_diff()`, `anom_z()`, and `signal_noise()`. The last returns `abs(z)` by
+default or signed `z`; it is not a generic signal-to-noise ratio.

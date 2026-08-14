@@ -1,0 +1,29 @@
+# `cube_inspect()`
+
+**Category:** Validation and inspection
+**Status:** experimental
+
+## Purpose
+
+Summarize dimensions, coordinate ranges and resolution, storage, estimated
+size, time properties, validation, provenance, and optional missingness.
+
+## Real signature
+
+```r
+cube_inspect(x, missing = c("auto", "none", "full"))
+```
+
+`missing = "auto"` computes missingness for memory cubes but not lazy NetCDF
+cubes. `"none"` never reads values for this metric. `"full"` warns before
+reading a complete lazy cube. The result is an `ocean_cube_inspection` report;
+the input and all five canonical dimensions remain unchanged.
+
+## Minimal executable check
+
+```r
+library(oceancube)
+stopifnot(identical(names(formals(cube_inspect)), c("x", "missing")))
+```
+
+Use it after `cube_validate()` and before selection or scientific processing.

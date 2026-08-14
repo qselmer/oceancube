@@ -1,0 +1,30 @@
+# `viz.map()`
+
+**Category:** Visualization
+**Status:** experimental
+
+## Purpose
+
+Draw exactly one stored variable, time, and depth layer without interpolation.
+
+## Real signature
+
+```r
+viz.map(x, variable, time = NULL, depth = NULL, limits = NULL,
+        na.rm = TRUE, coastline = NULL, title = NULL,
+        subtitle = NULL, caption = NULL)
+```
+
+The result is a `ggplot` object. Regular grids use raster cells and irregular
+rectilinear grids use tiles. A lazy NetCDF input reads only the selected layer;
+the scientific cube is not transformed.
+
+## Minimal executable check
+
+```r
+library(oceancube)
+stopifnot(is.function(viz.map))
+```
+
+Use after explicit validation and selection. It also visualizes a singleton
+time layer returned by `cube_trend()`.

@@ -31,6 +31,11 @@ x <- ocean_cube(
 )
 x
 summary(x)
+
+validation <- cube_validate(x)
+inspection <- cube_inspect(x, missing = "none")
+stopifnot(nrow(validation) > 0L)
+stopifnot(inherits(inspection, "ocean_cube_inspection"))
 ```
 
 Memory cubes contain their values. Local NetCDF products can be materialized
@@ -65,8 +70,8 @@ profile
 series
 ```
 
-`cube_transect()` extracts ordered path-depth combinations. It is experimental
-in 0.1.0, so code should name important arguments.
+`cube_transect()` extracts ordered path-depth combinations. Name important
+arguments so matching, tolerance, mode, and distance semantics remain explicit.
 
 ```{r transect}
 path <- data.frame(station = c("A", "B"), lon = lon, lat = lat)
@@ -74,6 +79,32 @@ cube_transect(
   x, path, lon_col = "lon", lat_col = "lat", id_col = "station",
   depth = 5, time = time[1], variable = "temperature", by = "value"
 )
+```
+
+## Static visualization
+
+The five visualization functions return `ggplot` objects and preserve the
+scientific cube. They select stored cells without interpolation, smoothing, or
+imputation.
+
+```{r visualization}
+plots <- list(
+  map = viz.map(x, "temperature", time = time[1], depth = 5),
+  section = viz.section(
+    x, "temperature", time = time[1], latitude = lat[1]
+  ),
+  profile = viz.profile(
+    x, "temperature", longitude = lon[1], latitude = lat[1], time = time[1]
+  ),
+  transect = viz.transect(
+    x, path, "temperature", time = time[1], depth = 5,
+    lon_col = "lon", lat_col = "lat", id_col = "station"
+  ),
+  timeseries = viz.timeseries(
+    x, "temperature", longitude = lon[1], latitude = lat[1], depth = 5
+  )
+)
+stopifnot(all(vapply(plots, inherits, logical(1), what = "ggplot")))
 ```
 
 ## Masks, climatologies, anomalies, and geometry
@@ -118,6 +149,7 @@ transects, masks, climatologies, anomalies, descriptive per-cell temporal
 slopes, geometry, and weights. Spatial indicators, trend inference, change
 points, and regimes belong to downstream analysis such as `spatind`.
 
-Version 0.1.0 is limited to local rectilinear data. It does not write NetCDF,
-read OPeNDAP or THREDDS, interpolate, regrid, process curvilinear meshes, or
+The current core is limited to local rectilinear data. It does not write
+NetCDF, read OPeNDAP or THREDDS, interpolate, regrid, process curvilinear
+meshes, perform Sen/Mann--Kendall inference, detect breakpoints or regimes, or
 provide general antimeridian support.

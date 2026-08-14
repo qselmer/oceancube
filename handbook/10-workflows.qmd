@@ -1,37 +1,66 @@
 # Integrated workflows
-Twelve executable patterns are represented by the scripts in `handbook/scripts/`: construct memory cubes; read NetCDF; slice; crop; extract series; extract profiles; transects; events; masks; climatology/anomalies; 3-D geometry; and preparation for `spatind`.
+
+Begin every new workflow with a supported constructor or local reader, then
+validate and inspect before scientific selection. The scripts in
+`handbook/scripts/` retain established executable patterns; the canonical
+0.2.0 routes are summarized here.
 
 ```mermaid
 flowchart TD
-A[External or local data] --> B[download_nc / read_nc]
-B --> C[ocean_cube]
-C --> D[cube_collect]
-C --> E[cube_slice]
-C --> F[cube_crop]
-C --> G[cube_extract]
-C --> H[cube_transect]
-C --> I[link_events]
-C --> J[cube_mask]
-C --> K[cube_climatology]
-K --> L[cube_anomaly]
-C --> T[cube_trend]
-L --> T
-C --> R[clim_day / clim_month]
-R --> S[anom_diff / anom_z / signal_noise]
-C --> M[cube_cell_area]
-C --> N[cube_layer_thickness]
-M --> O[cube_cell_volume]
-N --> O
-M --> P[cube_polygon_weights]
-N --> P
-G --> Q[spatind]
-P --> Q
+  A["read_nc() / ocean_cube()"] --> B["cube_validate() / cube_inspect()"]
+  B --> C["cube_slice() / cube_crop() / cube_extract() / cube_transect()"]
+  C --> V["viz.map() / viz.section() / viz.profile() / viz.transect() / viz.timeseries()"]
+  C --> G["cube_aggregate_time()"]
+  G --> H["cube_climatology()"]
+  H --> I["cube_anomaly()"]
+  C --> T["cube_trend()"]
+  G --> T
+  I --> T
+  T --> M["viz.map()"]
 ```
 
-Use the canonical `cube_climatology()` to `cube_anomaly()` route for new
-workflows. The parallel wrapper route exists for compatibility and delegates
-its anomaly calculation to the same core. On that wrapper route,
-`signal_noise()` means standardized anomaly magnitude (`abs(z)`) by default,
-not a generic signal-to-noise ratio; `signed = TRUE` retains canonical `z`.
-Raw, aggregated, anomaly, and standardized-anomaly cubes can then enter
-`cube_trend()` while recurrent climatology pseudo-time cannot.
+## Workflow A: inspect, crop, and map
+
+```text
+local NetCDF -> read_nc() -> cube_validate() -> cube_inspect()
+             -> cube_crop() -> viz.map()
+```
+
+`viz.map()` reads only the selected layer from a lazy NetCDF input and returns
+a `ggplot` object. Validation never repairs coordinates, and inspection only
+reads a full lazy payload when `missing = "full"` is explicitly requested.
+
+## Workflow B: aggregate, climatology, and anomaly
+
+```text
+historical cube -> cube_aggregate_time() -> cube_climatology()
+                -> cube_anomaly()
+```
+
+The climatology replaces historical time with a recurring reference cycle.
+Difference and standardized anomalies match source observations to that cycle
+using exact coordinates, variables, units, calendar, and time class.
+
+## Workflow C: descriptive trend and map
+
+```text
+historical cube -> optional cube_aggregate_time() -> cube_trend() -> viz.map()
+```
+
+Raw, aggregated, anomaly, and `signal_noise()` cubes retain historical time and
+may enter `cube_trend()`. A `cube_climatology()` result has recurring
+pseudo-time and is rejected. Trend diagnostics such as R2 are descriptive;
+there is no significance inference, Sen slope, Mann--Kendall test, breakpoint,
+or regime detection.
+
+## Compatibility route
+
+`to_month()`, `clim_day()`, `clim_month()`, `anom_diff()`, `anom_z()`, and
+`signal_noise()` remain available for established workflows. The climatology
+and anomaly wrappers delegate to the canonical engines. `signal_noise()` means
+standardized climatological anomaly magnitude, `abs(z)`, by default or signed
+`z` with `signed = TRUE`; it is not a generic signal-to-noise ratio.
+
+Prepared values, geometry, and weights can continue downstream to `spatind`,
+which owns spatial indicators, higher-level interpretation, uncertainty, and
+structural or regime analysis.

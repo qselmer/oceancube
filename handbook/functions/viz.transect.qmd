@@ -1,0 +1,32 @@
+# `viz.transect()`
+
+**Category:** Visualization
+**Status:** experimental
+
+## Purpose
+
+Plot an ordered path as a horizontal distance-by-value line or a
+distance-by-depth section.
+
+## Real signature
+
+```r
+viz.transect(x, path, variable, time = NULL, depth = NULL,
+             lon_col = "longitude", lat_col = "latitude", id_col = NULL,
+             match = c("exact", "nearest"), tolerance = NULL,
+             mode = c("auto", "section", "horizontal"),
+             distance = c("requested", "matched"), limits = NULL,
+             na.rm = TRUE, reverse_depth = TRUE, points = TRUE,
+             title = NULL, subtitle = NULL, caption = NULL)
+```
+
+`cube_transect()` is the sole selection and matching layer. The visualization
+does not densify, interpolate, reorder, average, or recalculate the path. It
+returns a `ggplot` object, and lazy NetCDF extraction remains selective.
+
+## Minimal executable check
+
+```r
+library(oceancube)
+stopifnot(is.function(viz.transect))
+```

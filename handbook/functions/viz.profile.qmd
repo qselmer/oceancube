@@ -1,0 +1,29 @@
+# `viz.profile()`
+
+**Category:** Visualization
+**Status:** experimental
+
+## Purpose
+
+Draw one stored value-by-depth profile at an exact longitude, latitude, time,
+and variable.
+
+## Real signature
+
+```r
+viz.profile(x, variable, longitude = NULL, latitude = NULL, time = NULL,
+            depth = NULL, limits = NULL, na.rm = TRUE,
+            reverse_depth = TRUE, points = TRUE, title = NULL,
+            subtitle = NULL, caption = NULL)
+```
+
+The result is a `ggplot` object. At least two distinct finite depths must
+remain. Missing values are never replaced and repeated depths are rejected
+rather than averaged. A lazy NetCDF source reads only the selected profile.
+
+## Minimal executable check
+
+```r
+library(oceancube)
+stopifnot(is.function(viz.profile))
+```

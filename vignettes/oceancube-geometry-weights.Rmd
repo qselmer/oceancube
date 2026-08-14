@@ -62,5 +62,5 @@ and—when requested—volumes. It does not aggregate variables or calculate an
 indicator. Indicator definitions, normalization, uncertainty, and inference
 belong to `spatind`.
 
-This release supports geographic rectilinear grids and deliberately rejects
+The current development core supports geographic rectilinear grids and deliberately rejects
 unsafe or ambiguous geometry, including unsupported antimeridian cases.

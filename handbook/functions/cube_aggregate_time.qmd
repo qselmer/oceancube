@@ -1,0 +1,40 @@
+# `cube_aggregate_time()`
+
+**Category:** Temporal aggregation
+**Status:** experimental
+
+## Purpose
+
+Aggregate only historical time into day, ISO-week, calendar-month,
+meteorological-season, or calendar-year periods.
+
+## Real signature
+
+```r
+cube_aggregate_time(
+  x, by, method = "mean", na.rm = TRUE, min_n = 1L,
+  diagnostics = FALSE
+)
+```
+
+Finite stored observations have equal weight. Supported reducers are mean,
+sampled-value sum, minimum, maximum, and exact median. Date remains Date;
+POSIXct remains UTC POSIXct. Internal empty periods are retained, and optional
+diagnostics report observation counts rather than duration coverage.
+
+Lazy NetCDF values are reduced through bounded period and spatial/depth/
+variable reads. The full source is not materialized as an intermediate; the
+regularized result is an in-memory five-dimensional cube.
+
+## Minimal executable check
+
+```r
+library(oceancube)
+stopifnot(identical(
+  names(formals(cube_aggregate_time)),
+  c("x", "by", "method", "na.rm", "min_n", "diagnostics")
+))
+```
+
+Typical next operations are `cube_climatology()`, `cube_anomaly()`, or
+`cube_trend()`. Use `to_month()` only for compatibility.

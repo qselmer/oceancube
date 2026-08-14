@@ -1,15 +1,18 @@
+
 # oceancube
 
-`oceancube` represents rectilinear ocean data with one validated contract and a
-canonical dimension order: longitude, latitude, depth, time, and variable. The
-package provides storage-aware selection, extraction, masking, temporal
-summaries, and grid geometry for reproducible downstream marine analyses.
+`oceancube` represents rectilinear ocean data with one validated
+contract and a canonical dimension order: longitude, latitude, depth,
+time, and variable. The development branch for oceancube 0.2.0 freezes a
+38-export API for validation, inspection, storage-aware selection and
+extraction, visualization, temporal processing, masking, and grid
+geometry in reproducible marine workflows.
 
 ## Status and installation
 
-Version 0.1.0 is the first public API release. Install a local release tarball
-with `install.packages("oceancube_0.1.0.tar.gz", repos = NULL, type = "source")`,
-or install the development repository with:
+The current repository is the development source for oceancube 0.2.0;
+its `DESCRIPTION` version remains 0.1.0 until final release preparation.
+It is not on CRAN. Install the development repository with:
 
 ``` r
 # install.packages("remotes")
@@ -18,33 +21,50 @@ remotes::install_github("qselmer/oceancube")
 
 ## The `ocean_cube` contract
 
-An `ocean_cube` has coordinate vectors and a five-dimensional logical shape
-`[longitude, latitude, depth, time, variable]`. Surface products retain a
-singleton logical depth dimension. Metadata such as units, source, provenance,
-quality information, and extents remain aligned with those axes.
+An `ocean_cube` has coordinate vectors and a five-dimensional logical
+shape `[longitude, latitude, depth, time, variable]`. Surface products
+retain a singleton logical depth dimension. Metadata such as units,
+source, provenance, quality information, and extents remain aligned with
+those axes.
 
-The memory backend stores the array in the object. The internal NetCDF backend
-stores a serializable, read-only descriptor and reads requested blocks from a
-local file. `cube_collect()` makes either representation an independent memory
-cube. `read_nc()` is the public compatibility reader and currently materializes
-a local NetCDF file in memory.
+The memory backend stores the array in the object. The internal NetCDF
+backend stores a serializable, read-only descriptor and reads requested
+blocks from a local file. `cube_collect()` makes either representation
+an independent memory cube. `read_nc()` is the public compatibility
+reader and currently materializes a local NetCDF file in memory.
 
-## Working with a cube
+## Canonical workflow
 
-`cube_slice()` selects positions or exact/nearest coordinate values;
-`cube_crop()` selects closed coordinate ranges. Neither operation interpolates.
-`cube_extract()` returns cells as long or wide tables for points, profiles, time
-series, or Cartesian selections. `cube_transect()` extracts ordered horizontal
-or vertical paths and is experimental in 0.1.0.
+Start by validating the complete cube contract and inspecting its
+dimensions, coordinates, storage, missingness policy, and provenance.
+Validation diagnoses without repairing or reordering scientific data.
 
-`cube_mask()` applies polygon cell-centre coverage while preserving the 5D
-shape. `stock_mask()` supports the established stock-oriented mask workflow.
-Polygon operations require the optional `sf` package.
+`cube_validate()` returns one row per contract check, while
+`cube_inspect()` returns a compact structural summary. `cube_slice()`
+selects positions or exact/nearest coordinate values; `cube_crop()`
+selects closed coordinate ranges. Neither operation interpolates.
+`cube_extract()` returns cells as long or wide tables for points,
+profiles, time series, or Cartesian selections. `cube_transect()`
+extracts ordered horizontal or vertical paths.
 
-`clim_month()` and `clim_day()` create climatologies; `anom_diff()` and
-`anom_z()` create absolute and standardized anomalies. Grid primitives include
-`cube_cell_area()`, `cube_layer_thickness()`, `cube_cell_volume()`, and the
-experimental `cube_polygon_weights()`.
+The five static visualization helpers return `ggplot` objects without
+changing the input cube: `viz.map()` draws one horizontal layer,
+`viz.section()` a vertical plane, `viz.profile()` one depth profile,
+`viz.transect()` an ordered horizontal or depth transect, and
+`viz.timeseries()` one raw point series.
+
+`cube_mask()` applies polygon cell-centre coverage while preserving the
+5D shape. `stock_mask()` supports the established stock-oriented mask
+workflow. Polygon operations require the optional `sf` package.
+
+The canonical temporal pipeline starts with `cube_aggregate_time()`,
+constructs a recurring reference cycle with `cube_climatology()`, and
+computes difference or standardized anomalies with `cube_anomaly()`.
+`cube_trend()` estimates a descriptive per-cell linear slope against
+actual elapsed historical time. A climatology uses recurring pseudo-time
+and is therefore not a valid trend input. Grid primitives include
+`cube_cell_area()`, `cube_layer_thickness()`, `cube_cell_volume()`, and
+`cube_polygon_weights()`.
 
 ## Minimal example
 
@@ -54,8 +74,8 @@ library(oceancube)
 lon <- c(-80, -79)
 lat <- c(-12, -11)
 depth <- c(5, 15)
-time <- as.Date(c("2020-01-01", "2020-02-01"))
-values <- array(seq_len(2 * 2 * 2 * 2), dim = c(2, 2, 2, 2, 1))
+time <- as.Date("2020-01-01") + 0:119
+values <- array(seq_len(2 * 2 * 2 * 120), dim = c(2, 2, 2, 120, 1))
 
 x <- ocean_cube(
   lon = lon, lat = lat, depth = depth, time = time,
@@ -63,45 +83,77 @@ x <- ocean_cube(
   source = "example"
 )
 
-cube_slice(x, longitude = -79, latitude = -11, by = "value")
-cube_crop(x, longitude = c(-80, -79), latitude = c(-12, -11))
-cube_extract(
-  x, longitude = -79, latitude = -11, depth = 5,
-  time = time[1], variable = "temperature", by = "value"
+validation <- cube_validate(x)
+inspection <- cube_inspect(x, missing = "none")
+
+x_sub <- cube_crop(
+  x, longitude = c(-80, -79), latitude = c(-12, -11)
+)
+map <- viz.map(x_sub, "temperature", time = time[1], depth = 5)
+
+monthly <- cube_aggregate_time(x_sub, by = "month")
+clim <- cube_climatology(monthly, by = "month")
+anom <- cube_anomaly(monthly, clim, type = "difference")
+trend <- cube_trend(monthly)
+
+stopifnot(
+  nrow(validation) > 0L,
+  inherits(inspection, "ocean_cube_inspection"),
+  inherits(map, "ggplot"),
+  inherits(anom, "ocean_cube"),
+  inherits(trend, "ocean_cube")
 )
 ```
 
+## Compatibility helpers
+
+Established workflows may continue to use `to_month()`, `clim_day()`,
+`clim_month()`, `anom_diff()`, `anom_z()`, and `signal_noise()`. New
+workflows should prefer the canonical engines above. Despite its
+historical name, `signal_noise()` is not a generic signal-to-noise
+estimator: it returns the standardized climatological anomaly magnitude,
+`abs(z)`, by default, or signed `z` with `signed = TRUE`. These
+compatibility helpers are not deprecated as a group.
+
 ## Package boundary
 
-`oceancube` owns data-cube representation, local reading, selection,
-extraction, masking, geometry, and geometric weights. It does not calculate 2D
-or 3D spatial indicators or perform indicator-level inference; those belong to
-`spatind`. See the
-[formal package boundary](inst/architecture/oceancube-spatind-boundary.md).
+`oceancube` owns data-cube representation, local reading, validation,
+inspection, selection, extraction, visualization, temporal
+transformations, descriptive per-cell slopes, masking, geometry, and
+geometric weights. It does not calculate 2D or 3D spatial indicators,
+trend significance, or indicator-level inference; those belong to
+`spatind`. See the [formal package
+boundary](inst/architecture/oceancube-spatind-boundary.md).
 
 ## OceanCube Handbook
 
-The navigable [OceanCube Handbook](https://qselmer.github.io/oceancube/handbook/)
-explains the five-dimensional contract, backends, all 27 public functions,
-checked workflows, the `spatind` boundary, troubleshooting, and the project's
-Git release policy. Its executable sources live in [`handbook/`](handbook/).
+The navigable [OceanCube
+Handbook](https://qselmer.github.io/oceancube/handbook/) explains the
+five-dimensional contract, backends, all 38 public exports, checked
+workflows, the `spatind` boundary, troubleshooting, and the project’s
+Git release policy. Its executable sources live in
+[`handbook/`](handbook/).
 
 ## Limitations and roadmap
 
-Version 0.1.0 supports local, rectilinear data. NetCDF is read-only. Writing,
-OPeNDAP, THREDDS, Zarr, curvilinear or unstructured grids, regridding,
-interpolation, cloud stores, parallel reading, and chunk pipelines are outside
-this release. Antimeridian handling is deliberately limited and errors when a
-geometry cannot be treated safely.
+The current core supports canonical rectilinear cubes and a read-only
+local NetCDF backend. Final analytical outputs may materialize in
+memory. NetCDF writing, OPeNDAP, THREDDS, Zarr, curvilinear or
+unstructured grids, regridding, interpolation, cloud stores, and general
+antimeridian handling are outside the current scope. Trend output is
+descriptive: Sen/Theil–Sen slopes, Mann–Kendall tests, significance
+inference, breakpoints, change points, and regime analysis are not
+implemented.
 
 ## License and citation
 
-`oceancube` is released under the MIT License. Use `citation("oceancube")` for
-the citation generated from installed package metadata. Repository citation
-metadata is also available in `CITATION.cff`.
+`oceancube` is released under the MIT License. Use
+`citation("oceancube")` for the citation generated from installed
+package metadata. Repository citation metadata is also available in
+`CITATION.cff`.
 
 ## Security
 
-Do not store Copernicus credentials in scripts, package files, repositories, or
-examples. Use local authentication through the official Copernicus Marine
-tooling or environment variables.
+Do not store Copernicus credentials in scripts, package files,
+repositories, or examples. Use local authentication through the official
+Copernicus Marine tooling or environment variables.

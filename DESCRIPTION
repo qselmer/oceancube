@@ -10,9 +10,10 @@ Authors@R:
            email = "qselmer@gmail.com")
 Description: Represents multidimensional ocean data with a canonical
     longitude, latitude, depth, time, and variable contract. In-memory and
-    read-only local NetCDF backends support selection, extraction, transects,
-    climatologies, anomalies, polygon masks, grid geometry, and polygon
-    weights for integration with downstream marine analyses.
+    read-only local 'NetCDF' backends support validation, inspection,
+    selection, extraction, visualization, temporal aggregation,
+    climatologies, anomalies, descriptive per-cell temporal trends, polygon
+    masks, grid geometry, and polygon weights for downstream marine analyses.
 License: MIT + file LICENSE
 URL: https://github.com/qselmer/oceancube,
     https://qselmer.github.io/oceancube/

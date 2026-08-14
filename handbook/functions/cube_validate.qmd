@@ -1,0 +1,35 @@
+# `cube_validate()`
+
+**Category:** Validation and inspection
+**Status:** experimental
+
+## Purpose
+
+Diagnose the logical header, backend, metadata, coordinates, and temporal
+contract of an `ocean_cube` without sorting, deduplicating, or repairing it.
+
+## Real signature
+
+```r
+cube_validate(x, strict = FALSE)
+```
+
+The result is an `oceancube_validation` data frame with one row per check.
+`strict = TRUE` assembles the complete report and then raises an
+`oceancube_validation_error` if any check fails. The NetCDF path never reads a
+complete data payload.
+
+## Backend and dimensions
+
+Memory and lazy local NetCDF cubes are supported. Validation preserves the
+canonical `longitude × latitude × depth × time × variable` object and returns
+a report rather than a transformed cube.
+
+## Minimal executable check
+
+```r
+library(oceancube)
+stopifnot(identical(names(formals(cube_validate)), c("x", "strict")))
+```
+
+Use `cube_inspect()` next for a compact descriptive summary.

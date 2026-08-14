@@ -1,7 +1,12 @@
 # Introduction {#sec-introduction}
 `oceancube` gives ocean observations one validated five-dimensional shape while allowing storage to remain in memory or in a local NetCDF file. It solves a recurring problem: scientific operations should not depend on how values happen to be stored.
 
-The package constructs, reads, selects, extracts, masks, summarises, and describes geometry. It deliberately does **not** calculate spatial indicators or inference; that responsibility belongs to `spatind`.
+The package constructs, reads, validates, inspects, selects, extracts,
+visualizes, masks, aggregates, calculates climatologies and anomalies, computes
+descriptive per-cell temporal slopes, and describes geometry. It deliberately
+does **not** calculate spatial indicators, trend significance, or structural
+change; those responsibilities belong to downstream analysis such as
+`spatind`.
 
 ## Design goals
 Reproducibility, explicit dimensions, read-only external data access, small composable operations, serialisable provenance, and stable outputs.

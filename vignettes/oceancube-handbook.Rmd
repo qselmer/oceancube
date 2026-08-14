@@ -27,4 +27,9 @@ elapsed Date or UTC POSIXct time. It accepts raw, aggregated, and anomaly cubes
 but rejects climatology pseudo-time; it performs no Sen/Mann--Kendall testing,
 inference, change-point, or regime analysis.
 
-Main flows: construct/read → slice/crop → extract/transect/mask → climatology/anomalies → geometry/weights. `spatind` consumes prepared values and weights; it owns indicators and inference.
+The canonical flow is construct/read -> validate/inspect -> select/extract ->
+visualize -> optional temporal aggregation -> climatology/anomaly or
+descriptive trend. The five static `viz.*` functions return `ggplot` objects.
+Compatibility helpers remain available after this canonical route. `spatind`
+consumes prepared values and weights; it owns indicators, interpretation,
+uncertainty, and inference.

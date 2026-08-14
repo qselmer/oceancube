@@ -7,17 +7,45 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-`oceancube` uses a five-dimensional contract for rectilinear ocean data. Start
-with the [introduction](oceancube-introduction.html), then read the
-[architecture](oceancube-architecture.html) and
-[geometry and weights](oceancube-geometry-weights.html) articles.
+`oceancube` uses a canonical five-dimensional contract ordered as longitude,
+latitude, depth, time, and variable. Start by validating and inspecting a tiny
+offline cube, then select, visualize, and apply the canonical temporal engines.
 
 ```{r}
 library(oceancube)
+
+time <- as.Date("2020-01-01") + 0:119
 x <- ocean_cube(
   lon = c(-80, -79), lat = c(-12, -11), depth = 5,
-  time = as.Date("2020-01-01") + 0:1,
-  data = array(1:8, c(2, 2, 1, 2, 1)), vars = "temperature"
+  time = time,
+  data = array(seq_len(2 * 2 * 1 * 120), c(2, 2, 1, 120, 1)),
+  vars = "temperature", units = "degC"
 )
-cube_extract(x, longitude = -79, latitude = -11, by = "value")
+
+validation <- cube_validate(x)
+inspection <- cube_inspect(x, missing = "none")
+selected <- cube_crop(x, longitude = c(-80, -79), latitude = c(-12, -11))
+map <- viz.map(selected, "temperature", time = time[1], depth = 5)
+
+monthly <- cube_aggregate_time(selected, by = "month")
+clim <- cube_climatology(monthly, by = "month")
+anom <- cube_anomaly(monthly, clim, type = "difference")
+trend <- cube_trend(monthly)
+
+stopifnot(
+  nrow(validation) > 0L,
+  inherits(inspection, "ocean_cube_inspection"),
+  inherits(map, "ggplot"),
+  inherits(anom, "ocean_cube"),
+  inherits(trend, "ocean_cube")
+)
 ```
+
+The other static `ggplot` helpers are `viz.section()`, `viz.profile()`,
+`viz.transect()`, and `viz.timeseries()`. A climatology has recurring
+pseudo-time and must not be passed to `cube_trend()`; raw, aggregated, and
+anomaly cubes retain historical time.
+
+Continue with the [introduction](oceancube-introduction.html), then read the
+[architecture](oceancube-architecture.html) and
+[geometry and weights](oceancube-geometry-weights.html) articles.

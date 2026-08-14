@@ -1,0 +1,34 @@
+# `viz.timeseries()`
+
+**Category:** Visualization
+**Status:** experimental
+
+## Purpose
+
+Plot raw stored observations for one variable and one point/depth through
+historical time.
+
+## Real signature
+
+```r
+viz.timeseries(x, variable, longitude = NULL, latitude = NULL, depth = NULL,
+               time_from = NULL, time_to = NULL,
+               match = c("exact", "nearest"), tolerance = NULL,
+               limits = NULL, na.rm = FALSE, points = FALSE,
+               title = NULL, subtitle = NULL, caption = NULL)
+```
+
+The result is a `ggplot` object. Bounds are inclusive. The function does not
+aggregate, smooth, interpolate, impute, or deduplicate observations. A lazy
+NetCDF source reads the selected point, depth, times, and variable rather than
+the complete cube.
+
+## Minimal executable check
+
+```r
+library(oceancube)
+stopifnot(is.function(viz.timeseries))
+```
+
+Use `cube_aggregate_time()` first when period summaries, rather than raw
+observations, are required.
