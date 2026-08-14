@@ -79,14 +79,18 @@ cube_transect(
 ## Masks, climatologies, anomalies, and geometry
 
 `cube_mask()` classifies horizontal cell centres against polygons and requires
-the optional `sf` package. `clim_month()` and `clim_day()` describe recurring
-temporal baselines; anomalies retain the cube contract.
+the optional `sf` package. `cube_aggregate_time()` performs time-only calendar
+aggregation with equal observation weights and selective NetCDF reads.
+`clim_month()` and `clim_day()` describe recurring temporal baselines; anomalies
+retain the cube contract.
 
 ```{r temporal}
+monthly <- cube_aggregate_time(x, by = "month")
 clim <- clim_month(x)
 difference <- anom_diff(x, clim)
 standardized <- anom_z(x, clim)
 clim
+dim(monthly$data)
 dim(difference$data)
 dim(standardized$data)
 ```

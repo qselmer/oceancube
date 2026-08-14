@@ -4,7 +4,7 @@
   cube$dataset_id <- "temporal-fixture"
   cube$mask <- list(id = "mask-fixture")
   cube$dc <- matrix(seq_len(6), nrow = 3, ncol = 2)
-  cube$provenance <- list(step = "input")
+  cube$provenance$step <- "input"
   cube$qa <- list(status = "raw")
   cube
 }
@@ -44,8 +44,11 @@ test_that("to_month preserves monthly calculations, structure, and metadata poli
       "mask", "dc", "climatology", "anomaly", "provenance", "qa"
     )
   )
-  expect_identical(unname(dim(monthly$data)), c(3L, 2L, 2L, 4L, 2L))
-  expect_identical(monthly$time, cube$time)
+  expect_identical(unname(dim(monthly$data)), c(3L, 2L, 2L, 14L, 2L))
+  expect_identical(
+    monthly$time,
+    seq(as.Date("2020-01-01"), as.Date("2021-02-01"), by = "month")
+  )
   expect_identical(monthly$lon, cube$lon)
   expect_identical(monthly$lat, cube$lat)
   expect_identical(monthly$depth, cube$depth)
@@ -58,7 +61,12 @@ test_that("to_month preserves monthly calculations, structure, and metadata poli
   expect_identical(monthly$mask, cube$mask)
   expect_identical(monthly$dc, cube$dc)
   expect_identical(monthly$provenance$extra$parent, cube$provenance)
-  expect_null(monthly$qa)
+  expect_identical(monthly$qa$parent, cube$qa)
+  expect_true(monthly$qa$to_month$core_delegated)
+  expect_identical(
+    monthly$qa$temporal_aggregation$periods$n_total,
+    c(1L, 1L, rep(0L, 10L), 1L, 1L)
+  )
   expect_identical(.cube_backend(monthly), "memory")
   expect_identical(cube, before)
 })

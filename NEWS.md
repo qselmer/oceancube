@@ -2,6 +2,19 @@
 
 ## Time and calendar foundation (0.2.0 development)
 
+* Adds `cube_aggregate_time()` for time-only day, ISO-week, calendar-month,
+  DJF/MAM/JJA/SON season, and calendar-year aggregation. Date output remains
+  Date; POSIXct output remains UTC POSIXct; internal empty periods are retained.
+* Provides controlled mean, sampled-value sum, min, max, and exact median
+  reducers with finite-value and `min_n` rules, equal observation weighting,
+  irregular-sampling warnings, and optional cell-aligned observation-count
+  diagnostics.
+* Aggregates lazy NetCDF cubes through selective bounded period/block reads
+  instead of materializing the complete multi-period cube.
+* Makes `to_month()` a compatibility wrapper over the core for supported
+  reducers. Arbitrary functions remain temporarily available through a warned,
+  deprecated legacy full-read path; the wrapper also documents its legacy
+  POSIXct-to-Date output exception.
 * Preserves `POSIXct` instants and sub-day/fractional-second precision instead
   of truncating them to `Date`; stored `POSIXct` coordinates are normalized to
   UTC without changing their epoch values.

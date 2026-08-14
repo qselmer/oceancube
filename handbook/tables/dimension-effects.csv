@@ -10,6 +10,7 @@
 "crop_stock","stock object","cropped stock",TRUE,FALSE,FALSE,"Crop legacy stock objects to their domain."
 "cube_cell_area","ocean_cube","matrix",TRUE,FALSE,TRUE,"Compute rectilinear horizontal cell areas."
 "cube_cell_volume","ocean_cube","array",TRUE,FALSE,TRUE,"Combine cell area and layer thickness into volume."
+"cube_aggregate_time","ocean_cube","ocean_cube",TRUE,TRUE,FALSE,"Replace only time with a regularized aggregated axis."
 "cube_collect","ocean_cube","ocean_cube",FALSE,FALSE,FALSE,"Materialise a lazy cube in memory."
 "cube_crop","ocean_cube","ocean_cube",FALSE,TRUE,FALSE,"Crop continuous coordinate intervals."
 "cube_extract","ocean_cube","data.frame",FALSE,FALSE,FALSE,"Extract values as tidy tables, series, or profiles."

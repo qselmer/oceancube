@@ -1,4 +1,4 @@
-test_that("only approved geometry and visualization APIs extend the boundary", {
+test_that("only approved 0.2 APIs extend the boundary", {
   exports_before <- c(
     "annual_index", "anom_diff", "anom_z", "clim_day", "clim_month",
     "cm_connect", "cm_setup", "coast_dist", "crop_stock", "cube_collect",
@@ -12,6 +12,7 @@ test_that("only approved geometry and visualization APIs extend the boundary", {
     "cube_layer_thickness",
     "cube_cell_volume",
     "cube_polygon_weights",
+    "cube_aggregate_time",
     "viz.timeseries"
   )
   observed <- getNamespaceExports("oceancube")

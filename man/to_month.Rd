@@ -9,11 +9,26 @@ to_month(x, fun = mean)
 \arguments{
 \item{x}{An \verb{<ocean_cube>} object.}
 
-\item{fun}{Aggregation function. Defaults to mean.}
+\item{fun}{Aggregation function. Defaults to \code{mean}. The five supported
+built-ins delegate to \code{\link[=cube_aggregate_time]{cube_aggregate_time()}}; other functions are
+deprecated and may materialize the complete input cube.}
 }
 \value{
 An \verb{<ocean_cube>} aggregated to one value per month.
 }
 \description{
-Aggregate an ocean cube to monthly resolution
+\code{to_month()} is the compatibility wrapper for monthly temporal aggregation.
+The built-in \code{mean}, \code{sum}, \code{min}, \code{max}, and \code{median} functions delegate to
+\code{\link[=cube_aggregate_time]{cube_aggregate_time()}}. Arbitrary functions remain temporarily available
+through the deprecated 0.1.0 materializing path.
+}
+\details{
+For compatibility, \code{to_month()} returns first-day Date timestamps
+even for POSIXct input and warns when that legacy demotion occurs. Use
+\code{\link[=cube_aggregate_time]{cube_aggregate_time()}} to preserve POSIXct input as UTC POSIXct output.
+Custom \code{fun} values use the legacy full-read implementation and emit a
+deprecation warning.
+}
+\seealso{
+\code{\link[=cube_aggregate_time]{cube_aggregate_time()}}
 }

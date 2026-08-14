@@ -1,4 +1,20 @@
 # Time, climatology, and anomalies
-`to_month()` aggregates time to months. `clim_month()` and `clim_day()` estimate reference means and variability. `anom_diff()` returns absolute departures, `anom_z()` standardised departures, and `signal_noise()` a signal-to-noise representation. `annual_index()` and `layer_mean()` provide annual and vertical summaries.
+`cube_aggregate_time()` is the canonical time-only aggregator for day, ISO week,
+calendar month, meteorological season, and calendar year. It preserves Date or
+UTC POSIXct class, inserts internal empty periods, and uses equal observation
+weights. Observation coverage is available with `diagnostics = TRUE`; it is not
+duration coverage. Irregular or gapped sampling therefore requires scientific
+interpretation.
+
+`to_month()` is the compatibility wrapper. Its supported built-in reducers use
+the selective core, while a deprecated arbitrary `fun` may still materialise the
+complete cube. The wrapper preserves its historical POSIXct-to-Date output;
+call `cube_aggregate_time()` when POSIXct must remain POSIXct.
+
+`clim_month()` and `clim_day()` estimate reference means and variability.
+`anom_diff()` returns absolute departures, `anom_z()` standardised departures,
+and `signal_noise()` a signal-to-noise representation. `annual_index()` remains
+a specialised post-core annual table, not a yearly cube wrapper. `layer_mean()`
+provides vertical summaries.
 
 Always inspect time coverage, missingness, sample counts, and units before interpreting climatology products.

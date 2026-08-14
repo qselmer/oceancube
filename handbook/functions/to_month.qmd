@@ -3,7 +3,7 @@
 **Status:** stable
 
 ## Purpose
-Aggregate daily or irregular observations to months.
+Provide the legacy monthly wrapper around `cube_aggregate_time()`.
 
 ## When to use
 Use it when its declared input and output match the workflow. Prefer a narrower selection before any operation that may materialise values.
@@ -24,13 +24,17 @@ to_month(x, fun = mean)
 Input: **ocean_cube**. Output: **ocean_cube**.
 
 ## Backend support
-Memory: **TRUE**. NetCDF: **TRUE**. Backend operations retain read-only semantics; materialisation is explicit.
+Memory: **TRUE**. NetCDF: **TRUE**. Mean, sum, min, max, and median use selective
+period/block reads through `cube_aggregate_time()`. A deprecated arbitrary
+`fun` may still materialise the complete cube.
 
 ## Dimensional effect
 May change shape or return a non-cube analytical object; inspect dimensions/rows.
 
 ## Metadata
-Units, coordinates, provenance, masks, and QA metadata are retained or reported where meaningful.
+Units, spatial coordinates, provenance, masks, and temporal QA are retained.
+The period table is lightweight; cell-level observation coverage is available
+from the core with `diagnostics = TRUE`.
 
 ## Minimal executable check
 ```r
@@ -43,7 +47,11 @@ names(formals(oceancube::to_month))
 Typical position: `ocean_cube` → `to_month()` → `clim_month`. See the workflow scripts for a checked end-to-end example.
 
 ## Frequent errors and limitations
-Invalid dimensions, selectors, units, CRS, source-file identity, optional dependencies, or unsupported grids are rejected explicitly. Read the function Rd page for exact diagnostics.
+The wrapper preserves first-day Date output, including the historical
+POSIXct-to-Date demotion, and warns for that exception. Arbitrary functions are
+deprecated and use the legacy full-read path. Aggregation is observation
+weighted, not duration weighted; use the core documentation for exact NA,
+coverage, ISO-week, and season semantics.
 
 ## Related functions
 Previous: `ocean_cube`. Next: `clim_month`.
