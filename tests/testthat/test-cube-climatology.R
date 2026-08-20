@@ -356,8 +356,16 @@ test_that("memory and lazy NetCDF climatologies are scientifically identical and
   for (by in c("day", "month", "season")) {
     from_lazy <- suppressWarnings(cube_climatology(lazy, by, diagnostics = TRUE))
     from_memory <- suppressWarnings(cube_climatology(memory, by, diagnostics = TRUE))
-    expect_equal(from_lazy$data, from_memory$data, info = by)
-    expect_equal(from_lazy$climatology$sd, from_memory$climatology$sd, info = by)
+    expect_equal(
+      from_lazy$data, from_memory$data,
+      tolerance = A2_TOLERANCE$temporal_absolute,
+      info = by
+    )
+    expect_equal(
+      from_lazy$climatology$sd, from_memory$climatology$sd,
+      tolerance = A2_TOLERANCE$temporal_absolute,
+      info = by
+    )
     expect_identical(from_lazy$time, from_memory$time, info = by)
     expect_identical(from_lazy$climatology$group_key, from_memory$climatology$group_key, info = by)
     expect_identical(from_lazy$climatology$n_clim_total, from_memory$climatology$n_clim_total, info = by)
@@ -369,6 +377,7 @@ test_that("memory and lazy NetCDF climatologies are scientifically identical and
     expect_equal(
       from_lazy$qa$climatology$coverage_fraction,
       from_memory$qa$climatology$coverage_fraction,
+      tolerance = A2_TOLERANCE$temporal_absolute,
       info = by
     )
     expect_identical(from_lazy$units, from_memory$units, info = by)

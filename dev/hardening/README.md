@@ -12,6 +12,53 @@ runtime code, exports, signatures, dependency declarations, or scientific
 expected values. Large inputs, caches, profiling HTML and provider data are not
 versioned here.
 
+## A2 contract strengthening
+
+The 0.3.0-A2 phase preserves the A1 evidence above and adds deterministic
+contract tests rather than replacing the baseline. A custom base-R/testthat
+generator in `tests/testthat/helper-cube-generators.R` creates small valid
+five-dimensional cubes with normal or singleton axes, Date or UTC POSIXct time,
+irregular sequences, constant/index/linear fields, multiple variables, and
+seven structured missingness patterns. `A2_GENERATOR_SEED` is `303002`; current
+generators are arithmetic and consume no random stream, so the seed reserves a
+stable strategy for later deterministic cases. No property-testing dependency
+was added.
+
+A2 directly covers full crop/slice/collect identities, source non-mutation,
+untouched dimensions, units, exact linear trends, analytical
+climatology/anomaly behavior, all five visualization data paths, common
+memory/NetCDF validation outcomes, mocked Copernicus client contracts, packed
+NetCDF values, bounded singleton blocks, and supported time edges. Exact and
+operation-specific absolute tolerances are recorded in
+`tolerance-policy.csv`; backend and invariance conclusions are updated only for
+executed evidence.
+
+Successful Python/Copernicus integration remains outside the default suite. A
+future optional class may use `OCEANCUBE_EXTERNAL_TESTS=true`, but must not run
+in ordinary CI, manage credentials, create environments, install packages, or
+download provider data without a separately approved contract. A2 implements
+no external class and uses no network.
+
+Reproduce A2 coverage with:
+
+```powershell
+$env:LC_ALL = 'English_United States.utf8'
+Rscript --vanilla dev/hardening/run_coverage_a2.R
+```
+
+The runner creates a clean temporary source snapshot, leaves the A1 CSVs
+unchanged, and writes phase-specific file/function summaries plus an A1-to-A2
+comparison. On local Windows, use an installed UTF-8 locale such as the one
+above; `C.UTF-8` is not assumed. This is a harness/environment requirement and
+does not weaken Unicode package tests.
+
+The executed A2 line result is 91.3319%, compared with 90.3872% in A1
+(+0.9447 percentage points). Functions with any covered line increased from
+242 to 247 of 254. The three previously zero-covered exports now measure
+`cm_setup()` 75%, `cm_connect()` 57.1429%, and `download_nc()` 92.8571%.
+`.read_cf_time()` and `.slice_time_numeric()` reached 100%; other low NetCDF
+internals did not all move, which is why A1-002 is only partially closed.
+
 ## Reproduce the bounded baseline
 
 The normal smoke/standard runner is:
@@ -56,6 +103,12 @@ A1. Normal testthat remains the authoritative fast deterministic suite.
 - `fixture-manifest.csv`: governance-first fixture inventory/proposals.
 - `findings.csv`: classified gaps and remediation routing.
 - `baseline-summary.csv`: compact machine-readable status/environment summary.
+- `coverage-a2-by-file.csv`, `coverage-a2-by-function.csv`,
+  `coverage-a2-summary.csv`, and `coverage-comparison.csv`: A2 remeasurement and
+  the preserved A1-to-A2 comparison.
+- `tolerance-policy.csv`: exact versus operation-specific absolute numerical
+  contracts used by direct parity tests.
+- `a2-summary.csv`: compact executed A2 certification evidence.
 
 ## Coverage and quality
 

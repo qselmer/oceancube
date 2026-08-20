@@ -253,7 +253,10 @@ test_that("NetCDF pair reads use one connection and equal memory", {
   attributes(memory_data) <- attributes(memory_data)[c(
     "names", "row.names", "class"
   )]
-  expect_equal(netcdf_data, memory_data)
+  expect_equal(
+    netcdf_data, memory_data,
+    tolerance = A2_TOLERANCE$transect_absolute
+  )
   metrics <- attr(netcdf, "oceancube_provenance")$physical_reads
   expect_equal(metrics$n_open, 1L)
   expect_equal(metrics$n_unique_pairs, 2L)
@@ -274,7 +277,10 @@ test_that("NetCDF pair reads use one connection and equal memory", {
     attributes(from_netcdf) <- attributes(from_netcdf)[c(
       "names", "row.names", "class"
     )]
-    expect_equal(from_netcdf, from_memory)
+    expect_equal(
+      from_netcdf, from_memory,
+      tolerance = A2_TOLERANCE$transect_absolute
+    )
   }
   compare_materialized(list(
     path = path[1, ], id_col = "station", time = x_netcdf$time[[2L]],
@@ -820,7 +826,10 @@ test_that("non-contiguous NetCDF depths use a selective enclosing block", {
   attributes(memory_data) <- attributes(memory_data)[c(
     "names", "row.names", "class"
   )]
-  expect_equal(netcdf_data, memory_data)
+  expect_equal(
+    netcdf_data, memory_data,
+    tolerance = A2_TOLERANCE$transect_absolute
+  )
 
   metrics <- attr(from_netcdf, "oceancube_provenance")$physical_reads
   expect_identical(metrics$n_unique_pairs, 2L)

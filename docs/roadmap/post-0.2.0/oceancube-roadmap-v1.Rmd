@@ -197,6 +197,18 @@ real-data governance, lazy-I/O decision evidence, and provenance gaps under
 `dev/hardening/`. It found no S0 blocker. This completes A1 measurement and
 design only; it does not complete 0.3.0-A or approve an API/remediation.
 
+**0.3.0-A2 status (2026-08-20): contract strengthening completed.** Deterministic
+valid-cube generators and P1-P8 property/invariance tests now cover singleton
+axes, structured missingness, Date/POSIXct and irregular time; direct common
+validation and all-five-visualization memory/NetCDF parity are explicit; and
+supported packed-NetCDF/time plus mocked connection/download contracts are
+strengthened without runtime, API, dependency, Python-environment, provider-data
+or network changes. A1-006, A1-007 and A1-008 are closed; A1-001 and A1-002 are
+partially closed because external integration and additional internal branches
+remain intentionally bounded. This does not complete 0.3.0-A or satisfy Gate B.
+The recommended next subphase is real-data fixture governance before provenance
+schema implementation.
+
 No large provider product is added to Git. Proposed source classes are:
 
 | Source class | Contract evidence | Access and fixture policy | CI-safe form |

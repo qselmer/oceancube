@@ -462,7 +462,11 @@ test_that("lazy NetCDF aggregation stays selective and matches memory", {
     from_memory <- suppressWarnings(cube_aggregate_time(
       memory, by, method = method, diagnostics = TRUE
     ))
-    expect_equal(from_lazy$data, from_memory$data, info = name)
+    expect_equal(
+      from_lazy$data, from_memory$data,
+      tolerance = A2_TOLERANCE$temporal_absolute,
+      info = name
+    )
     expect_identical(from_lazy$time, from_memory$time, info = name)
     expect_identical(from_lazy$lon, from_memory$lon, info = name)
     expect_identical(from_lazy$lat, from_memory$lat, info = name)
@@ -482,6 +486,7 @@ test_that("lazy NetCDF aggregation stays selective and matches memory", {
     expect_equal(
       from_lazy$qa$temporal_aggregation$coverage_fraction,
       from_memory$qa$temporal_aggregation$coverage_fraction,
+      tolerance = A2_TOLERANCE$temporal_absolute,
       info = name
     )
     metrics <- from_lazy$qa$temporal_aggregation$read_metrics

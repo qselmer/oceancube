@@ -335,8 +335,14 @@ test_that("memory and lazy NetCDF modes are equal with one source computation", 
   memory_magnitude <- signal_noise(memory, clim, FALSE)
   memory_signed <- signal_noise(memory, clim, TRUE)
 
-  expect_equal(lazy_magnitude$data, memory_magnitude$data)
-  expect_equal(lazy_signed$data, memory_signed$data)
+  expect_equal(
+    lazy_magnitude$data, memory_magnitude$data,
+    tolerance = A2_TOLERANCE$temporal_absolute
+  )
+  expect_equal(
+    lazy_signed$data, memory_signed$data,
+    tolerance = A2_TOLERANCE$temporal_absolute
+  )
   expect_identical(is.na(lazy_magnitude$data), is.na(memory_magnitude$data))
   expect_identical(is.na(lazy_signed$data), is.na(memory_signed$data))
   for (field in c("lon", "lat", "depth", "time", "vars", "units")) {

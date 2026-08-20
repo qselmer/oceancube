@@ -519,8 +519,14 @@ test_that("lazy NetCDF source is bounded and matches memory science", {
   lazy_z <- cube_anomaly(lazy, climatology, "z")
   memory_z <- cube_anomaly(memory, climatology, "z")
 
-  expect_equal(lazy_difference$data, memory_difference$data)
-  expect_equal(lazy_z$data, memory_z$data)
+  expect_equal(
+    lazy_difference$data, memory_difference$data,
+    tolerance = A2_TOLERANCE$temporal_absolute
+  )
+  expect_equal(
+    lazy_z$data, memory_z$data,
+    tolerance = A2_TOLERANCE$temporal_absolute
+  )
   expect_identical(is.na(lazy_difference$data), is.na(memory_difference$data))
   expect_identical(is.na(lazy_z$data), is.na(memory_z$data))
   expect_identical(lazy_difference$lon, memory_difference$lon)
