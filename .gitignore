@@ -44,8 +44,9 @@ __pycache__/
 /data-raw/downloads/
 /data-raw/tmp/
 
-# Generated documentation caches
-/docs/handbook/
+# Generated documentation caches and sites
+/docs/*
+!/docs/roadmap/
 /README_cache/
 /README_files/
 /vignettes/*_cache/

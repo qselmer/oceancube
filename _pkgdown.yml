@@ -1,11 +1,12 @@
 url: https://qselmer.github.io/oceancube/
+destination: docs
 template:
   bootstrap: 5
 navbar:
   components:
     handbook:
       text: OceanCube Handbook
-      href: https://qselmer.github.io/oceancube/handbook/
+      href: handbook/
   structure:
     left: [intro, reference, articles, news, handbook]
 reference:
@@ -23,6 +24,8 @@ reference:
     contents:
       - cube_validate
       - cube_inspect
+      - print.oceancube_validation
+      - print.ocean_cube_inspection
   - title: Selection and extraction
     contents:
       - cube_slice
@@ -79,3 +82,4 @@ articles:
       - oceancube-introduction
       - oceancube-architecture
       - oceancube-geometry-weights
+      - oceancube-handbook

@@ -12,9 +12,10 @@ processing, masking, and grid geometry in reproducible marine workflows.
 
 ## Status and installation
 
-This source tree is prepared as oceancube 0.2.0. It is not on CRAN, and this
-status does not imply that a Git tag or GitHub release exists. Install the
-repository with:
+The current stable source release is oceancube 0.2.0. The corresponding
+annotated tag and GitHub Release are available from the
+[project repository](https://github.com/qselmer/oceancube). The package is not
+currently distributed through CRAN. Install the repository with:
 
 ```r
 # install.packages("remotes")
@@ -122,7 +123,7 @@ inspection, selection, extraction, visualization, temporal transformations,
 descriptive per-cell slopes, masking, geometry, and geometric weights. It does
 not calculate 2D or 3D spatial indicators, trend significance, or
 indicator-level inference; those belong to `spatind`. See the
-[formal package boundary](inst/architecture/oceancube-spatind-boundary.md).
+[formal package boundary](https://qselmer.github.io/oceancube/handbook/11-spatind-boundary.html).
 
 ## OceanCube Handbook
 
