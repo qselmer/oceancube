@@ -1,0 +1,5 @@
+"tier","dimensions","logical_cells","raw_numeric_bytes","profile","run_in_A1","purpose"
+"TINY","6x4x3x24x2","3456","27648","smoke","TRUE","Fast deterministic timing/allocation sanity."
+"SMALL","12x8x4x48x2","36864","294912","standard","TRUE","Local comparative baseline with measurable temporal engines."
+"MEDIUM","36x24x10x120x3","3110400","24883200","standard","FALSE","Scaling and memory profile after instrumentation is stabilized."
+"LARGE-LOCAL","72x48x20x365x4","100915200","807321600","stress","FALSE","Explicit maintainer opt-in only; never default testthat/CI."

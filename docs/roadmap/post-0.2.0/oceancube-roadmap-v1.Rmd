@@ -190,6 +190,13 @@ profiles, stress tests, and fixture governance. It also reviews the public
 lazy-NetCDF entry. `read_nc()` remains materializing until decision `DEC-018`
 is resolved; a candidate `cube_open()` name is not an approved API.
 
+**0.3.0-A1 status (2026-08-20): baseline completed.** The bounded audit records
+the existing test architecture, 90.3872% local line coverage, backend/read
+evidence, deterministic TINY/SMALL timing and allocation observations,
+real-data governance, lazy-I/O decision evidence, and provenance gaps under
+`dev/hardening/`. It found no S0 blocker. This completes A1 measurement and
+design only; it does not complete 0.3.0-A or approve an API/remediation.
+
 No large provider product is added to Git. Proposed source classes are:
 
 | Source class | Contract evidence | Access and fixture policy | CI-safe form |

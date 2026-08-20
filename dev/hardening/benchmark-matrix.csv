@@ -1,0 +1,8 @@
+"axis","planned_values","A1_coverage","notes"
+"backend","memory;NetCDF","memory measured; NetCDF read behavior inventoried","A later runner should generate temporary NetCDF fixtures."
+"operation","validate;slice;crop;extract;transect;collect;aggregate;climatology;anomaly;trend;cell_area;cell_volume;polygon_weights","all except polygon_weights timed","One matrix, not per-operation scripts."
+"selection_fraction","point;small subset;full logical selection","point/subset represented in read audit","Record logical and physical values separately."
+"variables","1;2;3;4","2 measured","Increase independently of spatial size."
+"depth_levels","1;3;4;10;20","3 and 4 measured","Include singleton surface fields."
+"time_points","24;48;120;365","24 and 48 measured","Include irregular timestamps in contract profiles."
+"missingness","0;structured;high","0 measured","Use deterministic masks; never benchmark nondeterministic inputs."
