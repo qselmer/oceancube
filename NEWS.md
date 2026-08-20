@@ -1,3 +1,9 @@
+# oceancube 0.2.0.9000
+
+## Development
+
+- Opened the development cycle toward oceancube 0.3.0.
+
 # oceancube 0.2.0
 
 ## Validation, inspection, and visualization

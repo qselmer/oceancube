@@ -148,6 +148,11 @@ abstractions precede Zarr and large-volume rendering.
 
 ## Gate A — begin the 0.3 development cycle
 
+**Status: SATISFIED on 2026-08-20.** The canonical roadmap and 0.3.0-A
+hardening scope are approved, `main` remains the stable/post-release integration
+branch, `dev-0.3.0` is active, and the development version is `0.2.0.9000` toward
+the intended 0.3.0 release.
+
 Requires approval of this roadmap, the 0.3.0-A hardening scope, and the
 branch/version strategy. The measurement framework must exist before major
 feature expansion, although every performance optimization need not be done.
@@ -391,7 +396,6 @@ Lagrangian particle tracking are outside the core package roadmap.
 
 # Next gate
 
-The next phase should open the 0.3 development cycle only after approving the
-version, branch, and hardening-scope decisions in Gate A. It must not begin with
-CF, vertical, or 3-D implementation. The first implementation work after that
-gate is 0.3.0-A hardening.
+Gate A is satisfied and the 0.3 development cycle is open. The next phase is
+0.3.0-A hardening design and baseline; it must not begin with CF, vertical, or
+3-D implementation.

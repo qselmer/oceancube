@@ -10,6 +10,9 @@ code changes by itself.
 - Canonical roadmap revision: v1
 - Stable release: oceancube 0.2.0
 - Stable tag: `v0.2.0`
+- Current development cycle: 0.2.0.9000 toward 0.3.0
+- Active development branch: `dev-0.3.0`
+- Gate A: satisfied
 - Public API baseline: 38 exports
 - Runtime changes in this roadmap phase: none
 
