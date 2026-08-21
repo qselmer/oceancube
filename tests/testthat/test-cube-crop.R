@@ -163,7 +163,7 @@ test_that("ranges preserve non-time axis order and canonical time order", {
     as.Date(c("2021-01-01", "2021-01-02"))
   )
   expect_identical(
-    result$provenance$cube_crop$resolved_indices[1:4],
+    result$qa$crop$resolved_indices[1:4],
     list(
       longitude = 2:3,
       latitude = 1:3,
@@ -205,7 +205,7 @@ test_that("bbox is equivalent to explicit spatial ranges", {
   expect_identical(by_bbox$lon, explicit$lon)
   expect_identical(by_bbox$lat, explicit$lat)
   expect_identical(
-    by_bbox$provenance$cube_crop$bbox_requested,
+    by_bbox$provenance$history[[1L]]$parameters$requested$bbox,
     bbox
   )
 })
@@ -301,7 +301,7 @@ test_that("outside clip intersects ranges and records each changed axis", {
     time = as.Date(c("2019-01-01", "2020-02-01")),
     outside = "clip"
   )
-  record <- result$provenance$cube_crop
+  record <- result$provenance$history[[1L]]$parameters
 
   expect_identical(result$lon, c(-80, -79))
   expect_identical(result$lat, c(-12, -11))
@@ -310,10 +310,10 @@ test_that("outside clip intersects ranges and records each changed axis", {
     result$time,
     as.Date(c("2020-01-01", "2020-02-01"))
   )
-  expect_identical(record$ranges_requested$longitude, c(-81, -79))
-  expect_identical(record$ranges_applied$longitude, c(-80, -79))
+  expect_identical(record$requested$ranges$longitude, c(-81, -79))
+  expect_identical(record$resolved$ranges_applied$longitude, c(-80, -79))
   expect_identical(
-    record$clipped,
+    record$resolved$clipped,
     c(longitude = TRUE, latitude = TRUE, depth = TRUE, time = TRUE)
   )
 })
@@ -542,9 +542,9 @@ test_that("crop recalculates extents and preserves product metadata", {
   )
   expect_identical(result$source, cube$source)
   expect_identical(result$dataset_id, cube$dataset_id)
-  expect_identical(result$qa, cube$qa)
-  expect_identical(result$provenance$parent, cube$provenance)
-  expect_identical(result$provenance$cube_crop$operation, "cube_crop")
+  expect_identical(result$qa[names(cube$qa)], cube$qa)
+  expect_identical(result$provenance$extensions$user, cube$provenance)
+  expect_identical(result$provenance$history[[1L]]$operation, "cube_crop")
 })
 
 test_that("dc and compatible ocean masks are cropped safely", {
@@ -568,7 +568,7 @@ test_that("dc and compatible ocean masks are cropped safely", {
   expect_null(result$climatology)
   expect_null(result$anomaly)
   expect_setequal(
-    result$provenance$cube_crop$discarded_components,
+    result$provenance$history[[1L]]$parameters$resolved$discarded_components,
     c("climatology", "anomaly")
   )
 })
@@ -582,9 +582,9 @@ test_that("incompatible auxiliary components are discarded and recorded", {
 
   expect_null(result$dc)
   expect_null(result$mask)
-  expect_null(result$qa)
+  expect_named(result$qa, "crop")
   expect_setequal(
-    result$provenance$cube_crop$discarded_components,
+    result$provenance$history[[1L]]$parameters$resolved$discarded_components,
     c("dc", "mask", "climatology", "anomaly", "qa")
   )
 })
@@ -729,7 +729,7 @@ test_that("NetCDF crop reads one exact physical block and requested variable", {
     time = as.POSIXct(c("2020-01-01", "2020-02-01"), tz = "UTC"),
     variable = "temperature"
   )
-  read_record <- result$provenance$cube_crop$netcdf_read
+  read_record <- result$qa$crop$netcdf_read
 
   expect_identical(openings, 1L)
   expect_length(observed, 1L)

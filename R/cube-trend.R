@@ -343,7 +343,9 @@ cube_trend <- function(
   recurrent <- is.list(x$climatology) &&
     identical(x$climatology$type, "recurrent_climatology")
   semantics <- .trend_provenance_time_semantics(x$provenance)
-  if (recurrent || semantics %in% c("recurrent_climatology", "trend_anchor")) {
+  if (recurrent || semantics %in% c(
+    "recurrent_climatology", "recurring_climatology", "trend_anchor"
+  )) {
     rlang::abort(
       paste(
         "`cube_trend()` requires historical time.",
@@ -357,6 +359,11 @@ cube_trend <- function(
 
 .trend_provenance_time_semantics <- function(provenance) {
   if (!is.list(provenance)) return("historical")
+  if (!is.null(provenance$schema_version) &&
+      is.list(provenance$time$current) &&
+      .provenance_scalar_character(provenance$time$current$kind)) {
+    return(provenance$time$current$kind)
+  }
   if (is.list(provenance$cube_trend)) return("trend_anchor")
   if (is.list(provenance$signal_noise) || is.list(provenance$cube_anomaly)) {
     return("historical")

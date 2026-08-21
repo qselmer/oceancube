@@ -25,6 +25,13 @@
 read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
                     depth_name = NULL, time_name = NULL, source = "netcdf",
                     dataset_id = NULL) {
+  requested <- list(
+    vars = vars,
+    lon_name = lon_name,
+    lat_name = lat_name,
+    depth_name = depth_name,
+    time_name = time_name
+  )
   if (!file.exists(file)) {
     .abort_badarg("file", "file does not exist.")
   }
@@ -105,6 +112,45 @@ read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
     units[[v]] <- var_obj$units %||% NA_character_
   }
 
+  provenance_context <- .provenance_cube_context(
+    source = source,
+    dataset_id = dataset_id,
+    time = time,
+    shape = stats::setNames(as.integer(dim(data)), .cube_axis_names()),
+    variables = vars,
+    backend = "memory"
+  )
+  provenance_context$calendar <- time_descriptor$calendar
+  provenance <- .provenance_empty(provenance_context)
+  provenance$source$locator <- list(
+    type = "file",
+    value = normalizePath(file, winslash = "/", mustWork = TRUE),
+    basename = basename(file),
+    portable = FALSE
+  )
+  provenance$time["source"] <- list(.provenance_time_source(list(
+    time = .cf_time_provenance(time_descriptor)
+  )))
+  provenance <- .provenance_append(
+    provenance,
+    operation = "read_nc",
+    parameters = list(
+      requested = requested,
+      resolved = list(
+        variables = vars,
+        dimension_mapping = list(
+          longitude = lon_name,
+          latitude = lat_name,
+          depth = depth_name,
+          time = time_name
+        )
+      )
+    ),
+    output = .provenance_summary(provenance_context),
+    scientific_method = .provenance_method("read_nc", list()),
+    context = provenance_context
+  )
+
   ocean_cube(
     lon = lon,
     lat = lat,
@@ -115,17 +161,6 @@ read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
     units = units,
     source = source,
     dataset_id = dataset_id,
-    provenance = .attach_time_provenance(
-      .make_provenance(
-        fun = "read_nc",
-        args = list(file = file, vars = vars),
-        extra = list(
-          time_units = time_descriptor$units,
-          calendar = time_descriptor$calendar,
-          time_origin = time_descriptor$origin_text
-        )
-      ),
-      .cf_time_provenance(time_descriptor)
-    )
+    provenance = provenance
   )
 }

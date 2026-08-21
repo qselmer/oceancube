@@ -148,33 +148,52 @@ cube_mask <- function(x, polygons, crs = NULL,
     qa <- NULL
     discarded <- c(discarded, "qa")
   }
-  record <- list(
-    operation = "cube_mask",
-    backend_from = backend,
-    backend_to = "memory",
-    keep = keep,
-    boundary = boundary,
-    mask_semantics = "cell_center",
-    n_polygon_features = geometry$n_features,
-    polygon_crs = geometry$crs,
-    polygon_bbox = geometry$bbox,
-    geometry_type = geometry$types,
-    n_spatial_cells_total = coverage$n_spatial_cells_total,
-    n_spatial_cells_kept = coverage$n_spatial_cells_kept,
-    fraction_cells_kept = coverage$fraction_cells_kept,
+  if (is.null(qa)) qa <- list()
+  if (!is.list(qa)) qa <- list(previous = qa)
+  qa$mask <- list(
+    coverage = coverage,
     bounding_rectangle_read = read_plan$metrics,
-    read_amplification = read_plan$metrics$read_amplification,
-    combined_with_existing_mask = combined$combined,
-    discarded_components = discarded,
-    masked_utc = .netcdf_as_utc(Sys.time())
+    discarded_components = discarded
   )
-  provenance <- if (is.null(x$provenance)) {
-    list(cube_mask = record)
-  } else {
-    list(parent = x$provenance, cube_mask = record)
-  }
+  provenance_context <- .provenance_cube_context(
+    source = x$source,
+    dataset_id = x$dataset_id,
+    time = x$time,
+    shape = .cube_shape(x),
+    variables = x$vars,
+    backend = "memory",
+    provenance = x$provenance
+  )
+  provenance <- .provenance_append(
+    x$provenance,
+    operation = "cube_mask",
+    parameters = list(
+      requested = list(
+        keep = keep,
+        boundary = boundary,
+        geometry = list(
+          crs = geometry$crs,
+          bbox = geometry$bbox,
+          n_features = as.integer(geometry$n_features),
+          geometry_type = geometry$types
+        )
+      ),
+      resolved = list(
+        mask_semantics = "cell_center",
+        n_spatial_cells_total = coverage$n_spatial_cells_total,
+        n_spatial_cells_kept = coverage$n_spatial_cells_kept,
+        fraction_cells_kept = coverage$fraction_cells_kept,
+        combined_with_existing_mask = combined$combined
+      )
+    ),
+    output = .provenance_summary(provenance_context),
+    scientific_method = .provenance_method("cube_mask", list()),
+    context = provenance_context
+  )
+  output_template <- x
+  output_template$qa <- qa
 
-  out <- .new_collected_memory_cube(x, values, provenance)
+  out <- .new_collected_memory_cube(output_template, values, provenance)
   out$mask <- mask
   out$climatology <- NULL
   out$anomaly <- NULL

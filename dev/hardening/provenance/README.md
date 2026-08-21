@@ -1,4 +1,4 @@
-# A4a architecture and A4b1 core-engine evidence
+# A4a architecture, A4b1 engine, and A4b2 core-runtime evidence
 
 ## Result
 
@@ -9,9 +9,10 @@ The canonical design is
 the machine-readable audit, candidate comparison, field contract, operation
 mapping, and legacy migration design used to reach that choice.
 
-A4a changed no package runtime. A4b1 now adds the internal V1 engine and focused
-tests while leaving every runtime producer on its legacy shape. A4b2 is the
-next producer-by-producer integration phase.
+A4a changed no package runtime. A4b1 added the internal V1 engine and focused
+tests. A4b2 now migrates the linear core cube lifecycle while intentionally
+leaving complex temporal, multi-input, table/geometry, and wrapper producers on
+their legacy shapes for A4b3.
 
 ## Current audit
 
@@ -86,10 +87,14 @@ or per-operation representation.
 - `a4b1-migration-results.csv` — executed normalization/privacy disposition;
 - `a4b1-field-coverage.csv` — executable coverage of the 75-field contract;
 - `a4b1-growth-performance.csv` — serialized growth and helper timing smoke.
+- `a4b2-runtime-results.csv` — linear producer, compatibility, real-data,
+  serialization, suite, API, and dependency certification;
+- `a4b2-growth.csv` — 1/3/5/10-operation flat-history serialization evidence.
 
 ## Status
 
 `A1-003` remains `PARTIALLY-CLOSED`: the design, core engine, legacy
-normalization and executable tests now exist, but runtime producer rollout is
-still pending A4b2/A4b3. `DEC-019` remains APPROVED and is backed by the exact
-V1 design plus executable A4b1 evidence. 0.3.0-A and Gate B remain incomplete.
+normalization, and linear core runtime rollout now exist, but complex temporal,
+multi-input, table/geometry, and wrapper rollout remains A4b3. `DEC-019` remains
+APPROVED and is backed by the exact V1 design plus executable A4b1/A4b2
+evidence. 0.3.0-A and Gate B remain incomplete.

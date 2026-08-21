@@ -81,7 +81,7 @@ test_that("cube_collect preserves scientific metadata and adds provenance", {
   fixture <- collect_netcdf_fixture()
   withr::local_file(fixture$file)
   collected <- cube_collect(fixture$cube)
-  record <- collected$provenance$cube_collect
+  record <- collected$provenance$history[[length(collected$provenance$history)]]
 
   expect_identical(collected$source, fixture$cube$source)
   expect_identical(collected$dataset_id, fixture$cube$dataset_id)
@@ -101,22 +101,22 @@ test_that("cube_collect preserves scientific metadata and adds provenance", {
     fixture$cube$climatology
   )
   expect_identical(collected$anomaly, fixture$cube$anomaly)
-  expect_identical(collected$qa, fixture$cube$qa)
+  expect_identical(collected$qa[names(fixture$cube$qa)], fixture$cube$qa)
   expect_identical(
-    collected$provenance$parent,
-    fixture$cube$provenance
+    collected$provenance$history[seq_along(fixture$cube$provenance$history)],
+    fixture$cube$provenance$history
   )
   expect_identical(record$operation, "cube_collect")
-  expect_identical(record$source_backend, "netcdf")
-  expect_identical(record$target_backend, "memory")
+  expect_identical(record$output$backend, "memory")
   expect_identical(
-    record$source_file,
+    collected$qa$netcdf_collect$source_file,
     fixture$storage$file$normalized_path
   )
-  expect_identical(record$variables, fixture$cube$vars)
-  expect_identical(record$shape, .cube_shape(fixture$cube))
-  expect_identical(record$estimated_bytes, 768)
-  expect_s3_class(record$collected_utc, "POSIXct")
+  expect_identical(record$output$variables, fixture$cube$vars)
+  expect_identical(record$output$shape, .cube_shape(fixture$cube))
+  expect_identical(collected$qa$netcdf_collect$estimated_bytes, 768)
+  expect_null(record$execution)
+  expect_false("parent" %in% names(collected$provenance))
 })
 
 test_that("collected cube remains usable after deleting the source file", {

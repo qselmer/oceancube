@@ -131,39 +131,60 @@ cube_slice <- function(x, longitude = NULL, latitude = NULL, depth = NULL,
     resolved$index$variable
   )
 
-  record <- list(
-    operation = "cube_slice",
-    backend_from = backend_from,
-    backend_to = "memory",
-    by = by,
-    match = method,
-    requested = resolved$requested,
+  read_diagnostics <- if (is.null(read_plan)) {
+    NULL
+  } else {
+    list(
+      source_file = x$storage$file$normalized_path,
+      physical_start = read_plan$physical_start,
+      physical_count = read_plan$physical_count,
+      variables = x$vars[read_plan$variable_index],
+      values_requested = read_plan$values_requested,
+      values_in_envelope = read_plan$values_in_envelope,
+      amplification = read_plan$amplification
+    )
+  }
+  if (is.null(auxiliary$qa)) auxiliary$qa <- list()
+  if (!is.list(auxiliary$qa)) auxiliary$qa <- list(previous = auxiliary$qa)
+  auxiliary$qa$selection <- list(
     resolved_indices = resolved$index,
     matched_coordinates = resolved$matched,
     distances = resolved$distance,
-    tolerance = resolved$tolerance,
-    output_shape = stats::setNames(as.integer(dim(values)), .cube_axis_names()),
-    discarded_components = auxiliary$discarded,
-    netcdf_read = if (is.null(read_plan)) {
-      NULL
-    } else {
-      list(
-        source_file = x$storage$file$normalized_path,
-        physical_start = read_plan$physical_start,
-        physical_count = read_plan$physical_count,
-        variables = x$vars[read_plan$variable_index],
-        values_requested = read_plan$values_requested,
-        values_in_envelope = read_plan$values_in_envelope,
-        amplification = read_plan$amplification
-      )
-    },
-    sliced_utc = .netcdf_as_utc(Sys.time())
+    netcdf_read = read_diagnostics,
+    discarded_components = auxiliary$discarded
   )
-  provenance <- if (is.null(x$provenance)) {
-    list(cube_slice = record)
-  } else {
-    list(parent = x$provenance, cube_slice = record)
-  }
+  output_shape <- stats::setNames(as.integer(dim(values)), .cube_axis_names())
+  selected_time <- x$time[resolved$index$time]
+  provenance_context <- .provenance_cube_context(
+    source = x$source,
+    dataset_id = x$dataset_id,
+    time = selected_time,
+    shape = output_shape,
+    variables = x$vars[resolved$index$variable],
+    backend = "memory",
+    provenance = x$provenance
+  )
+  provenance <- .provenance_append(
+    x$provenance,
+    operation = "cube_slice",
+    parameters = list(
+      requested = list(
+        selectors = .provenance_compact(resolved$requested),
+        by = by,
+        match = method,
+        tolerance = .provenance_compact(resolved$tolerance)
+      ),
+      resolved = list(
+        selected_counts = vapply(resolved$index, length, integer(1)),
+        selected_variables = x$vars[resolved$index$variable],
+        output_shape = output_shape,
+        discarded_components = auxiliary$discarded
+      )
+    ),
+    output = .provenance_summary(provenance_context),
+    scientific_method = .provenance_method("cube_slice", list()),
+    context = provenance_context
+  )
 
   .new_selected_memory_cube(
     x = x,

@@ -218,7 +218,7 @@ test_that("exact value mode preserves spatial order and duplicates", {
     as.Date(c("2020-01-01", "2021-02-01"))
   )
   expect_identical(
-    result$provenance$cube_slice$resolved_indices$longitude,
+    result$qa$selection$resolved_indices$longitude,
     c(3L, 1L, 3L)
   )
 })
@@ -294,7 +294,7 @@ test_that("nearest selection is deterministic and does not interpolate", {
       time = as.difftime(15, units = "days")
     )
   )
-  record <- result$provenance$cube_slice
+  record <- result$qa$selection
 
   expect_identical(result$lon, -79)
   expect_identical(result$lat, -11)
@@ -330,7 +330,7 @@ test_that("nearest preserves first-position ties on all coordinate axes", {
   )
 
   expect_identical(
-    result$provenance$cube_slice$resolved_indices[1:4],
+    result$qa$selection$resolved_indices[1:4],
     list(longitude = 1L, latitude = 1L, depth = 1L, time = 1L)
   )
   expect_identical(result$lon, -80)
@@ -363,7 +363,7 @@ test_that("nearest works on descending spatial axes without reordering them", {
   expect_identical(result$depth, 0)
   expect_identical(result$time, as.Date("2021-01-01"))
   expect_identical(
-    result$provenance$cube_slice$resolved_indices[1:4],
+    result$qa$selection$resolved_indices[1:4],
     list(longitude = 3L, latitude = 2L, depth = 2L, time = 1L)
   )
 })
@@ -524,7 +524,7 @@ test_that("result units, extents, dimnames, classes, and metadata are aligned", 
   expect_identical(dimnames(result$data), dimnames(.cube_read(result)))
   expect_identical(result$source, cube$source)
   expect_identical(result$dataset_id, cube$dataset_id)
-  expect_identical(result$qa, cube$qa)
+  expect_identical(result$qa[names(cube$qa)], cube$qa)
   expect_true(.check_cube(result))
 })
 
@@ -547,9 +547,9 @@ test_that("aligned dc and ocean_mask are subset while unsafe components are reco
   expect_identical(result$mask$lon, c(-78, -80))
   expect_null(result$climatology)
   expect_null(result$anomaly)
-  expect_identical(result$qa, cube$qa)
+  expect_identical(result$qa[names(cube$qa)], cube$qa)
   expect_setequal(
-    result$provenance$cube_slice$discarded_components,
+    result$provenance$history[[1L]]$parameters$resolved$discarded_components,
     c("climatology", "anomaly")
   )
 })
@@ -563,9 +563,9 @@ test_that("incompatible auxiliary metadata is discarded without misalignment", {
 
   expect_null(result$dc)
   expect_null(result$mask)
-  expect_null(result$qa)
+  expect_named(result$qa, "selection")
   expect_setequal(
-    result$provenance$cube_slice$discarded_components,
+    result$provenance$history[[1L]]$parameters$resolved$discarded_components,
     c("dc", "mask", "climatology", "anomaly", "qa")
   )
 })
@@ -647,12 +647,8 @@ test_that("memory and NetCDF slices are logically equivalent", {
   expect_identical(.cube_backend(memory_slice), "memory")
   expect_identical(.cube_backend(netcdf_slice), "memory")
   expect_identical(
-    memory_slice$provenance$cube_slice$backend_from,
-    "memory"
-  )
-  expect_identical(
-    netcdf_slice$provenance$cube_slice$backend_from,
-    "netcdf"
+    .provenance_semantic(memory_slice$provenance),
+    .provenance_semantic(netcdf_slice$provenance)
   )
 })
 
@@ -686,7 +682,7 @@ test_that("NetCDF slicing reads one requested envelope and variable", {
     variable = "temperature",
     by = "value"
   )
-  read_record <- result$provenance$cube_slice$netcdf_read
+  read_record <- result$qa$selection$netcdf_read
 
   expect_identical(openings, 1L)
   expect_length(observed, 1L)

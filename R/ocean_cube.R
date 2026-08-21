@@ -81,7 +81,6 @@ ocean_cube <- function(lon, lat, time, data, depth = NULL, vars = NULL, units = 
                        provenance = NULL, qa = NULL) {
   canonical_time <- .canonicalize_time(time)
   time <- canonical_time$values
-  provenance <- .attach_time_provenance(provenance, canonical_time$provenance)
   if (!is.null(temporal_extent)) {
     temporal_extent <- .canonicalize_time(
       temporal_extent,
@@ -127,6 +126,22 @@ ocean_cube <- function(lon, lat, time, data, depth = NULL, vars = NULL, units = 
 
   .check_cube_coordinates(lon, lat, depth, time, vars)
   .check_cube_dimensions(data, lon, lat, depth, time, vars)
+
+  provenance_context <- .provenance_cube_context(
+    source = source,
+    dataset_id = dataset_id,
+    time = time,
+    shape = stats::setNames(as.integer(dim(data)), .cube_axis_names()),
+    variables = vars,
+    backend = "memory",
+    provenance = provenance
+  )
+  if (.provenance_deferred_legacy(provenance)) {
+    provenance <- .attach_time_provenance(provenance, canonical_time$provenance)
+  } else {
+    provenance <- .provenance_normalize(provenance, context = provenance_context)
+    provenance <- .provenance_refresh_current(provenance, provenance_context)
+  }
 
   dimnames(data) <- list(
     lon = as.character(lon),

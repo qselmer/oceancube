@@ -103,41 +103,60 @@ cube_crop <- function(x, longitude = NULL, latitude = NULL, depth = NULL,
     resolved$index$variable
   )
 
-  record <- list(
-    operation = "cube_crop",
-    backend_from = backend_from,
-    backend_to = "memory",
-    bbox_requested = bbox,
-    ranges_requested = resolved$requested,
-    ranges_applied = resolved$applied,
-    domains = resolved$domain,
-    outside = outside,
-    clipped = resolved$clipped,
+  read_diagnostics <- if (is.null(read_plan)) {
+    NULL
+  } else {
+    list(
+      source_file = x$storage$file$normalized_path,
+      physical_start = read_plan$physical_start,
+      physical_count = read_plan$physical_count,
+      variables = x$vars[read_plan$variable_index],
+      values_requested = read_plan$values_requested,
+      values_in_envelope = read_plan$values_in_envelope,
+      amplification = read_plan$amplification
+    )
+  }
+  if (is.null(auxiliary$qa)) auxiliary$qa <- list()
+  if (!is.list(auxiliary$qa)) auxiliary$qa <- list(previous = auxiliary$qa)
+  auxiliary$qa$crop <- list(
     resolved_indices = resolved$index,
     selected_coordinates = resolved$selected,
-    selected_variables = x$vars[resolved$index$variable],
-    output_shape = resolved$output_shape,
-    discarded_components = auxiliary$discarded,
-    netcdf_read = if (is.null(read_plan)) {
-      NULL
-    } else {
-      list(
-        source_file = x$storage$file$normalized_path,
-        physical_start = read_plan$physical_start,
-        physical_count = read_plan$physical_count,
-        variables = x$vars[read_plan$variable_index],
-        values_requested = read_plan$values_requested,
-        values_in_envelope = read_plan$values_in_envelope,
-        amplification = read_plan$amplification
-      )
-    },
-    cropped_utc = .netcdf_as_utc(Sys.time())
+    domains = resolved$domain,
+    netcdf_read = read_diagnostics,
+    discarded_components = auxiliary$discarded
   )
-  provenance <- if (is.null(x$provenance)) {
-    list(cube_crop = record)
-  } else {
-    list(parent = x$provenance, cube_crop = record)
-  }
+  selected_time <- x$time[resolved$index$time]
+  provenance_context <- .provenance_cube_context(
+    source = x$source,
+    dataset_id = x$dataset_id,
+    time = selected_time,
+    shape = resolved$output_shape,
+    variables = x$vars[resolved$index$variable],
+    backend = "memory",
+    provenance = x$provenance
+  )
+  provenance <- .provenance_append(
+    x$provenance,
+    operation = "cube_crop",
+    parameters = list(
+      requested = list(
+        bbox = bbox,
+        ranges = .provenance_compact(resolved$requested),
+        outside = outside
+      ),
+      resolved = list(
+        ranges_applied = .provenance_compact(resolved$applied),
+        clipped = resolved$clipped,
+        selected_counts = vapply(resolved$index, length, integer(1)),
+        selected_variables = x$vars[resolved$index$variable],
+        output_shape = resolved$output_shape,
+        discarded_components = auxiliary$discarded
+      )
+    ),
+    output = .provenance_summary(provenance_context),
+    scientific_method = .provenance_method("cube_crop", list()),
+    context = provenance_context
+  )
 
   .new_selected_memory_cube(
     x = x,

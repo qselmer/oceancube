@@ -173,6 +173,69 @@
   )
 }
 
+.provenance_cube_context <- function(source = NULL, dataset_id = NULL, time,
+                                     shape, variables, backend,
+                                     provenance = NULL) {
+  classification <- .provenance_validate(provenance)
+  current <- if (identical(classification$kind, "v1")) {
+    provenance$time$current
+  } else {
+    NULL
+  }
+  source_time <- .provenance_time_source(provenance)
+  list(
+    source = source,
+    dataset_id = dataset_id,
+    time = time,
+    time_kind = current$kind %||% .provenance_legacy_time_kind(provenance),
+    calendar = current$calendar %||% source_time$calendar %||%
+      "proleptic_gregorian",
+    shape = stats::setNames(as.integer(shape), names(shape)),
+    variables = as.character(variables),
+    backend = backend
+  )
+}
+
+.provenance_legacy_time_kind <- function(provenance) {
+  if (!is.list(provenance)) return("historical")
+  if (is.list(provenance$cube_trend)) return("trend_anchor")
+  if (is.list(provenance$signal_noise) || is.list(provenance$cube_anomaly)) {
+    return("historical")
+  }
+  is_climatology_wrapper <-
+    .provenance_scalar_character(provenance$function_name, allow_null = TRUE) &&
+    !is.null(provenance$function_name) &&
+    provenance$function_name %in% c("clim_month", "clim_day")
+  if (is.list(provenance$cube_climatology) || is_climatology_wrapper) {
+    return("recurring_climatology")
+  }
+  parent <- provenance$parent %||% provenance$extra$parent
+  .provenance_legacy_time_kind(parent)
+}
+
+.provenance_refresh_current <- function(provenance, context) {
+  if (!identical(.provenance_validate(provenance)$kind, "v1")) {
+    return(provenance)
+  }
+  provenance$time["current"] <- list(.provenance_context_time(context))
+  .provenance_validate(provenance, strict = TRUE)
+  provenance
+}
+
+.provenance_deferred_legacy <- function(provenance) {
+  if (!identical(.provenance_validate(provenance)$kind, "legacy")) return(FALSE)
+  deferred_operations <- c(
+    "cube_extract", "cube_transect", "cube_polygon_weights",
+    "cube_aggregate_time", "cube_climatology", "cube_anomaly",
+    "signal_noise", "cube_trend", "to_month", "clim_month", "clim_day",
+    "layer_mean", "coast_dist", "crop_stock"
+  )
+  any(names(provenance) %in% deferred_operations) ||
+    (.provenance_scalar_character(provenance$function_name, allow_null = TRUE) &&
+       !is.null(provenance$function_name) &&
+       provenance$function_name %in% deferred_operations)
+}
+
 .provenance_validate_source <- function(source, prefix = "source") {
   problems <- character()
   if (!is.list(source) || is.object(source)) {
@@ -626,7 +689,12 @@
 
 .provenance_compact <- function(x, depth = 0L) {
   if (is.null(x) || depth > 5L) return(NULL)
-  if (inherits(x, c("Date", "POSIXct"))) return(x)
+  if (inherits(x, "POSIXct")) {
+    out <- as.POSIXct(as.numeric(x), origin = "1970-01-01", tz = "UTC")
+    names(out) <- names(x)
+    return(out)
+  }
+  if (inherits(x, "Date")) return(x)
   if (is.atomic(x)) {
     if (length(x) <= 24L) return(x)
     return(list(count = as.integer(length(x))))
@@ -963,10 +1031,37 @@
   base
 }
 
+.provenance_primary_v1 <- function(x) {
+  if (!is.list(x)) return(NULL)
+  if (identical(.provenance_validate(x)$kind, "v1")) return(x)
+  candidates <- list()
+  if (!is.null(x$source_provenance)) {
+    candidates <- c(candidates, list(x$source_provenance))
+  } else if (is.list(x$parent) && !is.null(x$parent$source) &&
+             !is.null(x$parent$climatology)) {
+    candidates <- c(candidates, list(x$parent$source))
+  } else if (x$function_name %in% c("clim_month", "clim_day") &&
+             is.list(x$extra$core)) {
+    candidates <- c(candidates, list(x$extra$parent))
+  } else if (!is.null(x$extra$core)) {
+    candidates <- c(candidates, list(x$extra$core))
+  } else {
+    candidates <- c(candidates, list(x$parent, x$extra$parent))
+  }
+  for (candidate in candidates) {
+    found <- .provenance_primary_v1(candidate)
+    if (!is.null(found)) return(found)
+  }
+  NULL
+}
+
 .provenance_migrate_legacy <- function(x, context = NULL) {
-  out <- .provenance_empty(context)
-  out$source <- .provenance_source_from_legacy(x, context)
-  out$time["source"] <- list(.provenance_time_source(x))
+  seed <- .provenance_primary_v1(x)
+  out <- seed %||% .provenance_empty(context)
+  if (is.null(seed)) {
+    out$source <- .provenance_source_from_legacy(x, context)
+    out$time["source"] <- list(.provenance_time_source(x))
+  }
   steps <- .provenance_legacy_steps(x)
   for (step in steps) {
     operation <- .provenance_operation_name(step$name, step$record)
@@ -1036,7 +1131,11 @@
     "arguments", "extra", "operation", "backend", "file", "date",
     "system", "platform", "r_version"
   )
-  legacy <- .provenance_compact(x[setdiff(names(x), structural)])
+  legacy_fields <- x[setdiff(names(x), structural)]
+  if (!is.null(x$source_identity) && !is.list(x$source_identity)) {
+    legacy_fields$source_identity <- x$source_identity
+  }
+  legacy <- .provenance_compact(legacy_fields)
   if (length(legacy) > 0L) out$extensions$legacy <- legacy
   .provenance_validate(out, strict = TRUE)
   out

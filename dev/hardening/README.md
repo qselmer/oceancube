@@ -120,9 +120,22 @@ non-mutation and 1/5/10/25/50-operation growth. At 50 operations the serialized
 record is 47,221 bytes (944.42 bytes per operation), with no recursive parent
 tree multiplication.
 
-The state is deliberately dual: runtime producers, `ocean_cube()` and
-`read_nc()` still emit legacy provenance. A4b2 will migrate them individually.
-`A1-003` therefore remains `PARTIALLY-CLOSED`; `DEC-019` remains APPROVED.
+At the A4b1 close the state was deliberately dual: runtime producers,
+`ocean_cube()`, and `read_nc()` still emitted legacy provenance. `A1-003`
+therefore remained `PARTIALLY-CLOSED`; `DEC-019` remained APPROVED. Neither
+0.3.0-A nor Gate B was complete.
+
+## A4b2 core runtime provenance migration
+
+A4b2 migrates the linear core lifecycle to V1: construction, materialized and
+deferred NetCDF ingestion, slice, crop, NetCDF-to-memory collect, and mask.
+These producers append flat, sequential operation records, preserve source and
+source-time identity, keep detailed read/index diagnostics in QA, and accept
+NULL, V1, legacy, and safe opaque provenance without mutating inputs. Memory
+collect remains an exact no-op. Complex temporal, multi-input, table/geometry,
+and wrapper producers remain legacy for A4b3; a narrow bridge preserves a V1
+primary parent through that temporary mixed state and normalizes it without
+lineage loss. `A1-003` remains `PARTIALLY-CLOSED`; `DEC-019` remains APPROVED.
 Neither 0.3.0-A nor Gate B is complete.
 
 ## Reproduce the bounded baseline

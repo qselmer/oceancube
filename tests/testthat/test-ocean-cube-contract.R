@@ -107,9 +107,13 @@ test_that("optional metadata and units are preserved without changing dimensions
   expect_identical(cube$dataset_id, "contract-fixture")
   expect_identical(cube$mask, mask)
   expect_identical(cube$dc, dc)
-  expect_identical(cube$provenance$provider, provenance$provider)
-  expect_identical(cube$provenance$request, provenance$request)
-  expect_identical(cube$provenance$time$canonical_class, "Date")
+  expect_identical(cube$provenance$extensions$user, provenance)
+  expect_identical(cube$provenance$time$current$class, "Date")
+  expect_identical(cube$provenance$source$identity$label, "synthetic")
+  expect_identical(
+    cube$provenance$source$identity$dataset_id,
+    "contract-fixture"
+  )
   expect_identical(cube$qa, qa)
   expect_identical(cube$units, list(oxygen = "mmol m-3", temperature = "degC"))
   expect_true(.check_cube(cube))

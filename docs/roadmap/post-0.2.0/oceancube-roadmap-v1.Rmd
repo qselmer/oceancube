@@ -247,6 +247,16 @@ emit legacy shapes; A4b2 is the next integration phase. `A1-003` remains
 partially closed and `DEC-019` remains approved. This does not complete 0.3.0-A
 or satisfy Gate B.
 
+**0.3.0-A4b2 status (2026-08-21): core runtime provenance migration
+completed.** Construction, materialized and deferred NetCDF ingestion, slice,
+crop, NetCDF-to-memory collect, and mask now emit flat V1 histories. Memory
+collect remains a no-op. Legacy, V1, NULL, and safe opaque inputs are supported
+without mutation; read/index diagnostics remain under QA. Complex temporal,
+multi-input, table/geometry, and wrapper producers remain legacy for A4b3, with
+a narrow compatibility bridge that preserves and later normalizes a V1 primary
+parent without lineage loss. `A1-003` remains partially closed and `DEC-019`
+remains approved. This does not complete 0.3.0-A or satisfy Gate B.
+
 No large provider product is added to Git. Proposed source classes are:
 
 | Source class | Contract evidence | Access and fixture policy | CI-safe form |
@@ -353,7 +363,11 @@ Multi-file compatibility and provenance precede concatenation. A lazy operation
 DAG, deferred execution, memory estimator, cache/progress model, and bounded
 parallel execution precede remote/cloud scale. Zarr is a future storage backend;
 kerchunk is a future reference-dataset concept. Both require CF, backend, lazy,
-chunk, and storage abstractions. CF-compliant NetCDF writing precedes or shares
+chunk, storage, and provenance gates. Before remote I/O expands, provider-specific data
+acquisition adapters must be evaluated; Copernicus behavior is not assumed to
+be a universal provider contract. This records an architecture requirement only
+and approves no API name or runtime implementation.
+CF-compliant NetCDF writing precedes or shares
 the storage-encoding gate.
 
 # Versioned oceancube-to-spatind exchange
@@ -454,8 +468,8 @@ Lagrangian particle tracking are outside the core package roadmap.
 
 # Next gate
 
-Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b/A4a
-and A4b1 evidence is complete. The single preferred next subphase is A4b2,
-runtime provenance producer migration. 0.3.0-A remains incomplete and must not
-advance to CF, vertical, lazy-I/O, or 3-D implementation through A4b1 evidence
-alone.
+Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b/A4a,
+A4b1, and A4b2 evidence is complete. The single preferred next subphase is
+A4b3, complex, multi-input, table/geometry, and wrapper provenance migration.
+0.3.0-A remains incomplete and must not advance to CF, vertical, lazy-I/O, or
+3-D implementation through A4b2 evidence alone.

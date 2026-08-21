@@ -68,26 +68,37 @@ cube_collect <- function(x) {
       )
     }
   )
-  record <- list(
-    operation = "cube_collect",
-    source_backend = "netcdf",
-    target_backend = "memory",
-    source_file = x$storage$file$normalized_path,
-    variables = x$vars,
+  provenance_context <- .provenance_cube_context(
+    source = x$source,
+    dataset_id = x$dataset_id,
+    time = x$time,
     shape = .cube_shape(x),
-    estimated_bytes = estimated_bytes,
-    collected_utc = .netcdf_as_utc(Sys.time())
+    variables = x$vars,
+    backend = "memory",
+    provenance = x$provenance
   )
-  provenance <- if (is.null(x$provenance)) {
-    list(cube_collect = record)
-  } else {
-    list(
-      parent = x$provenance,
-      cube_collect = record
-    )
-  }
+  provenance <- .provenance_append(
+    x$provenance,
+    operation = "cube_collect",
+    parameters = list(
+      requested = list(),
+      resolved = list(shape = .cube_shape(x), variables = x$vars)
+    ),
+    output = .provenance_summary(provenance_context),
+    scientific_method = .provenance_method("cube_collect", list()),
+    context = provenance_context
+  )
+  qa <- x$qa
+  if (is.null(qa)) qa <- list()
+  if (!is.list(qa)) qa <- list(previous = qa)
+  qa$netcdf_collect <- list(
+    source_file = x$storage$file$normalized_path,
+    estimated_bytes = estimated_bytes
+  )
+  output_template <- x
+  output_template$qa <- qa
 
-  .new_collected_memory_cube(x, data, provenance)
+  .new_collected_memory_cube(output_template, data, provenance)
 }
 
 .cube_estimated_bytes <- function(x) {

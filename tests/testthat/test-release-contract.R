@@ -88,7 +88,8 @@ test_that("materialized derivative objects serialize with metadata intact", {
     expect_identical(.cube_backend(restored), "memory")
   }
   expect_identical(collected$provenance, x$provenance)
-  expect_identical(cropped$provenance$parent, x$provenance)
+  expect_identical(cropped$provenance$extensions$user, x$provenance)
+  expect_identical(cropped$provenance$history[[1L]]$operation, "cube_crop")
 })
 
 test_that("mask and polygon-weight products are self-contained and serializable", {

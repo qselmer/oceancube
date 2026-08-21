@@ -340,7 +340,9 @@ test_that("climatology cubes validate inspect serialize and remain immutable", {
 
   sliced <- cube_slice(result, time = result$time[1L], by = "value")
   expect_null(sliced$climatology)
-  expect_true("climatology" %in% sliced$provenance$cube_slice$discarded_components)
+  expect_true("climatology" %in%
+                sliced$provenance$history[[length(sliced$provenance$history)]]$
+                  parameters$resolved$discarded_components)
 })
 
 test_that("memory and lazy NetCDF climatologies are scientifically identical and bounded", {

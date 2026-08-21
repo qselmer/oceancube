@@ -1509,25 +1509,56 @@
     range(depth, na.rm = TRUE)
   }
 
-  netcdf_provenance <- list(
-    backend = "netcdf",
-    file = storage$file$normalized_path,
-    file_size_bytes = storage$file$size_bytes,
-    file_modified_utc = storage$file$modified_utc,
-    variables = vars,
-    source_dimensions = lapply(
-      storage$variables$map,
-      `[[`,
-      "source_dimension_names"
+  provenance_context <- .provenance_cube_context(
+    source = source,
+    dataset_id = dataset_id,
+    time = time,
+    shape = stats::setNames(
+      as.integer(c(length(lon), length(lat), length(depth), length(time),
+                   length(vars))),
+      .cube_axis_names()
     ),
-    constructed_utc = storage$options$created_utc,
-    time = .cf_time_provenance(storage$time)
+    variables = vars,
+    backend = "netcdf",
+    provenance = provenance
   )
-  provenance <- if (is.null(provenance)) {
-    netcdf_provenance
-  } else {
-    list(parent = provenance, netcdf = netcdf_provenance)
+  provenance_context$calendar <- storage$time$calendar
+  provenance <- .provenance_normalize(provenance, context = provenance_context)
+  provenance$source$locator <- list(
+    type = "file",
+    value = storage$file$normalized_path,
+    basename = basename(storage$file$normalized_path),
+    portable = FALSE
+  )
+  if (is.null(provenance$time$source)) {
+    provenance$time["source"] <- list(.provenance_time_source(list(
+      time = .cf_time_provenance(storage$time)
+    )))
   }
+  provenance <- .provenance_append(
+    provenance,
+    operation = "read_nc",
+    parameters = list(
+      requested = list(variables = vars),
+      resolved = list(
+        variables = vars,
+        dimension_mapping = lapply(
+          storage$variables$map,
+          `[[`,
+          "source_dimension_names"
+        )
+      )
+    ),
+    output = .provenance_summary(provenance_context),
+    scientific_method = .provenance_method("read_nc", list()),
+    context = provenance_context
+  )
+  if (is.null(qa)) qa <- list()
+  if (!is.list(qa)) qa <- list(previous = qa)
+  qa$netcdf_source <- list(
+    file_size_bytes = storage$file$size_bytes,
+    file_modified_utc = storage$file$modified_utc
+  )
 
   out <- list(
     lon = lon,

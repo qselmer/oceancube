@@ -16,10 +16,11 @@ code changes by itself.
 - 0.3.0-A3b: governed real-data fixtures and offline-CI evidence completed
 - 0.3.0-A4a: provenance V1 architecture and compatibility design completed
 - 0.3.0-A4b1: internal provenance V1 core engine and legacy normalizer completed
+- 0.3.0-A4b2: linear core runtime provenance producers migrated to V1
 - DEC-024: approved for the exact OISST/ETOPO/WOA23 fixture set
-- DEC-019: approved and backed by A4a design plus executable A4b1 evidence
+- DEC-019: approved and backed by A4a design plus executable A4b1/A4b2 evidence
 - Public API baseline: 38 exports
-- Runtime producer migrations in this roadmap phase: none
+- Runtime producer migrations: linear core complete; complex A4b3 scope pending
 
 The historical `docs/roadmap/oceancube-v0.2.0-scope.Rmd` and the audit,
 decision, relocation, and auxdata directories remain immutable evidence of how
@@ -41,9 +42,10 @@ relevant roadmap gate have been satisfied. A row marked `PROPOSED` is not a
 public API promise. Candidate function names remain provisional until a
 separate API and methodological review approves them.
 
-A4b1 does not complete 0.3.0-A and does not satisfy Gate B. The single preferred
-next subphase is A4b2, producer-by-producer migration to the approved internal
-engine; no CF, vertical, lazy-I/O, or 3-D implementation is authorized.
+A4b2 does not complete 0.3.0-A and does not satisfy Gate B. The single preferred
+next subphase is A4b3, complex, multi-input, table/geometry, and wrapper
+provenance migration; no CF, vertical, lazy-I/O, or 3-D implementation is
+authorized.
 
 ## Change control
 

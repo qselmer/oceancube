@@ -198,7 +198,7 @@ test_that("existing ocean masks combine by AND and derived components are invali
   expect_identical(result$dc, x$dc)
   expect_null(result$climatology)
   expect_null(result$anomaly)
-  expect_identical(result$qa, x$qa)
+  expect_identical(result$qa[names(x$qa)], x$qa)
   expect_identical(x, before)
 
   bad <- x
@@ -221,7 +221,7 @@ test_that("NetCDF masking is partial for inside and equivalent to memory", {
   inside_memory <- cube_mask(memory, polygon, keep = "inside")
   inside_netcdf <- cube_mask(netcdf, polygon, keep = "inside")
   expect_equal(.mask_plain_data(inside_netcdf), .mask_plain_data(inside_memory))
-  metrics <- inside_netcdf$provenance$cube_mask$bounding_rectangle_read
+  metrics <- inside_netcdf$qa$mask$bounding_rectangle_read
   expect_equal(metrics$longitude_count, 1L)
   expect_equal(metrics$latitude_count, 1L)
   expect_equal(metrics$spatial_cells_in_bbox, 1L)
@@ -233,8 +233,7 @@ test_that("NetCDF masking is partial for inside and equivalent to memory", {
   outside_memory <- cube_mask(memory, polygon, keep = "outside")
   outside_netcdf <- cube_mask(netcdf, polygon, keep = "outside")
   expect_equal(.mask_plain_data(outside_netcdf), .mask_plain_data(outside_memory))
-  outside_metrics <-
-    outside_netcdf$provenance$cube_mask$bounding_rectangle_read
+  outside_metrics <- outside_netcdf$qa$mask$bounding_rectangle_read
   expect_identical(outside_metrics$spatial_read, "full")
   expect_equal(outside_metrics$n_open, 1L)
 

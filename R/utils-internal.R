@@ -212,6 +212,18 @@
 
 .find_time_provenance <- function(provenance) {
   if (!is.list(provenance)) return(NULL)
+  if (!is.null(provenance$schema_version) &&
+      is.list(provenance$time) && is.list(provenance$time$current)) {
+    current <- provenance$time$current
+    return(c(
+      list(
+        canonical_class = current$class,
+        canonical_timezone = current$timezone,
+        calendar = current$calendar
+      ),
+      provenance$time$source %||% list()
+    ))
+  }
   if (is.list(provenance$time)) return(provenance$time)
   for (name in names(provenance)) {
     found <- .find_time_provenance(provenance[[name]])

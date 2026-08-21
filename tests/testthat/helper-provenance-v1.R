@@ -26,6 +26,17 @@ provenance_test_v1 <- function(operation = "read_nc",
   )
 }
 
+core_runtime_cube <- function(provenance = NULL, qa = list(marker = "kept")) {
+  ocean_cube(
+    lon = c(-80, -79), lat = c(-12, -11), depth = 0,
+    time = as.Date(c("2020-01-01", "2020-02-01")),
+    vars = "sst",
+    data = array(seq_len(8), dim = c(2, 2, 1, 2, 1)),
+    units = list(sst = "degC"), source = "fixture",
+    dataset_id = "core-runtime", provenance = provenance, qa = qa
+  )
+}
+
 provenance_test_legacy_chain <- function() {
   list(
     parent = list(

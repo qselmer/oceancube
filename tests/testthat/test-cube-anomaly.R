@@ -40,7 +40,10 @@ anomaly_manual_climatology <- function(x, by = "month", leap = "feb28",
 }
 
 anomaly_set_calendar <- function(x, calendar) {
-  x$provenance$time$calendar <- calendar
+  x$provenance$time$current$calendar <- calendar
+  if (!is.null(x$provenance$time$source)) {
+    x$provenance$time$source$calendar <- calendar
+  }
   x
 }
 
