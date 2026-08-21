@@ -14,7 +14,9 @@ code changes by itself.
 - Active development branch: `dev-0.3.0`
 - Gate A: satisfied
 - 0.3.0-A3b: governed real-data fixtures and offline-CI evidence completed
+- 0.3.0-A4a: provenance V1 architecture and compatibility design completed
 - DEC-024: approved for the exact OISST/ETOPO/WOA23 fixture set
+- DEC-019: approved and now backed by the A4a hybrid-schema design
 - Public API baseline: 38 exports
 - Runtime changes in this roadmap phase: none
 
@@ -38,9 +40,10 @@ relevant roadmap gate have been satisfied. A row marked `PROPOSED` is not a
 public API promise. Candidate function names remain provisional until a
 separate API and methodological review approves them.
 
-A3b does not complete 0.3.0-A and does not satisfy Gate B. The single preferred
-next subphase is A4, a versioned provenance schema; no provenance implementation
-is authorized by the A3b evidence itself.
+A4a does not complete 0.3.0-A and does not satisfy Gate B. The single preferred
+next subphase is A4b, implementation and testing of the approved versioned
+provenance schema; no CF, vertical, lazy-I/O, or 3-D implementation is
+authorized by A4a.
 
 ## Change control
 

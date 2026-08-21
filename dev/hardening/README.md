@@ -85,6 +85,28 @@ the desktop `.git/refs/codex/turn-diffs` tree cannot be copied by R; `R CMD
 check --no-manual` on the resulting tarball ended `Status: OK` with 0 errors,
 0 warnings and 0 notes.
 
+## A4a versioned provenance architecture
+
+A4a is design-only evidence. It audits 21 current provenance-producing paths,
+including cube, table, legacy-wrapper, geometry, and deferred-NetCDF shapes. A
+read-only OISST pipeline measured recursive parent depth increasing from 0 to 5
+and serialized provenance increasing from 1,838 to 19,453 bytes; the anomaly
+merge nearly doubled the preceding lineage because both complete parents were
+embedded.
+
+The selected V1 architecture is a hybrid: one flat ordered primary history plus
+a flat registry of secondary lineages referenced by deterministic local
+operation/entity IDs. Timestamps, local locators, backend/read metrics, and
+opaque legacy/user metadata are excluded from semantic equivalence. Existing
+0.2 objects migrate lazily into derived outputs without mutating their inputs.
+The normative design is in `inst/architecture/` and the audit, field contract,
+operation map, migration map, and candidate comparison are in `provenance/`.
+
+`A1-003` is only partially closed because A4b runtime helpers and tests do not
+yet exist. `DEC-019` remains approved. A4a changes no runtime, tests,
+dependencies, exports, fixtures, or version and does not complete 0.3.0-A or
+satisfy Gate B.
+
 ## Reproduce the bounded baseline
 
 The normal smoke/standard runner is:
@@ -255,13 +277,20 @@ identity, testing and multi-file behavior must be resolved first.
 
 ## Provenance audit and proposed schema
 
-Source identity remains observable in all nine audited operation classes, but
-no object has a `schema_version`; none consistently records package version or
-timestamp; and operation, parameters, parent/source, backend and scientific
-method are structurally inconsistent. The proposed minimal schema is:
-`schema_version`, `operation`, `parameters`, `parent/source`, `source_identity`,
-`package_version`, `backend`, `timestamp`, and `scientific_method`. Schema
-implementation remains open and requires a compatibility/migration decision.
+The preserved A1 nine-class matrix remains historical baseline evidence. A4a
+extends source inspection to 21 producing paths and finalizes provenance schema
+V1 design without implementing it. The selected hybrid has independent
+`schema_version`, portable `source`, source/current `time`, flat `history`, a
+flat secondary `lineages` registry, and opaque `extensions`. Operation records
+contain deterministic IDs, requested/resolved parameters, generic input
+references, bounded output summaries, optional scientific-method IDs, required
+software package/version, and optional non-semantic execution metadata.
+
+The A4a migration policy recognizes legacy operations oldest to newest,
+deduplicates wrapper/core records, preserves opaque metadata losslessly, moves
+read and numerical diagnostics to QA, and never treats local paths or
+wall-clock timestamps as scientific semantics. Implementation and executable
+compatibility evidence remain A4b work.
 
 ## Proposed 0.3.0-A exit criteria
 

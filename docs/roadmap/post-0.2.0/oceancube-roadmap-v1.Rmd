@@ -227,6 +227,17 @@ taxonomy is non-zero, `A1-010` is closed and `DEC-024` is approved for this
 exact source set. `A1-005` remains partially closed because Copernicus
 redistribution is unknown. This does not complete 0.3.0-A or satisfy Gate B.
 
+**0.3.0-A4a status (2026-08-21): versioned provenance architecture and
+compatibility contract completed.** The source audit now covers 21 producing
+paths and measures recursive/branching growth on the governed OISST fixture.
+Schema V1 selects a flat ordered primary history plus a flat secondary-lineage
+registry with deterministic local references, portable source identity,
+source/current time semantics, bounded operation records, lossless hybrid
+legacy migration, and explicit separation from QA and CF metadata. `A1-003` is
+partially closed because design is complete but A4b runtime helpers and tests do
+not yet exist. `DEC-019` remains approved. This does not complete 0.3.0-A or
+satisfy Gate B.
+
 No large provider product is added to Git. Proposed source classes are:
 
 | Source class | Contract evidence | Access and fixture policy | CI-safe form |
@@ -434,7 +445,8 @@ Lagrangian particle tracking are outside the core package roadmap.
 
 # Next gate
 
-Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b
-evidence is complete. The single preferred next subphase is A4, a versioned
-provenance schema. 0.3.0-A remains incomplete and must not advance to CF,
-vertical, or 3-D implementation through A3b evidence alone.
+Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b/A4a
+evidence is complete. The single preferred next subphase is A4b, implementation
+and executable compatibility testing of provenance schema V1. 0.3.0-A remains
+incomplete and must not advance to CF, vertical, lazy-I/O, or 3-D implementation
+through A4a evidence alone.
