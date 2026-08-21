@@ -102,10 +102,28 @@ opaque legacy/user metadata are excluded from semantic equivalence. Existing
 The normative design is in `inst/architecture/` and the audit, field contract,
 operation map, migration map, and candidate comparison are in `provenance/`.
 
-`A1-003` is only partially closed because A4b runtime helpers and tests do not
-yet exist. `DEC-019` remains approved. A4a changes no runtime, tests,
-dependencies, exports, fixtures, or version and does not complete 0.3.0-A or
-satisfy Gate B.
+At the A4a close, `A1-003` was only partially closed because runtime helpers
+and tests did not yet exist. `DEC-019` remained approved. A4a itself changed no
+runtime, tests, dependencies, exports, fixtures, or version and did not
+complete 0.3.0-A or satisfy Gate B; the A4b1 status below records the subsequent
+core implementation.
+
+## A4b1 provenance V1 core engine
+
+A4b1 implements the approved internal engine in one runtime module: exact V1
+validation, legacy/opaque normalization, deterministic append, flat secondary
+lineage registration, semantic projection, serialization/security checks and
+loaded-package version resolution. Five focused test files plus one helper
+exercise all 75 field-contract rows, current OISST legacy migration, current
+anomaly migration, nested-lineage flattening, semantic equality, round trips,
+non-mutation and 1/5/10/25/50-operation growth. At 50 operations the serialized
+record is 47,221 bytes (944.42 bytes per operation), with no recursive parent
+tree multiplication.
+
+The state is deliberately dual: runtime producers, `ocean_cube()` and
+`read_nc()` still emit legacy provenance. A4b2 will migrate them individually.
+`A1-003` therefore remains `PARTIALLY-CLOSED`; `DEC-019` remains APPROVED.
+Neither 0.3.0-A nor Gate B is complete.
 
 ## Reproduce the bounded baseline
 

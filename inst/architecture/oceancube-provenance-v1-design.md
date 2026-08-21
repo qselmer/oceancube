@@ -6,6 +6,13 @@ This document is the normative design target for A4b. It specifies provenance
 schema `1.0.0`; it does not implement the schema, change the public API, or
 replace scientific variable, grid, or QA metadata.
 
+As of A4b1, the internal core engine in `R/provenance.R` implements this
+contract and its legacy normalizer. Runtime producers intentionally remain on
+their 0.2 recursive/ad-hoc shapes until A4b2. In particular, `ocean_cube()` and
+`read_nc()` do not initialize or emit V1 yet; A4b1 tests current outputs by
+passing them explicitly to the normalizer. This temporary dual state prevents
+an implicit producer migration before each integration is reviewed.
+
 The selected architecture is **C — hybrid**: a flat primary history plus a flat
 registry of secondary lineages used by multi-input operations. It preserves the
 readability of an append-only history without forcing a full entity/activity

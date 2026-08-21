@@ -1,4 +1,4 @@
-# A4a provenance architecture evidence
+# A4a architecture and A4b1 core-engine evidence
 
 ## Result
 
@@ -9,8 +9,9 @@ The canonical design is
 the machine-readable audit, candidate comparison, field contract, operation
 mapping, and legacy migration design used to reach that choice.
 
-A4a changes no package runtime, tests, dependencies, exports, signatures,
-fixtures, or package version. It is architecture for A4b, not implementation.
+A4a changed no package runtime. A4b1 now adds the internal V1 engine and focused
+tests while leaving every runtime producer on its legacy shape. A4b2 is the
+next producer-by-producer integration phase.
 
 ## Current audit
 
@@ -82,9 +83,13 @@ or per-operation representation.
 - `field-contract-v1.csv` — normative field-level contract;
 - `operation-mapping.csv` — current operation records to V1;
 - `migration-matrix.csv` — legacy fields and deterministic destinations.
+- `a4b1-migration-results.csv` — executed normalization/privacy disposition;
+- `a4b1-field-coverage.csv` — executable coverage of the 75-field contract;
+- `a4b1-growth-performance.csv` — serialized growth and helper timing smoke.
 
 ## Status
 
-`A1-003` becomes `PARTIALLY-CLOSED`: design and migration policy are complete,
-but runtime implementation and tests remain A4b. `DEC-019` remains APPROVED and
-is now backed by an exact V1 design. 0.3.0-A and Gate B remain incomplete.
+`A1-003` remains `PARTIALLY-CLOSED`: the design, core engine, legacy
+normalization and executable tests now exist, but runtime producer rollout is
+still pending A4b2/A4b3. `DEC-019` remains APPROVED and is backed by the exact
+V1 design plus executable A4b1 evidence. 0.3.0-A and Gate B remain incomplete.

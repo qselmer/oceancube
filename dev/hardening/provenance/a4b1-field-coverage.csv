@@ -1,0 +1,4 @@
+"requirement","contract_fields","fields_with_executable_evidence","unexercised_fields","evidence"
+"required","23","23","0","schema, append, deterministic IDs, operation records, summaries, software, and flat-lineage validation tests"
+"optional","52","52","0","source identity/metadata/locator, source/current time, parameters, summaries, method, execution, user/legacy extensions, security and real-data tests"
+"total","75","75","0","tests/testthat/test-provenance-v1-*.R"

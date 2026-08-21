@@ -233,10 +233,19 @@ paths and measures recursive/branching growth on the governed OISST fixture.
 Schema V1 selects a flat ordered primary history plus a flat secondary-lineage
 registry with deterministic local references, portable source identity,
 source/current time semantics, bounded operation records, lossless hybrid
-legacy migration, and explicit separation from QA and CF metadata. `A1-003` is
-partially closed because design is complete but A4b runtime helpers and tests do
-not yet exist. `DEC-019` remains approved. This does not complete 0.3.0-A or
-satisfy Gate B.
+legacy migration, and explicit separation from QA and CF metadata. At the A4a
+close, `A1-003` was partially closed because runtime helpers and tests did not
+yet exist; the A4b1 entry below records their subsequent implementation.
+`DEC-019` remains approved. This does not complete 0.3.0-A or satisfy Gate B.
+
+**0.3.0-A4b1 status (2026-08-21): provenance V1 core engine and legacy
+normalization completed.** The internal engine now validates and normalizes V1,
+appends deterministic operations, flattens and reuses secondary lineages,
+projects semantic equality, resolves package versions, and rejects unsafe or
+secret-bearing canonical values. Current producers intentionally continue to
+emit legacy shapes; A4b2 is the next integration phase. `A1-003` remains
+partially closed and `DEC-019` remains approved. This does not complete 0.3.0-A
+or satisfy Gate B.
 
 No large provider product is added to Git. Proposed source classes are:
 
@@ -446,7 +455,7 @@ Lagrangian particle tracking are outside the core package roadmap.
 # Next gate
 
 Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b/A4a
-evidence is complete. The single preferred next subphase is A4b, implementation
-and executable compatibility testing of provenance schema V1. 0.3.0-A remains
-incomplete and must not advance to CF, vertical, lazy-I/O, or 3-D implementation
-through A4a evidence alone.
+and A4b1 evidence is complete. The single preferred next subphase is A4b2,
+runtime provenance producer migration. 0.3.0-A remains incomplete and must not
+advance to CF, vertical, lazy-I/O, or 3-D implementation through A4b1 evidence
+alone.
