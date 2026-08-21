@@ -13,6 +13,8 @@ code changes by itself.
 - Current development cycle: 0.2.0.9000 toward 0.3.0
 - Active development branch: `dev-0.3.0`
 - Gate A: satisfied
+- 0.3.0-A3b: governed real-data fixtures and offline-CI evidence completed
+- DEC-024: approved for the exact OISST/ETOPO/WOA23 fixture set
 - Public API baseline: 38 exports
 - Runtime changes in this roadmap phase: none
 
@@ -35,6 +37,10 @@ Proposals become implementation work only after their prerequisites and the
 relevant roadmap gate have been satisfied. A row marked `PROPOSED` is not a
 public API promise. Candidate function names remain provisional until a
 separate API and methodological review approves them.
+
+A3b does not complete 0.3.0-A and does not satisfy Gate B. The single preferred
+next subphase is A4, a versioned provenance schema; no provenance implementation
+is authorized by the A3b evidence itself.
 
 ## Change control
 

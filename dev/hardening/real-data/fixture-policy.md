@@ -145,5 +145,8 @@ reviews.
 Before a fixture can become CI-eligible, the maintainer must approve the exact
 source row, the derivation must be reviewed, license/attribution must be carried
 into the output, checksums and sizes must be populated, and focused offline
-contract tests must pass. `DEC-024` remains open until those product-specific
-decisions and A3b evidence exist.
+contract tests must pass. A3b satisfied these controls for the exact OISST v2.1,
+ETOPO 2022 v1 and WOA23 v3.3 rows recorded in `executed-fixtures.csv` and the
+committed fixture manifest. `DEC-024` may therefore be approved for this exact
+source set after the A3b build, check and three-OS CI certification; it does not
+approve Copernicus or any unlisted future source.

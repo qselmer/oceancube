@@ -43,6 +43,9 @@ __pycache__/
 /downloads/
 /data-raw/downloads/
 /data-raw/tmp/
+/data-raw/fixtures/cache/
+/data-raw/fixtures/downloads/
+/data-raw/fixtures/tmp/
 
 # Generated documentation caches and sites
 /docs/*

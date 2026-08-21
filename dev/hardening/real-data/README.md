@@ -1,17 +1,23 @@
-# A3a real-data fixture governance and source selection
+# A3a governance and A3b real-data fixture execution
 
-Status: **governance evidence complete; no fixture approved or created**.
+Status: **three maintainer-approved fixtures derived, checksummed, attributed,
+and covered by focused offline tests**.
 
 This directory preserves the A3a source/legal review separately from the A1
-historical `../fixture-manifest.csv`. The earlier inventory is not rewritten;
-`proposed-fixtures.csv` is the phase-specific future manifest. Official source
-documentation was accessed on `2026-08-20`. Only metadata pages, product
-documentation and metadata-scale OPeNDAP headers were inspected. No provider
-binary data was downloaded or committed.
+historical `../fixture-manifest.csv`. `proposed-fixtures.csv` remains the
+unchanged historical proposal. A3a official source documentation was accessed
+on `2026-08-20`; that phase inspected only metadata pages, product documentation
+and metadata-scale OPeNDAP headers and downloaded no provider binary.
+
+A3b executed the maintainer's exact product approval on `2026-08-21`.
+`executed-fixtures.csv` and `executed-contract-matrix.csv` record actual files,
+checksums, sizes, attributes, current compatibility and future classifications.
+The final distribution manifest and attribution README are committed beside the
+fixtures under `tests/testthat/fixtures/real-data/`.
 
 ## Recommendation
 
-Subject to explicit maintainer approval, the exact A3b set should contain:
+The maintainer approved and A3b executed exactly:
 
 1. **Surface/time:** NOAA/NCEI OISST AVHRR-only Final v2.1 (`v02r01`), four
    final days from 2020-01-01 through 2020-01-04.
@@ -29,6 +35,29 @@ lower-resolution product and explicit dataset-level SPDX CC0 evidence.
 The existing Copernicus Marine Peru RDS remains maintainer-only because its
 exact source/license/derivation chain is absent and redistribution is
 `UNKNOWN`.
+
+## A3b execution result
+
+The three deterministic outputs are:
+
+| Role | File | Bytes | Current status |
+|---|---|---:|---|
+| Surface/time | `noaa-oisst21-surface-time-fv1.nc` | 64,088 | `CURRENT-PASS` with public `depth_name="zlev"` mapping |
+| Bathymetry | `noaa-etopo2022-bathymetry-fv1.nc` | 1,211,653 | `CURRENT-EXPECTED-LIMITATION`: static source has no time |
+| Vertical | `noaa-woa23-vertical-fv1.nc` | 57,343 | `CURRENT-EXPECTED-LIMITATION`: native `months since` is unsupported |
+
+Combined size is 1,333,084 bytes. ETOPO is above the preferred 1 MB target but
+below the reportable 2 MB bound; retaining provider Float32 values avoids an
+unapproved quantization solely for size. Every source response and final
+fixture is SHA-256 recorded. A second run of all three scripts produced the
+same final SHA-256 byte for byte.
+
+OISST uses four exact final granules and retains packed short storage. ETOPO
+uses the official NCEI Grid Extract service on the native 60 arc-second grid,
+not the large global download, and retains elevation sign. WOA uses bounded
+OPeNDAP reads because NCSS changes provider depth centres; the fixture retains
+the exact 0/10/20/50/100/200 m coordinates, bounds, native climatological time,
+and the exact files' absence of a calendar attribute.
 
 ## Common Peru selection
 
@@ -104,6 +133,9 @@ Fields still marked for A3b verification are not guessed in
   <https://www.ncei.noaa.gov/products/etopo-global-relief-model>
 - ETOPO metadata, citation and explicit SPDX CC0-1.0:
   <https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ngdc.mgg.dem%3Aetopo_2022>
+- ETOPO official Grid Extract service used for the bounded 60 arc-second
+  provider-side response:
+  <https://www.ncei.noaa.gov/maps/grid-extract/>
 - WOA23 data application:
   <https://www.ncei.noaa.gov/access/world-ocean-atlas-2023/>
 - WOA23 metadata, accession, CF/ACDD and citations:
@@ -131,9 +163,13 @@ Fields still marked for A3b verification are not guessed in
 - `proposed-fixtures.csv`: required future manifest schema populated without
   invented checksums or retrieval facts.
 - `contract-matrix.csv`: specialized fixture-by-contract allocation.
+- `executed-fixtures.csv`: A3b actual files, attributes, checksums, sizes,
+  compatibility and byte-identical regeneration evidence.
+- `executed-contract-matrix.csv`: A3a assignments reconciled as
+  `EXECUTED-PASS`, `EXECUTED-EXPECTED-LIMITATION`, or `FUTURE`.
 
 `A1-005` is partially closed because governance now exists but Copernicus legal
-status remains unknown. `A1-010` remains open until A3b commits and tests an
-approved offline CI fixture. `DEC-024` remains open pending maintainer product
-approval and A3b derivation evidence. This phase does not complete 0.3.0-A or
-satisfy Gate B.
+status remains unknown. A successful A3b certification closes `A1-010` because
+all three approved real-data fixtures are legally auditable, committed, local,
+and tested in offline CI. It approves `DEC-024` for this governed source set.
+This phase does not complete 0.3.0-A or satisfy Gate B.

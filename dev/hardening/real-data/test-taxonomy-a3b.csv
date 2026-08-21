@@ -1,0 +1,2 @@
+"taxonomy","before_files","before_cases","after_files","after_cases","evidence"
+"REAL-DATA",0,0,1,7,"tests/testthat/test-real-data-fixtures.R uses only the three committed NOAA/NCEI fixtures"

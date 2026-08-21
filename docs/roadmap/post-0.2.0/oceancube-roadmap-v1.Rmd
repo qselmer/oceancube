@@ -216,6 +216,17 @@ downloaded or committed, `A1-005` is partially closed, and `A1-010` and
 `DEC-024` remain open. A3b fixture creation requires explicit product approval;
 this does not complete 0.3.0-A or satisfy Gate B.
 
+**0.3.0-A3b status (2026-08-21): governed fixture derivation and offline-CI
+evidence completed.** The exact maintainer-approved OISST v2.1, ETOPO 2022 v1
+and WOA23 v3.3 subsets are committed with deterministic scripts, source/final
+SHA-256, attribution, 1,333,084 combined bytes and byte-identical second runs.
+OISST executes current read/validation/selection/extraction/aggregation
+contracts; ETOPO static time absence and WOA native climatological `months
+since` encoding are preserved as expected current limitations. REAL-DATA test
+taxonomy is non-zero, `A1-010` is closed and `DEC-024` is approved for this
+exact source set. `A1-005` remains partially closed because Copernicus
+redistribution is unknown. This does not complete 0.3.0-A or satisfy Gate B.
+
 No large provider product is added to Git. Proposed source classes are:
 
 | Source class | Contract evidence | Access and fixture policy | CI-safe form |
@@ -336,8 +347,9 @@ not invent a downstream API before the spatind contract is available.
 # Open development decisions
 
 The public lazy-NetCDF entry, native versus hybrid CF engine, adapter direction,
-3-D renderer, non-Gregorian representation, spatind dependency depth, fixture
-governance, development version, and branch strategy remain open.
+3-D renderer, non-Gregorian representation, and spatind dependency depth remain
+open. Exact OISST/ETOPO/WOA23 fixture governance is approved by DEC-024; future
+sources require a new product-specific review.
 
 The semantic recommendation for the next development cycle is `0.2.0.9000`:
 it denotes development immediately after released 0.2.0 while 0.3.0 remains the
@@ -422,7 +434,7 @@ Lagrangian particle tracking are outside the core package roadmap.
 
 # Next gate
 
-Gate A is satisfied and the 0.3 development cycle is open. A1/A2 and A3a
-evidence are complete; the next real-data step is maintainer approval followed
-by bounded A3b fixture creation. 0.3.0-A remains incomplete and must not advance
-to CF, vertical, or 3-D implementation through this evidence alone.
+Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b
+evidence is complete. The single preferred next subphase is A4, a versioned
+provenance schema. 0.3.0-A remains incomplete and must not advance to CF,
+vertical, or 3-D implementation through A3b evidence alone.

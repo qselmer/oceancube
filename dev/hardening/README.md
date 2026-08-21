@@ -59,6 +59,32 @@ The executed A2 line result is 91.3319%, compared with 90.3872% in A1
 `.read_cf_time()` and `.slice_time_numeric()` reached 100%; other low NetCDF
 internals did not all move, which is why A1-002 is only partially closed.
 
+## A3b governed real-data fixtures
+
+A3b preserves the A1/A2 evidence and adds one focused seven-case REAL-DATA test
+file backed by three committed NOAA/NCEI subsets. The OISST v2.1 fixture is the
+current-runtime contract; ETOPO 2022 static elevation and WOA23 native
+climatological time are metadata-pass/current-expected-limitation contracts.
+No scientific runtime, public API, package dependency, version, Python
+environment, credential path, or provider call in default tests is added.
+
+The fixtures total 1,333,084 bytes. OISST is 64,088 bytes, ETOPO is 1,211,653
+bytes, and WOA23 is 57,343 bytes. ETOPO deliberately retains provider Float32
+values: its size is above the preferred 1 MB target but below the reportable
+2 MB bound and the combined total is below 3 MB. All three scripts produced the
+same SHA-256 on a second run. Exact source/final hashes, terms, attribution,
+access methods, current classifications, and future assignments are in
+`real-data/` and beside the committed fixtures.
+
+The final local suite has 46 files, 540 cases and 4,284 dynamic expectations
+in 222.97 seconds with zero failures, errors, warnings or skips. This is +1
+file, +7 cases and +86 expectations relative to the preserved A2 measurement.
+The source tarball grew from 1,591,567 to 2,829,421 bytes (+1,237,854).
+`R CMD build` required the established clean-snapshot fallback solely because
+the desktop `.git/refs/codex/turn-diffs` tree cannot be copied by R; `R CMD
+check --no-manual` on the resulting tarball ended `Status: OK` with 0 errors,
+0 warnings and 0 notes.
+
 ## Reproduce the bounded baseline
 
 The normal smoke/standard runner is:
@@ -100,9 +126,12 @@ A1. Normal testthat remains the authoritative fast deterministic suite.
 - `benchmark-plan.csv`, `benchmark-matrix.csv` and `hardening-baseline.csv`: tier
   design, benchmark axes and 24 bounded timing/allocation observations.
 - `provenance-audit.csv`: actual field frequency across nine operation classes.
-- `fixture-manifest.csv`: governance-first fixture inventory/proposals.
+- `fixture-manifest.csv`: A1 governance-first inventory/proposals plus appended
+  A3b executed rows; historical proposal rows are retained.
 - `real-data/`: A3a first-party source/legal scoring, fixture policy, proposed
-  manifest and specialized contract matrix; it contains no provider binary.
+  manifest and specialized contract matrix plus A3b phase-specific executed
+  fixture, contract and REAL-DATA taxonomy evidence; provider binaries live
+  only under `tests/testthat/fixtures/real-data/`.
 - `findings.csv`: classified gaps and remediation routing.
 - `baseline-summary.csv`: compact machine-readable status/environment summary.
 - `coverage-a2-by-file.csv`, `coverage-a2-by-function.csv`,
@@ -111,6 +140,9 @@ A1. Normal testthat remains the authoritative fast deterministic suite.
 - `tolerance-policy.csv`: exact versus operation-specific absolute numerical
   contracts used by direct parity tests.
 - `a2-summary.csv`: compact executed A2 certification evidence.
+- `a3b-summary.csv`: before/after tests, taxonomy, fixture/package sizes,
+  reproducibility, local build/check and guardrail evidence; three-OS CI is
+  recorded externally after the authorized push.
 
 ## Coverage and quality
 
@@ -196,13 +228,14 @@ in `fixture-manifest.csv`. Its redistribution permission is **UNKNOWN**, so it
 is usable for local maintainer smoke only and is not CI-eligible or committed.
 
 A3a retains the A1 manifest as historical evidence and records its phase-specific
-review in `real-data/`. Subject to maintainer approval, the proposed orthogonal
-A3b suite is OISST v2.1 for surface/time, the official ETOPO 2022 60 arc-second
-bedrock product for static elevation, and WOA23 1-degree annual all-decades
-temperature/salinity for real vertical handling. MUR and GEBCO_2025 are
-alternates; Copernicus stays local. Every fixture needs source/product identity,
-terms, retrieval date, deterministic derivation, checksums, tested contract and
-explicit CI decision.
+review in `real-data/`. A3b executes the maintainer-approved orthogonal suite:
+OISST v2.1 for surface/time, ETOPO 2022 v1 60 arc-second bedrock elevation, and
+WOA23 v3.3 1-degree annual all-decades temperature/salinity. All have exact
+source/product identity, first-party terms, retrieval date, deterministic
+derivation, source/final checksums, tested contract and offline-CI decision.
+MUR and GEBCO_2025 remain historical alternates; Copernicus stays local and
+`A1-005` stays partially closed. `A1-010` closes and `DEC-024` is approved only
+for the exact three-source set. 0.3.0-A and Gate B remain incomplete.
 
 ## Lazy NetCDF API decision evidence
 

@@ -1,0 +1,2 @@
+"test_file","subsystem","public_function","backend","contract_type","case_count","expectation_calls_static","dynamic_expectations_focused","network","credentials","Python"
+"tests/testthat/test-real-data-fixtures.R","construction;validation;inspection;NetCDF;crop;slice;extract;time/calendar;aggregation","read_nc;cube_validate;cube_inspect;cube_slice;cube_crop;cube_extract;cube_collect;cube_aggregate_time","memory;netcdf","CONTRACT;EDGE;INTEGRATION;REAL-DATA;INVARIANCE",7,71,86,"FALSE","FALSE","FALSE"
