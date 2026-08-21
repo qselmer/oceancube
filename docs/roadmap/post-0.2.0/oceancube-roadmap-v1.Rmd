@@ -206,8 +206,15 @@ strengthened without runtime, API, dependency, Python-environment, provider-data
 or network changes. A1-006, A1-007 and A1-008 are closed; A1-001 and A1-002 are
 partially closed because external integration and additional internal branches
 remain intentionally bounded. This does not complete 0.3.0-A or satisfy Gate B.
-The recommended next subphase is real-data fixture governance before provenance
-schema implementation.
+
+**0.3.0-A3a status (2026-08-20): real-data governance and source-selection
+evidence completed.** First-party legal/access and metadata evidence now supports
+a maintainer decision on OISST v2.1, ETOPO 2022 and WOA23 as an orthogonal
+surface/time, bathymetry and vertical suite; MUR and GEBCO are documented
+alternates. The Copernicus case remains maintainer-only, no provider binary was
+downloaded or committed, `A1-005` is partially closed, and `A1-010` and
+`DEC-024` remain open. A3b fixture creation requires explicit product approval;
+this does not complete 0.3.0-A or satisfy Gate B.
 
 No large provider product is added to Git. Proposed source classes are:
 
@@ -415,6 +422,7 @@ Lagrangian particle tracking are outside the core package roadmap.
 
 # Next gate
 
-Gate A is satisfied and the 0.3 development cycle is open. The next phase is
-0.3.0-A hardening design and baseline; it must not begin with CF, vertical, or
-3-D implementation.
+Gate A is satisfied and the 0.3 development cycle is open. A1/A2 and A3a
+evidence are complete; the next real-data step is maintainer approval followed
+by bounded A3b fixture creation. 0.3.0-A remains incomplete and must not advance
+to CF, vertical, or 3-D implementation through this evidence alone.

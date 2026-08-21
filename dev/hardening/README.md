@@ -101,6 +101,8 @@ A1. Normal testthat remains the authoritative fast deterministic suite.
   design, benchmark axes and 24 bounded timing/allocation observations.
 - `provenance-audit.csv`: actual field frequency across nine operation classes.
 - `fixture-manifest.csv`: governance-first fixture inventory/proposals.
+- `real-data/`: A3a first-party source/legal scoring, fixture policy, proposed
+  manifest and specialized contract matrix; it contains no provider binary.
 - `findings.csv`: classified gaps and remediation routing.
 - `baseline-summary.csv`: compact machine-readable status/environment summary.
 - `coverage-a2-by-file.csv`, `coverage-a2-by-function.csv`,
@@ -193,12 +195,14 @@ bytes on disk (12,536,024-byte R object), has shape 73x85x18x7x2, variables
 in `fixture-manifest.csv`. Its redistribution permission is **UNKNOWN**, so it
 is usable for local maintainer smoke only and is not CI-eligible or committed.
 
-The minimal recommended 0.3-A set is: (1) keep this Copernicus case local until
-terms and derivation are recorded; (2) approve one tiny, pinned, redistributable
-surface-SST fixture with quality/missingness; and (3) approve one coarse static
-bathymetry fixture. Ocean colour and reanalysis remain later candidates. Every
-fixture needs source/product identity, terms, retrieval date, derivation script,
-checksum, tested contract and explicit CI decision.
+A3a retains the A1 manifest as historical evidence and records its phase-specific
+review in `real-data/`. Subject to maintainer approval, the proposed orthogonal
+A3b suite is OISST v2.1 for surface/time, the official ETOPO 2022 60 arc-second
+bedrock product for static elevation, and WOA23 1-degree annual all-decades
+temperature/salinity for real vertical handling. MUR and GEBCO_2025 are
+alternates; Copernicus stays local. Every fixture needs source/product identity,
+terms, retrieval date, deterministic derivation, checksums, tested contract and
+explicit CI decision.
 
 ## Lazy NetCDF API decision evidence
 
