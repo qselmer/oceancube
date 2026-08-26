@@ -121,4 +121,5 @@ coast distance the same state-control guarantee: initial TRUE/FALSE states
 produce identical output and semantic provenance, the caller state is restored
 on success and error, and the operation truthfully records
 `oceancube:s2_coast_distance` version 1. `A4B3B-001` is CLOSED. 0.3.0-A and Gate
-B remain incomplete; A5 is next.
+B remain incomplete. A5a subsequently approves the public deferred-NetCDF
+architecture; A5b implementation is next.

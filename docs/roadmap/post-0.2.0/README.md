@@ -22,8 +22,11 @@ code changes by itself.
 - 0.3.0-A4-EXIT: Provenance V1 globally certified; A4 closed
 - 0.3.0-A4R: coast distance standardized on locally controlled spherical S2;
   `A4B3B-001` closed
+- 0.3.0-A5a: `cube_open()` approved as the one experimental public entry for
+  local read-only deferred NetCDF; implementation remains A5b
 - DEC-024: approved for the exact OISST/ETOPO/WOA23 fixture set
 - DEC-019: approved — implemented/certified by A4a through A4-EXIT evidence
+- DEC-018: approved by A5a; `A1-004` is partially closed pending A5b
 - Public API baseline: 38 exports
 - Runtime producer migrations: all identified producers complete and globally certified
 
@@ -47,11 +50,14 @@ relevant roadmap gate have been satisfied. A row marked `PROPOSED` is not a
 public API promise. Candidate function names remain provisional until a
 separate API and methodological review approves them.
 
-A4R closes `A4B3B-001` by making coast-distance results independent of the
-caller's global s2 state. It does not complete 0.3.0-A and does not satisfy Gate
-B. The single recommended next subphase is A5, the public lazy-NetCDF API
-decision for `A1-004`/`DEC-018`. No CF, vertical, provider, 3-D, or A5 runtime
-implementation is authorized by A4R itself.
+A5a approves `cube_open()` as one experimental public source-opening primitive
+for the existing local read-only deferred NetCDF backend. `read_nc()` remains
+eager, `cube_collect()` remains the explicit materialization boundary,
+`DEC-018` is approved, and `A1-004` is partially closed until implementation.
+This does not complete 0.3.0-A or satisfy Gate B. The single recommended next
+subphase is A5b, the bounded implementation and certification of that exact
+contract. No CF, vertical, provider, multifile, remote, Zarr, 3-D, A6, or A5b
+runtime work is authorized by A5a itself.
 
 ## Change control
 

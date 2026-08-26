@@ -187,8 +187,10 @@ and CF encoding policy.
 Hardening is a measurement phase: real-data validation, memory/NetCDF backend
 parity, property and invariance tests, coverage audit, benchmarks, memory
 profiles, stress tests, and fixture governance. It also reviews the public
-lazy-NetCDF entry. `read_nc()` remains materializing until decision `DEC-018`
-is resolved; a candidate `cube_open()` name is not an approved API.
+deferred-NetCDF entry. `read_nc()` remains materializing. A5a resolves
+`DEC-018` by approving one experimental `cube_open()` entry for the existing
+local read-only deferred NetCDF backend; implementation remains separately
+gated as A5b.
 
 **0.3.0-A1 status (2026-08-20): baseline completed.** The bounded audit records
 the existing test architecture, 90.3872% local line coverage, backend/read
@@ -295,7 +297,19 @@ semantic V1 provenance; the normal S2=TRUE result is preserved. The canonical
 method is `oceancube:s2_coast_distance` version 1 and `A4B3B-001` is closed.
 The polygon-interior zero-distance ambiguity is retained as non-blocking S3
 finding `A4R-001`. 0.3.0-A remains incomplete and Gate B remains unsatisfied;
-A5 is next.
+at the A4R close, A5 was next.
+
+**0.3.0-A5a status (2026-08-26): public deferred NetCDF API architecture
+decision completed.** Current runtime, tests, serialization, file identity,
+operation behavior, synthetic/OISST parity, rough performance/allocation, and
+external API patterns support one experimental `cube_open()` entry for one
+local read-only NetCDF source. `read_nc()` remains eager, `vars = NULL` is a
+metadata-only variable-discovery contract, the deferred result retains class
+`c("ocean_cube", "list")`, and `cube_collect()` is the explicit transition to
+memory. `DEC-018` is approved and `A1-004` is partially closed pending A5b
+implementation/certification. No runtime, tests, dependency, NAMESPACE,
+DESCRIPTION, or export changes occur in A5a. 0.3.0-A remains incomplete and
+Gate B remains unsatisfied; A5b is next.
 
 No large provider product is added to Git. Proposed source classes are:
 
@@ -509,8 +523,10 @@ Lagrangian particle tracking are outside the core package roadmap.
 # Next gate
 
 Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b, the
-complete A4 sequence through A4-EXIT, and A4R have evidence; A4 is closed and
-coast distance is reproducible. The single recommended next subphase is A5,
-the public lazy-NetCDF API decision for `A1-004`/`DEC-018`. 0.3.0-A remains
-incomplete and Gate B remains unsatisfied. This placement does not authorize
-CF, vertical, provider, 3-D, or A5 runtime implementation.
+complete A4 sequence through A4-EXIT, A4R, and A5a have evidence; A4 is closed,
+coast distance is reproducible, and the public deferred-NetCDF architecture is
+approved. The single recommended next subphase is A5b, implementation and
+certification of the exact A5a `cube_open()` contract. `DEC-018` is approved
+and `A1-004` is partially closed; 0.3.0-A remains incomplete and Gate B remains
+unsatisfied. This placement does not authorize CF, vertical, provider,
+multifile, remote, Zarr, 3-D, A6, or broader A5 runtime implementation.

@@ -1,0 +1,10 @@
+candidate,new_export_count,backward_compatible,semantic_clarity,accurate_terminology,discoverability,future_local_multifile,future_remote,future_provider_architecture,future_zarr,future_lazy_DAG,implementation_complexity,migration_complexity,user_surprise_risk,score,decision
+"A: read_nc(lazy=)",0,5,2,1,4,3,3,2,1,2,3,2,4,24,"REJECTED"
+"B1: read_nc(mode=)",0,5,3,5,4,3,3,2,2,2,3,2,3,38,"REJECTED"
+"B2: read_nc(backend=)",0,5,2,2,4,3,3,2,2,2,3,2,4,27,"REJECTED"
+"C1: cube_open()",1,5,5,5,5,5,5,5,5,4,3,1,2,62,"APPROVED FOR A5b"
+"C2: open_nc()",1,5,4,5,3,4,4,3,1,3,3,1,2,46,"REJECTED"
+"C3: open_netcdf()",1,5,4,5,4,4,4,3,1,3,3,1,2,48,"REJECTED"
+"C4: cube_open_netcdf()",1,5,5,5,4,4,4,3,1,3,3,1,2,51,"REJECTED"
+"D: ocean_cube(storage=)",0,5,1,3,2,4,3,2,3,2,4,3,5,18,"REJECTED"
+"E: read_nc() deferred by default",0,1,2,4,5,3,3,2,1,2,5,5,5,8,"REJECTED"

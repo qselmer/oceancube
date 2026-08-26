@@ -381,9 +381,10 @@ MUR and GEBCO_2025 remain historical alternates; Copernicus stays local and
 `A1-005` stays partially closed. `A1-010` closes and `DEC-024` is approved only
 for the exact three-source set. 0.3.0-A and Gate B remain incomplete.
 
-## Lazy NetCDF API decision evidence
+## Deferred NetCDF API decision evidence
 
-DEC-018 remains open; no option is implemented.
+A5a approves DEC-018 as an architecture contract; no option is implemented in
+A5a. `A1-004` is partially closed pending A5b.
 
 | Option | Main benefit | Principal cost/risk |
 |---|---|---|
@@ -392,10 +393,13 @@ DEC-018 remains open; no option is implemented.
 | `ocean_cube(source = ...)` | One constructor entry | Overloads an in-memory constructor and hides I/O/lifetime semantics |
 | Separate backend abstraction while keeping `read_nc()` materializing | Maximum compatibility and clean backend extensibility | Discoverability depends on the abstraction chosen; may duplicate concepts |
 
-The leading candidate for maintainer decision is `cube_open()` while preserving
-`read_nc()` materialization, because the verb makes deferred resource lifetime
-explicit. This is evidence, not approval; compatibility, serialization, file
-identity, testing and multi-file behavior must be resolved first.
+The selected contract is one experimental `cube_open()` public entry while
+preserving eager `read_nc()` materialization. It opens one local read-only
+NetCDF source through the existing serializable deferred descriptor;
+`cube_collect()` remains the explicit memory transition. A5a resolves
+compatibility, serialization, identity, operation, terminology, `vars = NULL`,
+and future-extension questions in `lazy-api/`. A5b is the only authorized next
+implementation phase; multifile and remote behavior remain future contracts.
 
 ## Provenance audit and proposed schema
 
