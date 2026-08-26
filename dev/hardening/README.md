@@ -183,6 +183,35 @@ tarball is 2,861,995 bytes; `R CMD check --no-manual` ends `Status: OK` with
 zero errors, warnings, and notes. `DESCRIPTION`, dependencies, `NAMESPACE`, the
 38-export API, version, scientific values, `main`, and `v0.2.0` remain guarded.
 
+## A4-EXIT global Provenance V1 certification
+
+A4-EXIT reconciles every A4a operation row, recursively classifies the requested
+runtime patterns, and certifies the seven cube/table output families against one
+strict V1 schema. Executable evidence covers deterministic operation and lineage
+IDs, 0.2 migration, one-copy anomaly lineage, source/time semantics, Date and UTC
+POSIXct, serialization/RDS, sentinel privacy/security, QA and CF boundaries,
+offline OISST lineage, synthetic temporal, table, geometry, stock, backend
+parity, scientific invariants, and linear growth through 50 operations.
+
+The final runtime result is zero active legacy producers. `.make_provenance()`
+is retained as one compatibility/test helper definition with zero runtime calls;
+three tests use it to construct historical inputs. `A1-003` is `CLOSED` and
+`DEC-019` remains APPROVED with implementation status IMPLEMENTED/CERTIFIED.
+A4 implementation, global certification, and phase closure are TRUE.
+
+`A4B3B-001` remains OPEN. It does not block A4 because V1 records the resolved
+s2 state without a false scientific-method claim, but it blocks the 0.3.0-A
+hardening exit because coast-distance values materially depend on caller-global
+state. The single recommended next subphase is A4R before A5. Neither 0.3.0-A
+nor Gate B is complete.
+
+The final local suite executes 60 files, 598 cases, and 4,857 expectations in
+339.180 seconds with zero failures, errors, warnings, or skips. The final
+clean-source tarball is 2,865,585 bytes; `R CMD check --no-manual` ends
+`Status: OK` with zero errors, warnings, and notes. Runtime `R/`, DESCRIPTION,
+dependencies, NAMESPACE, the 38-export API, version, and scientific values are
+unchanged.
+
 ## Reproduce the bounded baseline
 
 The normal smoke/standard runner is:

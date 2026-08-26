@@ -1,0 +1,8 @@
+"output_class","provenance_location","schema_validation","serialization","source_identity","time_semantics","operation_history","secondary_lineages","compatibility_aliases","result"
+"ocean_cube","x$provenance","strict V1","serialize and RDS","preserved","source/current certified","flat ordered","when genuinely multi-input","none","PASS"
+"stock_cube","x$provenance","strict V1","serialize and RDS","preserved","preserved","coast_dist and crop_stock append once","none required","none","PASS"
+"ocean_anom","x$provenance","strict V1","serialize and RDS","primary source preserved","historical","cube_anomaly once; signal_noise only when requested","climatology stored once as lineage_001","none","PASS"
+"ocean_clim","x$provenance","strict V1","serialize and RDS","preserved","recurring_climatology","cube_climatology once","none required","legacy class only; no alternate provenance","PASS"
+"cube_extract data.frame","attr(x, oceancube_provenance)","strict V1","serialize and RDS","preserved","selected time summary","cube_extract once","preserved when inherited","none","PASS"
+"cube_transect data.frame","attr(x, oceancube_provenance)","strict V1","serialize and RDS","preserved","selected time summary","cube_transect once","preserved when inherited","none","PASS"
+"cube_polygon_weights data.frame","attr(x, oceancube_provenance)","strict V1","serialize and RDS","preserved","source time reference preserved","cube_polygon_weights once","preserved when inherited","attr(x, provenance) is identical V1 compatibility debt","PASS"

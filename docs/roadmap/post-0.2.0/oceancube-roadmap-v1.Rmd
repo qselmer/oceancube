@@ -276,6 +276,16 @@ active legacy producers. `A1-003` remains partially closed and `DEC-019`
 remains approved because A4-EXIT global certification is still pending. This
 does not complete 0.3.0-A or satisfy Gate B.
 
+**0.3.0-A4-EXIT status (2026-08-26): Provenance V1 globally certified and A4
+closed.** The exhaustive producer scan finds zero active legacy producers; all
+seven output families use the canonical V1 shape; migration, multi-input
+lineage, serialization, semantic determinism, privacy, offline OISST lineage,
+QA/CF separation, backend parity, and scientific regressions are executable
+contracts. `A1-003` is closed and `DEC-019` remains approved with status
+IMPLEMENTED/CERTIFIED. `A4B3B-001` remains open: it does not block A4 closure,
+but its dependence on caller-global s2 state blocks the 0.3.0-A hardening exit.
+0.3.0-A remains incomplete and Gate B remains unsatisfied.
+
 No large provider product is added to Git. Proposed source classes are:
 
 | Source class | Contract evidence | Access and fixture policy | CI-safe form |
@@ -487,8 +497,10 @@ Lagrangian particle tracking are outside the core package roadmap.
 
 # Next gate
 
-Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b/A4a,
-A4b1, A4b2, A4b3a, and A4b3b evidence is complete. The single preferred next
-subphase is A4-EXIT, global Provenance V1 certification.
-0.3.0-A remains incomplete and must not advance to CF, vertical, lazy-I/O, or
-3-D implementation through A4b3b evidence alone.
+Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b and
+the complete A4 sequence through A4-EXIT have evidence; A4 is closed. The
+single recommended next subphase is A4R, the coast-distance reproducibility
+contract, before A5, because scientific results currently depend materially on
+caller-global s2 state. 0.3.0-A remains incomplete and Gate B remains
+unsatisfied. This placement does not authorize coast remediation inside
+A4-EXIT or any CF, vertical, lazy-I/O, provider, or 3-D implementation.

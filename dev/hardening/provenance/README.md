@@ -1,4 +1,4 @@
-# A4a architecture and A4b1–A4b3b runtime evidence
+# A4 Provenance V1 architecture, implementation, and global certification
 
 ## Result
 
@@ -13,8 +13,8 @@ A4a changed no package runtime. A4b1 added the internal V1 engine and focused
 tests. A4b2 migrated the linear core cube lifecycle. A4b3a migrated the
 temporal and multi-input engines plus their delegating compatibility wrappers.
 A4b3b migrates extraction, transect, polygon weights, layer mean, coast
-distance, and stock crop. Every identified runtime producer now emits V1;
-A4-EXIT remains the required global certification.
+distance, and stock crop. A4-EXIT certifies the resulting contract globally.
+Every identified runtime producer emits V1 and `A1-003` is closed.
 
 ## Current audit
 
@@ -100,12 +100,25 @@ or per-operation representation.
 - `a4b3b-final-producer-scan.csv` — final legacy-pattern classification;
 - `a4b3b-runtime-results.csv` — table, geometry, remaining-cube, parity,
   serialization, privacy, suite, API, dependency, build, and check evidence.
+- `a4-exit-producer-scan.csv` — exhaustive final classification of requested
+  runtime patterns, compatibility remnants, parsers, timestamps, and aliases;
+- `a4-exit-output-matrix.csv` — canonical provenance location and behavior for
+  all seven runtime output families;
+- `a4-exit-qa-boundary.csv` — operation-by-operation diagnostic placement and
+  semantic-exclusion audit;
+- `a4-exit-open-findings.csv` — A4 and 0.3.0-A blocking classification;
+- `a4-exit-certification.csv` — consolidated global certification evidence.
 
 ## Status
 
-`A1-003` remains `PARTIALLY-CLOSED`: all identified runtime producers now emit
-the common V1 schema, but A4-EXIT global certification is pending. `DEC-019`
-remains APPROVED and is backed by executable A4b1/A4b2/A4b3a/A4b3b evidence.
+`A1-003` is `CLOSED`: all identified runtime producers emit the common V1
+schema and A4-EXIT certifies migration, secondary lineages, serialization,
+semantic determinism, privacy, real-data lineage, and cross-output access.
+`DEC-019` remains APPROVED and is now IMPLEMENTED/CERTIFIED by executable
+A4b1/A4b2/A4b3a/A4b3b/A4-EXIT evidence.
 The polygon implementation explicitly enables and restores s2; coast distance
 continues to follow the caller's global `sf_use_s2()` state and therefore uses
-no false scientific-method identifier. 0.3.0-A and Gate B remain incomplete.
+no false scientific-method identifier. `A4B3B-001` remains OPEN: it does not
+block A4 closure, but it does block the 0.3.0-A hardening exit and is assigned
+to the immediately following A4R coast-distance reproducibility contract.
+0.3.0-A and Gate B remain incomplete.

@@ -2,19 +2,20 @@
 
 ## Status and scope
 
-This document is the normative design target for A4b. It specifies provenance
-schema `1.0.0`; it does not implement the schema, change the public API, or
-replace scientific variable, grid, or QA metadata.
+This document is the normative implemented contract for provenance schema
+`1.0.0`. It does not change the public API or replace scientific variable,
+grid, or QA metadata.
 
-As of A4b3b, the internal core engine in `R/provenance.R` implements this
+As of A4-EXIT, the internal core engine in `R/provenance.R` implements this
 contract and its legacy normalizer, and every identified runtime producer emits V1:
 `ocean_cube()`, materialized and deferred NetCDF ingestion, `cube_slice()`,
 `cube_crop()`, NetCDF-to-memory `cube_collect()`, `cube_mask()`, temporal
 aggregation, climatology, anomaly, signal/noise, trend, extraction, transect,
 polygon weights, depth-layer mean, coast distance, and stock crop. Delegating
-wrappers reuse canonical records. A4-EXIT still must perform the global audit
-before A4 or A1-003 can close; this implementation status is not an early exit
-certification.
+wrappers reuse canonical records. A4-EXIT globally certifies the schema across
+runtime producers, output families, legacy migration, real-data lineage,
+serialization, determinism, privacy, QA/CF boundaries, and scientific
+regressions. A4 and `A1-003` are closed by that evidence.
 
 The selected architecture is **C — hybrid**: a flat primary history plus a flat
 registry of secondary lineages used by multi-input operations. It preserves the
