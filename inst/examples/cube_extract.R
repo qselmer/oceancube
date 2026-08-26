@@ -251,7 +251,7 @@ netcdf_point <- cube_extract(
   time = x_netcdf$time[[4L]],
   variable = "oxygen"
 )
-read_record <- attr(netcdf_point, "oceancube_provenance")$netcdf_read
+read_record <- attr(netcdf_point, "oceancube_qa")$extraction$netcdf_read
 stopifnot(
   nrow(netcdf_point) == 1L,
   identical(read_record$variables, "oxygen"),

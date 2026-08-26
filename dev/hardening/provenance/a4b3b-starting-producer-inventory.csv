@@ -1,0 +1,7 @@
+"producer","file","output_type","current_provenance_shape","migration_required"
+"cube_extract","R/cube_extract.R","data.frame","standalone oceancube_provenance attribute with copied source_provenance and QA fields","TRUE"
+"cube_transect","R/cube_transect.R","data.frame","standalone oceancube_provenance operation record without primary lineage","TRUE"
+"cube_polygon_weights","R/cube_polygon_weights.R","data.frame","standalone provenance attribute with operation-only geometry metadata","TRUE"
+"layer_mean","R/layer_mean.R","ocean_cube","recursive .make_provenance extra.parent record","TRUE"
+"coast_dist","R/coast_dist.R","ocean_cube","recursive .make_provenance extra.parent record","TRUE"
+"crop_stock","R/stock_mask.R","stock_cube","recursive .make_provenance extra.parent record","TRUE"

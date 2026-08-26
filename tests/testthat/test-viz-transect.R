@@ -505,7 +505,10 @@ test_that("NetCDF transects remain selective end to end", {
   local_mocked_bindings(
     cube_transect = function(...) {
       result <- original_transect(...)
-      observed <<- attr(result, "oceancube_provenance", exact = TRUE)
+      observed <<- list(
+        provenance = attr(result, "oceancube_provenance", exact = TRUE),
+        qa = attr(result, "oceancube_qa", exact = TRUE)
+      )
       result
     },
     .package = "oceancube"
@@ -516,14 +519,15 @@ test_that("NetCDF transects remain selective end to end", {
     time = as.POSIXct("2000-01-02", tz = "UTC"),
     depth = c(0, 50), mode = "section"
   )
-  metrics <- observed$physical_reads
+  operation <- tail(observed$provenance$history, 1L)[[1L]]
+  metrics <- observed$qa$transect$physical_reads
   full_cube_values <- prod(c(3L, 2L, 2L, 4L, 2L))
 
   expect_s3_class(plot, "ggplot")
   expect_identical(attr(plot, "oceancube_backend"), "netcdf")
-  expect_identical(observed$n_points, 3L)
-  expect_identical(observed$depth_indices, 1:2)
-  expect_identical(length(observed$variable_indices), 1L)
+  expect_identical(operation$parameters$resolved$n_points, 3L)
+  expect_identical(operation$parameters$resolved$selected_depth_count, 2L)
+  expect_identical(length(operation$parameters$resolved$selected_variables), 1L)
   expect_identical(metrics$n_open, 1L)
   expect_identical(metrics$n_unique_pairs, 3L)
   expect_identical(metrics$n_ncvar_get, 3L)

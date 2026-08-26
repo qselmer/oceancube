@@ -455,7 +455,11 @@ test_that("cube and selectors remain immutable and metadata is additive", {
     attr(plot, "oceancube_time_range"),
     as.Date(c("2020-01-02", "2020-01-03"))
   )
-  expect_identical(attr(plot, "oceancube_provenance")$mode, "series")
+  provenance <- attr(plot, "oceancube_provenance")
+  expect_identical(
+    tail(provenance$history, 1L)[[1L]]$parameters$requested$mode,
+    "series"
+  )
 })
 
 test_that("warnings from cube_extract propagate", {
@@ -488,8 +492,8 @@ test_that("NetCDF full and bounded point series remain selective", {
     cube, "temperature", longitude = -79, latitude = -11, depth = 0,
     time_from = cube$time[[2L]], time_to = cube$time[[3L]]
   )
-  full_read <- attr(full, "oceancube_provenance")$netcdf_read
-  bounded_read <- attr(bounded, "oceancube_provenance")$netcdf_read
+  full_read <- attr(full, "oceancube_qa")$extraction$netcdf_read
+  bounded_read <- attr(bounded, "oceancube_qa")$extraction$netcdf_read
   full_cube_values <- prod(c(3L, 2L, 2L, 4L, 2L))
 
   expect_s3_class(full, "ggplot")

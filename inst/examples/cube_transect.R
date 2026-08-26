@@ -196,7 +196,7 @@ section_netcdf <- cube_transect(
   time = equivalent_time, variable = c("temperature", "oxygen"),
   match = "exact", mode = "section", keep_index = TRUE
 )
-metrics <- attr(section_netcdf, "oceancube_provenance")$physical_reads
+metrics <- attr(section_netcdf, "oceancube_qa")$transect$physical_reads
 stopifnot(metrics$n_open == 1L, metrics$n_ncvar_get == 6L)
 
 # 21. Los datos memory y NetCDF son equivalentes.

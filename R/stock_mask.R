@@ -95,6 +95,40 @@ crop_stock <- function(x, mask) {
     }
   }
 
+  provenance_context <- .provenance_cube_context(
+    source = x$source,
+    dataset_id = x$dataset_id,
+    time = x$time,
+    shape = cube_shape,
+    variables = x$vars,
+    backend = "memory",
+    provenance = x$provenance
+  )
+  kept_cells <- sum(mask$mask, na.rm = TRUE)
+  total_cells <- length(mask$mask)
+  provenance <- .provenance_append(
+    x$provenance,
+    operation = "crop_stock",
+    parameters = list(
+      requested = list(stock = mask$stock),
+      resolved = list(
+        stock = mask$stock,
+        lat_range = mask$lat_range,
+        dc_range = mask$dc_range,
+        depth_range = mask$depth_range,
+        mask_dimensions = stats::setNames(
+          as.integer(dim(mask$mask)), c("longitude", "latitude", "depth")
+        ),
+        kept_cells = as.integer(kept_cells),
+        total_mask_cells = as.integer(total_cells),
+        fraction_kept = as.numeric(kept_cells / total_cells)
+      )
+    ),
+    output = .provenance_summary(provenance_context),
+    scientific_method = .provenance_method("crop_stock", list()),
+    context = provenance_context
+  )
+
   ans <- ocean_cube(
     lon = x$lon,
     lat = x$lat,
@@ -112,7 +146,7 @@ crop_stock <- function(x, mask) {
     dc = x$dc,
     climatology = x$climatology,
     anomaly = x$anomaly,
-    provenance = .make_provenance("crop_stock", args = list(stock = mask$stock), extra = list(parent = x$provenance))
+    provenance = provenance
   )
   class(ans) <- c("stock_cube", class(ans))
   ans

@@ -73,7 +73,7 @@ test_that("spatial selectors remain pairs and repeated cells are preserved", {
   expect_gt(result$requested_distance_km[[2L]], 0)
   expect_equal(result$matched_distance_km[[2L]], 0)
   expect_true(all(result$match_distance_km >= 0))
-  metrics <- attr(result, "oceancube_provenance")$physical_reads
+  metrics <- attr(result, "oceancube_qa")$transect$physical_reads
   expect_equal(metrics$n_points, 2L)
   expect_equal(metrics$n_unique_pairs, 1L)
   expect_equal(metrics$n_values_requested, 2L)
@@ -257,7 +257,7 @@ test_that("NetCDF pair reads use one connection and equal memory", {
     netcdf_data, memory_data,
     tolerance = A2_TOLERANCE$transect_absolute
   )
-  metrics <- attr(netcdf, "oceancube_provenance")$physical_reads
+  metrics <- attr(netcdf, "oceancube_qa")$transect$physical_reads
   expect_equal(metrics$n_open, 1L)
   expect_equal(metrics$n_unique_pairs, 2L)
   expect_equal(metrics$n_ncvar_get, 4L)
@@ -518,7 +518,8 @@ test_that("three Haversine distances have distinct traceable meanings", {
   expect_gt(snapped$match_distance_km[[1L]], 0)
   expect_equal(snapped$match_distance_km[[1L]], 21.7530397, tolerance = 1e-7)
   expect_equal(
-    attr(snapped, "oceancube_provenance")$maximum_match_distance_km,
+    tail(attr(snapped, "oceancube_provenance")$history, 1L)[[1L]]$
+      parameters$resolved$maximum_match_distance_km,
     max(snapped$match_distance_km)
   )
 })
@@ -781,7 +782,7 @@ test_that("all-NA cells and repeated matched cells remain separate", {
   expect_identical(result$longitude_index, c(2L, 2L))
   expect_identical(result$latitude_index, c(2L, 2L))
   expect_identical(
-    attr(result, "oceancube_provenance")$physical_reads$n_unique_pairs,
+    attr(result, "oceancube_qa")$transect$physical_reads$n_unique_pairs,
     1L
   )
 })
@@ -831,7 +832,7 @@ test_that("non-contiguous NetCDF depths use a selective enclosing block", {
     tolerance = A2_TOLERANCE$transect_absolute
   )
 
-  metrics <- attr(from_netcdf, "oceancube_provenance")$physical_reads
+  metrics <- attr(from_netcdf, "oceancube_qa")$transect$physical_reads
   expect_identical(metrics$n_unique_pairs, 2L)
   expect_identical(metrics$n_ncvar_get, 2L)
   expect_identical(metrics$n_values_requested, 4L)

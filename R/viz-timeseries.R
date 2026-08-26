@@ -368,6 +368,7 @@ viz.timeseries <- function(
   backend <- attr(extracted, "oceancube_backend", exact = TRUE)
   selection_metadata <- attr(extracted, "oceancube_selection", exact = TRUE)
   provenance <- attr(extracted, "oceancube_provenance", exact = TRUE)
+  qa <- attr(extracted, "oceancube_qa", exact = TRUE)
   represented_time_range <- range(extracted$time)
   n_time <- as.integer(nrow(extracted))
 
@@ -459,6 +460,7 @@ viz.timeseries <- function(
   attr(plot, "oceancube_match_distance_km") <- match_distance_km
   attr(plot, "oceancube_selection") <- selection_metadata
   attr(plot, "oceancube_provenance") <- provenance
+  attr(plot, "oceancube_qa") <- qa
   if ("longitude_requested" %in% names(extracted)) {
     attr(plot, "oceancube_longitude_requested") <- requested_longitude
     attr(plot, "oceancube_longitude_distance") <-

@@ -119,9 +119,13 @@ stopifnot(
 # el array científico del backend. La procedencia confirma que el producto es
 # sólo geométrico y que no se calculó un indicador. Conceptualmente, una tabla
 # de valores enlazada con estas claves y pesos puede pasar después a spatind.
+weights_2d_provenance <- attr(weights_2d, "oceancube_provenance")
+weights_3d_provenance <- attr(weights_3d, "oceancube_provenance")
+weights_2d_operation <- tail(weights_2d_provenance$history, 1L)[[1L]]
+weights_3d_operation <- tail(weights_3d_provenance$history, 1L)[[1L]]
 stopifnot(
-  grepl("no indicator", attr(weights_2d, "provenance")$role),
-  identical(attr(weights_3d, "provenance")$package, "oceancube")
+  grepl("no indicator", weights_2d_operation$parameters$resolved$role),
+  identical(weights_3d_operation$software$package, "oceancube")
 )
 
 cat(

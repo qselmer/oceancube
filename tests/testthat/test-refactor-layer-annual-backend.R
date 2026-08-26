@@ -34,7 +34,11 @@ test_that("layer_mean preserves the baseline weighted result and structure", {
   expect_identical(layer$depth_extent, c(0, 50))
   expect_identical(layer$mask, cube$mask)
   expect_identical(layer$dc, cube$dc)
-  expect_identical(layer$provenance$extra$parent, cube$provenance)
+  expect_identical(
+    tail(layer$provenance$history, 1L)[[1L]]$operation,
+    "layer_mean"
+  )
+  expect_identical(layer$provenance$extensions$user, cube$provenance)
   expect_null(layer$qa)
   expect_identical(dimnames(layer$data)[[1]], as.character(cube$lon))
   expect_identical(dimnames(layer$data)[[2]], as.character(cube$lat))

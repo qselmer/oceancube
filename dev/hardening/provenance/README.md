@@ -1,4 +1,4 @@
-# A4a architecture and A4b1–A4b3a runtime evidence
+# A4a architecture and A4b1–A4b3b runtime evidence
 
 ## Result
 
@@ -10,9 +10,11 @@ the machine-readable audit, candidate comparison, field contract, operation
 mapping, and legacy migration design used to reach that choice.
 
 A4a changed no package runtime. A4b1 added the internal V1 engine and focused
-tests. A4b2 migrated the linear core cube lifecycle. A4b3a now migrates the
+tests. A4b2 migrated the linear core cube lifecycle. A4b3a migrated the
 temporal and multi-input engines plus their delegating compatibility wrappers.
-Table and geometry producers remain legacy for A4b3b.
+A4b3b migrates extraction, transect, polygon weights, layer mean, coast
+distance, and stock crop. Every identified runtime producer now emits V1;
+A4-EXIT remains the required global certification.
 
 ## Current audit
 
@@ -94,12 +96,16 @@ or per-operation representation.
   parity, serialization, privacy, OISST, API, and dependency certification;
 - `a4b3a-growth.csv` — representative V1 temporal/multi-input growth against
   the 19,453-byte A4a legacy reference.
+- `a4b3b-starting-producer-inventory.csv` — exact six-producer starting state;
+- `a4b3b-final-producer-scan.csv` — final legacy-pattern classification;
+- `a4b3b-runtime-results.csv` — table, geometry, remaining-cube, parity,
+  serialization, privacy, suite, API, dependency, build, and check evidence.
 
 ## Status
 
-`A1-003` remains `PARTIALLY-CLOSED`: the design, core engine, linear core,
-temporal, multi-input, and temporal-wrapper rollout now exist. The exact legacy
-remainder is `cube_extract`, `cube_transect`, `cube_polygon_weights`,
-`layer_mean`, `coast_dist`, and `crop_stock`, deferred to A4b3b. `DEC-019`
-remains APPROVED and is backed by executable A4b1/A4b2/A4b3a evidence. 0.3.0-A
-and Gate B remain incomplete.
+`A1-003` remains `PARTIALLY-CLOSED`: all identified runtime producers now emit
+the common V1 schema, but A4-EXIT global certification is pending. `DEC-019`
+remains APPROVED and is backed by executable A4b1/A4b2/A4b3a/A4b3b evidence.
+The polygon implementation explicitly enables and restores s2; coast distance
+continues to follow the caller's global `sf_use_s2()` state and therefore uses
+no false scientific-method identifier. 0.3.0-A and Gate B remain incomplete.

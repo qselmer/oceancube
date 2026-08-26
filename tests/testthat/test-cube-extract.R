@@ -698,6 +698,8 @@ test_that("lightweight attributes describe selection, size, and provenance", {
   )
   selection <- attr(result, "oceancube_selection")
   provenance <- attr(result, "oceancube_provenance")
+  operation <- provenance$history[[length(provenance$history)]]
+  qa <- attr(result, "oceancube_qa")$extraction
 
   expect_identical(attr(result, "oceancube_backend"), "memory")
   expect_identical(attr(result, "oceancube_shape"), c(
@@ -706,16 +708,16 @@ test_that("lightweight attributes describe selection, size, and provenance", {
   expect_identical(selection$requested$longitude, c(-80, -78))
   expect_identical(selection$indices$longitude, c(1L, 3L))
   expect_identical(selection$selected$longitude, c(-80, -78))
-  expect_identical(provenance$operation, "cube_extract")
-  expect_identical(provenance$mode, "point")
-  expect_identical(provenance$format, "long")
-  expect_identical(provenance$rows_expected_long, 2)
-  expect_identical(provenance$rows_expected_wide, 2)
-  expect_identical(provenance$approximate_array_bytes, 16)
-  expect_identical(provenance$rows_returned, 2L)
-  expect_identical(provenance$source, "synthetic")
-  expect_identical(provenance$dataset_id, "extract-001")
-  expect_null(provenance$netcdf_read)
+  expect_identical(operation$operation, "cube_extract")
+  expect_identical(operation$parameters$requested$mode, "point")
+  expect_identical(operation$parameters$requested$format, "long")
+  expect_identical(qa$rows_expected_long, 2)
+  expect_identical(qa$rows_expected_wide, 2)
+  expect_identical(qa$approximate_array_bytes, 16)
+  expect_identical(operation$parameters$resolved$rows_returned, 2L)
+  expect_identical(provenance$source$identity$label, "synthetic")
+  expect_identical(provenance$source$identity$dataset_id, "extract-001")
+  expect_null(qa$netcdf_read)
 })
 
 test_that("extraction without selectors returns the complete long table", {
@@ -896,7 +898,7 @@ test_that("NetCDF point reads one variable and one logical cell", {
     time = fixture$cube$time[[4L]],
     variable = "oxygen"
   )
-  record <- attr(result, "oceancube_provenance")$netcdf_read
+  record <- attr(result, "oceancube_qa")$extraction$netcdf_read
 
   expect_identical(nrow(result), 1L)
   expect_identical(result$value, 24222)

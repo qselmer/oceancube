@@ -195,35 +195,75 @@ cube_transect <- function(x, path, lon_col = "longitude",
   } else {
     .cube_transect_wide(x, plan, values, units, keep_index)
   }
-  provenance <- list(
-    operation = "cube_transect",
-    backend = backend,
-    mode = plan$mode,
-    format = format,
-    by = by,
-    match = method,
-    n_points = nrow(plan$points),
-    n_unique_grid_cells = nrow(plan$unique_pairs),
-    depth_indices = plan$depth_index,
-    time_index = plan$time_index,
-    variable_indices = plan$variable_index,
-    distance_method = "spherical Haversine; mean Earth radius 6371.0088 km",
-    distance_units = "km",
-    requested_path_length_km =
-      plan$requested_distance_km[[length(plan$requested_distance_km)]],
-    matched_path_length_km =
-      plan$matched_distance_km[[length(plan$matched_distance_km)]],
-    maximum_match_distance_km = max(plan$match_distance_km),
-    match_distance_method =
-      "spherical Haversine; mean Earth radius 6371.0088 km",
-    tolerance = tolerance,
-    physical_reads = read_metrics,
+  selected_depth <- x$depth[plan$depth_index]
+  depth_range <- if (all(is.na(selected_depth))) {
+    NA_real_
+  } else {
+    range(selected_depth, na.rm = TRUE)
+  }
+  selected_time <- x$time[plan$time_index]
+  provenance_context <- .provenance_cube_context(
     source = x$source,
-    dataset_id = x$dataset_id
+    dataset_id = x$dataset_id,
+    time = selected_time,
+    shape = .cube_shape(x),
+    variables = x$vars[plan$variable_index],
+    backend = backend,
+    provenance = x$provenance
+  )
+  table_shape <- c(rows = as.integer(nrow(result)),
+                   columns = as.integer(ncol(result)))
+  provenance <- .provenance_append(
+    x$provenance,
+    operation = "cube_transect",
+    parameters = list(
+      requested = list(
+        mode = mode,
+        format = format,
+        by = by,
+        match = method,
+        tolerance = .provenance_compact(tolerance),
+        depth = .provenance_compact(depth),
+        time = .provenance_compact(time),
+        variable = .provenance_compact(variable),
+        id_col_present = !is.null(id_col),
+        n_requested_points = as.integer(nrow(plan$points)),
+        keep_index = keep_index
+      ),
+      resolved = list(
+        mode = plan$mode,
+        n_points = as.integer(nrow(plan$points)),
+        n_unique_grid_cells = as.integer(nrow(plan$unique_pairs)),
+        selected_depth_count = as.integer(length(plan$depth_index)),
+        selected_depth_range = depth_range,
+        selected_variables = x$vars[plan$variable_index],
+        selected_time = .provenance_context_time(provenance_context),
+        requested_path_length_km =
+          plan$requested_distance_km[[length(plan$requested_distance_km)]],
+        matched_path_length_km =
+          plan$matched_distance_km[[length(plan$matched_distance_km)]],
+        maximum_match_distance_km = max(plan$match_distance_km),
+        distance_units = "km",
+        distance_method =
+          "spherical Haversine; mean Earth radius 6371.0088 km",
+        output_table_shape = table_shape
+      )
+    ),
+    output = list(
+      backend = "memory",
+      shape = stats::setNames(as.integer(table_shape), names(table_shape)),
+      variables = x$vars[plan$variable_index],
+      time_kind = provenance_context$time_kind
+    ),
+    scientific_method = .provenance_method("cube_transect", list()),
+    context = provenance_context
   )
   attr(result, "oceancube_mode") <- plan$mode
   attr(result, "oceancube_backend") <- backend
   attr(result, "oceancube_path") <- plan$points
+  attr(result, "oceancube_qa") <- list(transect = list(
+    physical_reads = read_metrics
+  ))
   attr(result, "oceancube_provenance") <- provenance
   attr(result, "units") <- stats::setNames(
     units, x$vars[plan$variable_index]

@@ -223,15 +223,7 @@
 }
 
 .provenance_deferred_legacy <- function(provenance) {
-  if (!identical(.provenance_validate(provenance)$kind, "legacy")) return(FALSE)
-  deferred_operations <- c(
-    "cube_extract", "cube_transect", "cube_polygon_weights",
-    "layer_mean", "coast_dist", "crop_stock"
-  )
-  any(names(provenance) %in% deferred_operations) ||
-    (.provenance_scalar_character(provenance$function_name, allow_null = TRUE) &&
-       !is.null(provenance$function_name) &&
-       provenance$function_name %in% deferred_operations)
+  FALSE
 }
 
 .provenance_validate_source <- function(source, prefix = "source") {
@@ -857,7 +849,8 @@
     to_month = "oceancube:legacy_custom_month",
     cube_mask = "oceancube:cell_center_polygon_mask",
     cube_transect = "oceancube:haversine_transect",
-    coast_dist = "oceancube:s2_coast_distance",
+    cube_polygon_weights = "oceancube:s2_polygon_cell_intersection",
+    coast_dist = NULL,
     layer_mean = "oceancube:depth_layer_mean",
     crop_stock = "oceancube:stock_mask",
     NULL

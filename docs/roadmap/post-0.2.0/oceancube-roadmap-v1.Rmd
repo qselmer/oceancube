@@ -267,6 +267,15 @@ The remaining legacy producers are `cube_extract`, `cube_transect`,
 to A4b3b. `A1-003` remains partially closed and `DEC-019` remains approved.
 This does not complete 0.3.0-A or satisfy Gate B.
 
+**0.3.0-A4b3b status (2026-08-26): table, geometry and remaining runtime
+producer migration completed.** Extraction, transect, polygon weights, layer
+mean, coast distance, and stock crop now append the same canonical V1 schema.
+Table QA is separated under an internal attribute; the polygon legacy attribute
+is retained as an exact compatibility alias. The final runtime scan has zero
+active legacy producers. `A1-003` remains partially closed and `DEC-019`
+remains approved because A4-EXIT global certification is still pending. This
+does not complete 0.3.0-A or satisfy Gate B.
+
 No large provider product is added to Git. Proposed source classes are:
 
 | Source class | Contract evidence | Access and fixture policy | CI-safe form |
@@ -479,7 +488,7 @@ Lagrangian particle tracking are outside the core package roadmap.
 # Next gate
 
 Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b/A4a,
-A4b1, A4b2, and A4b3a evidence is complete. The single preferred next subphase
-is A4b3b, table, geometry, and remaining producer provenance migration.
+A4b1, A4b2, A4b3a, and A4b3b evidence is complete. The single preferred next
+subphase is A4-EXIT, global Provenance V1 certification.
 0.3.0-A remains incomplete and must not advance to CF, vertical, lazy-I/O, or
-3-D implementation through A4b3a evidence alone.
+3-D implementation through A4b3b evidence alone.

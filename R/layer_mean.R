@@ -41,6 +41,37 @@ layer_mean <- function(x, depth) {
     }
   }
 
+  output_shape <- stats::setNames(
+    as.integer(c(d[1], d[2], length(bins), d[4], d[5])),
+    .cube_axis_names()
+  )
+  provenance_context <- .provenance_cube_context(
+    source = x$source,
+    dataset_id = x$dataset_id,
+    time = x$time,
+    shape = output_shape,
+    variables = x$vars,
+    backend = "memory",
+    provenance = x$provenance
+  )
+  provenance <- .provenance_append(
+    x$provenance,
+    operation = "layer_mean",
+    parameters = list(
+      requested = list(depth = depth),
+      resolved = list(
+        layer_ranges = bins,
+        n_layers = as.integer(length(bins)),
+        layer_centers = layer_depth,
+        depth_representation = "arithmetic midpoint of requested layer bounds",
+        output_shape = output_shape
+      )
+    ),
+    output = .provenance_summary(provenance_context),
+    scientific_method = .provenance_method("layer_mean", list()),
+    context = provenance_context
+  )
+
   ocean_cube(
     lon = x$lon,
     lat = x$lat,
@@ -56,6 +87,6 @@ layer_mean <- function(x, depth) {
     depth_extent = range(breaks),
     mask = x$mask,
     dc = x$dc,
-    provenance = .make_provenance("layer_mean", args = list(depth = depth), extra = list(parent = x$provenance))
+    provenance = provenance
   )
 }

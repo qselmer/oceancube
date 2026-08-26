@@ -215,49 +215,83 @@ cube_extract <- function(x, longitude = NULL, latitude = NULL, depth = NULL,
     distances = resolved$distance,
     tolerance = resolved$tolerance
   )
-  provenance <- list(
-    operation = "cube_extract",
+  selected_time <- x$time[resolved$index$time]
+  selected_shape <- stats::setNames(expected_shape, .cube_axis_names())
+  provenance_context <- .provenance_cube_context(
+    source = x$source,
+    dataset_id = x$dataset_id,
+    time = selected_time,
+    shape = selected_shape,
+    variables = x$vars[resolved$index$variable],
     backend = backend,
-    mode = mode,
-    format = format,
-    by = by,
-    match = method,
-    selectors_requested = selectors,
-    indices_resolved = resolved$index,
-    shape_selected = stats::setNames(expected_shape, .cube_axis_names()),
+    provenance = x$provenance
+  )
+  table_shape <- c(rows = as.integer(nrow(result)),
+                   columns = as.integer(ncol(result)))
+  provenance <- .provenance_append(
+    x$provenance,
+    operation = "cube_extract",
+    parameters = list(
+      requested = list(
+        longitude = .provenance_compact(longitude),
+        latitude = .provenance_compact(latitude),
+        depth = .provenance_compact(depth),
+        time = .provenance_compact(time),
+        variable = .provenance_compact(variable),
+        by = by,
+        match = method,
+        tolerance = .provenance_compact(resolved$tolerance),
+        mode = mode,
+        format = format,
+        keep_index = keep_index,
+        keep_distance = keep_distance
+      ),
+      resolved = list(
+        selected_counts = vapply(resolved$index, length, integer(1)),
+        selected_variables = x$vars[resolved$index$variable],
+        selected_time = .provenance_context_time(provenance_context),
+        output_format = format,
+        rows_returned = as.integer(nrow(result)),
+        output_columns = .provenance_compact(names(result)),
+        output_column_count = as.integer(ncol(result)),
+        output_table_shape = table_shape
+      )
+    ),
+    output = list(
+      backend = "memory",
+      shape = stats::setNames(as.integer(table_shape), names(table_shape)),
+      variables = x$vars[resolved$index$variable],
+      time_kind = provenance_context$time_kind
+    ),
+    scientific_method = .provenance_method("cube_extract", list()),
+    context = provenance_context
+  )
+  read_diagnostics <- if (is.null(read_plan)) {
+    NULL
+  } else {
+    list(
+      source_file = x$storage$file$normalized_path,
+      physical_start = read_plan$physical_start,
+      physical_count = read_plan$physical_count,
+      variables = x$vars[read_plan$variable_index],
+      values_requested = read_plan$values_requested,
+      values_in_envelope = read_plan$values_in_envelope,
+      amplification = read_plan$amplification
+    )
+  }
+
+  attr(result, "oceancube_backend") <- backend
+  attr(result, "oceancube_shape") <-
+    selected_shape
+  attr(result, "oceancube_selection") <- selection
+  attr(result, "oceancube_qa") <- list(extraction = list(
     rows_expected_long = estimate$rows_long,
     rows_expected_wide = estimate$rows_wide,
     columns_expected = estimate$columns,
     approximate_array_bytes = estimate$array_bytes,
     large_output = estimate$large_output,
-    rows_returned = nrow(result),
-    variables = x$vars[resolved$index$variable],
-    keep_index = keep_index,
-    keep_distance = keep_distance,
-    source = x$source,
-    dataset_id = x$dataset_id,
-    time = .find_time_provenance(x$provenance),
-    source_provenance = x$provenance,
-    netcdf_read = if (is.null(read_plan)) {
-      NULL
-    } else {
-      list(
-        source_file = x$storage$file$normalized_path,
-        physical_start = read_plan$physical_start,
-        physical_count = read_plan$physical_count,
-        variables = x$vars[read_plan$variable_index],
-        values_requested = read_plan$values_requested,
-        values_in_envelope = read_plan$values_in_envelope,
-        amplification = read_plan$amplification
-      )
-    },
-    extracted_utc = .netcdf_as_utc(Sys.time())
-  )
-
-  attr(result, "oceancube_backend") <- backend
-  attr(result, "oceancube_shape") <-
-    stats::setNames(expected_shape, .cube_axis_names())
-  attr(result, "oceancube_selection") <- selection
+    netcdf_read = read_diagnostics
+  ))
   attr(result, "units") <-
     stats::setNames(selected_units, x$vars[resolved$index$variable])
   attr(result, "oceancube_provenance") <- provenance

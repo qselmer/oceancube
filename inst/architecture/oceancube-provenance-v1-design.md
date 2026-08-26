@@ -6,15 +6,15 @@ This document is the normative design target for A4b. It specifies provenance
 schema `1.0.0`; it does not implement the schema, change the public API, or
 replace scientific variable, grid, or QA metadata.
 
-As of A4b3a, the internal core engine in `R/provenance.R` implements this
-contract and its legacy normalizer, and the linear and temporal lifecycle emits V1:
+As of A4b3b, the internal core engine in `R/provenance.R` implements this
+contract and its legacy normalizer, and every identified runtime producer emits V1:
 `ocean_cube()`, materialized and deferred NetCDF ingestion, `cube_slice()`,
 `cube_crop()`, NetCDF-to-memory `cube_collect()`, `cube_mask()`, temporal
-aggregation, climatology, anomaly, signal/noise, and trend. Temporal delegating
-wrappers reuse those canonical records. Table and geometry producers remain on
-their 0.2 recursive/ad-hoc shapes until A4b3b. The mixed-state bridge continues
-to preserve V1 parents through that exact remainder. This remains a controlled
-dual state rather than a claim of package-wide V1 completion.
+aggregation, climatology, anomaly, signal/noise, trend, extraction, transect,
+polygon weights, depth-layer mean, coast distance, and stock crop. Delegating
+wrappers reuse canonical records. A4-EXIT still must perform the global audit
+before A4 or A1-003 can close; this implementation status is not an early exit
+certification.
 
 The selected architecture is **C — hybrid**: a flat primary history plus a flat
 registry of secondary lineages used by multi-input operations. It preserves the
@@ -257,9 +257,13 @@ copy them into canonical semantic records.
 - `cube_extract()` appends its operation and attaches the same complete V1
   schema as `attr(result, "oceancube_provenance")`. It does not use a separate
   table schema. Other table outputs should converge on that attribute name.
-- `cube_polygon_weights()` is a future table-output mapping; its current
-  `provenance` attribute must migrate to the common attribute during an
-  explicitly scoped implementation phase.
+- `cube_extract()`, `cube_transect()`, and `cube_polygon_weights()` use the
+  internal `oceancube_qa` attribute for bounded-read, matching, and geometry
+  diagnostics that do not belong in semantic V1. Existing scientific table
+  columns and dedicated selection/path/coverage attributes remain unchanged.
+- `cube_polygon_weights()` uses `oceancube_provenance` canonically and retains
+  `provenance` temporarily as an exact V1 alias because published examples and
+  regression tests relied on that attribute name.
 
 ## Legacy and user metadata migration
 
@@ -335,12 +339,12 @@ parent objects, and repeated lineage trees are forbidden.
 
 ## Output-type scope
 
-Core V1 covers `ocean_cube` objects and extracted base data frames carrying the
-`oceancube_provenance` attribute. The existing `ocean_clim` compatibility output
-is migrated through the same schema during A4b where needed by anomaly
-compatibility. Geometry tables, a future written NetCDF file, and a verified
-spatind exchange object are future adapters: the schema can represent them, but
-A4a does not expand implementation scope or promise new public APIs.
+Core V1 covers `ocean_cube`, `stock_cube`, extraction/transect/polygon-weight
+base data frames carrying the `oceancube_provenance` attribute, anomaly outputs,
+and existing `ocean_clim` compatibility output. A future written NetCDF file and
+a verified spatind exchange object remain future adapters; the portable polygon
+weight attribute is only the current package-boundary contract and does not
+claim a spatind implementation or new public API.
 
 ## Version evolution
 

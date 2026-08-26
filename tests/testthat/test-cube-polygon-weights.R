@@ -181,12 +181,12 @@ test_that("sparse weights do not emit the feature by grid product", {
     x,
     weights_test_polygon(-0.4, -0.4, 0.4, 0.4)
   )
-  provenance <- attr(weights, "provenance")
+  qa <- attr(weights, "oceancube_qa")$polygon_weights
 
   expect_identical(nrow(weights), 1L)
-  expect_identical(provenance$n_feature_cell_pairs, 120L)
-  expect_identical(provenance$n_candidates, 1L)
-  expect_identical(provenance$n_intersections, 1L)
+  expect_identical(qa$n_feature_cell_pairs, 120L)
+  expect_identical(qa$n_candidates, 1L)
+  expect_identical(qa$n_intersections, 1L)
   expect_equal(weights$fraction_cell_covered, 0.64, tolerance = 3e-3)
 })
 
@@ -224,9 +224,10 @@ test_that("2d output columns, types, bounds, metrics, and provenance are stable"
     tolerance = 1e-12
   )
   provenance <- attr(weights, "provenance")
-  expect_identical(provenance$package, "oceancube")
-  expect_match(provenance$role, "no indicator")
-  expect_identical(provenance$intended_consumer,
+  operation <- provenance$history[[length(provenance$history)]]
+  expect_identical(operation$software$package, "oceancube")
+  expect_match(operation$parameters$resolved$role, "no indicator")
+  expect_identical(operation$parameters$resolved$intended_consumer,
                    "spatind or another explicit downstream package")
 })
 

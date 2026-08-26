@@ -45,8 +45,14 @@ test_that("coast_dist preserves the cube and attaches the baseline dc matrix", {
   expect_identical(result$mask, cube$mask)
   expect_identical(result$climatology, cube$climatology)
   expect_identical(result$anomaly, cube$anomaly)
-  expect_identical(result$provenance$function_name, "coast_dist")
-  expect_identical(result$provenance$extra$parent, cube$provenance)
+  operation <- tail(result$provenance$history, 1L)[[1L]]
+  expect_identical(operation$operation, "coast_dist")
+  expect_null(operation$scientific_method)
+  expect_identical(
+    head(result$provenance$history, -1L),
+    cube$provenance$history
+  )
+  expect_identical(result$provenance$source, cube$provenance$source)
   expect_true(.check_cube(result))
   expect_identical(cube, cube_before)
   expect_identical(coast, coast_before)

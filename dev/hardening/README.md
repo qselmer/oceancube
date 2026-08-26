@@ -159,6 +159,30 @@ producers are exactly `cube_extract`, `cube_transect`,
 `A1-003` remains `PARTIALLY-CLOSED`, `DEC-019` remains APPROVED, and A4b3b is
 still required. Neither 0.3.0-A nor Gate B is complete.
 
+## A4b3b final runtime provenance migration
+
+A4b3b migrates `cube_extract()`, `cube_transect()`,
+`cube_polygon_weights()`, `layer_mean()`, `coast_dist()`, and `crop_stock()` to
+the common V1 schema. Table QA is carried internally under `oceancube_qa`;
+selection, path, coverage, values, and geometry-weight columns remain intact.
+The historical polygon `provenance` attribute remains an exact V1 compatibility
+alias because documented examples and tests relied on it. The polygon engine
+truthfully records controlled s2 intersection; coast distance remains
+numerically unchanged and records the actual global s2 state without claiming
+a guaranteed s2 scientific method.
+
+The final source scan has zero active legacy runtime producers and retains only
+legacy parsers, compatibility recognition, the polygon alias, and the unused
+`.make_provenance()` helper definition for A4-EXIT review. `A1-003` remains
+`PARTIALLY-CLOSED`, `DEC-019` remains APPROVED, and A4-EXIT is next. Neither
+0.3.0-A nor Gate B is complete.
+
+The final local suite executes 59 files, 589 cases, and 4,695 expectations in
+523.060 seconds with zero failures, errors, warnings, or skips. The clean-source
+tarball is 2,861,995 bytes; `R CMD check --no-manual` ends `Status: OK` with
+zero errors, warnings, and notes. `DESCRIPTION`, dependencies, `NAMESPACE`, the
+38-export API, version, scientific values, `main`, and `v0.2.0` remain guarded.
+
 ## Reproduce the bounded baseline
 
 The normal smoke/standard runner is:

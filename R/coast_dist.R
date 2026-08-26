@@ -12,6 +12,11 @@ coast_dist <- function(x, coast) {
     rlang::abort("Package `sf` is required for `coast_dist()`.")
   }
 
+  coast_input_type <- if (inherits(coast, c("sf", "sfc"))) {
+    "geometry"
+  } else {
+    "file"
+  }
   coast_sf <- if (inherits(coast, c("sf", "sfc"))) {
     coast
   } else if (is.character(coast) && length(coast) == 1L && file.exists(coast)) {
@@ -21,6 +26,7 @@ coast_dist <- function(x, coast) {
   }
 
   coast_sf <- sf::st_transform(sf::st_as_sf(coast_sf), 4326)
+  s2_enabled <- isTRUE(sf::sf_use_s2())
   grid <- expand.grid(lon = x$lon, lat = x$lat)
   pts <- sf::st_as_sf(grid, coords = c("lon", "lat"), crs = 4326)
   dc_m <- as.numeric(sf::st_distance(pts, sf::st_union(coast_sf)))
@@ -33,6 +39,41 @@ coast_dist <- function(x, coast) {
   )
 
   x$dc <- dc_mat
-  x$provenance <- .make_provenance("coast_dist", args = list(), extra = list(parent = x$provenance))
+  bbox <- suppressWarnings(as.numeric(sf::st_bbox(coast_sf)))
+  if (length(bbox) != 4L || any(!is.finite(bbox))) bbox <- NULL
+  if (!is.null(bbox)) names(bbox) <- c("xmin", "ymin", "xmax", "ymax")
+  provenance_context <- .provenance_cube_context(
+    source = x$source,
+    dataset_id = x$dataset_id,
+    time = x$time,
+    shape = cube_shape,
+    variables = x$vars,
+    backend = .cube_backend(x),
+    provenance = x$provenance
+  )
+  x$provenance <- .provenance_append(
+    x$provenance,
+    operation = "coast_dist",
+    parameters = list(
+      requested = list(coast_input_type = coast_input_type),
+      resolved = list(
+        crs = "EPSG:4326",
+        n_features = as.integer(nrow(coast_sf)),
+        geometry_types = unique(as.character(sf::st_geometry_type(coast_sf))),
+        bbox = bbox,
+        input_distance_unit = "m",
+        output_distance_unit = "nautical_mile",
+        s2_enabled = s2_enabled,
+        distance_engine = if (s2_enabled) {
+          "sf geographic distance with s2 enabled"
+        } else {
+          "sf geographic distance with s2 disabled"
+        }
+      )
+    ),
+    output = .provenance_summary(provenance_context),
+    scientific_method = NULL,
+    context = provenance_context
+  )
   x
 }

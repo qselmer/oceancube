@@ -90,26 +90,62 @@ cube_polygon_weights <- function(x, polygons, id_col = NULL, crs = NULL,
   attr(base, "polygon_crs") <- normalized$crs
   attr(base, "n_features") <- normalized$n_features
   attr(base, "feature_coverage") <- coverage
-  attr(base, "provenance") <- list(
-    operation = "cube_polygon_weights",
-    package = "oceancube",
-    role = "geometric weights only; no indicator calculation",
-    dimension = dimension,
-    area_method = "sf+s2",
-    crs = "EPSG:4326",
-    bounds_source = list(
-      horizontal = grid$bounds_source,
-      vertical = vertical_source
-    ),
-    n_features = normalized$n_features,
-    n_cells = nrow(grid$cells),
-    n_feature_cell_pairs = normalized$n_features * nrow(grid$cells),
-    n_candidates = calculated$n_candidates,
-    n_intersections = nrow(calculated$overlap),
-    include_zero = include_zero,
-    depth_source = vertical_source,
-    intended_consumer = "spatind or another explicit downstream package"
+  provenance_context <- .provenance_cube_context(
+    source = x$source,
+    dataset_id = x$dataset_id,
+    time = x$time,
+    shape = .cube_shape(x),
+    variables = x$vars,
+    backend = .cube_backend(x),
+    provenance = x$provenance
   )
+  table_shape <- c(rows = as.integer(nrow(base)),
+                   columns = as.integer(ncol(base)))
+  provenance <- .provenance_append(
+    x$provenance,
+    operation = "cube_polygon_weights",
+    parameters = list(
+      requested = list(
+        id_col = id_col,
+        dimension = dimension,
+        depth_bounds = .provenance_compact(depth_bounds),
+        include_zero = include_zero
+      ),
+      resolved = list(
+        geometry = list(
+          crs = normalized$crs,
+          n_features = as.integer(normalized$n_features),
+          geometry_types = normalized$types,
+          bbox = normalized$bbox,
+          dimension = dimension
+        ),
+        horizontal_bounds_source = grid$bounds_source,
+        vertical_bounds_source = vertical_source,
+        n_cells = as.integer(nrow(grid$cells)),
+        output_table_shape = table_shape,
+        role = "geometric weights only; no indicator calculation",
+        intended_consumer = "spatind or another explicit downstream package"
+      )
+    ),
+    output = list(
+      backend = "memory",
+      shape = stats::setNames(as.integer(table_shape), names(table_shape)),
+      variables = x$vars,
+      time_kind = provenance_context$time_kind
+    ),
+    scientific_method = .provenance_method("cube_polygon_weights", list()),
+    context = provenance_context
+  )
+  attr(base, "oceancube_qa") <- list(polygon_weights = list(
+    feature_coverage = coverage,
+    n_feature_cell_pairs = as.integer(
+      normalized$n_features * nrow(grid$cells)
+    ),
+    n_candidates = as.integer(calculated$n_candidates),
+    n_intersections = as.integer(nrow(calculated$overlap))
+  ))
+  attr(base, "oceancube_provenance") <- provenance
+  attr(base, "provenance") <- provenance
   base
 }
 
