@@ -1,5 +1,12 @@
 #' Attach distance to coast to an ocean cube
 #'
+#' Distances are computed on geographic coordinates with the `sf`/S2 spherical
+#' geometry engine. `coast_dist()` enables S2 only for the duration of the
+#' geometry calculation and restores the caller's existing [sf::sf_use_s2()]
+#' setting afterward. For line geometries the result is the shortest distance
+#' to the line; for polygon geometries points inside or on the boundary have
+#' zero distance.
+#'
 #' @param x An `<ocean_cube>` object.
 #' @param coast Either an `sf`/`sfc` object or a path readable by `sf::st_read()`.
 #'
@@ -26,10 +33,11 @@ coast_dist <- function(x, coast) {
   }
 
   coast_sf <- sf::st_transform(sf::st_as_sf(coast_sf), 4326)
-  s2_enabled <- isTRUE(sf::sf_use_s2())
   grid <- expand.grid(lon = x$lon, lat = x$lat)
   pts <- sf::st_as_sf(grid, coords = c("lon", "lat"), crs = 4326)
-  dc_m <- as.numeric(sf::st_distance(pts, sf::st_union(coast_sf)))
+  dc_m <- .with_s2_geometry(function() {
+    as.numeric(sf::st_distance(pts, sf::st_union(coast_sf)))
+  })
   dc_nm <- dc_m * 0.000539957
   dc_mat <- matrix(
     dc_nm,
@@ -63,16 +71,13 @@ coast_dist <- function(x, coast) {
         bbox = bbox,
         input_distance_unit = "m",
         output_distance_unit = "nautical_mile",
-        s2_enabled = s2_enabled,
-        distance_engine = if (s2_enabled) {
-          "sf geographic distance with s2 enabled"
-        } else {
-          "sf geographic distance with s2 disabled"
-        }
+        distance_engine = "s2",
+        earth_model = "sphere",
+        distance_type = "shortest geographic distance"
       )
     ),
     output = .provenance_summary(provenance_context),
-    scientific_method = NULL,
+    scientific_method = .provenance_method("coast_dist", list()),
     context = provenance_context
   )
   x

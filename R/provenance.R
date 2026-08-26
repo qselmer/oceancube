@@ -850,7 +850,7 @@
     cube_mask = "oceancube:cell_center_polygon_mask",
     cube_transect = "oceancube:haversine_transect",
     cube_polygon_weights = "oceancube:s2_polygon_cell_intersection",
-    coast_dist = NULL,
+    coast_dist = "oceancube:s2_coast_distance",
     layer_mean = "oceancube:depth_layer_mean",
     crop_stock = "oceancube:stock_mask",
     NULL

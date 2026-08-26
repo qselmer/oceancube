@@ -20,6 +20,8 @@ code changes by itself.
 - 0.3.0-A4b3a: temporal and multi-input producers plus delegating wrappers migrated to V1
 - 0.3.0-A4b3b: table, geometry, layer, coast, and stock producers migrated to V1
 - 0.3.0-A4-EXIT: Provenance V1 globally certified; A4 closed
+- 0.3.0-A4R: coast distance standardized on locally controlled spherical S2;
+  `A4B3B-001` closed
 - DEC-024: approved for the exact OISST/ETOPO/WOA23 fixture set
 - DEC-019: approved — implemented/certified by A4a through A4-EXIT evidence
 - Public API baseline: 38 exports
@@ -45,11 +47,11 @@ relevant roadmap gate have been satisfied. A row marked `PROPOSED` is not a
 public API promise. Candidate function names remain provisional until a
 separate API and methodological review approves them.
 
-A4-EXIT closes A4 and `A1-003`; it does not complete 0.3.0-A and does not
-satisfy Gate B. The single recommended next subphase is A4R, the coast-distance
-reproducibility contract, because current numerical behavior depends materially
-on external global s2 state. No coast remediation, CF, vertical, lazy-I/O, or
-3-D implementation is authorized by A4-EXIT itself.
+A4R closes `A4B3B-001` by making coast-distance results independent of the
+caller's global s2 state. It does not complete 0.3.0-A and does not satisfy Gate
+B. The single recommended next subphase is A5, the public lazy-NetCDF API
+decision for `A1-004`/`DEC-018`. No CF, vertical, provider, 3-D, or A5 runtime
+implementation is authorized by A4R itself.
 
 ## Change control
 

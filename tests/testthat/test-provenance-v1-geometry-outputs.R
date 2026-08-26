@@ -58,7 +58,7 @@ test_that("polygon V1 is portable and spatind-ready across serialization", {
   expect_false(any(vapply(unclass(provenance), inherits, logical(1L), "sfc")))
 })
 
-test_that("coast provenance records the actual global engine without false s2 method", {
+test_that("coast provenance records the controlled S2 scientific method", {
   skip_if_not_installed("sf")
   x <- .make_baseline_fixture()$cube
   coast <- v1_test_coast()
@@ -74,8 +74,16 @@ test_that("coast provenance records the actual global engine without false s2 me
   expect_identical(serialize(coast, NULL), coast_before)
   expect_true(.provenance_validate(result$provenance, strict = TRUE)$valid)
   expect_identical(operation$operation, "coast_dist")
-  expect_true(operation$parameters$resolved$s2_enabled)
-  expect_match(operation$parameters$resolved$distance_engine, "s2 enabled")
-  expect_null(operation$scientific_method)
+  expect_false("s2_enabled" %in% names(operation$parameters$resolved))
+  expect_identical(operation$parameters$resolved$distance_engine, "s2")
+  expect_identical(operation$parameters$resolved$earth_model, "sphere")
+  expect_identical(
+    operation$parameters$resolved$distance_type,
+    "shortest geographic distance"
+  )
+  expect_identical(
+    operation$scientific_method,
+    list(id = "oceancube:s2_coast_distance", version = "1")
+  )
   expect_identical(result$provenance$time, x$provenance$time)
 })

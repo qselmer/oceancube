@@ -286,6 +286,17 @@ IMPLEMENTED/CERTIFIED. `A4B3B-001` remains open: it does not block A4 closure,
 but its dependence on caller-global s2 state blocks the 0.3.0-A hardening exit.
 0.3.0-A remains incomplete and Gate B remains unsatisfied.
 
+**0.3.0-A4R status (2026-08-26): coast-distance reproducibility contract
+completed.** A deterministic spherical-versus-ellipsoidal comparison found
+measurable but non-pathological differences, and `coast_dist()` now uses the
+existing locally controlled S2 helper. Caller state is restored on success and
+error; initial S2 TRUE/FALSE states produce identical distance output and
+semantic V1 provenance; the normal S2=TRUE result is preserved. The canonical
+method is `oceancube:s2_coast_distance` version 1 and `A4B3B-001` is closed.
+The polygon-interior zero-distance ambiguity is retained as non-blocking S3
+finding `A4R-001`. 0.3.0-A remains incomplete and Gate B remains unsatisfied;
+A5 is next.
+
 No large provider product is added to Git. Proposed source classes are:
 
 | Source class | Contract evidence | Access and fixture policy | CI-safe form |
@@ -497,10 +508,9 @@ Lagrangian particle tracking are outside the core package roadmap.
 
 # Next gate
 
-Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b and
-the complete A4 sequence through A4-EXIT have evidence; A4 is closed. The
-single recommended next subphase is A4R, the coast-distance reproducibility
-contract, before A5, because scientific results currently depend materially on
-caller-global s2 state. 0.3.0-A remains incomplete and Gate B remains
-unsatisfied. This placement does not authorize coast remediation inside
-A4-EXIT or any CF, vertical, lazy-I/O, provider, or 3-D implementation.
+Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b, the
+complete A4 sequence through A4-EXIT, and A4R have evidence; A4 is closed and
+coast distance is reproducible. The single recommended next subphase is A5,
+the public lazy-NetCDF API decision for `A1-004`/`DEC-018`. 0.3.0-A remains
+incomplete and Gate B remains unsatisfied. This placement does not authorize
+CF, vertical, provider, 3-D, or A5 runtime implementation.

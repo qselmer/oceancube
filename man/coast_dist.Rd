@@ -15,5 +15,10 @@ coast_dist(x, coast)
 An \verb{<ocean_cube>} with \code{x$dc} as a \verb{[lon, lat]} matrix in nautical miles.
 }
 \description{
-Attach distance to coast to an ocean cube
+Distances are computed on geographic coordinates with the \code{sf}/S2 spherical
+geometry engine. \code{coast_dist()} enables S2 only for the duration of the
+geometry calculation and restores the caller's existing \code{\link[sf:sf_use_s2]{sf::sf_use_s2()}}
+setting afterward. For line geometries the result is the shortest distance
+to the line; for polygon geometries points inside or on the boundary have
+zero distance.
 }

@@ -116,9 +116,9 @@ schema and A4-EXIT certifies migration, secondary lineages, serialization,
 semantic determinism, privacy, real-data lineage, and cross-output access.
 `DEC-019` remains APPROVED and is now IMPLEMENTED/CERTIFIED by executable
 A4b1/A4b2/A4b3a/A4b3b/A4-EXIT evidence.
-The polygon implementation explicitly enables and restores s2; coast distance
-continues to follow the caller's global `sf_use_s2()` state and therefore uses
-no false scientific-method identifier. `A4B3B-001` remains OPEN: it does not
-block A4 closure, but it does block the 0.3.0-A hardening exit and is assigned
-to the immediately following A4R coast-distance reproducibility contract.
-0.3.0-A and Gate B remain incomplete.
+The polygon implementation explicitly enables and restores s2. A4R now gives
+coast distance the same state-control guarantee: initial TRUE/FALSE states
+produce identical output and semantic provenance, the caller state is restored
+on success and error, and the operation truthfully records
+`oceancube:s2_coast_distance` version 1. `A4B3B-001` is CLOSED. 0.3.0-A and Gate
+B remain incomplete; A5 is next.

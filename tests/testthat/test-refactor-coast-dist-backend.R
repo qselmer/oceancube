@@ -47,7 +47,10 @@ test_that("coast_dist preserves the cube and attaches the baseline dc matrix", {
   expect_identical(result$anomaly, cube$anomaly)
   operation <- tail(result$provenance$history, 1L)[[1L]]
   expect_identical(operation$operation, "coast_dist")
-  expect_null(operation$scientific_method)
+  expect_identical(
+    operation$scientific_method,
+    list(id = "oceancube:s2_coast_distance", version = "1")
+  )
   expect_identical(
     head(result$provenance$history, -1L),
     cube$provenance$history

@@ -212,6 +212,23 @@ clean-source tarball is 2,865,585 bytes; `R CMD check --no-manual` ends
 dependencies, NAMESPACE, the 38-export API, version, and scientific values are
 unchanged.
 
+## A4R coast-distance reproducibility certification
+
+A4R compares spherical S2 and ellipsoidal GeographicLib/PROJ distances on nine
+bounded synthetic cases before selecting the canonical method. The methods are
+measurably different, with 0.006138% to 0.254413% relative difference across
+non-zero cases, but show no pathological behavior. `coast_dist()` now reuses
+`.with_s2_geometry()`, restores the caller's state on success and error, and
+produces identical output and semantic provenance from initial S2 TRUE/FALSE
+states. The ordinary S2=TRUE result remains binary-identical.
+
+The operation emits `oceancube:s2_coast_distance` version 1 and compact
+spherical-S2 semantics. `A4B3B-001` is `CLOSED`. Existing polygon behavior is
+documented and retained; its interior-zero versus boundary-distance ambiguity
+is non-blocking S3 finding `A4R-001`. The principal remaining 0.3.0-A blockers
+are `A1-004`/`DEC-018` and `A1-009`; 0.3.0-A and Gate B remain incomplete. A5
+is the single recommended next subphase.
+
 ## Reproduce the bounded baseline
 
 The normal smoke/standard runner is:

@@ -1,0 +1,10 @@
+"case","latitude_region","distance_scale","coast_geometry","distance_s2_m","distance_ellipsoid_m","absolute_difference_m","relative_difference"
+"equator_short_point","equatorial","short","POINT",1111.95101177484,1113.19490793274,1.243896157896415,0.00111741093049590
+"peru_short_point","Peru -5 to -18","short","POINT",12214.23905148195,12213.48934294870,0.749708533252488,0.0000613836482106829
+"peru_medium_point","Peru -5 to -18","medium","POINT",217529.96540604156,217804.82411623051,274.858710188942496,0.00126194959778423
+"peru_long_point","Peru -5 to -18","long","POINT",1875920.50054479297,1871160.02588815591,4760.474656637059525,0.00254413016031458
+"point_on_coast","Peru -5 to -18","zero","POINT",0,0,0,0
+"peru_linestring","Peru -5 to -18","medium","LINESTRING",217528.53237904137,217803.38933209254,274.856953051174060,0.00126194984336121
+"peru_polygon_outside","Peru -5 to -18","medium","POLYGON",435045.58057112398,435595.28014911752,549.699577993538696,0.00126195026219145
+"peru_polygon_inside","Peru -5 to -18","zero","POLYGON",0,0,0,0
+"peru_multiple_features","Peru -5 to -18","medium","MULTIPLE_LINESTRING_FEATURES",217528.53237904017,217803.38933209254,274.856953052367317,0.00126194984336669
