@@ -43,11 +43,12 @@ test_that("OISST core pipeline is deterministic, private, and serializable", {
   expect_identical(.cube_read(restored), .cube_read(first))
 })
 
-test_that("mixed V1 to legacy temporal output stays usable and normalizable", {
+test_that("core temporal output stays V1 and normalizable", {
   source <- core_runtime_cube()
   aggregated <- suppressWarnings(cube_aggregate_time(source, by = "month"))
-  expect_identical(.provenance_validate(aggregated$provenance)$kind, "legacy")
-  expect_true(identical(aggregated$provenance$parent, source$provenance))
+  expect_identical(.provenance_validate(aggregated$provenance)$kind, "v1")
+  expect_identical(provenance_operations(aggregated), "cube_aggregate_time")
+  expect_null(aggregated$provenance$parent)
   context <- .provenance_cube_context(
     source = aggregated$source, dataset_id = aggregated$dataset_id,
     time = aggregated$time, shape = .cube_shape(aggregated),

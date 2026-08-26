@@ -228,7 +228,7 @@ test_that("all controlled reducers match manual values", {
   }
   summed <- suppressWarnings(cube_aggregate_time(x, "month", method = "sum"))
   expect_identical(
-    summed$provenance$cube_aggregate_time$unit_semantics,
+    provenance_last_operation(summed)$parameters$resolved$unit_semantics,
     "sampled_value_sum"
   )
 })
@@ -311,7 +311,10 @@ test_that("irregular sampling warns once and records equal weighting", {
   expect_match(messages, "equal observation weighting")
   expect_equal(as.vector(result$data), 10)
   expect_true(result$qa$temporal_aggregation$irregular_sampling)
-  expect_identical(result$provenance$cube_aggregate_time$weighting, "equal")
+  expect_identical(
+    provenance_last_operation(result)$parameters$resolved$weighting,
+    "equal_observation"
+  )
 
   regular <- aggregate_test_cube(as.Date("2020-01-01") + 0:2, 1:3)
   regular_result <- expect_no_warning(cube_aggregate_time(regular, "month"))
@@ -349,19 +352,23 @@ test_that("all non-time dimensions, units, and input remain unchanged", {
 test_that("provenance records the frozen aggregation contract", {
   x <- aggregate_test_cube(as.Date("2020-01-01") + 0:1, c(1, 3))
   result <- cube_aggregate_time(x, "month", min_n = 2L, diagnostics = TRUE)
-  record <- result$provenance$cube_aggregate_time
+  record <- provenance_last_operation(result)
 
-  expect_identical(record$operation, "temporal_aggregation")
-  expect_identical(record$by, "month")
-  expect_identical(record$method, "mean")
-  expect_true(record$na.rm)
-  expect_identical(record$min_n, 2L)
-  expect_identical(record$weighting, "equal")
-  expect_identical(record$calendar, "proleptic_gregorian")
-  expect_identical(record$input_time_class, "Date")
-  expect_identical(record$output_time_class, "Date")
-  expect_match(record$period_definition, "calendar year and month")
-  expect_identical(result$provenance$parent, x$provenance)
+  expect_identical(record$operation, "cube_aggregate_time")
+  expect_identical(record$parameters$requested$by, "month")
+  expect_identical(record$parameters$requested$method, "mean")
+  expect_true(record$parameters$requested$na.rm)
+  expect_identical(record$parameters$requested$min_n, 2L)
+  expect_identical(record$parameters$resolved$weighting, "equal_observation")
+  expect_identical(record$parameters$resolved$calendar, "proleptic_gregorian")
+  expect_identical(record$parameters$resolved$input_time_class, "Date")
+  expect_identical(record$parameters$resolved$output_time_class, "Date")
+  expect_match(record$parameters$resolved$period_definition, "calendar year and month")
+  expect_identical(
+    head(result$provenance$history, -1L),
+    x$provenance$history
+  )
+  expect_null(result$provenance$parent)
 })
 
 test_that("to_month delegates built-ins and preserves the compatibility surface", {
@@ -402,10 +409,8 @@ test_that("to_month keeps the warned POSIXct Date exception", {
   expect_s3_class(result$time, "Date")
   expect_equal(as.vector(result$data), 2)
   expect_true(result$qa$to_month$legacy_posixct_date_demotion)
-  expect_identical(
-    result$provenance$extra$compatibility$legacy_posixct_date_demotion,
-    TRUE
-  )
+  expect_identical(provenance_operations(result), "cube_aggregate_time")
+  expect_identical(result$provenance$time$current$class, "Date")
   expect_no_error(cube_validate(result, strict = TRUE))
 })
 
@@ -419,7 +424,8 @@ test_that("to_month custom functions use the deprecated legacy path", {
   expect_equal(as.vector(result$data), 8)
   expect_identical(result$qa$to_month$path, "legacy_custom")
   expect_true(result$qa$to_month$full_cube_materialized)
-  expect_true(result$provenance$extra$compatibility$deprecated)
+  expect_identical(provenance_operations(result), "to_month")
+  expect_true(provenance_last_operation(result)$parameters$resolved$deprecated)
 })
 
 test_that("lazy NetCDF aggregation stays selective and matches memory", {
@@ -495,14 +501,8 @@ test_that("lazy NetCDF aggregation stays selective and matches memory", {
     expect_identical(metrics$physical_values_read, 96, info = name)
     expect_gt(metrics$backend_read_count, 1L)
     expect_identical(
-      from_lazy$provenance$cube_aggregate_time[c(
-        "operation", "by", "method", "weighting", "calendar",
-        "input_time_class", "output_time_class"
-      )],
-      from_memory$provenance$cube_aggregate_time[c(
-        "operation", "by", "method", "weighting", "calendar",
-        "input_time_class", "output_time_class"
-      )],
+      provenance_operation_contract(from_lazy),
+      provenance_operation_contract(from_memory),
       info = name
     )
   }

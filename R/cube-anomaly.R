@@ -257,13 +257,68 @@ cube_anomaly <- function(
     time_class_rule = "exact_identity",
     recurring_key = group_plan$description
   )
-  provenance <- list(
-    parent = list(
-      source = x$provenance,
-      climatology = climatology$provenance
+  output_shape <- stats::setNames(as.integer(dim(output)), .cube_axis_names())
+  provenance_context <- .provenance_cube_context(
+    source = x$source,
+    dataset_id = x$dataset_id,
+    time = x$time,
+    shape = output_shape,
+    variables = x$vars,
+    backend = "memory",
+    provenance = x$provenance
+  )
+  provenance_context$time_kind <- "historical"
+  source_context <- .provenance_cube_context(
+    source = x$source,
+    dataset_id = x$dataset_id,
+    time = x$time,
+    shape = .cube_shape(x),
+    variables = x$vars,
+    backend = .cube_backend(x),
+    provenance = x$provenance
+  )
+  source_context$time_kind <- "historical"
+  merged <- .provenance_merge_lineages(
+    x$provenance,
+    climatology$provenance,
+    roles = "climatology"
+  )
+  inputs <- c(
+    list(list(
+      role = "source",
+      lineage_ref = "primary",
+      entity_ref = .provenance_current_entity(merged$provenance),
+      summary = .provenance_summary(source_context)
+    )),
+    merged$refs
+  )
+  provenance <- .provenance_append(
+    merged$provenance,
+    operation = "cube_anomaly",
+    parameters = list(
+      requested = list(type = type),
+      resolved = list(
+        climatology_by = scientific$by,
+        leap = scientific$leap,
+        baseline_requested = scientific$requested_period,
+        baseline_effective = scientific$effective_period,
+        inner_weighting = scientific$inner_weighting,
+        outer_weighting = scientific$outer_weighting,
+        center = scientific$center,
+        sd_method = scientific$sd_method,
+        zero_sd_policy = "NA",
+        near_zero_sd_policy = "strict_positive",
+        alignment_policy = "exact_identity",
+        units_rule = alignment$units,
+        calendar_rule = "exact_identity",
+        time_class_rule = "exact_identity",
+        recurring_key_semantics = group_plan$description
+      )
     ),
-    cube_anomaly = record,
-    time = .find_time_provenance(x$provenance)
+    inputs = inputs,
+    output = .provenance_summary(provenance_context),
+    scientific_method = .provenance_method("cube_anomaly", record),
+    context = provenance_context
   )
   output_units <- if (identical(type, "difference")) {
     x$units
@@ -579,10 +634,13 @@ cube_anomaly <- function(
   if (!inherits(clim, "ocean_clim")) {
     .anomaly_abort("clim must be an ocean_clim object.")
   }
-  core <- tryCatch(
-    clim$provenance$extra$core,
-    error = function(error) NULL
-  )
+  core <- attr(clim, "oceancube_climatology", exact = TRUE)
+  if (is.null(core)) {
+    core <- tryCatch(
+      clim$provenance$extra$core,
+      error = function(error) NULL
+    )
+  }
   required <- c(
     "type", "by", "group_key", "requested_period", "effective_period",
     "leap", "center", "sd_method", "inner_weighting", "outer_weighting",
@@ -603,26 +661,6 @@ cube_anomaly <- function(
   cycle <- .climatology_cycle_axis(source_time, core$by, core$leap)
   metadata <- core
   metadata$sd <- clim$sd
-  time_provenance <- list(
-    canonical_class = core$output_time_class,
-    canonical_timezone = if (identical(core$output_time_class, "POSIXct")) {
-      "UTC"
-    } else {
-      NA_character_
-    },
-    source_class = core$input_time_class,
-    source_timezone = if (identical(core$input_time_class, "POSIXct")) {
-      "UTC"
-    } else {
-      NA_character_
-    },
-    source_offset = NA_character_,
-    calendar = core$calendar,
-    calendar_defaulted = FALSE,
-    decoder = "oceancube::.anomaly_adapt_ocean_clim",
-    decode_status = "adapted",
-    normalization = "legacy climatology compatibility adapter"
-  )
   ocean_cube(
     lon = clim$lon,
     lat = clim$lat,
@@ -634,10 +672,6 @@ cube_anomaly <- function(
     source = clim$source,
     dataset_id = clim$dataset_id,
     climatology = metadata,
-    provenance = list(
-      parent = clim$provenance,
-      cube_climatology = core,
-      time = time_provenance
-    )
+    provenance = clim$provenance
   )
 }

@@ -264,9 +264,41 @@ cube_aggregate_time <- function(
       "input_units_retained"
     }
   )
-  provenance <- list(
-    parent = x$provenance,
-    cube_aggregate_time = record
+  provenance_context <- .provenance_cube_context(
+    source = x$source,
+    dataset_id = x$dataset_id,
+    time = plan$periods$time,
+    shape = stats::setNames(as.integer(output_shape), .cube_axis_names()),
+    variables = x$vars,
+    backend = "memory",
+    provenance = x$provenance
+  )
+  provenance <- .provenance_append(
+    x$provenance,
+    operation = "cube_aggregate_time",
+    parameters = list(
+      requested = list(
+        by = by,
+        method = method,
+        na.rm = na.rm,
+        min_n = min_n,
+        diagnostics = diagnostics
+      ),
+      resolved = list(
+        weighting = "equal_observation",
+        period_definition = record$period_definition,
+        period_start_convention = record$period_start_convention,
+        irregular_sampling = irregular_sampling,
+        unit_semantics = record$unit_semantics,
+        input_time_class = record$input_time_class,
+        output_time_class = record$output_time_class,
+        calendar = calendar,
+        output_shape = stats::setNames(as.integer(output_shape), .cube_axis_names())
+      )
+    ),
+    output = .provenance_summary(provenance_context),
+    scientific_method = .provenance_method("cube_aggregate_time", record),
+    context = provenance_context
   )
   qa_record <- list(
     by = by,

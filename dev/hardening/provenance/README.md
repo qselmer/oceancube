@@ -1,4 +1,4 @@
-# A4a architecture, A4b1 engine, and A4b2 core-runtime evidence
+# A4a architecture and A4b1–A4b3a runtime evidence
 
 ## Result
 
@@ -10,9 +10,9 @@ the machine-readable audit, candidate comparison, field contract, operation
 mapping, and legacy migration design used to reach that choice.
 
 A4a changed no package runtime. A4b1 added the internal V1 engine and focused
-tests. A4b2 now migrates the linear core cube lifecycle while intentionally
-leaving complex temporal, multi-input, table/geometry, and wrapper producers on
-their legacy shapes for A4b3.
+tests. A4b2 migrated the linear core cube lifecycle. A4b3a now migrates the
+temporal and multi-input engines plus their delegating compatibility wrappers.
+Table and geometry producers remain legacy for A4b3b.
 
 ## Current audit
 
@@ -90,11 +90,16 @@ or per-operation representation.
 - `a4b2-runtime-results.csv` — linear producer, compatibility, real-data,
   serialization, suite, API, and dependency certification;
 - `a4b2-growth.csv` — 1/3/5/10-operation flat-history serialization evidence.
+- `a4b3a-runtime-results.csv` — temporal, multi-input, wrapper, time-kind,
+  parity, serialization, privacy, OISST, API, and dependency certification;
+- `a4b3a-growth.csv` — representative V1 temporal/multi-input growth against
+  the 19,453-byte A4a legacy reference.
 
 ## Status
 
-`A1-003` remains `PARTIALLY-CLOSED`: the design, core engine, legacy
-normalization, and linear core runtime rollout now exist, but complex temporal,
-multi-input, table/geometry, and wrapper rollout remains A4b3. `DEC-019` remains
-APPROVED and is backed by the exact V1 design plus executable A4b1/A4b2
-evidence. 0.3.0-A and Gate B remain incomplete.
+`A1-003` remains `PARTIALLY-CLOSED`: the design, core engine, linear core,
+temporal, multi-input, and temporal-wrapper rollout now exist. The exact legacy
+remainder is `cube_extract`, `cube_transect`, `cube_polygon_weights`,
+`layer_mean`, `coast_dist`, and `crop_stock`, deferred to A4b3b. `DEC-019`
+remains APPROVED and is backed by executable A4b1/A4b2/A4b3a evidence. 0.3.0-A
+and Gate B remain incomplete.

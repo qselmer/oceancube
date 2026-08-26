@@ -138,6 +138,27 @@ primary parent through that temporary mixed state and normalizes it without
 lineage loss. `A1-003` remains `PARTIALLY-CLOSED`; `DEC-019` remains APPROVED.
 Neither 0.3.0-A nor Gate B is complete.
 
+## A4b3a temporal and multi-input provenance migration
+
+A4b3a migrates `cube_aggregate_time()`, `cube_climatology()`,
+`cube_anomaly()`, `signal_noise()`, and `cube_trend()` to bounded V1 operation
+records. Anomaly keeps its source in the primary history and registers the
+climatology once as a role-labelled secondary lineage. The compatibility
+wrappers `to_month()`, `clim_month()`, `clim_day()`, `anom_diff()`, and
+`anom_z()` reuse the delegated canonical operation without duplication;
+`signal_noise()` records its real transformation after standardized anomaly.
+
+Synthetic and governed OISST tests certify historical, recurring-climatology,
+restored-historical, and trend-anchor time transitions; input non-mutation;
+memory/NetCDF numerical parity; QA retention; semantic determinism; RDS
+roundtrips; privacy; and single-copy multi-input growth. The final representative
+V1 chain is 19,511 bytes versus the 19,453-byte recursive A4a reference; the
+criterion is bounded scaling, not a tiny-object size win. The remaining legacy
+producers are exactly `cube_extract`, `cube_transect`,
+`cube_polygon_weights`, `layer_mean`, `coast_dist`, and `crop_stock`.
+`A1-003` remains `PARTIALLY-CLOSED`, `DEC-019` remains APPROVED, and A4b3b is
+still required. Neither 0.3.0-A nor Gate B is complete.
+
 ## Reproduce the bounded baseline
 
 The normal smoke/standard runner is:

@@ -289,7 +289,45 @@ cube_trend <- function(
   )
   qa <- list(trend = qa_record)
   if (!is.null(x$qa)) qa$parent <- x$qa
-  provenance <- list(parent = x$provenance, cube_trend = trend_record)
+  provenance_context <- .provenance_cube_context(
+    source = x$source,
+    dataset_id = x$dataset_id,
+    time = anchor,
+    shape = stats::setNames(as.integer(output_shape), .cube_axis_names()),
+    variables = x$vars,
+    backend = "memory",
+    provenance = x$provenance
+  )
+  provenance_context$time_kind <- "trend_anchor"
+  provenance <- .provenance_append(
+    x$provenance,
+    operation = "cube_trend",
+    parameters = list(
+      requested = list(
+        method = method,
+        period = reference$requested,
+        time_unit = time_unit,
+        min_n = as.integer(min_n),
+        diagnostics = diagnostics
+      ),
+      resolved = list(
+        period_effective = reference$effective,
+        time_basis = "elapsed",
+        internal_time_unit = "second",
+        output_time_unit = time_unit,
+        seconds_per_output_unit = seconds_per_unit,
+        finite_value_policy = "is.finite",
+        observation_weighting = "equal_observation",
+        time_spacing = if (time_spacing_regular) "regular" else "irregular",
+        inference = "none",
+        time_anchor = anchor,
+        time_anchor_semantics = time_anchor_semantics
+      )
+    ),
+    output = .provenance_summary(provenance_context),
+    scientific_method = .provenance_method("cube_trend", trend_record),
+    context = provenance_context
+  )
 
   result <- ocean_cube(
     lon = x$lon,

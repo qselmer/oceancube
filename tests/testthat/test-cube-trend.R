@@ -210,7 +210,10 @@ test_that("periods are inclusive, clipped once, and retained", {
   inside <- cube_trend(x, period = time[c(2, 4)], time_unit = "day")
   expect_equal(trend_scalar(inside), 1)
   expect_identical(inside$qa$trend$period_effective, time[c(2, 4)])
-  expect_identical(inside$provenance$cube_trend$selected_timestamp_range, time[c(2, 4)])
+  expect_identical(
+    provenance_last_operation(inside)$parameters$resolved$period_effective,
+    time[c(2, 4)]
+  )
 
   expect_warning(
     left <- cube_trend(x, period = c(time[[1L]] - 10, time[[3L]]), time_unit = "day"),
@@ -338,11 +341,12 @@ test_that("trend outputs validate, inspect, serialize, and plot as maps", {
 test_that("QA and provenance are compact, explicit, and retain the parent", {
   time <- as.Date(c("2000-01-01", "2000-01-03", "2000-01-08"))
   x <- trend_test_cube(time, c(1, 2, 4))
-  x$provenance$provider <- "offline"
-  x$provenance$request <- "trend-test"
+  x$provenance$extensions$user <- list(
+    provider = "offline", request = "trend-test"
+  )
   result <- cube_trend(x, time_unit = "day", diagnostics = TRUE)
   qa <- result$qa$trend
-  provenance <- result$provenance$cube_trend
+  provenance <- provenance_last_operation(result)
 
   expect_identical(qa$method, "linear")
   expect_identical(qa$time_basis, "elapsed_seconds")
@@ -352,13 +356,14 @@ test_that("QA and provenance are compact, explicit, and retain the parent", {
   expect_identical(qa$cells_fitted, 1)
   expect_identical(qa$backend$scientific_passes, 1L)
   expect_true(qa$backend$final_output_materialized)
-  expect_identical(provenance$operation, "trend")
-  expect_identical(provenance$time_basis, "actual_elapsed_time")
-  expect_identical(provenance$internal_time_unit, "second")
-  expect_identical(provenance$finite_value_policy, "is.finite")
-  expect_identical(provenance$observation_weighting, "equal_observation")
-  expect_identical(provenance$inference, FALSE)
-  expect_identical(result$provenance$parent, x$provenance)
+  expect_identical(provenance$operation, "cube_trend")
+  expect_identical(provenance$parameters$resolved$time_basis, "elapsed")
+  expect_identical(provenance$parameters$resolved$internal_time_unit, "second")
+  expect_identical(provenance$parameters$resolved$finite_value_policy, "is.finite")
+  expect_identical(provenance$parameters$resolved$observation_weighting, "equal_observation")
+  expect_identical(provenance$parameters$resolved$inference, "none")
+  expect_null(result$provenance$parent)
+  expect_identical(result$provenance$time$current$kind, "trend_anchor")
   expect_false(any(vapply(qa, is.array, logical(1L))))
   expect_false(any(vapply(provenance, is.array, logical(1L))))
 })
@@ -410,8 +415,8 @@ test_that("lazy NetCDF trend is bounded, one-pass, and matches memory science", 
   memory_science$backend <- NULL
   expect_identical(lazy_science, memory_science)
   expect_identical(
-    lazy_result$provenance$cube_trend,
-    memory_result$provenance$cube_trend
+    provenance_operation_contract(lazy_result),
+    provenance_operation_contract(memory_result)
   )
 
   metrics <- lazy_result$qa$trend$backend

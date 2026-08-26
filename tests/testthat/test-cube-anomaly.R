@@ -49,7 +49,10 @@ anomaly_set_calendar <- function(x, calendar) {
 
 anomaly_set_climatology_calendar <- function(x, calendar) {
   x$climatology$calendar <- calendar
-  x$provenance$time$calendar <- calendar
+  x$provenance$time$current$calendar <- calendar
+  if (!is.null(x$provenance$time$source)) {
+    x$provenance$time$source$calendar <- calendar
+  }
   x
 }
 
@@ -477,18 +480,17 @@ test_that("output preserves source contract QA provenance and serialization", {
     difference$qa$anomaly$counts$source_values,
     prod(dim(x$data))
   )
+  anomaly_record <- provenance_last_operation(difference)
+  expect_identical(anomaly_record$operation, "cube_anomaly")
   expect_identical(
-    difference$provenance$cube_anomaly$operation,
-    "anomaly"
+    vapply(anomaly_record$inputs, `[[`, character(1L), "role"),
+    c("source", "climatology")
   )
-  expect_identical(
-    difference$provenance$parent$source,
-    x$provenance
-  )
-  expect_identical(
-    difference$provenance$parent$climatology,
-    climatology$provenance
-  )
+  expect_identical(anomaly_record$inputs[[1L]]$lineage_ref, "primary")
+  expect_identical(anomaly_record$inputs[[2L]]$lineage_ref, "lineage_001")
+  expect_length(difference$provenance$lineages, 1L)
+  expect_null(difference$provenance$parent)
+  expect_identical(difference$provenance$time$current$kind, "historical")
 
   file <- tempfile(fileext = ".rds")
   on.exit(unlink(file), add = TRUE)
@@ -628,7 +630,7 @@ test_that("legacy anomaly wrappers delegate and preserve compatibility class", {
   expect_identical(z$units, c(temperature = "1"))
 
   historical <- clim
-  historical$provenance$extra$core <- NULL
+  attr(historical, "oceancube_climatology") <- NULL
   expect_error(anom_diff(x, historical), "Recompute with")
   expect_error(anom_z(x, historical), "Recompute with")
 })

@@ -4,7 +4,7 @@
   cube$dataset_id <- "temporal-fixture"
   cube$mask <- list(id = "mask-fixture")
   cube$dc <- matrix(seq_len(6), nrow = 3, ncol = 2)
-  cube$provenance$step <- "input"
+  cube$provenance$extensions$user <- list(step = "input")
   cube$qa <- list(status = "raw")
   cube
 }
@@ -60,7 +60,8 @@ test_that("to_month preserves monthly calculations, structure, and metadata poli
   expect_identical(monthly$depth_extent, cube$depth_extent)
   expect_identical(monthly$mask, cube$mask)
   expect_identical(monthly$dc, cube$dc)
-  expect_identical(monthly$provenance$extra$parent, cube$provenance)
+  expect_identical(provenance_operations(monthly), "cube_aggregate_time")
+  expect_null(monthly$provenance$parent)
   expect_identical(monthly$qa$parent, cube$qa)
   expect_true(monthly$qa$to_month$core_delegated)
   expect_identical(
@@ -125,7 +126,9 @@ test_that("clim_month preserves independent monthly statistics and structure", {
   expect_identical(clim$units, cube$units)
   expect_identical(clim$source, cube$source)
   expect_identical(clim$dataset_id, cube$dataset_id)
-  expect_identical(clim$provenance$extra$parent, cube$provenance)
+  expect_identical(provenance_operations(list(provenance = clim$provenance)),
+                   "cube_climatology")
+  expect_null(clim$provenance$parent)
   expect_match(capture.output(print(clim))[1], "month climatology", fixed = TRUE)
   expect_identical(cube, before)
 })
@@ -229,7 +232,9 @@ test_that("absolute and standardized anomalies remain structurally and numerical
   expect_identical(difference$climatology, clim)
   expect_identical(difference$anomaly$method, "difference")
   expect_identical(z_score$anomaly$method, "z_score")
-  expect_identical(difference$provenance$extra$parent, cube$provenance)
+  expect_identical(provenance_operations(difference), "cube_anomaly")
+  expect_length(difference$provenance$lineages, 1L)
+  expect_null(difference$provenance$parent)
   expect_true(is.list(difference$qa))
   expect_true(is.list(difference$qa$anomaly))
   expect_identical(.cube_backend(difference), "memory")

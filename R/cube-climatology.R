@@ -293,7 +293,47 @@ cube_climatology <- function(
   record$partial_edge_periods <- plan$period_summary$source_period_start[
     plan$period_summary$partial & plan$period_summary$included
   ]
-  provenance <- list(parent = x$provenance, cube_climatology = record)
+  provenance_context <- .provenance_cube_context(
+    source = x$source,
+    dataset_id = x$dataset_id,
+    time = cycle$time,
+    shape = stats::setNames(as.integer(output_shape), .cube_axis_names()),
+    variables = x$vars,
+    backend = "memory",
+    provenance = x$provenance
+  )
+  provenance_context$time_kind <- "recurring_climatology"
+  provenance <- .provenance_append(
+    x$provenance,
+    operation = "cube_climatology",
+    parameters = list(
+      requested = list(
+        by = by,
+        period = reference$requested,
+        leap = if (identical(by, "day")) leap else NA_character_,
+        min_n = min_n,
+        diagnostics = diagnostics
+      ),
+      resolved = list(
+        period_effective = reference$effective,
+        period_clipped = reference$clipped,
+        center = metadata$center,
+        sd_method = metadata$sd_method,
+        inner_weighting = metadata$inner_weighting,
+        outer_weighting = metadata$outer_weighting,
+        cycle = by,
+        cycle_anchor = cycle$anchor,
+        irregular_sampling = irregular_sampling,
+        calendar = calendar,
+        input_time_class = metadata$input_time_class,
+        output_time_class = metadata$output_time_class,
+        output_shape = stats::setNames(as.integer(output_shape), .cube_axis_names())
+      )
+    ),
+    output = .provenance_summary(provenance_context),
+    scientific_method = .provenance_method("cube_climatology", record),
+    context = provenance_context
+  )
   qa_record <- list(
     diagnostics = diagnostics,
     n_clim_total = plan$n_clim_total,

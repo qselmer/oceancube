@@ -127,19 +127,20 @@ test_that("signal_noise records a compact transformation over canonical QA", {
       transformation = "identity"
     )
   )
-  expect_identical(magnitude$provenance$cube_anomaly, z$provenance$cube_anomaly)
+  expect_identical(provenance_operations(z), "cube_anomaly")
   expect_identical(
-    magnitude$provenance$signal_noise,
-    list(
-      operation = "signal_noise",
-      base_operation = "standardized_anomaly",
-      signed = FALSE,
-      transformation = "absolute_value"
-    )
+    provenance_operations(magnitude),
+    c("cube_anomaly", "signal_noise")
+  )
+  signal_record <- provenance_last_operation(magnitude)
+  expect_identical(signal_record$parameters$requested$signed, FALSE)
+  expect_identical(
+    signal_record$parameters$resolved$transformation,
+    "absolute_value"
   )
   expect_false(any(vapply(magnitude$qa$signal_noise, is.array, logical(1L))))
   expect_false(any(vapply(
-    magnitude$provenance$signal_noise, is.array, logical(1L)
+    signal_record$parameters, is.array, logical(1L)
   )))
 })
 
@@ -284,8 +285,8 @@ test_that("canonical alignment errors propagate through signal_noise", {
   expect_error(signal_noise(x, changed_units), "match exactly")
 
   changed_calendar <- clim
-  changed_calendar$provenance$extra$core$calendar <- "gregorian"
-  expect_error(signal_noise(x, changed_calendar), "calendars")
+  attr(changed_calendar, "oceancube_climatology")$calendar <- "gregorian"
+  expect_error(signal_noise(x, changed_calendar), "calendar")
 
   posix_x <- signal_noise_test_cube(
     as.POSIXct(time, tz = "UTC"), seq_len(32),
@@ -299,7 +300,7 @@ test_that("canonical alignment errors propagate through signal_noise", {
   expect_error(signal_noise(posix_x, clim), "time class")
 
   incomplete <- clim
-  incomplete$provenance$extra$core <- NULL
+  attr(incomplete, "oceancube_climatology") <- NULL
   expect_error(signal_noise(x, incomplete), "Recompute with")
 })
 
@@ -352,12 +353,12 @@ test_that("memory and lazy NetCDF modes are equal with one source computation", 
   expect_identical(lazy_magnitude$anomaly, memory_magnitude$anomaly)
   expect_identical(lazy_signed$anomaly, memory_signed$anomaly)
   expect_identical(
-    lazy_magnitude$provenance$signal_noise,
-    memory_magnitude$provenance$signal_noise
+    provenance_operation_contract(lazy_magnitude),
+    provenance_operation_contract(memory_magnitude)
   )
   expect_identical(
-    lazy_signed$provenance$signal_noise,
-    memory_signed$provenance$signal_noise
+    provenance_operation_contract(lazy_signed),
+    provenance_operation_contract(memory_signed)
   )
 
   magnitude_metrics <- lazy_magnitude$qa$anomaly$backend

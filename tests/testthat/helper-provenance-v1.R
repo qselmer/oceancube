@@ -26,6 +26,24 @@ provenance_test_v1 <- function(operation = "read_nc",
   )
 }
 
+provenance_operations <- function(x) {
+  vapply(x$provenance$history, `[[`, character(1L), "operation")
+}
+
+provenance_last_operation <- function(x) {
+  x$provenance$history[[length(x$provenance$history)]]
+}
+
+provenance_operation_contract <- function(x) {
+  record <- provenance_last_operation(x)
+  list(
+    operation = record$operation,
+    parameters = record$parameters,
+    output = record$output[setdiff(names(record$output), c("entity_ref", "backend"))],
+    scientific_method = record$scientific_method
+  )
+}
+
 core_runtime_cube <- function(provenance = NULL, qa = list(marker = "kept")) {
   ocean_cube(
     lon = c(-80, -79), lat = c(-12, -11), depth = 0,

@@ -79,9 +79,27 @@ signal_noise <- function(x, clim, signed = FALSE) {
     transformation = transformation
   )
   result$qa$signal_noise <- signal_metadata
-  result$provenance$signal_noise <- c(
-    list(operation = "signal_noise"),
-    signal_metadata
+  provenance_context <- .provenance_cube_context(
+    source = result$source,
+    dataset_id = result$dataset_id,
+    time = result$time,
+    shape = .cube_shape(result),
+    variables = result$vars,
+    backend = .cube_backend(result),
+    provenance = result$provenance
+  )
+  result$provenance <- .provenance_append(
+    result$provenance,
+    operation = "signal_noise",
+    parameters = list(
+      requested = list(signed = signed),
+      resolved = signal_metadata
+    ),
+    output = .provenance_summary(provenance_context),
+    scientific_method = .provenance_method(
+      "signal_noise", list(signed = signed)
+    ),
+    context = provenance_context
   )
   result
 }
@@ -91,7 +109,6 @@ signal_noise <- function(x, clim, signed = FALSE) {
   canonical <- .anomaly_adapt_ocean_clim(clim)
   result <- cube_anomaly(x, canonical, type = type)
   result$climatology <- clim
-  result$provenance$extra$parent <- x$provenance
   result$anomaly$method <- if (identical(type, "difference")) {
     "difference"
   } else {

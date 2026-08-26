@@ -226,8 +226,6 @@
   if (!identical(.provenance_validate(provenance)$kind, "legacy")) return(FALSE)
   deferred_operations <- c(
     "cube_extract", "cube_transect", "cube_polygon_weights",
-    "cube_aggregate_time", "cube_climatology", "cube_anomaly",
-    "signal_noise", "cube_trend", "to_month", "clim_month", "clim_day",
     "layer_mean", "coast_dist", "crop_stock"
   )
   any(names(provenance) %in% deferred_operations) ||
@@ -856,6 +854,7 @@
       "oceancube:absolute_standardized_z"
     },
     cube_trend = "oceancube:ols_elapsed_time_linear",
+    to_month = "oceancube:legacy_custom_month",
     cube_mask = "oceancube:cell_center_polygon_mask",
     cube_transect = "oceancube:haversine_transect",
     coast_dist = "oceancube:s2_coast_distance",

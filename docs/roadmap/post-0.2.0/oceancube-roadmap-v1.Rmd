@@ -257,6 +257,16 @@ a narrow compatibility bridge that preserves and later normalizes a V1 primary
 parent without lineage loss. `A1-003` remains partially closed and `DEC-019`
 remains approved. This does not complete 0.3.0-A or satisfy Gate B.
 
+**0.3.0-A4b3a status (2026-08-26): temporal and multi-input provenance
+migration completed.** Aggregate, climatology, anomaly, signal/noise, and trend
+now append canonical V1 records. Anomaly registers one role-labelled secondary
+climatology lineage, temporal wrappers do not duplicate delegated operations,
+and historical/recurring/trend-anchor transitions are executable contracts.
+The remaining legacy producers are `cube_extract`, `cube_transect`,
+`cube_polygon_weights`, `layer_mean`, `coast_dist`, and `crop_stock`, deferred
+to A4b3b. `A1-003` remains partially closed and `DEC-019` remains approved.
+This does not complete 0.3.0-A or satisfy Gate B.
+
 No large provider product is added to Git. Proposed source classes are:
 
 | Source class | Contract evidence | Access and fixture policy | CI-safe form |
@@ -469,7 +479,7 @@ Lagrangian particle tracking are outside the core package roadmap.
 # Next gate
 
 Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b/A4a,
-A4b1, and A4b2 evidence is complete. The single preferred next subphase is
-A4b3, complex, multi-input, table/geometry, and wrapper provenance migration.
+A4b1, A4b2, and A4b3a evidence is complete. The single preferred next subphase
+is A4b3b, table, geometry, and remaining producer provenance migration.
 0.3.0-A remains incomplete and must not advance to CF, vertical, lazy-I/O, or
-3-D implementation through A4b2 evidence alone.
+3-D implementation through A4b3a evidence alone.

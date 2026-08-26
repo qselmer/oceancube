@@ -7,6 +7,7 @@ test_that("offline OISST workflow normalizes without paths or host identity", {
     raw, longitude = range(raw$lon), latitude = range(raw$lat)
   )
   aggregated <- suppressWarnings(cube_aggregate_time(cropped, by = "month"))
+  trend <- cube_trend(cropped, time_unit = "day", min_n = 3L)
   context <- list(
     source = aggregated$source, dataset_id = aggregated$dataset_id,
     time = aggregated$time, backend = "memory",
@@ -24,6 +25,12 @@ test_that("offline OISST workflow normalizes without paths or host identity", {
     "decode_status", "normalization"
   ) %in% names(provenance$time$source)))
   expect_true(oceancube:::.provenance_validate(provenance, strict = TRUE)$valid)
+  expect_identical(provenance_operations(trend),
+                   c("read_nc", "cube_crop", "cube_trend"))
+  expect_identical(trend$provenance$time$current$kind, "trend_anchor")
+  expect_true(oceancube:::.provenance_validate(
+    trend$provenance, strict = TRUE
+  )$valid)
   text <- paste(capture.output(dput(
     oceancube:::.provenance_semantic(provenance)
   )), collapse = "")

@@ -98,7 +98,7 @@ test_that("multi-lineage provenance survives serialization semantically", {
                    oceancube:::.provenance_semantic(merged$provenance))
 })
 
-test_that("current legacy anomaly normalizes to a flat two-lineage graph", {
+test_that("current anomaly is a flat two-lineage V1 graph", {
   time <- as.Date(c("2020-01-01", "2021-01-01"))
   x <- ocean_cube(
     lon = -80, lat = -12, depth = 0, time = time,
@@ -118,7 +118,7 @@ test_that("current legacy anomaly normalizes to a flat two-lineage graph", {
   expect_identical(vapply(migrated$history[[1]]$inputs, `[[`, character(1), "role"),
                    c("source", "climatology"))
   expect_true(oceancube:::.provenance_validate(migrated, strict = TRUE)$valid)
-  expect_null(anomaly$provenance$schema_version)
+  expect_identical(anomaly$provenance$schema_version, "1.0.0")
   expect_identical(length(migrated$history), 1L)
   expect_identical(length(migrated$lineages[[1]]$history), 1L)
   expect_lt(length(serialize(migrated, NULL)),

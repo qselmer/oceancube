@@ -88,18 +88,7 @@ to_month <- function(x, fun = mean) {
     core_delegated = TRUE,
     legacy_posixct_date_demotion = legacy_demotion
   )
-  provenance <- .make_provenance(
-    "to_month",
-    args = list(fun = method),
-    extra = list(
-      parent = x$provenance,
-      core = aggregated$provenance,
-      compatibility = compatibility
-    )
-  )
-  if (legacy_demotion) {
-    provenance$time <- .to_month_legacy_time_provenance(x)
-  }
+  provenance <- aggregated$provenance
   qa <- aggregated$qa
   qa$to_month <- compatibility
 
@@ -153,6 +142,35 @@ to_month <- function(x, fun = mean) {
     out[, , , i, ] <- apply(sub, c(1, 2, 3, 5), function(z) fun(z, na.rm = TRUE))
   }
 
+  output_shape <- stats::setNames(as.integer(dim(out)), .cube_axis_names())
+  provenance_context <- .provenance_cube_context(
+    source = x$source,
+    dataset_id = x$dataset_id,
+    time = month_dates,
+    shape = output_shape,
+    variables = x$vars,
+    backend = "memory",
+    provenance = x$provenance
+  )
+  provenance <- .provenance_append(
+    x$provenance,
+    operation = "to_month",
+    parameters = list(
+      requested = list(fun = "custom"),
+      resolved = list(
+        compatibility_path = "legacy_custom",
+        full_cube_materialized = TRUE,
+        legacy_posixct_date_demotion = legacy_demotion,
+        deprecated = TRUE,
+        period_definition = "calendar month",
+        period_start_convention = "first calendar day"
+      )
+    ),
+    output = .provenance_summary(provenance_context),
+    scientific_method = .provenance_method("to_month", list()),
+    context = provenance_context
+  )
+
   ocean_cube(
     lon = x$lon,
     lat = x$lat,
@@ -168,26 +186,7 @@ to_month <- function(x, fun = mean) {
     depth_extent = x$depth_extent,
     mask = x$mask,
     dc = x$dc,
-    provenance = {
-      provenance <- .make_provenance(
-        "to_month",
-        args = list(fun = "custom"),
-        extra = list(
-          parent = x$provenance,
-          compatibility = list(
-            operation = "to_month_legacy_custom",
-            core_delegated = FALSE,
-            full_cube_materialized = TRUE,
-            legacy_posixct_date_demotion = legacy_demotion,
-            deprecated = TRUE
-          )
-        )
-      )
-      if (legacy_demotion) {
-        provenance$time <- .to_month_legacy_time_provenance(x)
-      }
-      provenance
-    },
+    provenance = provenance,
     qa = list(
       parent = x$qa,
       to_month = list(
@@ -196,22 +195,5 @@ to_month <- function(x, fun = mean) {
         deprecated = TRUE
       )
     )
-  )
-}
-
-.to_month_legacy_time_provenance <- function(x) {
-  source <- .find_time_provenance(x$provenance)
-  list(
-    canonical_class = "Date",
-    canonical_timezone = NA_character_,
-    source_class = "POSIXct",
-    source_timezone = .time_timezone(x$time),
-    source_offset = unique(format(x$time, "%z", tz = "UTC")),
-    calendar = source$calendar %||% "proleptic_gregorian",
-    source_calendar = source$calendar %||% "proleptic_gregorian",
-    calendar_defaulted = source$calendar_defaulted %||% FALSE,
-    decoder = "oceancube::to_month",
-    decode_status = "decoded",
-    normalization = "legacy monthly POSIXct period starts demoted to Date"
   )
 }

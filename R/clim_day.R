@@ -57,17 +57,10 @@ clim_day <- function(x, period = NULL, leap = c("feb28", "drop", "keep"), min_n 
     units = x$units,
     source = x$source,
     dataset_id = x[["dataset_id"]],
-    provenance = .make_provenance(
-      "clim_day",
-      args = list(
-        period = core$climatology$effective_period,
-        leap = leap,
-        min_n = as.integer(min_n)
-      ),
-      extra = list(parent = x$provenance, core = core$provenance$cube_climatology)
-    )
+    provenance = core$provenance
   )
 
+  attr(out, "oceancube_climatology") <- core$climatology
   class(out) <- c("ocean_clim", "list")
   out
 }

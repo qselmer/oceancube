@@ -1,0 +1,8 @@
+"stage","history_operations","secondary_lineages","serialized_bytes","interpretation"
+"read",1,0,2071,"flat primary history"
+"crop",2,0,4194,"one bounded primary append"
+"aggregate",3,0,6253,"one bounded temporal append"
+"climatology",4,0,8579,"recurring-time operation without diagnostic arrays"
+"anomaly",4,1,17367,"primary history plus one registered climatology lineage"
+"trend",5,1,19511,"one bounded append; secondary lineage remains single-copy"
+"legacy_final_reference",NA,NA,19453,"A4a recursive read-crop-aggregate-climatology-anomaly-trend reference"

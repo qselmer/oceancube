@@ -41,13 +41,10 @@ clim_month <- function(x, period = NULL) {
     units = x$units,
     source = x$source,
     dataset_id = x[["dataset_id"]],
-    provenance = .make_provenance(
-      "clim_month",
-      args = list(period = core$climatology$effective_period),
-      extra = list(parent = x$provenance, core = core$provenance$cube_climatology)
-    )
+    provenance = core$provenance
   )
 
+  attr(out, "oceancube_climatology") <- core$climatology
   class(out) <- c("ocean_clim", "list")
   out
 }
