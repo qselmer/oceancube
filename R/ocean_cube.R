@@ -203,6 +203,8 @@ print.ocean_cube <- function(x, ...) {
     range(x$depth, na.rm = TRUE)
   }
   cat("<ocean_cube>\n")
+  cat("  backend    : ", .cube_backend(x), "\n", sep = "")
+  cat("  source     : ", x$source %||% "<unspecified>", "\n", sep = "")
   cat("  dimensions : ", paste(cube_shape, collapse = " x "), " [lon x lat x depth x time x var]\n", sep = "")
   cat("  lon        : ", min(x$lon), " to ", max(x$lon), " (n = ", length(x$lon), ")\n", sep = "")
   cat("  lat        : ", min(x$lat), " to ", max(x$lat), " (n = ", length(x$lat), ")\n", sep = "")

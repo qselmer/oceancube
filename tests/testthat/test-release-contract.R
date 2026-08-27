@@ -24,6 +24,8 @@ test_that("the public API surface includes the approved 0.2 additions", {
     cube_inspect = c("x", "missing"),
     cube_layer_thickness = c("x", "depth_bounds", "unit"),
     cube_mask = c("x", "polygons", "crs", "keep", "boundary"),
+    cube_open = c("file", "vars", "lon_name", "lat_name", "depth_name",
+                  "time_name", "source", "dataset_id"),
     cube_polygon_weights = c("x", "polygons", "id_col", "crs",
                              "dimension", "depth_bounds", "include_zero"),
     cube_slice = c("x", "longitude", "latitude", "depth", "time",

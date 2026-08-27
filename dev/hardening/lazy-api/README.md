@@ -466,3 +466,39 @@ prototype.
 The single next subphase is **A5b — PUBLIC DEFERRED NETCDF API
 IMPLEMENTATION**. A5a does not authorize A5b execution, A6, CF, provider APIs,
 vertical science, regridding, 3-D work, or a merge to main.
+
+## A5b implementation certification
+
+A5b implements the exact DEC-018 signature as the sole new public export.
+`cube_open()` delegates to `.new_netcdf_storage()` and
+`.new_netcdf_cube()`; no dimension, decoding, connection, identity, or
+provenance logic is duplicated. The storage constructor now accepts
+`variables = NULL`, discovers `nc$var` entries in source order after excluding
+dimension-coordinate variables, and subjects the complete result to the same
+compatibility validation as an explicit selection. Discovery and construction
+read coordinates but never invoke scientific block-read machinery.
+
+The public regression suite covers explicit and discovered variables, empty
+discovery, incompatible grids and vertical mixes, local-resource errors,
+print/summary/inspection privacy, validation, RDS restore, moved/changed source
+errors, bounded slice/crop/extract/transect paths, temporal paths, coast-distance
+backend preservation, and governed offline OISST eager parity. The packed
+synthetic eager `missing_value` difference remains an explicitly expected
+parser debt; no eager behavior was changed.
+
+Consequently, `DEC-018` is **APPROVED — IMPLEMENTED/CERTIFIED** and `A1-004`
+is **CLOSED**. The package has 39 exports, with `cube_open` as the only new
+name. `read_nc()` remains eager and unchanged, Version remains 0.2.0.9000,
+dependencies are unchanged, and 0.3.0-A remains incomplete because `A1-009`
+peak-memory/stress evidence remains open. The single next subphase is **A6 —
+PEAK MEMORY, STRESS AND HARDENING PERFORMANCE CERTIFICATION**; A5b does not
+execute it.
+
+The final local suite contains 62 files, 612 cases and 4,979 expectations. It
+completed in 481.18 seconds with zero failures, errors, warnings, or skips.
+The bounded performance smoke is recorded in `a5b-runtime-results.csv`; it is a
+regression indicator and makes no broad performance claim. A clean-snapshot
+`R CMD build` passed after the direct build encountered only the known Codex
+Git-ref copy limitation; `R CMD check --no-manual` completed with `Status: OK`
+(0 errors, 0 warnings, 0 notes). The installed package exposes
+`oceancube::cube_open`, its help topic, and exactly 39 exports.

@@ -23,11 +23,13 @@ code changes by itself.
 - 0.3.0-A4R: coast distance standardized on locally controlled spherical S2;
   `A4B3B-001` closed
 - 0.3.0-A5a: `cube_open()` approved as the one experimental public entry for
-  local read-only deferred NetCDF; implementation remains A5b
+  local read-only deferred NetCDF
+- 0.3.0-A5b: exact `cube_open()` contract implemented and certified; `read_nc()`
+  remains eager
 - DEC-024: approved for the exact OISST/ETOPO/WOA23 fixture set
 - DEC-019: approved — implemented/certified by A4a through A4-EXIT evidence
-- DEC-018: approved by A5a; `A1-004` is partially closed pending A5b
-- Public API baseline: 38 exports
+- DEC-018: approved — implemented/certified by A5b; `A1-004` closed
+- Public API: 39 exports; `cube_open` is the sole A5b addition
 - Runtime producer migrations: all identified producers complete and globally certified
 
 The historical `docs/roadmap/oceancube-v0.2.0-scope.Rmd` and the audit,
@@ -50,14 +52,13 @@ relevant roadmap gate have been satisfied. A row marked `PROPOSED` is not a
 public API promise. Candidate function names remain provisional until a
 separate API and methodological review approves them.
 
-A5a approves `cube_open()` as one experimental public source-opening primitive
-for the existing local read-only deferred NetCDF backend. `read_nc()` remains
-eager, `cube_collect()` remains the explicit materialization boundary,
-`DEC-018` is approved, and `A1-004` is partially closed until implementation.
-This does not complete 0.3.0-A or satisfy Gate B. The single recommended next
-subphase is A5b, the bounded implementation and certification of that exact
-contract. No CF, vertical, provider, multifile, remote, Zarr, 3-D, A6, or A5b
-runtime work is authorized by A5a itself.
+A5b implements `cube_open()` as one experimental public source-opening
+primitive for the existing local read-only deferred NetCDF backend. `read_nc()`
+remains eager, `cube_collect()` remains the explicit materialization boundary,
+`DEC-018` is implemented/certified, and `A1-004` is closed. This does not
+complete 0.3.0-A or satisfy Gate B: `A1-009` remains open. The single
+recommended next subphase is A6. No CF, vertical, provider, multifile, remote,
+Zarr, or 3-D work is authorized by A5b.
 
 ## Change control
 

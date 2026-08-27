@@ -2,20 +2,18 @@
 
 ## 1. Propósito y estado
 
-Este documento define el contrato recomendado para representar un archivo
-NetCDF local como un `ocean_cube` sin materializar todas sus variables en
-memoria. Es una especificación para un hito posterior: no constituye una
-implementación.
+Este documento conserva el diseño que guio la implementación del backend
+NetCDF diferido. A5b expone ese backend públicamente mediante `cube_open()`;
+las secciones históricas y alternativas se preservan como rationale.
 
 Estado del documento:
 
-- backend existente: `memory`;
-- backend diseñado: `netcdf`;
+- backends existentes: `memory` y `netcdf`;
 - modo inicial de NetCDF: local y de solo lectura;
 - orden lógico invariable:
   `longitude × latitude × depth × time × variable`;
 - conexión persistente dentro del objeto: prohibida;
-- lectura NetCDF diferida: pendiente de implementación.
+- lectura NetCDF diferida: implementada y expuesta por `cube_open()`.
 
 El principio rector es:
 
@@ -763,9 +761,9 @@ Collect the cube into memory before modifying values.
 No modifica el archivo, no crea una copia y no materializa silenciosamente un
 backend `memory`.
 
-## 22. Recolección futura
+## 22. Recolección implementada
 
-Una futura `cube_collect(x)`:
+`cube_collect(x)`:
 
 1. estima memoria;
 2. lee el array 5D;
@@ -774,8 +772,8 @@ Una futura `cube_collect(x)`:
 5. registra archivo y selección en procedencia;
 6. permite escrituras posteriores sobre el objeto en memoria.
 
-Si `x` ya es `memory`, la recomendación es devolverlo sin cambios, preservando
-identidad observable cuando sea seguro. No se implementa en este hito.
+Si `x` ya es `memory`, se devuelve sin cambios y sin una nueva operación de
+procedencia. Para NetCDF, la transición añade exactamente `cube_collect`.
 
 ## 23. Procedencia
 
@@ -893,7 +891,7 @@ Los mensajes deben explicar hecho, expectativa, hallazgo y corrección.
 Una variable sin unidades es legible, pero se marca en QA/procedencia. Un tiempo
 sin unidades necesarias para decodificar es error.
 
-## 27. Relación futura con `read_nc()`
+## 27. Relación con `read_nc()`
 
 ### Alternativas
 
@@ -910,18 +908,19 @@ ensancha una API ya pública y mezcla dos verbos.
 
 ### Recomendación
 
-Elegir C:
+DEC-018 y A5b implementan C:
 
 - `read_nc()` conserva firma y devuelve backend `memory`;
-- una futura función explícita, cuyo nombre debe aprobarse (`open_nc()` o
-  `cube_open()`), construye el descriptor NetCDF sin cargar datos;
-- ambas rutas pueden reutilizar resolución de esquema y decodificación.
+- `cube_open()` construye el descriptor NetCDF sin cargar arrays científicos;
+- ambas rutas permanecen separadas hasta la convergencia de parser aprobada
+  para una fase CF/interoperabilidad posterior.
 
 No se modifica `read_nc()` en este hito.
 
-## 28. API interna futura mínima
+## 28. API interna implementada
 
-Nombres propuestos, no implementados:
+Las responsabilidades propuestas están implementadas con estos helpers o sus
+equivalentes evolucionados:
 
 | Helper | Responsabilidad | Entrada | Salida |
 |---|---|---|---|
@@ -956,7 +955,7 @@ prematuramente.
 | Lectura completa | Permitir/prohibir | Permitir con estimación | Compatibilidad | Riesgo de memoria | RECOMENDADA |
 | Escritura | In situ/copia/error | Error read-only | No alterar fuente | Requiere collect | ACORDADA |
 | Procedencia | Mínima/completa | Producto + operación | Reproducibilidad | Descriptor mayor | RECOMENDADA |
-| Relación `read_nc` | Cambiar/default/función separada | Función separada | No romper API | Nombre por aprobar | PENDIENTE |
+| Relación `read_nc` | Cambiar/default/función separada | `cube_open()` separada | No romper API | Un export experimental | IMPLEMENTADA/CERTIFICADA A5b |
 | Caché | Persistente/controlada/ninguna | Ninguna inicialmente | Ciclo simple | Latencia de apertura | FUERA DE ALCANCE |
 
 ## 30. Flujo de lectura
@@ -976,7 +975,7 @@ flowchart TD
     K --> L["array canónico 5D"]
 ```
 
-## 31. Matriz de pruebas futuras
+## 31. Matriz de pruebas implementada
 
 | Categoría | Caso | Resultado esperado | Tipo de prueba |
 |---|---|---|---|
@@ -1004,7 +1003,9 @@ flowchart TD
 | Backend | Equivalencia con `memory` | Lecturas completa/indexada/bloque iguales | Integración |
 | Serialización | `saveRDS/readRDS` descriptor | Objeto reutilizable | Integración |
 
-No se añaden estas pruebas al paquete hasta que existan las funciones.
+Estas categorías están cubiertas por las pruebas del backend y por la ruta
+pública `tests/testthat/test-cube-open.R`; las limitaciones futuras siguen en
+las secciones posteriores.
 
 ## 32. Limitaciones aunque el contrato se implemente
 

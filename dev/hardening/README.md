@@ -225,9 +225,10 @@ states. The ordinary S2=TRUE result remains binary-identical.
 The operation emits `oceancube:s2_coast_distance` version 1 and compact
 spherical-S2 semantics. `A4B3B-001` is `CLOSED`. Existing polygon behavior is
 documented and retained; its interior-zero versus boundary-distance ambiguity
-is non-blocking S3 finding `A4R-001`. The principal remaining 0.3.0-A blockers
-are `A1-004`/`DEC-018` and `A1-009`; 0.3.0-A and Gate B remain incomplete. A5
-is the single recommended next subphase.
+is non-blocking S3 finding `A4R-001`. A5b subsequently closes `A1-004` and
+implements/certifies `DEC-018`; `A1-009` is the principal remaining 0.3.0-A
+blocker. 0.3.0-A and Gate B remain incomplete, and A6 is the single recommended
+next subphase.
 
 ## Reproduce the bounded baseline
 
@@ -383,8 +384,8 @@ for the exact three-source set. 0.3.0-A and Gate B remain incomplete.
 
 ## Deferred NetCDF API decision evidence
 
-A5a approves DEC-018 as an architecture contract; no option is implemented in
-A5a. `A1-004` is partially closed pending A5b.
+A5a approves DEC-018 as an architecture contract. A5b implements and certifies
+the selected option and closes `A1-004`.
 
 | Option | Main benefit | Principal cost/risk |
 |---|---|---|
@@ -393,13 +394,21 @@ A5a. `A1-004` is partially closed pending A5b.
 | `ocean_cube(source = ...)` | One constructor entry | Overloads an in-memory constructor and hides I/O/lifetime semantics |
 | Separate backend abstraction while keeping `read_nc()` materializing | Maximum compatibility and clean backend extensibility | Discoverability depends on the abstraction chosen; may duplicate concepts |
 
-The selected contract is one experimental `cube_open()` public entry while
+The implemented contract is one experimental `cube_open()` public entry while
 preserving eager `read_nc()` materialization. It opens one local read-only
 NetCDF source through the existing serializable deferred descriptor;
-`cube_collect()` remains the explicit memory transition. A5a resolves
-compatibility, serialization, identity, operation, terminology, `vars = NULL`,
-and future-extension questions in `lazy-api/`. A5b is the only authorized next
-implementation phase; multifile and remote behavior remain future contracts.
+`cube_collect()` remains the explicit memory transition. A5b certifies
+compatibility, serialization, identity, operations, terminology and metadata-
+only `vars = NULL` discovery in `lazy-api/`. Multifile and remote behavior
+remain future contracts; A6 peak-memory/stress certification is next.
+
+**0.3.0-A5b status (2026-08-26): public deferred NetCDF entry implemented and
+certified.** `cube_open()` is the sole new export and delegates to the existing
+storage and cube constructors. Metadata-only `vars = NULL`, public bounded
+operations, OISST parity, serialization/file identity, V1 provenance and
+deferred `coast_dist()` preservation are executable contracts. `read_nc()`
+remains eager and unchanged. `DEC-018` is implemented/certified, `A1-004` is
+closed, and `A1-009` remains the principal 0.3.0-A blocker.
 
 ## Provenance audit and proposed schema
 
@@ -428,7 +437,7 @@ compatibility evidence remain A4b work.
 4. There is no open S0 correctness defect.
 5. At least one real-data policy and one small CI fixture are approved with license, derivation and checksum.
 6. Smoke/standard/stress profiles are reproducible, with NetCDF read accounting and reliable peak-memory instrumentation.
-7. DEC-018 has a maintainer-approved public lazy-I/O decision.
+7. DEC-018 has a maintainer-approved public deferred-I/O decision.
 8. A versioned provenance schema and backward-compatibility policy are approved and tested.
 
 Current A1 evidence satisfies the baseline/design portion only; it does not

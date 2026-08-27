@@ -1,4 +1,4 @@
-test_that("only approved 0.2 APIs extend the boundary", {
+test_that("only approved APIs extend the boundary", {
   exports_before <- c(
     "annual_index", "anom_diff", "anom_z", "clim_day", "clim_month",
     "cm_connect", "cm_setup", "coast_dist", "crop_stock", "cube_collect",
@@ -16,7 +16,8 @@ test_that("only approved 0.2 APIs extend the boundary", {
     "cube_anomaly",
     "cube_climatology",
     "cube_trend",
-    "viz.timeseries"
+    "viz.timeseries",
+    "cube_open"
   )
   observed <- getNamespaceExports("oceancube")
 

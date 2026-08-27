@@ -531,7 +531,9 @@
                                  lat_name = NULL, depth_name = NULL,
                                  time_name = NULL, source = "netcdf",
                                  dataset_id = NULL) {
-  variables <- .validate_netcdf_variables_argument(variables)
+  if (!is.null(variables)) {
+    variables <- .validate_netcdf_variables_argument(variables)
+  }
   .netcdf_scalar_string(source, "source")
   if (!is.null(dataset_id)) {
     .netcdf_scalar_string(dataset_id, "dataset_id")
@@ -540,29 +542,42 @@
 
   storage <- .with_netcdf_connection(identity$normalized_path, function(nc) {
     coordinate_variables <- names(nc$dim)
-    requested_coordinates <- intersect(variables, coordinate_variables)
-    if (length(requested_coordinates) > 0L) {
-      .netcdf_abort(
-        paste0(
-          "Coordinate variable(s) cannot be selected as oceanographic data: ",
-          paste0("`", requested_coordinates, "`", collapse = ", "),
-          "."
-        )
-      )
-    }
-
     available <- names(nc$var)
-    missing <- setdiff(variables, available)
-    if (length(missing) > 0L) {
-      .netcdf_abort(
-        paste0(
-          "Variable(s) not present in the NetCDF file: ",
-          paste0("`", missing, "`", collapse = ", "),
-          ". Available data variables: ",
-          paste(available, collapse = ", "),
-          "."
+    if (is.null(variables)) {
+      variables <- available[!available %in% coordinate_variables]
+      if (length(variables) == 0L) {
+        .netcdf_abort(
+          paste0(
+            "No eligible NetCDF data variables remain after excluding ",
+            "coordinate variables. Select a file containing at least one ",
+            "compatible oceanographic data variable."
+          )
         )
-      )
+      }
+    } else {
+      requested_coordinates <- intersect(variables, coordinate_variables)
+      if (length(requested_coordinates) > 0L) {
+        .netcdf_abort(
+          paste0(
+            "Coordinate variable(s) cannot be selected as oceanographic data: ",
+            paste0("`", requested_coordinates, "`", collapse = ", "),
+            "."
+          )
+        )
+      }
+
+      missing <- setdiff(variables, available)
+      if (length(missing) > 0L) {
+        .netcdf_abort(
+          paste0(
+            "Variable(s) not present in the NetCDF file: ",
+            paste0("`", missing, "`", collapse = ", "),
+            ". Available data variables: ",
+            paste(available, collapse = ", "),
+            "."
+          )
+        )
+      }
     }
 
     selected_dimension_names <- unique(unlist(

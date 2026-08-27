@@ -14,8 +14,9 @@ editor_options:
 
 This is the canonical design gate for oceancube development after the stable
 0.2.0 release. It records architecture, provenance, dependencies, uncertainty,
-and approval state; it does not authorize implementation by itself. The runtime
-baseline remains version 0.2.0 with 38 exports.
+and approval state; it does not authorize implementation by itself. The stable
+release baseline remains version 0.2.0 with 38 exports; the active
+0.2.0.9000 development runtime has 39 after A5b.
 
 The historical `oceancube-v0.2.0-scope.Rmd`, the 0.2.0 audit and decision
 tables, relocation records, and auxdata review remain immutable evidence. They
@@ -189,8 +190,8 @@ parity, property and invariance tests, coverage audit, benchmarks, memory
 profiles, stress tests, and fixture governance. It also reviews the public
 deferred-NetCDF entry. `read_nc()` remains materializing. A5a resolves
 `DEC-018` by approving one experimental `cube_open()` entry for the existing
-local read-only deferred NetCDF backend; implementation remains separately
-gated as A5b.
+local read-only deferred NetCDF backend; A5b implements and certifies that
+exact entry without changing the eager reader.
 
 **0.3.0-A1 status (2026-08-20): baseline completed.** The bounded audit records
 the existing test architecture, 90.3872% local line coverage, backend/read
@@ -310,6 +311,19 @@ memory. `DEC-018` is approved and `A1-004` is partially closed pending A5b
 implementation/certification. No runtime, tests, dependency, NAMESPACE,
 DESCRIPTION, or export changes occur in A5a. 0.3.0-A remains incomplete and
 Gate B remains unsatisfied; A5b is next.
+
+**0.3.0-A5b status (2026-08-26): public deferred NetCDF API implementation
+certified.** The exact experimental `cube_open()` signature is the sole new
+export. It opens one local read-only NetCDF file as the existing
+`ocean_cube/list` class with versioned storage and no `x$data`, discovers
+`vars = NULL` from metadata in source order, retains bounded operations and
+serializable size/mtime identity, and records canonical `read_nc` followed by
+explicit `cube_collect` when materialized. Public synthetic and governed OISST
+tests pass; the known eager missing-value sentinel remains classified parser
+debt. `read_nc()` and scientific results are unchanged, `DEC-018` is
+implemented/certified, and `A1-004` is closed. 0.3.0-A remains incomplete and
+Gate B remains unsatisfied because `A1-009` peak-memory/stress evidence remains
+open; A6 is next.
 
 No large provider product is added to Git. Proposed source classes are:
 
@@ -453,7 +467,7 @@ merged `dev-0.2.0` branch should be deleted only when branch policy is approved;
 | `stock_mask()`, `crop_stock()`, `link_events()` | Boundary review | Review semantics and consumers individually |
 | `signal_noise()` name | Naming ambiguity | Preserve behavior; review naming without assuming deprecation |
 | Historical documents describe outdated release/API status | Documentation debt | Add status notices only in a separate approved consolidation phase |
-| Deferred NetCDF backend has no public entry | P0 architecture debt | Resolve `DEC-018` after parity evidence |
+| Deferred NetCDF backend public entry | CLOSED in A5b | Retain the exact experimental `cube_open()` regression contract |
 | Provenance has no versioned schema | P0 architecture debt | Define minimal 0.3.0-A contract |
 | Pages uses `actions/checkout@v4` while checks use v5 | Low-risk infrastructure debt | Upgrade in a separate workflow maintenance phase |
 | Handbook/vignette/legacy Rmd surfaces overlap | Documentation debt | Preserve; consolidate only after parity approval |
@@ -523,10 +537,10 @@ Lagrangian particle tracking are outside the core package roadmap.
 # Next gate
 
 Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b, the
-complete A4 sequence through A4-EXIT, A4R, and A5a have evidence; A4 is closed,
-coast distance is reproducible, and the public deferred-NetCDF architecture is
-approved. The single recommended next subphase is A5b, implementation and
-certification of the exact A5a `cube_open()` contract. `DEC-018` is approved
-and `A1-004` is partially closed; 0.3.0-A remains incomplete and Gate B remains
-unsatisfied. This placement does not authorize CF, vertical, provider,
-multifile, remote, Zarr, 3-D, A6, or broader A5 runtime implementation.
+complete A4 sequence through A4-EXIT, A4R, A5a, and A5b have evidence; A4 is
+closed, coast distance is reproducible, and the public deferred-NetCDF entry is
+implemented/certified. The single recommended next subphase is A6, peak-memory,
+stress and hardening performance certification. `DEC-018` is
+implemented/certified and `A1-004` is closed; `A1-009` keeps 0.3.0-A incomplete
+and Gate B unsatisfied. This placement does not authorize CF, vertical,
+provider, multifile, remote, Zarr, or 3-D implementation.
