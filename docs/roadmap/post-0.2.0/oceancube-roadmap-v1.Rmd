@@ -321,9 +321,20 @@ serializable size/mtime identity, and records canonical `read_nc` followed by
 explicit `cube_collect` when materialized. Public synthetic and governed OISST
 tests pass; the known eager missing-value sentinel remains classified parser
 debt. `read_nc()` and scientific results are unchanged, `DEC-018` is
-implemented/certified, and `A1-004` is closed. 0.3.0-A remains incomplete and
-Gate B remains unsatisfied because `A1-009` peak-memory/stress evidence remains
-open; A6 is next.
+implemented/certified, and `A1-004` is closed. At the A5b close, 0.3.0-A and
+Gate B remained incomplete because `A1-009` peak-memory/stress evidence was
+open; A6 was next.
+
+**0.3.0-A6 status (2026-08-27): peak memory, stress, and hardening performance
+certified.** A live x64 R process monitor calibrated at 1.02875 times a touched
+128 MiB allocation. Fresh isolated workers measured all required memory,
+eager, deferred, temporal, and bounded operations across TINY/SMALL/MEDIUM;
+the governed OISST smoke and 75-operation plus 50-descriptor/error stress pass.
+There is no RED memory classification, connection delta is zero, and the file
+rename probe passes. Sparse NetCDF slice/extract envelope amplification remains
+the non-blocking AMBER finding `A6-001`. `A1-009` is closed and A6 is complete
+without runtime or dependency changes. 0.3.0-A and Gate B remain incomplete
+pending the separate A-EXIT certification.
 
 No large provider product is added to Git. Proposed source classes are:
 
@@ -537,10 +548,10 @@ Lagrangian particle tracking are outside the core package roadmap.
 # Next gate
 
 Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b, the
-complete A4 sequence through A4-EXIT, A4R, A5a, and A5b have evidence; A4 is
-closed, coast distance is reproducible, and the public deferred-NetCDF entry is
-implemented/certified. The single recommended next subphase is A6, peak-memory,
-stress and hardening performance certification. `DEC-018` is
-implemented/certified and `A1-004` is closed; `A1-009` keeps 0.3.0-A incomplete
-and Gate B unsatisfied. This placement does not authorize CF, vertical,
-provider, multifile, remote, Zarr, or 3-D implementation.
+complete A4 sequence through A4-EXIT, A4R, A5a/A5b, and A6 have evidence; A4 is
+closed, coast distance is reproducible, the public deferred-NetCDF entry is
+implemented/certified, and `A1-009` is closed by calibrated peak-RSS and stress
+evidence. The single recommended next subphase is `0.3.0-A-EXIT — HARDENING
+EXIT AND GATE B READINESS CERTIFICATION`. A6 does not itself complete 0.3.0-A
+or satisfy Gate B. This placement does not authorize CF, vertical, provider,
+multifile, remote, Zarr, or 3-D implementation.

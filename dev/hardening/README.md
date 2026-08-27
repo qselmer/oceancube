@@ -349,20 +349,31 @@ result. These semantics must not be misclassified as regressions.
 
 ## Benchmark and memory interpretation
 
-A1 used `system.time()`, `Rprofmem()` and `object.size()` because they are
-available in base R. `microbenchmark`, `profvis` and `lobstr` were inspected;
-`bench` is the preferred future routine tool because it combines high-resolution
-timing, allocation and garbage-collection metrics, but it was not installed or
-added. `Rprof`/profvis are diagnostic profilers, not baseline runners. A reliable
-process peak was not available; `Rprofmem` reports allocation events, not RSS.
+A1 used `system.time()`, `Rprofmem()` and `object.size()` and explicitly lacked
+a reliable process peak. A6 closes that instrumentation gap with calibrated OS
+peak RSS from a fresh live x64 R process per scenario, deterministic
+TINY/SMALL/MEDIUM tiers, matched controls, three/three/two replicates, bounded
+read accounting, governed OISST smoke and repeated backend stress. `Rprofmem`,
+`object.size()` and elapsed time remain secondary diagnostics.
 
-TINY/SMALL timings are sub-second and too coarse for complexity claims. Over
-this tested range, validation/selection/geometry appear approximately constant
-or low linear, while temporal engines show higher allocation growth. This is
-only empirical scaling evidence. In SMALL, allocation/input ratios were about
-52.2x for climatology, 43.0x for trend and 18.0x for anomaly, making them the
-first memory-instrumentation candidates. These values are reference observations,
-not pass/fail promises and not authority to optimize algorithms.
+The A6 calibration observed a 138,076,160-byte median peak increment for a
+touched 128 MiB allocation (ratio 1.02875). Across 128 required scientific
+workers there was no RED classification. MEDIUM anomaly and trend were GREEN;
+aggregate and climatology were AMBER because their prepared-input peak masked
+the operation increment, so no empirical exponent is asserted. Deferred crop
+and transect were strongly bounded and GREEN. Sparse slice/extract were AMBER:
+their 720 logical values require a 1,036,800-value enclosing NetCDF envelope,
+but both still used roughly 47% less incremental peak than eager `read_nc()`
+and 60% less than `cube_collect()`. This non-blocking characterization is
+retained as `A6-001`.
+
+Stress completed 75 alternating deferred operations plus 50 descriptor/error
+cycles with RSS growth of 901,120 bytes between initial/final checkpoints,
+connection delta zero, 50/50 expected errors and a successful NetCDF
+rename-and-restore probe. `A1-009` is therefore CLOSED and A6 is COMPLETE.
+Full methodology and raw evidence are in `performance/README.md` and its five
+canonical CSV files. These are empirical results for the certified environment,
+not universal complexity or memory promises and not authority to optimize.
 
 ## Real-data governance
 
@@ -400,7 +411,7 @@ NetCDF source through the existing serializable deferred descriptor;
 `cube_collect()` remains the explicit memory transition. A5b certifies
 compatibility, serialization, identity, operations, terminology and metadata-
 only `vars = NULL` discovery in `lazy-api/`. Multifile and remote behavior
-remain future contracts; A6 peak-memory/stress certification is next.
+remain future contracts; A6 subsequently certifies peak memory and stress.
 
 **0.3.0-A5b status (2026-08-26): public deferred NetCDF entry implemented and
 certified.** `cube_open()` is the sole new export and delegates to the existing
@@ -408,7 +419,7 @@ storage and cube constructors. Metadata-only `vars = NULL`, public bounded
 operations, OISST parity, serialization/file identity, V1 provenance and
 deferred `coast_dist()` preservation are executable contracts. `read_nc()`
 remains eager and unchanged. `DEC-018` is implemented/certified, `A1-004` is
-closed, and `A1-009` remains the principal 0.3.0-A blocker.
+closed. A6 subsequently closes `A1-009` without changing the A5b runtime.
 
 ## Provenance audit and proposed schema
 
@@ -440,5 +451,7 @@ compatibility evidence remain A4b work.
 7. DEC-018 has a maintainer-approved public deferred-I/O decision.
 8. A versioned provenance schema and backward-compatibility policy are approved and tested.
 
-Current A1 evidence satisfies the baseline/design portion only; it does not
-declare 0.3.0-A complete.
+The evidence through A6 satisfies the hardening work items above, but does not
+itself declare 0.3.0-A complete. The next and only authorized phase is
+`0.3.0-A-EXIT — HARDENING EXIT AND GATE B READINESS CERTIFICATION`; it has not
+been executed here.
