@@ -13,6 +13,9 @@ code changes by itself.
 - Current development cycle: 0.2.0.9000 toward 0.3.0
 - Active development branch: `dev-0.3.0`
 - Gate A: satisfied
+- 0.3.0-A-EXIT: hardening phase complete and certified on 2026-08-27
+- Ready to begin 0.3.0-B CF + interoperability: true
+- Gate B (permission to begin vertical science): unsatisfied
 - 0.3.0-A3b: governed real-data fixtures and offline-CI evidence completed
 - 0.3.0-A4a: provenance V1 architecture and compatibility design completed
 - 0.3.0-A4b1: internal provenance V1 core engine and legacy normalizer completed
@@ -31,6 +34,8 @@ code changes by itself.
 - DEC-018: approved — implemented/certified by A5b; `A1-004` closed
 - Public API: 39 exports; `cube_open` is the sole A5b addition
 - Runtime producer migrations: all identified producers complete and globally certified
+- Hardening findings: no unresolved S0/S1 blocker; accepted debt and
+  0.3.0-B inputs remain open under explicit classifications
 
 The historical `docs/roadmap/oceancube-v0.2.0-scope.Rmd` and the audit,
 decision, relocation, and auxdata directories remain immutable evidence of how
@@ -52,13 +57,13 @@ relevant roadmap gate have been satisfied. A row marked `PROPOSED` is not a
 public API promise. Candidate function names remain provisional until a
 separate API and methodological review approves them.
 
-A5b implements `cube_open()` as one experimental public source-opening
-primitive for the existing local read-only deferred NetCDF backend. `read_nc()`
-remains eager, `cube_collect()` remains the explicit materialization boundary,
-`DEC-018` is implemented/certified, and `A1-004` is closed. This does not
-complete 0.3.0-A or satisfy Gate B: `A1-009` remains open. The single
-recommended next subphase is A6. No CF, vertical, provider, multifile, remote,
-Zarr, or 3-D work is authorized by A5b.
+A-EXIT certifies `0.3.0-A` complete after A1-A6 evidence, with `A1-009`
+closed, 39 exports retained, and no unresolved S0/S1 blocker. This permits the
+staged `0.3.0-B` CF/interoperability block to begin, but Gate B remains
+unsatisfied because its canonical vertical-science prerequisites have not yet
+been met. The single recommended next subphase is `0.3.0-B1 — CF METADATA
+FOUNDATION AND CF ENGINE DECISION`. No CF, vertical, provider, multifile,
+remote, Zarr, or 3-D implementation occurs in A-EXIT.
 
 ## Change control
 

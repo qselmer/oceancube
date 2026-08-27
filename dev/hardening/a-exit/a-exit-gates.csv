@@ -1,0 +1,7 @@
+"gate","definition","required_evidence","current_status","evidence","next_requirement"
+"Gate A","begin the 0.3 development cycle","approved roadmap; hardening scope; branch and version strategy","SATISFIED","canonical roadmap records satisfaction on 2026-08-20; dev-0.3.0 active at 0.2.0.9000","none; do not redefine"
+"0.3.0-A hardening exit","complete hardening evidence and global exit review","no S0/S1 blockers; supported contracts tested; real-data provenance memory stress build and check green","COMPLETE / CERTIFIED","dev/hardening/a-exit plus referenced A1-A6 evidence","begin only staged 0.3.0-B work"
+"Gate B","begin vertical science","sufficient CF/vertical coordinate contract; redistributable depth fixtures; approved vertical primitive semantics","UNSATISFIED","A3B-001 A3B-002 A3B-003 DEC-015 and DEC-023 remain next-stage inputs","execute and separately approve CF/interoperability prerequisites before vertical science"
+"Gate C","begin 3-D","renderer-neutral surface contract; positive-down display; decimation/memory policy; renderer evaluation","UNSATISFIED","future roadmap only","satisfy Gate C prerequisites after earlier stages"
+"Gate D","begin advanced grids","ocean_grid contract; CF grid mapping; topology positions and metrics","UNSATISFIED","future roadmap only","satisfy Gate D prerequisites before vector calculus"
+"Gate E","begin cloud/Zarr","lazy backend abstraction; chunk model; writer/storage abstraction; CF encoding policy","UNSATISFIED","future roadmap only","satisfy Gate E prerequisites before cloud/Zarr implementation"

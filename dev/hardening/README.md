@@ -451,7 +451,11 @@ compatibility evidence remain A4b work.
 7. DEC-018 has a maintainer-approved public deferred-I/O decision.
 8. A versioned provenance schema and backward-compatibility policy are approved and tested.
 
-The evidence through A6 satisfies the hardening work items above, but does not
-itself declare 0.3.0-A complete. The next and only authorized phase is
-`0.3.0-A-EXIT — HARDENING EXIT AND GATE B READINESS CERTIFICATION`; it has not
-been executed here.
+The separate A-EXIT review in `a-exit/` reconciles every A1-A6 phase and all 16
+findings, reruns the current regression suite, and certifies these criteria.
+As of 2026-08-27, `0.3.0-A` is COMPLETE/CERTIFIED and staged 0.3.0-B
+CF/interoperability work may begin. Gate B remains UNSATISFIED: it means
+permission to begin vertical science and still requires a sufficiently defined
+CF/vertical-coordinate contract, redistributable depth evidence, and approved
+vertical primitive semantics. No CF, vertical, provider, calendar, or runtime
+change is part of A-EXIT.

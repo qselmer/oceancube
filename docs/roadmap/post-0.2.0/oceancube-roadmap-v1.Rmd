@@ -160,6 +160,10 @@ feature expansion, although every performance optimization need not be done.
 
 ## Gate B — begin vertical science
 
+**Status: UNSATISFIED after the 0.3.0-A hardening exit.** Completion of
+`0.3.0-A` permits staged `0.3.0-B` CF/interoperability work; it does not itself
+authorize vertical science.
+
 Requires a sufficiently defined CF/vertical coordinate contract, redistributable
 real-data depth fixtures, and approved vertical primitive semantics. Every named
 diagnostic then requires a separate methodological review; this roadmap does
@@ -335,6 +339,17 @@ rename probe passes. Sparse NetCDF slice/extract envelope amplification remains
 the non-blocking AMBER finding `A6-001`. `A1-009` is closed and A6 is complete
 without runtime or dependency changes. 0.3.0-A and Gate B remain incomplete
 pending the separate A-EXIT certification.
+
+**0.3.0-A-EXIT status (2026-08-27): hardening COMPLETE/CERTIFIED.** The global
+exit review reconciles A1 through A6, all 16 hardening findings, zero unresolved
+S0/S1 blockers, the 39-export API, eager/deferred boundaries, Provenance V1,
+coast reproducibility, governed real data, backend parity, invariances,
+scientific/time/privacy/serialization regression, and A6 memory/stress
+integrity. Remaining findings are explicitly accepted nonblocking debt,
+0.3.0-B inputs, or optional external integration. `0.3.0-A complete = TRUE`
+and `ready to begin 0.3.0-B = TRUE`; Gate B remains UNSATISFIED because its
+canonical meaning is permission to begin vertical science and the CF/vertical
+coordinate and primitive prerequisites are not yet approved.
 
 No large provider product is added to Git. Proposed source classes are:
 
@@ -548,10 +563,10 @@ Lagrangian particle tracking are outside the core package roadmap.
 # Next gate
 
 Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b, the
-complete A4 sequence through A4-EXIT, A4R, A5a/A5b, and A6 have evidence; A4 is
-closed, coast distance is reproducible, the public deferred-NetCDF entry is
-implemented/certified, and `A1-009` is closed by calibrated peak-RSS and stress
-evidence. The single recommended next subphase is `0.3.0-A-EXIT — HARDENING
-EXIT AND GATE B READINESS CERTIFICATION`. A6 does not itself complete 0.3.0-A
-or satisfy Gate B. This placement does not authorize CF, vertical, provider,
-multifile, remote, Zarr, or 3-D implementation.
+complete A4 sequence through A4-EXIT, A4R, A5a/A5b, A6, and the global A-EXIT
+review have evidence. `0.3.0-A` is COMPLETE/CERTIFIED and the repository is
+ready to begin the staged 0.3.0-B CF/interoperability block. Gate B remains
+UNSATISFIED and vertical science is not authorized. The single recommended
+next subphase is `0.3.0-B1 — CF METADATA FOUNDATION AND CF ENGINE DECISION`.
+This placement does not itself implement CF, vertical, provider, multifile,
+remote, Zarr, or 3-D behavior.
