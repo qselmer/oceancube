@@ -1,0 +1,12 @@
+"criterion","weight","base_R","CFtime_1_7_3","native_oceancube","PCICt"
+"CF 1.13 calendar breadth",5,1,5,5,2
+"utc/tai awareness",5,1,5,1,1
+"explicit custom calendars",4,1,1,5,1
+"calendar grouping",5,3,5,5,3
+"ordering and indexing",5,4,5,5,4
+"fractional and negative offsets",4,4,5,5,3
+"plain-state reconstruction",5,5,5,5,3
+"dependency coupling",4,5,3,5,3
+"maintenance status",4,5,5,5,1
+"scientific non-coercion",5,2,5,5,1
+"WEIGHTED_TOTAL",0,140,206,210,102

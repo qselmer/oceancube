@@ -20,7 +20,9 @@ code changes by itself.
 - 0.3.0-B2: CF metadata preservation engine implementation and local package
   certification complete
 - 0.3.0-B3: CF supported-subset interpretation and validation implemented and
-  locally certified; remote CI governs final closure
+  certified
+- 0.3.0-B4: hybrid CF time/calendar representation architecture approved;
+  runtime implementation remains B5
 - Gate B (permission to begin vertical science): unsatisfied
 - 0.3.0-A3b: governed real-data fixtures and offline-CI evidence completed
 - 0.3.0-A4a: provenance V1 architecture and compatibility design completed
@@ -41,6 +43,9 @@ code changes by itself.
 - DEC-015: approved — HYBRID ACTIVE SUPPORTED-SUBSET ENGINE; canonical plain-R
   metadata is owned by oceancube and ncdfCF remains an optional
   oracle/reference/adapter
+- DEC-023: approved — HYBRID CALENDAR-AWARE TIME MODEL; current exact
+  Date/POSIXct values remain unchanged, non-base calendars use future
+  oceancube-owned plain state, and CFtime is a transient adapter/oracle
 - Public API: 39 exports; `cube_open` is the sole A5b addition
 - Runtime producer migrations: all identified producers complete and globally certified
 - Hardening findings: no unresolved S0/S1 blocker; accepted debt and
@@ -78,9 +83,13 @@ transformation handoff without new exports or dependencies. B3 adds the
 versioned CF 1.13 supported-subset contract, deterministic metadata-only
 diagnostics, structural relationship checks, explicit value/unit/table/grammar
 deferrals, and separate source/current interpretation. OISST `zlev` now
-resolves semantically in both readers and `A3B-001` is closed. `DEC-023`,
-`A3B-002`, and `A3B-003` remain open. No vertical,
-provider, multifile, remote, Zarr, or 3-D implementation is authorized by B3.
+resolves semantically in both readers and `A3B-001` is closed. B4 approves a
+hybrid calendar-aware time model: current exact Date/POSIXct behavior remains,
+future non-base calendars use oceancube-owned plain state, and CFtime may be a
+reconstructable transient adapter. `DEC-023` is approved; `A3B-002` and
+`A3B-003` remain open because B4 adds no runtime calendar or static-field
+support. No vertical, provider, multifile, remote, Zarr, or 3-D implementation
+is authorized by B4.
 
 ## Change control
 

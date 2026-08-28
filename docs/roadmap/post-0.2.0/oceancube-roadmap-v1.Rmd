@@ -377,8 +377,8 @@ open. No dependency, export, calendar, static-field, or vertical-science scope
 was added; Gate B remains UNSATISFIED.
 
 **0.3.0-B3 status (2026-08-28): CF supported-subset interpretation and
-validation implementation and local package certification COMPLETE, pending
-remote CI.** B3 activates the versioned `oceancube_supported_subset` validator
+validation implementation and package certification COMPLETE.** B3 activates
+the versioned `oceancube_supported_subset` validator
 against CF 1.13 requirements/recommendations without claiming full
 conformance. It adds deterministic source/current diagnostics, bounded
 coordinate/link/range/flag interpretation, explicit value/unit/table/grammar
@@ -387,6 +387,20 @@ public API, dependencies, scientific values, and time behavior. OISST, ETOPO,
 and WOA source scans pass the documented subset; ETOPO still has no fabricated
 time and WOA still rejects `months since`. `A3B-001` remains closed;
 `A3B-002`, `A3B-003`, and `DEC-023` remain open; Gate B remains UNSATISFIED.
+
+**0.3.0-B4 status (2026-08-28): CF time and calendar representation decision
+COMPLETE.** `DEC-023` is approved as a HYBRID CALENDAR-AWARE TIME MODEL.
+Current exactly representable Date/POSIXct behavior remains unchanged; future
+non-base-representable CF calendars use an oceancube-owned versioned plain-R
+state, with CFtime only as a reconstructable transient arithmetic adapter and
+oracle. The calendar taxonomy, comparison, selection, grouping, climatology,
+trend metric, serialization, table/plot, provenance, UTC/TAI, `none`, custom
+calendar and WOA ambiguity policies are fixed in
+`inst/architecture/oceancube-cf-time-calendar-v1.md`, with executable and
+matrix evidence under `dev/hardening/cf-time/`. B4 changes no runtime,
+dependency, export, decoder or scientific result. `A3B-003` remains open with
+architecture resolved and runtime/provider adjudication pending; `A3B-002`
+also remains open. `0.3.0-B` is IN PROGRESS and Gate B remains UNSATISFIED.
 
 No large provider product is added to Git. Proposed source classes are:
 
@@ -427,7 +441,10 @@ evaluation remain separate stages.
 
 Current standard, Gregorian, and proleptic-Gregorian behavior remains. Julian,
 `noleap`/`365_day`, `all_leap`/`366_day`, and `360_day` belong to the CF engine
-and require decision `DEC-023`; they are not isolated date helpers.
+and are not isolated date helpers. B4 approves `DEC-023` as a hybrid model:
+current exact Date/POSIXct cases remain, while non-base calendars use future
+oceancube-owned plain state with a transient reconstructable CFtime adapter.
+Runtime implementation remains B5.
 
 `stars` is the principal optional N-D/geospatial adapter candidate, `terra`
 serves raster/surface interoperability, and `sf` remains vector geometry and

@@ -1,0 +1,21 @@
+"criterion","weight","A_Date_POSIXct_only","B_CFtime_canonical","C_oceancube_plain_native","D_hybrid","E_raw_offsets_descriptor"
+"scientific fidelity",5,1,4,5,5,4
+"backward compatibility",5,5,2,2,5,2
+"CF calendar coverage",5,1,4,5,5,3
+"Date/POSIXct interoperability",4,5,2,2,5,1
+"ordering",5,4,4,5,5,3
+"subsetting",5,4,4,5,5,2
+"grouping",5,4,4,5,5,1
+"climatology",5,3,4,5,5,2
+"trend metric",5,3,4,5,5,3
+"serialization",5,5,2,5,5,5
+"plain-state compliance",5,5,1,5,5,5
+"dependency cost",3,5,2,4,4,5
+"API disruption",4,5,2,2,5,2
+"table output",3,5,3,4,5,2
+"plotting",3,5,3,3,4,1
+"future multifile",4,2,3,5,5,4
+"future Zarr",4,2,3,5,5,4
+"maintenance burden",4,5,3,2,4,3
+"testability",5,5,4,5,5,4
+"WEIGHTED_TOTAL",0,321,261,357,410,250
