@@ -18,7 +18,9 @@ code changes by itself.
 - 0.3.0-B: in progress
 - 0.3.0-B1: CF metadata foundation and engine decision complete
 - 0.3.0-B2: CF metadata preservation engine implementation and local package
-  certification complete; remote CI governs final closure
+  certification complete
+- 0.3.0-B3: CF supported-subset interpretation and validation implemented and
+  locally certified; remote CI governs final closure
 - Gate B (permission to begin vertical science): unsatisfied
 - 0.3.0-A3b: governed real-data fixtures and offline-CI evidence completed
 - 0.3.0-A4a: provenance V1 architecture and compatibility design completed
@@ -36,7 +38,7 @@ code changes by itself.
 - DEC-024: approved for the exact OISST/ETOPO/WOA23 fixture set
 - DEC-019: approved — implemented/certified by A4a through A4-EXIT evidence
 - DEC-018: approved — implemented/certified by A5b; `A1-004` closed
-- DEC-015: approved — HYBRID IMPLEMENTED FOUNDATION; canonical plain-R
+- DEC-015: approved — HYBRID ACTIVE SUPPORTED-SUBSET ENGINE; canonical plain-R
   metadata is owned by oceancube and ncdfCF remains an optional
   oracle/reference/adapter
 - Public API: 39 exports; `cube_open` is the sole A5b addition
@@ -72,11 +74,13 @@ been met. B1 establishes the lossless CF 1.13 architecture and HYBRID engine
 decision. B2 implements the versioned `x$metadata$cf` source/current model,
 single scanner, simple links, schema validation, shared conflict-aware axis
 resolver, eager/deferred parity, exact collect preservation, and safe
-transformation handoff without new exports or dependencies. OISST `zlev` now
+transformation handoff without new exports or dependencies. B3 adds the
+versioned CF 1.13 supported-subset contract, deterministic metadata-only
+diagnostics, structural relationship checks, explicit value/unit/table/grammar
+deferrals, and separate source/current interpretation. OISST `zlev` now
 resolves semantically in both readers and `A3B-001` is closed. `DEC-023`,
-`A3B-002`, and `A3B-003` remain open. The single recommended next subphase is
-`0.3.0-B3 — CF SUPPORTED-SUBSET INTERPRETATION AND VALIDATION`. No vertical,
-provider, multifile, remote, Zarr, or 3-D implementation is authorized by B2.
+`A3B-002`, and `A3B-003` remain open. No vertical,
+provider, multifile, remote, Zarr, or 3-D implementation is authorized by B3.
 
 ## Change control
 

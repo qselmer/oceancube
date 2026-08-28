@@ -1,0 +1,8 @@
+"component","read_nc","cube_open","result"
+"source tree","shared scanner source","shared scanner source","IDENTICAL"
+"supported-subset contract","version 1.0.0","version 1.0.0","IDENTICAL"
+"supported-subset summary","source metadata rules","source metadata rules","IDENTICAL"
+"source diagnostics","deterministic source scope","deterministic source scope","IDENTICAL"
+"current interpretation","selected axes and variables","selected axes and variables","IDENTICAL for same selection"
+"scientific payload","eager materialized","deferred","EXACT after collect"
+"cube_collect","not applicable","metadata copied without revalidation","IDENTICAL before/after"

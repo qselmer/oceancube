@@ -1,7 +1,7 @@
 # OCEANCUBE 0.3.0-B2 — CF metadata preservation engine
 
-Status: **runtime foundation and local package certification complete; remote
-CI pending exact-SHA push authorization**.
+Status: **runtime foundation, local package certification, and remote CI
+complete**.
 
 Normative architecture:
 [`inst/architecture/oceancube-cf-metadata-foundation-v1.md`](../../../inst/architecture/oceancube-cf-metadata-foundation-v1.md).
@@ -99,8 +99,9 @@ backend object.
   metadata, semantic `zlev`, exact source parity, exact collect preservation,
   and exact numerical parity.
 
-GitHub Actions remains unrun until the bounded commit exists and its exact SHA
-is authorized for a non-force push to `origin/dev-0.3.0`.
+Commit `a963a5d92e5ceb0d8b4176aff4a45ff4d62bef9c` passed GitHub Actions on
+Ubuntu, macOS, and Windows after its authorized non-force push to
+`origin/dev-0.3.0`; Pages was not triggered.
 
 ## Next boundary
 

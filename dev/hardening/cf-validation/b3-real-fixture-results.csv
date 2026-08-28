@@ -1,0 +1,4 @@
+"fixture","declaration","subset_status","rules_checked","pass","fail","deferred","interpreter","cube_behavior","finding"
+"OISST v2.1 fv1","CF-1.6, ACDD-1.3","PASS","39","30","0","9","PASS deterministic","read_nc and cube_open PASS without zlev override","A3B-001 CLOSED"
+"ETOPO 2022 v1 fv1","NOT_DECLARED","PASS","19","14","0","5","PASS deterministic","expected rejection because time is absent; no time fabricated","A3B-002 OPEN"
+"WOA23 v3.3 fv1","CF-1.6","PASS","89","64","1 recommendation","24","PASS with nonblocking month-unit recommendation diagnostic","expected rejection of months since; raw climatology bounds CRS and cell_methods retained","A3B-003 and DEC-023 OPEN"

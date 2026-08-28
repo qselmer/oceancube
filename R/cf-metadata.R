@@ -439,17 +439,14 @@
     variables = list(order = variable_order, map = variables),
     links = linked$links
   )
+  interpreted <- .cf_interpret_supported_subset(source)
   list(
     schema_name = "oceancube_cf_metadata",
     schema_version = "1.0.0",
     source = source,
     current = NULL,
-    interpretation = list(
-      status = "PRESERVED_SUPPORTED_SUBSET",
-      link_families = .cf_link_families(),
-      extended_grid_mapping = "preserved-raw-deferred"
-    ),
-    diagnostics = linked$diagnostics
+    interpretation = interpreted$interpretation,
+    diagnostics = interpreted$diagnostics
   )
 }
 
@@ -809,6 +806,9 @@
     links = as.integer(related_links),
     semantic_status = "CURRENT_SUPPORTED_SUBSET"
   )
+  cf <- .cf_add_current_interpretation(
+    cf, resolutions, selected_variables, "CURRENT_SUPPORTED_SUBSET"
+  )
   cf
 }
 
@@ -852,6 +852,12 @@
     axes = axes,
     links = as.integer(related_links),
     semantic_status = "CURRENT_SUPPORTED_SUBSET"
+  )
+  storage_resolutions <- lapply(axes, function(axis) {
+    list(status = axis$status, source_id = axis$source_id)
+  })
+  cf <- .cf_add_current_interpretation(
+    cf, storage_resolutions, selected, "CURRENT_SUPPORTED_SUBSET"
   )
   .cf_wrap_metadata(cf)
 }
@@ -997,6 +1003,47 @@
     }
   }
 
+  required_diagnostic <- c(
+    "code", "severity", "status", "scope", "source_id", "attribute",
+    "rule_id", "rule_kind", "message", "cf_section",
+    "blocking_for_current_cube", "requires_data_values"
+  )
+  if (!is.list(cf$interpretation) ||
+      !is.list(cf$interpretation$supported_subset) ||
+      !is.list(cf$interpretation$contract) ||
+      !is.list(cf$interpretation$current) ||
+      !is.list(cf$diagnostics)) {
+    .cf_metadata_abort("Invalid CF supported-subset interpretation.")
+  }
+  summary <- cf$interpretation$supported_subset
+  required_summary <- c(
+    "reference", "definition_version", "validator_version",
+    "validation_scope", "status", "rules_checked", "pass", "fail",
+    "warning", "deferred", "not_applicable", "declaration_status",
+    "declared_cf_version", "reference_cf_version"
+  )
+  if (length(setdiff(required_summary, names(summary))) > 0L ||
+      !identical(summary$reference, "CF-1.13") ||
+      !summary$status %in% c("PASS", "FAIL")) {
+    .cf_metadata_abort("Invalid CF supported-subset summary.")
+  }
+  for (diagnostic in cf$diagnostics) {
+    if (!is.list(diagnostic) ||
+        length(setdiff(required_diagnostic, names(diagnostic))) > 0L ||
+        !diagnostic$severity %in% c("ERROR", "WARNING", "INFO", "DEFERRED") ||
+        !diagnostic$status %in% c("PASS", "FAIL", "DEFERRED", "NOT_APPLICABLE") ||
+        !diagnostic$scope %in% c("SOURCE", "CURRENT") ||
+        !diagnostic$rule_kind %in% c(
+          "REQUIREMENT", "RECOMMENDATION", "OCEANCUBE-SAFETY"
+        ) ||
+        !is.logical(diagnostic$blocking_for_current_cube) ||
+        length(diagnostic$blocking_for_current_cube) != 1L ||
+        !is.logical(diagnostic$requires_data_values) ||
+        length(diagnostic$requires_data_values) != 1L) {
+      .cf_metadata_abort("Invalid CF supported-subset diagnostic record.")
+    }
+  }
+
   if (isTRUE(require_current)) {
     if (!is.list(cf$current) ||
         !is.character(cf$current$variables) ||
@@ -1091,6 +1138,15 @@
     ),
     variables = as.character(variables)
   )
+  out <- .cf_mark_current_interpretation(
+    out,
+    if (identical(metadata$cf$current$semantic_status, "DERIVATION_PENDING")) {
+      "DERIVATION_PENDING"
+    } else {
+      "CURRENT_SELECTION"
+    },
+    variables
+  )
   .cf_metadata_validate(out)
   out
 }
@@ -1104,6 +1160,7 @@
     operation = as.character(operation),
     status = "current semantic derivation pending"
   )
+  out <- .cf_mark_current_interpretation(out, "DERIVATION_PENDING")
   .cf_metadata_validate(out)
   out
 }

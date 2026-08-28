@@ -1,16 +1,17 @@
 # oceancube CF metadata foundation V1
 
-Status: **B1 architecture approved; B2 preservation foundation implemented**.
+Status: **B1 architecture approved; B2 preservation foundation and B3
+supported-subset interpretation/validation implemented**.
 
-Decision: **DEC-015 = APPROVED — HYBRID IMPLEMENTED FOUNDATION**.
+Decision: **DEC-015 = APPROVED — HYBRID ACTIVE SUPPORTED-SUBSET ENGINE**.
 
 Normative reference: [CF Metadata Conventions
 1.13](https://cfconventions.org/Data/cf-conventions/cf-conventions-1.13/cf-conventions.html)
 and its [conformance requirements and
 recommendations](https://cfconventions.org/Data/cf-documents/requirements-recommendations/conformance-1.13.html).
 
-This document defines an internal metadata contract. It does not claim that
-the current runtime implements it, and it does not authorize vertical science,
+This document defines the internal metadata contract implemented through B3.
+It does not authorize vertical science,
 static cubes, new calendars, grid transformations, writing, remote I/O,
 multifile I/O, or Zarr.
 
@@ -18,7 +19,7 @@ multifile I/O, or Zarr.
 
 oceancube will describe itself as:
 
-> CF-aware, with a documented supported subset of CF 1.13.
+> CF-aware; supports a documented subset of CF 1.13.
 
 It will not claim “CF-compliant” or “full CF support” until a separate,
 versioned conformance coverage gate exists. A source declaration such as
@@ -454,3 +455,56 @@ After B2:
 - `0.3.0-A`: **COMPLETE / CERTIFIED**;
 - `0.3.0-B`: **IN PROGRESS; B1 and B2 COMPLETE**;
 - Gate B: **UNSATISFIED**.
+
+## B3 supported-subset interpretation and validation
+
+B3 implements the interpreter and validator immediately after the immutable
+source scan, simple relationship resolution, and role classification. Its
+public claim is exactly **CF-aware; supports a documented subset of CF 1.13**.
+Neither a source-level `PASS` nor a declared `CF-*` token is a claim of full CF
+conformance.
+
+The internal definition and validator are version `1.0.0`, use CF 1.13 and its
+Conformance Requirements and Recommendations as normative references, and
+record the validation scope as `oceancube_supported_subset`. The compact
+source summary records rule, pass, fail, warning, deferred, and not-applicable
+counts without timestamps or machine state. A missing `Conventions` attribute
+is `NOT_DECLARED`, not invalid; an older declared version remains provider
+evidence and is not re-certified as CF 1.13.
+
+Every diagnostic has a stable rule/code, separate status and severity, scope,
+source identity, attribute, requirement kind, message, CF section, current-cube
+blocking flag, and value-read flag. Status is one of `PASS`, `FAIL`,
+`DEFERRED`, or `NOT_APPLICABLE`; severity is one of `ERROR`, `WARNING`,
+`INFO`, or `DEFERRED`; rule kind distinguishes `REQUIREMENT`,
+`RECOMMENDATION`, and `OCEANCUBE-SAFETY`. Source-wide failures on unrelated
+variables do not automatically block ingestion. Existing required-axis and
+canonical-shape safety failures remain the only current-cube blocking class in
+this phase.
+
+The implemented metadata-only subset covers path/dimension identity,
+dimension and auxiliary/scalar coordinate classification, common B2 axis
+evidence, simple `coordinates`, `ancillary_variables`, `bounds`,
+`climatology`, `cell_measures`, `grid_mapping`, and `formula_terms`
+relationships, bounded `cell_methods` classification, structural flag and
+missing/range metadata, and explicit preservation states for
+`standard_name` and `units`. Bounds/climatology value checks, measure-unit and
+general unit conformance, standard-name and mapping-name table lookup, complex
+cell-method grammar, formula semantics/evaluation, and extended grid mapping
+remain explicit deferrals. No validator path calls `ncvar_get()`.
+
+Source interpretation is immutable and backend-independent. Current cube
+interpretation is separate, selection-aware, and remains
+`DERIVATION_PENDING` after meaning-changing transformations. Eager and
+deferred readers share source interpretation and diagnostics; `cube_collect()`
+preserves all metadata exactly and does not revalidate after a representation
+change. Diagnostics remain CF metadata, never Provenance V1 operations or
+automatic QA entries.
+
+The authoritative coverage and rule evidence is in
+`dev/hardening/cf-validation/`. OISST, ETOPO, and WOA all scan with supported-
+subset `PASS`; OISST remains ingestible without a `zlev` override, ETOPO still
+has no fabricated time, and WOA still rejects unsupported `months since`
+decoding while preserving its climatology and complete `cell_methods` text.
+Thus `A3B-001` remains closed, `A3B-002`, `A3B-003`, and `DEC-023` remain open,
+and Gate B remains unsatisfied.

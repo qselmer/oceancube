@@ -376,6 +376,18 @@ WOA months-since remains rejected; `A3B-002`, `A3B-003`, and `DEC-023` remain
 open. No dependency, export, calendar, static-field, or vertical-science scope
 was added; Gate B remains UNSATISFIED.
 
+**0.3.0-B3 status (2026-08-28): CF supported-subset interpretation and
+validation implementation and local package certification COMPLETE, pending
+remote CI.** B3 activates the versioned `oceancube_supported_subset` validator
+against CF 1.13 requirements/recommendations without claiming full
+conformance. It adds deterministic source/current diagnostics, bounded
+coordinate/link/range/flag interpretation, explicit value/unit/table/grammar
+deferrals, and no-payload-read proof while preserving the B2 source tree,
+public API, dependencies, scientific values, and time behavior. OISST, ETOPO,
+and WOA source scans pass the documented subset; ETOPO still has no fabricated
+time and WOA still rejects `months since`. `A3B-001` remains closed;
+`A3B-002`, `A3B-003`, and `DEC-023` remain open; Gate B remains UNSATISFIED.
+
 No large provider product is added to Git. Proposed source classes are:
 
 | Source class | Contract evidence | Access and fixture policy | CI-safe form |
@@ -408,9 +420,10 @@ terms. `DEC-015` selects a HYBRID engine: the canonical plain-R model and
 lightweight scanner/interpreter are owned by oceancube, while `ncdfCF` is an
 optional adapter/reference implementation/conformance oracle and is never
 embedded as canonical state. B2 implements the preservation foundation and
-simple supported-subset links without adding that dependency. Full grammar,
-conformance, calendars, grid transformations, and formula evaluation remain
-separate stages.
+simple links. B3 implements the documented metadata-only structural subset,
+with explicit deferrals instead of unsupported conformance claims. Full
+grammar, full conformance, calendars, grid transformations, and formula
+evaluation remain separate stages.
 
 Current standard, Gregorian, and proleptic-Gregorian behavior remains. Julian,
 `noleap`/`365_day`, `all_leap`/`366_day`, and `360_day` belong to the CF engine
@@ -594,9 +607,12 @@ Lagrangian particle tracking are outside the core package roadmap.
 Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b, the
 complete A4 sequence through A4-EXIT, A4R, A5a/A5b, A6, and the global A-EXIT
 review have evidence. `0.3.0-A` is COMPLETE/CERTIFIED and the repository is
-in the staged 0.3.0-B CF/interoperability block. B1 and B2 are COMPLETE and
-DEC-015 is APPROVED — HYBRID IMPLEMENTED FOUNDATION. Gate B remains
-UNSATISFIED and vertical science is not authorized. The single recommended
-next subphase is `0.3.0-B3 — CF SUPPORTED-SUBSET INTERPRETATION AND
-VALIDATION`. This placement does not itself implement
+in the staged 0.3.0-B CF/interoperability block. B1, B2, and B3 are COMPLETE
+locally and DEC-015 is APPROVED — HYBRID ACTIVE SUPPORTED-SUBSET ENGINE. Gate
+B remains UNSATISFIED and vertical science is not authorized. The single
+recommended next subphase is `0.3.0-B4 — CF TIME AND CALENDAR REPRESENTATION
+DECISION`: WOA/climatology and all later temporal operations require one safe
+calendar model, while static optional-time support can follow without forcing
+an unresolved temporal representation into the cube contract. This placement
+does not itself implement
 vertical, provider, multifile, remote, Zarr, or 3-D behavior.
