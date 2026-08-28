@@ -76,6 +76,10 @@ covering \code{time}.}
 }
 \value{
 An object of class \verb{<ocean_cube>}.
+NetCDF readers may attach internal, independently versioned scientific
+metadata at \code{x$metadata$cf}. Manually constructed cubes use
+\code{x$metadata = NULL}; the nested metadata representation is internal and is
+not a stable public accessor contract.
 }
 \description{
 \code{ocean_cube()} stores gridded oceanographic data in a standard 5D array:

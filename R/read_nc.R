@@ -14,7 +14,9 @@
 #' @param dataset_id Optional dataset identifier.
 #'
 #' @return An `<ocean_cube>` object. CF time is decoded as UTC `POSIXct`
-#'   without truncating sub-day or fractional-second precision.
+#'   without truncating sub-day or fractional-second precision. The reader
+#'   attaches the internal versioned source model at `x$metadata$cf` before
+#'   supported metadata are interpreted for cube construction.
 #'
 #' @details CF units in seconds, minutes, hours, or days since an offset-aware
 #'   origin are supported. `standard` and `gregorian` are accepted on or after
@@ -39,11 +41,42 @@ read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
   nc <- ncdf4::nc_open(file)
   on.exit(ncdf4::nc_close(nc), add = TRUE)
 
+  cf <- .cf_scan_ncdf4(nc)
   dim_names <- names(nc$dim)
-  lon_name <- lon_name %||% .guess_dim(dim_names, c("longitude", "lon", "x"), arg = "longitude")
-  lat_name <- lat_name %||% .guess_dim(dim_names, c("latitude", "lat", "y"), arg = "latitude")
-  time_name <- time_name %||% .guess_dim(dim_names, c("time", "date"), arg = "time")
-  depth_name <- depth_name %||% .guess_dim(dim_names, c("depth", "deptht", "lev", "z"), required = FALSE)
+  all_vars <- names(nc$var)
+  coordinate_variables <- names(nc$dim)
+  vars <- vars %||% setdiff(all_vars, coordinate_variables)
+  vars <- as.character(vars)
+
+  missing_vars <- setdiff(vars, all_vars)
+  if (length(missing_vars) > 0L) {
+    rlang::abort(paste0("Variables not found in NetCDF: ", paste(missing_vars, collapse = ", ")))
+  }
+
+  resolutions <- .cf_resolve_axes(
+    cf,
+    selected_variables = vars,
+    lon_name = lon_name,
+    lat_name = lat_name,
+    depth_name = depth_name,
+    time_name = time_name
+  )
+  longitude_resolution <- .cf_require_axis(
+    resolutions$longitude, dim_names, reader = "eager", required = TRUE
+  )
+  latitude_resolution <- .cf_require_axis(
+    resolutions$latitude, dim_names, reader = "eager", required = TRUE
+  )
+  depth_resolution <- .cf_require_axis(
+    resolutions$depth, dim_names, reader = "eager", required = FALSE
+  )
+  time_resolution <- .cf_require_axis(
+    resolutions$time, dim_names, reader = "eager", required = TRUE
+  )
+  lon_name <- longitude_resolution$source_id
+  lat_name <- latitude_resolution$source_id
+  depth_name <- if (is.null(depth_resolution)) NULL else depth_resolution$source_id
+  time_name <- time_resolution$source_id
 
   lon <- as.vector(ncdf4::ncvar_get(nc, lon_name))
   lat <- as.vector(ncdf4::ncvar_get(nc, lat_name))
@@ -55,18 +88,6 @@ read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
   }, error = function(e) NA_character_)
   time_descriptor <- .decode_cf_time(time_raw, time_units, calendar = time_calendar)
   time <- time_descriptor$decoded_values
-
-  all_vars <- names(nc$var)
-  coord_vars <- c(lon_name, lat_name, depth_name, time_name)
-  coord_vars <- coord_vars[!is.na(coord_vars)]
-
-  vars <- vars %||% setdiff(all_vars, coord_vars)
-  vars <- as.character(vars)
-
-  missing_vars <- setdiff(vars, all_vars)
-  if (length(missing_vars) > 0L) {
-    rlang::abort(paste0("Variables not found in NetCDF: ", paste(missing_vars, collapse = ", ")))
-  }
 
   has_depth <- !is.null(depth_name) && any(vapply(vars, function(v) {
     depth_name %in% vapply(nc$var[[v]]$dim, function(d) d$name, character(1))
@@ -151,7 +172,7 @@ read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
     context = provenance_context
   )
 
-  ocean_cube(
+  out <- ocean_cube(
     lon = lon,
     lat = lat,
     depth = depth,
@@ -163,4 +184,11 @@ read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
     dataset_id = dataset_id,
     provenance = provenance
   )
+  cf <- .cf_build_current(
+    cf,
+    selected_variables = vars,
+    resolutions = resolutions,
+    explicit_depth = has_depth
+  )
+  .attach_cube_metadata(out, .cf_wrap_metadata(cf))
 }

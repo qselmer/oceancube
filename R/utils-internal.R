@@ -638,6 +638,10 @@
     }
   }
 
+  if ("metadata" %in% names(x) && !is.null(x$metadata)) {
+    .cf_metadata_validate(x$metadata)
+  }
+
   invisible(TRUE)
 }
 

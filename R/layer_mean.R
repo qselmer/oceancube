@@ -72,7 +72,7 @@ layer_mean <- function(x, depth) {
     context = provenance_context
   )
 
-  ocean_cube(
+  result <- ocean_cube(
     lon = x$lon,
     lat = x$lat,
     depth = layer_depth,
@@ -88,5 +88,9 @@ layer_mean <- function(x, depth) {
     mask = x$mask,
     dc = x$dc,
     provenance = provenance
+  )
+  .attach_cube_metadata(
+    result,
+    .cf_metadata_for_transform(x$metadata %||% NULL, "layer_mean")
   )
 }

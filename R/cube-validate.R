@@ -489,6 +489,34 @@ cube_validate <- function(x, strict = FALSE) {
     suggested_action = "Record source, processing, and ownership metadata when available."
   )
 
+  metadata <- value("metadata")
+  metadata_error <- NULL
+  metadata_ok <- if (is.null(metadata)) {
+    TRUE
+  } else {
+    tryCatch(
+      {
+        .cf_metadata_validate(metadata)
+        TRUE
+      },
+      error = function(e) {
+        metadata_error <<- conditionMessage(e)
+        FALSE
+      }
+    )
+  }
+  add(
+    "cf_metadata", metadata_ok, "metadata",
+    if (is.null(metadata)) {
+      "Canonical CF metadata are absent; this is valid for legacy and manually constructed cubes."
+    } else {
+      "Canonical CF metadata satisfy oceancube_metadata 1.0.0."
+    },
+    paste0("Canonical CF metadata are malformed: ", metadata_error),
+    repairable = FALSE,
+    suggested_action = "Rebuild metadata from a trustworthy source scan."
+  )
+
   optional <- c("mask", "dc", "climatology", "anomaly", "qa")
   present_optional <- optional[vapply(optional, function(name) !is.null(value(name)), logical(1))]
   add(

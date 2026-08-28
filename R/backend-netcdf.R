@@ -189,8 +189,8 @@
   invisible(TRUE)
 }
 
-.netcdf_dimension_metadata <- function(nc) {
-  dimensions <- lapply(names(nc$dim), function(name) {
+.netcdf_dimension_metadata <- function(nc, dimension_names = names(nc$dim)) {
+  dimensions <- lapply(dimension_names, function(name) {
     dimension <- nc$dim[[name]]
     units <- .netcdf_attribute(nc, name, "units", default = dimension$units)
     list(
@@ -211,146 +211,8 @@
       ))
     )
   })
-  names(dimensions) <- names(nc$dim)
+  names(dimensions) <- dimension_names
   dimensions
-}
-
-.netcdf_dimension_evidence <- function(metadata, axis) {
-  evidence <- character()
-  if (identical(axis, "longitude")) {
-    if (identical(metadata$axis, "X")) evidence <- c(evidence, "axis=X")
-    if (identical(tolower(metadata$standard_name), "longitude")) {
-      evidence <- c(evidence, "standard_name=longitude")
-    }
-    if (tolower(metadata$units) %in%
-        c("degrees_east", "degree_east", "degrees_e", "degree_e")) {
-      evidence <- c(evidence, paste0("units=", metadata$units))
-    }
-  } else if (identical(axis, "latitude")) {
-    if (identical(metadata$axis, "Y")) evidence <- c(evidence, "axis=Y")
-    if (identical(tolower(metadata$standard_name), "latitude")) {
-      evidence <- c(evidence, "standard_name=latitude")
-    }
-    if (tolower(metadata$units) %in%
-        c("degrees_north", "degree_north", "degrees_n", "degree_n")) {
-      evidence <- c(evidence, paste0("units=", metadata$units))
-    }
-  } else if (identical(axis, "depth")) {
-    if (identical(metadata$axis, "Z")) evidence <- c(evidence, "axis=Z")
-    if (tolower(metadata$standard_name) %in%
-        c("depth", "sea_floor_depth_below_geoid")) {
-      evidence <- c(evidence, paste0("standard_name=", metadata$standard_name))
-    }
-    if (metadata$positive %in% c("up", "down")) {
-      evidence <- c(evidence, paste0("positive=", metadata$positive))
-    }
-  } else if (identical(axis, "time")) {
-    if (identical(metadata$axis, "T")) evidence <- c(evidence, "axis=T")
-    if (identical(tolower(metadata$standard_name), "time")) {
-      evidence <- c(evidence, "standard_name=time")
-    }
-    if (!is.na(metadata$units) &&
-        grepl("^[[:alpha:]]+[[:space:]]+since[[:space:]]+", metadata$units,
-          ignore.case = TRUE
-        )) {
-      evidence <- c(evidence, paste0("units=", metadata$units))
-    }
-    if (!is.na(metadata$calendar)) {
-      evidence <- c(evidence, paste0("calendar=", metadata$calendar))
-    }
-  }
-  evidence
-}
-
-.resolve_netcdf_dimension <- function(metadata, axis, explicit = NULL,
-                                      required = TRUE) {
-  known <- list(
-    longitude = c("lon", "longitude", "x"),
-    latitude = c("lat", "latitude", "y"),
-    depth = c("depth", "deptht", "lev", "level", "z"),
-    time = c("time", "t")
-  )
-
-  if (!is.null(explicit)) {
-    .netcdf_scalar_string(explicit, paste0(axis, "_name"))
-    if (!explicit %in% names(metadata)) {
-      .netcdf_abort(
-        paste0(
-          "Cannot resolve the ",
-          axis,
-          " dimension: explicit dimension `",
-          explicit,
-          "` does not exist. Available dimensions: ",
-          paste(names(metadata), collapse = ", "),
-          "."
-        )
-      )
-    }
-    return(list(
-      name = explicit,
-      detection = list(method = "explicit", evidence = explicit)
-    ))
-  }
-
-  evidence <- lapply(metadata, .netcdf_dimension_evidence, axis = axis)
-  attribute_candidates <- names(evidence)[lengths(evidence) > 0L]
-  if (length(attribute_candidates) > 1L) {
-    details <- vapply(attribute_candidates, function(candidate) {
-      paste0(candidate, " (", paste(evidence[[candidate]], collapse = ", "), ")")
-    }, character(1))
-    .netcdf_abort(
-      paste0(
-        "Cannot resolve the ",
-        axis,
-        " dimension because multiple CF candidates were found: ",
-        paste(details, collapse = "; "),
-        ". Specify the ",
-        axis,
-        " dimension explicitly."
-      )
-    )
-  }
-  if (length(attribute_candidates) == 1L) {
-    candidate <- attribute_candidates[[1L]]
-    return(list(
-      name = candidate,
-      detection = list(
-        method = "cf_attributes",
-        evidence = evidence[[candidate]]
-      )
-    ))
-  }
-
-  lower_names <- tolower(names(metadata))
-  name_candidates <- names(metadata)[lower_names %in% known[[axis]]]
-  if (length(name_candidates) > 1L) {
-    .netcdf_abort(
-      paste0(
-        "Cannot resolve the ",
-        axis,
-        " dimension because multiple known-name candidates were found: ",
-        paste(name_candidates, collapse = ", "),
-        ". Specify it explicitly."
-      )
-    )
-  }
-  if (length(name_candidates) == 1L) {
-    return(list(
-      name = name_candidates[[1L]],
-      detection = list(method = "known_name", evidence = name_candidates[[1L]])
-    ))
-  }
-
-  if (!isTRUE(required)) return(NULL)
-  .netcdf_abort(
-    paste0(
-      "Cannot resolve the ",
-      axis,
-      " dimension. Available dimensions: ",
-      paste(names(metadata), collapse = ", "),
-      ". No unique CF attribute or known name identified it; specify the dimension explicitly."
-    )
-  )
 }
 
 .read_netcdf_coordinate <- function(nc, variable) {
@@ -530,13 +392,16 @@
 .new_netcdf_storage <- function(file, variables, lon_name = NULL,
                                  lat_name = NULL, depth_name = NULL,
                                  time_name = NULL, source = "netcdf",
-                                 dataset_id = NULL) {
+                                 dataset_id = NULL, cf_metadata = NULL) {
   if (!is.null(variables)) {
     variables <- .validate_netcdf_variables_argument(variables)
   }
   .netcdf_scalar_string(source, "source")
   if (!is.null(dataset_id)) {
     .netcdf_scalar_string(dataset_id, "dataset_id")
+  }
+  if (!is.null(cf_metadata)) {
+    .cf_validate_cf(cf_metadata, require_current = FALSE)
   }
   identity <- .netcdf_file_identity(file)
 
@@ -580,28 +445,44 @@
       }
     }
 
-    selected_dimension_names <- unique(unlist(
-      lapply(variables, function(variable) {
-        vapply(nc$var[[variable]]$dim, function(x) x$name, character(1))
-      }),
-      use.names = FALSE
-    ))
-    metadata <- .netcdf_dimension_metadata(nc)
-    metadata <- metadata[selected_dimension_names]
-    resolved <- list(
-      longitude = .resolve_netcdf_dimension(
-        metadata, "longitude", lon_name, required = TRUE
+    selected_dimension_names <- unique(unlist(lapply(variables, function(variable) {
+      vapply(nc$var[[variable]]$dim, function(x) x$name, character(1))
+    }), use.names = FALSE))
+    metadata <- .netcdf_dimension_metadata(nc, selected_dimension_names)
+    cf_for_resolution <- cf_metadata %||% .cf_scan_ncdf4(nc)
+    axis_resolutions <- .cf_resolve_axes(
+      cf_for_resolution,
+      selected_variables = variables,
+      lon_name = lon_name,
+      lat_name = lat_name,
+      depth_name = depth_name,
+      time_name = time_name
+    )
+    resolved_axes <- list(
+      longitude = .cf_require_axis(
+        axis_resolutions$longitude, selected_dimension_names,
+        reader = "deferred", required = TRUE
       ),
-      latitude = .resolve_netcdf_dimension(
-        metadata, "latitude", lat_name, required = TRUE
+      latitude = .cf_require_axis(
+        axis_resolutions$latitude, selected_dimension_names,
+        reader = "deferred", required = TRUE
       ),
-      depth = .resolve_netcdf_dimension(
-        metadata, "depth", depth_name, required = FALSE
+      depth = .cf_require_axis(
+        axis_resolutions$depth, selected_dimension_names,
+        reader = "deferred", required = FALSE
       ),
-      time = .resolve_netcdf_dimension(
-        metadata, "time", time_name, required = TRUE
+      time = .cf_require_axis(
+        axis_resolutions$time, selected_dimension_names,
+        reader = "deferred", required = TRUE
       )
     )
+    resolved <- lapply(resolved_axes, function(item) {
+      if (is.null(item)) return(NULL)
+      list(
+        name = item$source_id,
+        detection = .cf_resolution_for_storage(item)
+      )
+    })
     resolved_names <- vapply(resolved[!vapply(resolved, is.null, logical(1))],
       `[[`,
       character(1),
@@ -1501,8 +1382,13 @@
 }
 
 .new_netcdf_cube <- function(storage, source = NULL, dataset_id = NULL,
-                              provenance = NULL, qa = NULL) {
+                              provenance = NULL, qa = NULL, metadata = NULL) {
   .validate_netcdf_storage(storage, check_file = TRUE)
+  if (is.null(metadata)) {
+    cf <- .cf_scan_netcdf(storage$file$normalized_path)
+    metadata <- .cf_metadata_from_storage(cf, storage)
+  }
+  .cf_metadata_validate(metadata)
   canonical <- storage$dimensions$canonical
   source <- source %||% storage$options$source %||% "netcdf"
   dataset_id <- dataset_id %||% storage$options$dataset_id
@@ -1598,6 +1484,7 @@
     anomaly = NULL,
     provenance = provenance,
     qa = qa,
+    metadata = metadata,
     storage = storage
   )
   class(out) <- c("ocean_cube", "list")

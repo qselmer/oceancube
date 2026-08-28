@@ -48,7 +48,9 @@ scientific variable arrays or create \code{x$data}.
 The returned object has the usual \code{c("ocean_cube", "list")} class. Its
 internal, versioned \code{x$storage} descriptor records how bounded I/O can be
 performed. The descriptor schema is implementation metadata and is not a
-stable public API. No NetCDF connection is retained in the object: each
+stable public API. Independently, \code{x$metadata$cf} preserves the source CF
+metadata in a backend-independent internal schema. No NetCDF connection is
+retained in either object: each
 scientific read validates the source, opens it, reads the required block,
 and closes it.
 

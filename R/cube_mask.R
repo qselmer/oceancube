@@ -192,6 +192,10 @@ cube_mask <- function(x, polygons, crs = NULL,
   )
   output_template <- x
   output_template$qa <- qa
+  output_template$metadata <- .cf_metadata_for_transform(
+    x$metadata %||% NULL,
+    "cube_mask"
+  )
 
   out <- .new_collected_memory_cube(output_template, values, provenance)
   out$mask <- mask

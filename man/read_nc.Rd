@@ -35,7 +35,9 @@ variables are read.}
 }
 \value{
 An \verb{<ocean_cube>} object. CF time is decoded as UTC \code{POSIXct}
-without truncating sub-day or fractional-second precision.
+without truncating sub-day or fractional-second precision. The reader
+attaches the internal versioned source model at \code{x$metadata$cf} before
+supported metadata are interpreted for cube construction.
 }
 \description{
 Reads selected NetCDF variables and standardizes them as a 5D

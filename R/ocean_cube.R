@@ -36,6 +36,10 @@
 #' @param qa Optional QA/QC metadata.
 #'
 #' @return An object of class `<ocean_cube>`.
+#'   NetCDF readers may attach internal, independently versioned scientific
+#'   metadata at `x$metadata$cf`. Manually constructed cubes use
+#'   `x$metadata = NULL`; the nested metadata representation is internal and is
+#'   not a stable public accessor contract.
 #' @export
 #'
 #' @details
@@ -185,7 +189,8 @@ ocean_cube <- function(lon, lat, time, data, depth = NULL, vars = NULL, units = 
     climatology = climatology,
     anomaly = anomaly,
     provenance = provenance,
-    qa = qa
+    qa = qa,
+    metadata = NULL
   )
 
   class(out) <- c("ocean_cube", "list")

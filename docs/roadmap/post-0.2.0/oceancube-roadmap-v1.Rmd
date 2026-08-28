@@ -362,6 +362,20 @@ optional oracle/reference/adapter. Runtime, dependencies, API, and scientific
 results are unchanged. `DEC-023`, `A3B-001`, `A3B-002`, and `A3B-003` remain
 open; Gate B remains UNSATISFIED.
 
+**0.3.0-B2 status (2026-08-28): CF metadata preservation engine implementation
+and local package certification COMPLETE, pending remote CI.** The production
+foundation implements `oceancube_metadata 1.0.0` and
+`oceancube_cf_metadata 1.0.0` at `x$metadata$cf`, one path-qualified scanner,
+raw plus simple interpreted links, strict plain-R validation, one
+conflict-aware resolver shared by eager and deferred ingestion, exact
+`cube_collect()` preservation, and an explicit pending-derivation state for
+scientifically changing transformations. OISST `zlev` resolves from
+`positive=down` without overrides in both readers, closing `A3B-001` with
+exact numerical parity. ETOPO remains unrepresentable as a temporal cube and
+WOA months-since remains rejected; `A3B-002`, `A3B-003`, and `DEC-023` remain
+open. No dependency, export, calendar, static-field, or vertical-science scope
+was added; Gate B remains UNSATISFIED.
+
 No large provider product is added to Git. Proposed source classes are:
 
 | Source class | Contract evidence | Access and fixture policy | CI-safe form |
@@ -393,7 +407,10 @@ The B1-approved model covers `standard_name`, `long_name`, `units`, `coordinates
 terms. `DEC-015` selects a HYBRID engine: the canonical plain-R model and
 lightweight scanner/interpreter are owned by oceancube, while `ncdfCF` is an
 optional adapter/reference implementation/conformance oracle and is never
-embedded as canonical state. B1 adds no dependency.
+embedded as canonical state. B2 implements the preservation foundation and
+simple supported-subset links without adding that dependency. Full grammar,
+conformance, calendars, grid transformations, and formula evaluation remain
+separate stages.
 
 Current standard, Gregorian, and proleptic-Gregorian behavior remains. Julian,
 `noleap`/`365_day`, `all_leap`/`366_day`, and `360_day` belong to the CF engine
@@ -577,8 +594,9 @@ Lagrangian particle tracking are outside the core package roadmap.
 Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b, the
 complete A4 sequence through A4-EXIT, A4R, A5a/A5b, A6, and the global A-EXIT
 review have evidence. `0.3.0-A` is COMPLETE/CERTIFIED and the repository is
-in the staged 0.3.0-B CF/interoperability block. B1 is COMPLETE and DEC-015 is
-APPROVED — HYBRID. Gate B remains UNSATISFIED and vertical science is not
-authorized. The single recommended next subphase is `0.3.0-B2 — CF METADATA
-PRESERVATION ENGINE IMPLEMENTATION`. This placement does not itself implement
+in the staged 0.3.0-B CF/interoperability block. B1 and B2 are COMPLETE and
+DEC-015 is APPROVED — HYBRID IMPLEMENTED FOUNDATION. Gate B remains
+UNSATISFIED and vertical science is not authorized. The single recommended
+next subphase is `0.3.0-B3 — CF SUPPORTED-SUBSET INTERPRETATION AND
+VALIDATION`. This placement does not itself implement
 vertical, provider, multifile, remote, Zarr, or 3-D behavior.

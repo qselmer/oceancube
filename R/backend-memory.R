@@ -512,6 +512,7 @@
     qa = x$qa
   )
   dimnames(out$data) <- dimnames(data)
+  out <- .attach_cube_metadata(out, x$metadata %||% NULL)
   .check_cube(out)
   out
 }
@@ -537,6 +538,12 @@
     qa = auxiliary$qa
   )
   dimnames(out$data) <- dimnames(data)
+  metadata <- .cf_metadata_for_selection(
+    x$metadata %||% NULL,
+    index = index,
+    variables = x$vars[index$variable]
+  )
+  out <- .attach_cube_metadata(out, metadata)
   .check_cube(out)
   out
 }

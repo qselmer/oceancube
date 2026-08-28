@@ -367,6 +367,10 @@ cube_climatology <- function(
     qa = qa
   )
   dimnames(result$data) <- output_dimnames
+  result <- .attach_cube_metadata(
+    result,
+    .cf_metadata_for_transform(x$metadata %||% NULL, "cube_climatology")
+  )
   cube_validate(result, strict = TRUE)
   result
 }

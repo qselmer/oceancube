@@ -92,7 +92,7 @@ to_month <- function(x, fun = mean) {
   qa <- aggregated$qa
   qa$to_month <- compatibility
 
-  ocean_cube(
+  result <- ocean_cube(
     lon = aggregated$lon,
     lat = aggregated$lat,
     depth = aggregated$depth,
@@ -109,6 +109,10 @@ to_month <- function(x, fun = mean) {
     dc = aggregated$dc,
     provenance = provenance,
     qa = qa
+  )
+  .attach_cube_metadata(
+    result,
+    .cf_metadata_for_transform(aggregated$metadata %||% NULL, "to_month")
   )
 }
 
@@ -171,7 +175,7 @@ to_month <- function(x, fun = mean) {
     context = provenance_context
   )
 
-  ocean_cube(
+  result <- ocean_cube(
     lon = x$lon,
     lat = x$lat,
     depth = x$depth,
@@ -195,5 +199,9 @@ to_month <- function(x, fun = mean) {
         deprecated = TRUE
       )
     )
+  )
+  .attach_cube_metadata(
+    result,
+    .cf_metadata_for_transform(x$metadata %||% NULL, "to_month")
   )
 }

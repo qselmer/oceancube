@@ -1,0 +1,4 @@
+"fixture","scanner","declaration","critical_preservation","read_nc","cube_open","metadata_parity","numerical_parity","finding"
+"OISST v2.1 fv1","PASS","CF-1.6, ACDD-1.3","all globals dimensions variables packing; zlev units=meters positive=down","PASS without depth override","PASS without depth override","PASS source identical","PASS exact collected values","A3B-001 CLOSED"
+"ETOPO 2022 v1 fv1","PASS","absent","lon lat z and coordinates='lat lon'; no time fabricated","EXPECTED REJECTION no time","EXPECTED REJECTION no time","not applicable to current cube","not applicable","A3B-002 OPEN"
+"WOA23 v3.3 fv1","PASS","CF-1.6","raw months-since; calendar absence; climatology/depth bounds; CRS; standard names; units; cell_methods","EXPECTED REJECTION unsupported units","EXPECTED REJECTION unsupported units","scan succeeds before decode","not applicable","A3B-003 and DEC-023 OPEN"

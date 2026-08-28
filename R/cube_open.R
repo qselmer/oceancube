@@ -9,7 +9,9 @@
 #' The returned object has the usual `c("ocean_cube", "list")` class. Its
 #' internal, versioned `x$storage` descriptor records how bounded I/O can be
 #' performed. The descriptor schema is implementation metadata and is not a
-#' stable public API. No NetCDF connection is retained in the object: each
+#' stable public API. Independently, `x$metadata$cf` preserves the source CF
+#' metadata in a backend-independent internal schema. No NetCDF connection is
+#' retained in either object: each
 #' scientific read validates the source, opens it, reads the required block,
 #' and closes it.
 #'
@@ -64,6 +66,7 @@
 cube_open <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
                       depth_name = NULL, time_name = NULL, source = "netcdf",
                       dataset_id = NULL) {
+  cf <- .cf_scan_netcdf(file)
   storage <- .new_netcdf_storage(
     file = file,
     variables = vars,
@@ -72,11 +75,14 @@ cube_open <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
     depth_name = depth_name,
     time_name = time_name,
     source = source,
-    dataset_id = dataset_id
+    dataset_id = dataset_id,
+    cf_metadata = cf
   )
+  metadata <- .cf_metadata_from_storage(cf, storage)
   .new_netcdf_cube(
     storage = storage,
     source = source,
-    dataset_id = dataset_id
+    dataset_id = dataset_id,
+    metadata = metadata
   )
 }

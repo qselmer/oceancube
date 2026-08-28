@@ -1,9 +1,8 @@
 # oceancube CF metadata foundation V1
 
-Status: **B1 architecture approved; production implementation deferred to
-0.3.0-B2**.
+Status: **B1 architecture approved; B2 preservation foundation implemented**.
 
-Decision: **DEC-015 = APPROVED — HYBRID**.
+Decision: **DEC-015 = APPROVED — HYBRID IMPLEMENTED FOUNDATION**.
 
 Normative reference: [CF Metadata Conventions
 1.13](https://cfconventions.org/Data/cf-conventions/cf-conventions-1.13/cf-conventions.html)
@@ -54,13 +53,13 @@ metadata.
 
 ## Canonical location and version
 
-The selected future location is top-level `x$metadata`, with the CF model at
+The canonical location is top-level `x$metadata`, with the CF model at
 `x$metadata$cf`. Metadata is semantic state and therefore cannot be owned only
 by `x$storage`. It must be identical in meaning before and after
 `cube_collect()` and remain usable by memory, NetCDF, future remote, and future
 Zarr representations.
 
-The proposed shape is:
+The implemented shape is:
 
 ```r
 x$metadata <- list(
@@ -89,17 +88,17 @@ x$metadata <- list(
 ```
 
 `oceancube_cf_metadata` is versioned independently of the package,
-Provenance V1, and the NetCDF storage descriptor. B2 may simplify field names,
-but it must preserve these boundaries and version independence.
+Provenance V1, and the NetCDF storage descriptor. The B2 implementation
+preserves these boundaries and version independence.
 
 The complete raw source structure occurs once. `current` uses source object IDs
 plus compact overrides, invalidations, derived attributes, and selection facts;
 it does not duplicate the source tree and does not maintain a recursive
 transformation history. Provenance already owns transformation history.
 
-A manually constructed cube may have `metadata = NULL` or a minimal current
-metadata layer without a CF source declaration. Whether the future constructor
-accepts `metadata = NULL` is a B2 compatibility decision; B1 adds no argument.
+A manually constructed or legacy cube may have `metadata = NULL`. The public
+`ocean_cube()` signature remains unchanged; internal attachment validates and
+adds canonical metadata only for source-backed ingestion.
 
 ## Plain-state and data boundary
 
@@ -221,7 +220,7 @@ Initial statuses are `RESOLVED`, `MISSING_TARGET`, `SELF_REFERENCE`,
 coordinate's own `bounds`, but can be valid for the coordinate term in some CF
 `formula_terms` definitions.
 
-B2 must support simple links for `coordinates`, `bounds`, `climatology`,
+The production foundation supports simple links for `coordinates`, `bounds`, `climatology`,
 `ancillary_variables`, `cell_measures`, `grid_mapping`, and `formula_terms`.
 CF 1.13 extended `grid_mapping` syntax is preserved exactly but initially
 marked `DEFERRED_EXTENDED`; B2 does not silently reduce it to the first token.
@@ -274,13 +273,12 @@ identified by `degrees_east` and `degrees_north`; time by
 name `Sea surface height`, and `positive=down`, but no `axis` and no
 `standard_name`.
 
-`read_nc()` uses only explicit overrides and literal name fallbacks. Since
-`zlev` is not in its depth list, reading a four-dimensional field without
-`depth_name="zlev"` reaches an invalid permutation and fails. The deferred
-resolver succeeds without the override because it treats `positive=down` as
-depth evidence. The correct solution is one shared conflict-aware semantic
-resolver, not merely another provider alias. A bounded alias may remain as the
-weakest fallback. `A3B-001` stays open until B2 runtime convergence.
+Before B2, `read_nc()` used explicit overrides and literal name fallbacks, so
+`zlev` failed while the deferred resolver used `positive=down`. B2 replaces
+both paths with one conflict-aware semantic resolver. Both readers now resolve
+`zlev` from `positive=down` without an override, explicit mapping remains
+supported, conflict tests pass, and numerical parity is exact. `A3B-001` is
+**CLOSED**.
 
 ### ETOPO and A3B-002
 
@@ -385,9 +383,9 @@ scientific data materialization.
 
 The common model naturally provides one encoding descriptor for `_FillValue`,
 `missing_value`, `scale_factor`, and `add_offset`. That assigns the known eager
-`missing_value` divergence to later shared decoder work, but B1 does not fix or
-close it. `A1-002` remains partially closed and is transferred into B2 and
-later calendar/decoder stages.
+`missing_value` divergence to later shared decoder work. B2 implements the
+shared preservation and axis layers but deliberately does not change decoding.
+`A1-002` remains partially closed and moves to later calendar/decoder stages.
 
 ## Transformations and current metadata
 
@@ -408,8 +406,9 @@ evidence until that semantic mapping is implemented.
 
 The B1 group prototype showed that `ncdf4` exposes path-qualified names such as
 `g1/temp` and `g2/temp`, while ncdfCF traverses the hierarchy and applies CF
-scope. Current cube readers are not group-certified. B2 preserves paths and
-must not flatten duplicate basenames; full CF group resolution is later.
+scope. The B2 scanner now preserves those identities and conservatively scopes
+simple links without flattening duplicate basenames. Current cube readers are
+still not group-certified; full CF group resolution is later.
 
 Future multifile reconciliation compares declarations, variable metadata, and
 current semantics by path. Identical metadata can be shared; conflicts become
@@ -432,25 +431,26 @@ values and large attributes while retaining them in the source record. A
 future explicit detailed accessor requires DEC-014 API review; extending
 `cube_inspect()` is preferred if sufficient.
 
-## Evolution and B2 boundary
+## B2 implementation and evolution boundary
 
 Schema evolution is explicit and independently versioned. Unknown fields are
 ignored only under a compatible minor-version policy; destructive changes
 require migration. Storage adapters may add scanner-specific diagnostics but
 cannot change semantic meaning.
 
-B2 may implement preservation, simple link resolution, conflict-aware axis
+B2 implements preservation, simple link resolution, conflict-aware axis
 evidence, and eager/deferred scanner convergence. It does not thereby authorize
 static cubes, duration-month decoding, non-Gregorian calendars, formula
 evaluation, CRS transformation, advanced grids, remote/multifile I/O, Zarr,
 writing, or vertical science.
 
-After B1:
+After B2:
 
-- `DEC-015`: **APPROVED — HYBRID**;
+- `DEC-015`: **APPROVED — HYBRID IMPLEMENTED FOUNDATION**;
 - `DEC-023`: **OPEN**;
-- `A1-002`: **PARTIALLY-CLOSED / TRANSFERRED TO B IMPLEMENTATION**;
-- `A3B-001`, `A3B-002`, `A3B-003`: **OPEN, assigned to staged B work**;
+- `A1-002`: **PARTIALLY-CLOSED; decoder/calendar/static/other CF work remains**;
+- `A3B-001`: **CLOSED**;
+- `A3B-002`, `A3B-003`: **OPEN, assigned to staged B work**;
 - `0.3.0-A`: **COMPLETE / CERTIFIED**;
-- `0.3.0-B`: **IN PROGRESS; B1 COMPLETE**;
+- `0.3.0-B`: **IN PROGRESS; B1 and B2 COMPLETE**;
 - Gate B: **UNSATISFIED**.

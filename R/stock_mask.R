@@ -148,6 +148,10 @@ crop_stock <- function(x, mask) {
     anomaly = x$anomaly,
     provenance = provenance
   )
+  ans <- .attach_cube_metadata(
+    ans,
+    .cf_metadata_for_transform(x$metadata %||% NULL, "crop_stock")
+  )
   class(ans) <- c("stock_cube", class(ans))
   ans
 }

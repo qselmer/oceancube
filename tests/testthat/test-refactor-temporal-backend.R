@@ -41,9 +41,11 @@ test_that("to_month preserves monthly calculations, structure, and metadata poli
     c(
       "lon", "lat", "depth", "time", "vars", "data", "units", "source",
       "dataset_id", "spatial_extent", "temporal_extent", "depth_extent",
-      "mask", "dc", "climatology", "anomaly", "provenance", "qa"
+      "mask", "dc", "climatology", "anomaly", "provenance", "qa",
+      "metadata"
     )
   )
+  expect_null(monthly$metadata)
   expect_identical(unname(dim(monthly$data)), c(3L, 2L, 2L, 14L, 2L))
   expect_identical(
     monthly$time,

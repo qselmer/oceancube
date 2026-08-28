@@ -344,6 +344,10 @@ cube_anomaly <- function(
     provenance = provenance,
     qa = qa
   )
+  result <- .attach_cube_metadata(
+    result,
+    .cf_metadata_for_transform(x$metadata %||% NULL, "cube_anomaly")
+  )
   cube_validate(result, strict = TRUE)
   result
 }
