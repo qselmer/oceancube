@@ -351,6 +351,17 @@ and `ready to begin 0.3.0-B = TRUE`; Gate B remains UNSATISFIED because its
 canonical meaning is permission to begin vertical science and the CF/vertical
 coordinate and primitive prerequisites are not yet approved.
 
+**0.3.0-B1 status (2026-08-27): CF metadata foundation and engine decision
+COMPLETE.** CF 1.13 is the normative design target. B1 audits both readers,
+defines preserve/interpret/validate/use stages, a versioned plain-R model at
+`x$metadata$cf`, raw plus interpreted links, conflict-aware axis evidence, and
+source/current propagation. Native real/synthetic/group prototypes and an
+isolated ncdfCF 0.8.2 comparison approve `DEC-015` as HYBRID: oceancube owns
+the canonical model and lightweight scanner/interpreter; ncdfCF remains an
+optional oracle/reference/adapter. Runtime, dependencies, API, and scientific
+results are unchanged. `DEC-023`, `A3B-001`, `A3B-002`, and `A3B-003` remain
+open; Gate B remains UNSATISFIED.
+
 No large provider product is added to Git. Proposed source classes are:
 
 | Source class | Contract evidence | Access and fixture policy | CI-safe form |
@@ -376,12 +387,13 @@ CF is P0 architecture and is staged rather than claimed all at once:
 4. support advanced grids and vertical coordinates;
 5. write CF-compliant data.
 
-The model covers `standard_name`, `long_name`, `units`, `coordinates`, `axis`,
+The B1-approved model covers `standard_name`, `long_name`, `units`, `coordinates`, `axis`,
 `positive`, `bounds`, `cell_methods`, `cell_measures`, `grid_mapping`,
 `ancillary_variables`, `flag_values`, `flag_masks`, calendars, and formula
-terms. `ncdfCF` is
-an adapter/reference implementation and possible conformance oracle, not an
-automatic internal engine.
+terms. `DEC-015` selects a HYBRID engine: the canonical plain-R model and
+lightweight scanner/interpreter are owned by oceancube, while `ncdfCF` is an
+optional adapter/reference implementation/conformance oracle and is never
+embedded as canonical state. B1 adds no dependency.
 
 Current standard, Gregorian, and proleptic-Gregorian behavior remains. Julian,
 `noleap`/`365_day`, `all_leap`/`366_day`, and `360_day` belong to the CF engine
@@ -565,8 +577,8 @@ Lagrangian particle tracking are outside the core package roadmap.
 Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b, the
 complete A4 sequence through A4-EXIT, A4R, A5a/A5b, A6, and the global A-EXIT
 review have evidence. `0.3.0-A` is COMPLETE/CERTIFIED and the repository is
-ready to begin the staged 0.3.0-B CF/interoperability block. Gate B remains
-UNSATISFIED and vertical science is not authorized. The single recommended
-next subphase is `0.3.0-B1 — CF METADATA FOUNDATION AND CF ENGINE DECISION`.
-This placement does not itself implement CF, vertical, provider, multifile,
-remote, Zarr, or 3-D behavior.
+in the staged 0.3.0-B CF/interoperability block. B1 is COMPLETE and DEC-015 is
+APPROVED — HYBRID. Gate B remains UNSATISFIED and vertical science is not
+authorized. The single recommended next subphase is `0.3.0-B2 — CF METADATA
+PRESERVATION ENGINE IMPLEMENTATION`. This placement does not itself implement
+vertical, provider, multifile, remote, Zarr, or 3-D behavior.

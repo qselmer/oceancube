@@ -15,6 +15,8 @@ code changes by itself.
 - Gate A: satisfied
 - 0.3.0-A-EXIT: hardening phase complete and certified on 2026-08-27
 - Ready to begin 0.3.0-B CF + interoperability: true
+- 0.3.0-B: in progress
+- 0.3.0-B1: CF metadata foundation and engine decision complete
 - Gate B (permission to begin vertical science): unsatisfied
 - 0.3.0-A3b: governed real-data fixtures and offline-CI evidence completed
 - 0.3.0-A4a: provenance V1 architecture and compatibility design completed
@@ -32,6 +34,8 @@ code changes by itself.
 - DEC-024: approved for the exact OISST/ETOPO/WOA23 fixture set
 - DEC-019: approved — implemented/certified by A4a through A4-EXIT evidence
 - DEC-018: approved — implemented/certified by A5b; `A1-004` closed
+- DEC-015: approved — HYBRID; canonical plain-R metadata remains owned by
+  oceancube and ncdfCF is an optional oracle/reference/adapter
 - Public API: 39 exports; `cube_open` is the sole A5b addition
 - Runtime producer migrations: all identified producers complete and globally certified
 - Hardening findings: no unresolved S0/S1 blocker; accepted debt and
@@ -61,9 +65,13 @@ A-EXIT certifies `0.3.0-A` complete after A1-A6 evidence, with `A1-009`
 closed, 39 exports retained, and no unresolved S0/S1 blocker. This permits the
 staged `0.3.0-B` CF/interoperability block to begin, but Gate B remains
 unsatisfied because its canonical vertical-science prerequisites have not yet
-been met. The single recommended next subphase is `0.3.0-B1 — CF METADATA
-FOUNDATION AND CF ENGINE DECISION`. No CF, vertical, provider, multifile,
-remote, Zarr, or 3-D implementation occurs in A-EXIT.
+been met. B1 establishes the lossless CF 1.13 preservation architecture,
+linked-variable model, conflict-aware axis design, real/synthetic prototype
+evidence, and hybrid engine decision without changing runtime, API, or
+dependencies. `DEC-023` and `A3B-001` through `A3B-003` remain open. The single
+recommended next subphase is `0.3.0-B2 — CF METADATA PRESERVATION ENGINE
+IMPLEMENTATION`. No vertical, provider, multifile, remote, Zarr, or 3-D
+implementation is authorized by B1.
 
 ## Change control
 
