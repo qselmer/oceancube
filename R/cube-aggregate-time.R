@@ -84,6 +84,7 @@ cube_aggregate_time <- function(
     min_n = 1L,
     diagnostics = FALSE) {
   cube_validate(x, strict = TRUE)
+  .calendar_operation_unsupported(x, "cube_aggregate_time")
 
   if (missing(by) || !is.character(by) || length(by) != 1L ||
       is.na(by) || !by %in% c("day", "week", "month", "season", "year")) {

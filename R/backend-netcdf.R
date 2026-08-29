@@ -949,8 +949,10 @@
     storage$time$decoded_values,
     arg = "storage$time$decoded_values"
   )
-  if (!storage$time$calendar %in%
-      c("standard", "gregorian", "proleptic_gregorian")) {
+  if (!storage$time$calendar %in% c(
+    "standard", "gregorian", "proleptic_gregorian", "julian",
+    "365_day", "noleap", "366_day", "all_leap", "360_day"
+  )) {
     .netcdf_abort(
       paste0("Invalid or unsupported NetCDF calendar `", storage$time$calendar, "`."),
       class = "oceancube_bad_storage"
@@ -1423,7 +1425,11 @@
     backend = "netcdf",
     provenance = provenance
   )
-  provenance_context$calendar <- storage$time$calendar
+  provenance_context$calendar <- if (inherits(time, "oceancube_cf_time")) {
+    attr(time, "calendar", exact = TRUE)
+  } else {
+    storage$time$calendar
+  }
   provenance <- .provenance_normalize(provenance, context = provenance_context)
   provenance$source$locator <- list(
     type = "file",

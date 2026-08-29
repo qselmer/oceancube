@@ -402,6 +402,19 @@ dependency, export, decoder or scientific result. `A3B-003` remains open with
 architecture resolved and runtime/provider adjudication pending; `A3B-002`
 also remains open. `0.3.0-B` is IN PROGRESS and Gate B remains UNSATISFIED.
 
+**0.3.0-B5 status (2026-08-28): CF time and calendar engine implementation and
+local package certification COMPLETE.** The internal plain-R
+`oceancube_cf_time 1.0.0` engine implements fixed elapsed units for mixed
+`standard`/`gregorian`, `proleptic_gregorian`, `julian`, `365_day`/`noleap`,
+`366_day`/`all_leap`, and `360_day`, while every previously representable
+Date/POSIXct case remains unchanged. Eager/deferred reading, validation,
+selection, crop, collect, tables, serialization and non-temporal carrying are
+calendar-safe; unsupported Tier-2 temporal science errors explicitly. CFtime
+remains optional development evidence and is not a dependency. DEC-023 is
+APPROVED — CORE RUNTIME IMPLEMENTED/CERTIFIED. WOA months-since and A3B-003,
+ETOPO/static time and A3B-002, and Gate B remain open. The next bounded subphase
+is B6 climatological time and WOA23 adjudication; it is not executed by B5.
+
 No large provider product is added to Git. Proposed source classes are:
 
 | Source class | Contract evidence | Access and fixture policy | CI-safe form |
@@ -441,10 +454,11 @@ evaluation remain separate stages.
 
 Current standard, Gregorian, and proleptic-Gregorian behavior remains. Julian,
 `noleap`/`365_day`, `all_leap`/`366_day`, and `360_day` belong to the CF engine
-and are not isolated date helpers. B4 approves `DEC-023` as a hybrid model:
-current exact Date/POSIXct cases remain, while non-base calendars use future
-oceancube-owned plain state with a transient reconstructable CFtime adapter.
-Runtime implementation remains B5.
+and are not isolated date helpers. B4 approves `DEC-023` as a hybrid model and
+B5 implements its bounded core: exact Date/POSIXct cases remain while non-base
+calendars use oceancube-owned plain state. CFtime is an optional development
+oracle, not production state or a dependency. Climatological months-since and
+WOA23 provider adjudication remain B6.
 
 `stars` is the principal optional N-D/geospatial adapter candidate, `terra`
 serves raster/surface interoperability, and `sf` remains vector geometry and
@@ -624,12 +638,11 @@ Lagrangian particle tracking are outside the core package roadmap.
 Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b, the
 complete A4 sequence through A4-EXIT, A4R, A5a/A5b, A6, and the global A-EXIT
 review have evidence. `0.3.0-A` is COMPLETE/CERTIFIED and the repository is
-in the staged 0.3.0-B CF/interoperability block. B1, B2, and B3 are COMPLETE
-locally and DEC-015 is APPROVED — HYBRID ACTIVE SUPPORTED-SUBSET ENGINE. Gate
+in the staged 0.3.0-B CF/interoperability block. B1 through B5 are COMPLETE
+locally; DEC-015 and the DEC-023 bounded core are approved and certified. Gate
 B remains UNSATISFIED and vertical science is not authorized. The single
-recommended next subphase is `0.3.0-B4 — CF TIME AND CALENDAR REPRESENTATION
-DECISION`: WOA/climatology and all later temporal operations require one safe
-calendar model, while static optional-time support can follow without forcing
-an unresolved temporal representation into the cube contract. This placement
-does not itself implement
-vertical, provider, multifile, remote, Zarr, or 3-D behavior.
+recommended next subphase is `0.3.0-B6 — CF CLIMATOLOGICAL TIME AND WOA23
+ADJUDICATION`. It must resolve recurring climatological bins, bounds,
+cell_methods, months-since meaning, and provider evidence without generic
+duration-month guessing. B5 does not implement B6, vertical, static-field,
+provider, multifile, remote, Zarr, or 3-D behavior.

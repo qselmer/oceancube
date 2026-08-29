@@ -7,10 +7,11 @@
 #' @param lon Non-empty finite numeric vector of longitudes, using either the
 #'   `[-180, 180]` or `[0, 360]` convention.
 #' @param lat Non-empty finite numeric vector of latitudes in `[-90, 90]`.
-#' @param time Non-empty, unique, strictly increasing `Date`, `POSIXct`, or
-#'   unambiguous ISO character vector. Civil dates remain `Date`; POSIXct
-#'   instants retain sub-day precision and are normalized to UTC. Datetime
-#'   strings must include `Z` or an explicit numeric UTC offset.
+#' @param time Non-empty, unique, strictly increasing `Date`, `POSIXct`,
+#'   internal `oceancube_cf_time`, or unambiguous ISO character vector. Civil
+#'   dates remain `Date`; POSIXct instants retain sub-day precision and are
+#'   normalized to UTC. Calendar-aware values produced by the NetCDF readers
+#'   preserve their non-Gregorian calendar identity.
 #' @param data Numeric array. Preferred shape is 5D: `[lon, lat, depth, time, var]`.
 #'   A 4D array `[lon, lat, time, var]` is accepted and internally promoted to
 #'   a single-depth cube.
@@ -24,8 +25,8 @@
 #' @param dataset_id Optional dataset identifier.
 #' @param spatial_extent Optional finite
 #'   `c(lon_min, lon_max, lat_min, lat_max)` covering the coordinates.
-#' @param temporal_extent Optional ordered pair of `Date` or `POSIXct` values
-#'   covering `time`.
+#' @param temporal_extent Optional ordered pair using the same temporal class
+#'   and calendar semantics as `time`, covering the coordinate.
 #' @param depth_extent Optional finite ordered depth range covering `depth`, or
 #'   `c(NA_real_, NA_real_)` for a surface cube.
 #' @param mask Optional mask object.
@@ -91,8 +92,9 @@ ocean_cube <- function(lon, lat, time, data, depth = NULL, vars = NULL, units = 
       arg = "temporal_extent",
       validate_axis = FALSE
     )$values
-    expected_class <- if (inherits(time, "Date")) "Date" else "POSIXct"
-    if (!inherits(temporal_extent, expected_class)) {
+    expected_class <- .time_class(time)
+    if (!inherits(temporal_extent, expected_class) ||
+        !.time_compatible(temporal_extent, time)) {
       .abort_badarg(
         "temporal_extent",
         paste0("must use the same ", expected_class, " semantics as `time`.")

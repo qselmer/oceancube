@@ -111,14 +111,14 @@ cube_validate <- function(x, strict = FALSE) {
     is.numeric(lon) && is.null(dim(lon)) &&
     is.numeric(lat) && is.null(dim(lat)) &&
     is.numeric(depth) && is.null(dim(depth)) &&
-    inherits(time, c("Date", "POSIXct")) &&
+    inherits(time, c("Date", "POSIXct", "oceancube_cf_time")) &&
     is.character(vars) && is.null(dim(vars))
   add(
     "coordinate_types", coordinates_typed, "coordinates",
     "Coordinate and variable vectors use supported types.",
     "One or more coordinate or variable vectors use an unsupported type.",
     repairable = TRUE,
-    suggested_action = "Use numeric lon, lat, and depth vectors; Date/POSIXct time; and character vars."
+    suggested_action = "Use numeric lon, lat, and depth vectors; Date/POSIXct/oceancube_cf_time time; and character vars."
   )
 
   axes_nonempty <- required_ok && all(vapply(
@@ -169,13 +169,14 @@ cube_validate <- function(x, strict = FALSE) {
     suggested_action = "Correct latitude values to the geographic domain."
   )
 
-  time_class <- inherits(time, c("Date", "POSIXct")) && length(time) > 0L
+  time_class <- inherits(time, c("Date", "POSIXct", "oceancube_cf_time")) &&
+    length(time) > 0L
   add(
     "time_class", time_class, "time",
-    "Time inherits from Date or POSIXct.",
-    "Time must be a non-empty Date or POSIXct vector.",
+    "Time uses a supported Date, POSIXct, or calendar-aware representation.",
+    "Time must be a non-empty Date, POSIXct, or oceancube_cf_time vector.",
     repairable = TRUE,
-    suggested_action = "Decode time explicitly to Date or POSIXct."
+    suggested_action = "Decode time explicitly to Date, POSIXct, or oceancube_cf_time."
   )
   time_complete <- time_class && !anyNA(time)
   add(
@@ -185,7 +186,7 @@ cube_validate <- function(x, strict = FALSE) {
     repairable = TRUE,
     suggested_action = "Repair or remove missing time coordinates."
   )
-  time_numeric <- if (time_complete) as.numeric(time) else numeric()
+  time_numeric <- if (time_complete) .time_key(time) else numeric()
   time_finite <- time_complete && all(is.finite(time_numeric))
   add(
     "time_finite", time_finite, "time",
@@ -221,14 +222,21 @@ cube_validate <- function(x, strict = FALSE) {
     (!inherits(time, "POSIXct") || identical(.time_timezone(time), "UTC"))
   add(
     "time_timezone", time_timezone_ok, "time",
-    if (inherits(time, "POSIXct")) "Stored POSIXct time uses canonical UTC." else "Date time has no timezone semantics.",
+    if (inherits(time, "POSIXct")) {
+      "Stored POSIXct time uses canonical UTC."
+    } else {
+      "The stored temporal representation has no POSIX timezone semantics."
+    },
     "Stored POSIXct time must use canonical UTC.",
     repairable = TRUE,
     suggested_action = "Normalize POSIXct instants to UTC without changing their numeric epoch values."
   )
 
   time_provenance <- .find_time_provenance(value("provenance"))
-  supported_calendars <- c("standard", "gregorian", "proleptic_gregorian")
+  supported_calendars <- c(
+    "standard", "gregorian", "proleptic_gregorian", "julian",
+    "365_day", "noleap", "366_day", "all_leap", "360_day"
+  )
   time_calendar <- if (is.list(time_provenance)) time_provenance$calendar else NULL
   calendar_ok <- is.character(time_calendar) && length(time_calendar) == 1L &&
     !is.na(time_calendar) && time_calendar %in% supported_calendars
@@ -243,7 +251,7 @@ cube_validate <- function(x, strict = FALSE) {
     repairable = TRUE,
     suggested_action = "Restore supported calendar provenance; never reinterpret an unsupported calendar as Gregorian."
   )
-  expected_class <- if (inherits(time, "Date")) "Date" else if (inherits(time, "POSIXct")) "POSIXct" else NA_character_
+  expected_class <- .time_class(time)
   provenance_consistent <- calendar_ok &&
     identical(time_provenance$canonical_class, expected_class) &&
     (!identical(expected_class, "POSIXct") ||
@@ -424,11 +432,13 @@ cube_validate <- function(x, strict = FALSE) {
   temporal <- value("temporal_extent")
   temporal_ok <- time_complete &&
     (is.null(temporal) ||
-       (inherits(temporal, expected_class) && length(temporal) == 2L &&
-          !anyNA(temporal) && all(is.finite(as.numeric(temporal))) &&
+       (inherits(temporal, expected_class) && .time_compatible(temporal, time) &&
+          length(temporal) == 2L &&
+          !anyNA(temporal) && all(is.finite(.time_key(temporal))) &&
           (!inherits(temporal, "POSIXct") || identical(.time_timezone(temporal), "UTC")) &&
-          temporal[1L] <= temporal[2L] &&
-          min(time) >= temporal[1L] && max(time) <= temporal[2L]))
+          .time_key(temporal[1L]) <= .time_key(temporal[2L]) &&
+          min(.time_key(time)) >= .time_key(temporal[1L]) &&
+          max(.time_key(time)) <= .time_key(temporal[2L])))
   add(
     "temporal_extent", temporal_ok, "temporal_extent",
     if (is.null(temporal)) "Temporal extent is absent and can be derived from time." else "Temporal extent is ordered and covers time.",

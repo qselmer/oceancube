@@ -87,6 +87,7 @@ viz.timeseries <- function(
     subtitle = NULL,
     caption = NULL) {
   cube_validate(x, strict = TRUE)
+  .calendar_operation_unsupported(x, "viz.timeseries")
 
   abort_viz <- function(message, class = "oceancube_viz_error", parent = NULL) {
     rlang::abort(

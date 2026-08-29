@@ -160,16 +160,20 @@
 .provenance_context_time <- function(context) {
   if (!is.list(context) || is.null(context$time)) return(NULL)
   time <- context$time
-  if (!inherits(time, c("Date", "POSIXct"))) return(NULL)
+  if (!inherits(time, c("Date", "POSIXct", "oceancube_cf_time"))) return(NULL)
   kind <- context$time_kind %||% "historical"
   list(
     kind = kind,
-    class = if (inherits(time, "Date")) "Date" else "POSIXct",
+    class = .time_class(time),
     timezone = if (inherits(time, "POSIXct")) .time_timezone(time) else NULL,
-    calendar = context$calendar %||% "proleptic_gregorian",
+    calendar = if (inherits(time, "oceancube_cf_time")) {
+      attr(time, "calendar", exact = TRUE)
+    } else {
+      context$calendar %||% "proleptic_gregorian"
+    },
     count = as.integer(length(time)),
-    start = if (length(time) > 0L) time[[1L]] else NULL,
-    end = if (length(time) > 0L) time[[length(time)]] else NULL
+    start = if (length(time) > 0L) .time_subset(time, 1L) else NULL,
+    end = if (length(time) > 0L) .time_subset(time, length(time)) else NULL
   )
 }
 
@@ -343,14 +347,16 @@
            is.na(current$count) || current$count < 0L)) {
         problems <- c(problems, paste0(prefix, "$current$count is malformed"))
       }
-      if (!is.null(current$class) && !current$class %in% c("Date", "POSIXct")) {
+      if (!is.null(current$class) &&
+          !current$class %in% c("Date", "POSIXct", "oceancube_cf_time")) {
         problems <- c(problems, paste0(prefix, "$current$class is unsupported"))
       }
       for (field in intersect(c("start", "end"), names(current))) {
         value <- current[[field]]
         if (!is.null(value) &&
             (length(value) != 1L ||
-             (!inherits(value, "Date") && !inherits(value, "POSIXct")))) {
+             (!inherits(value, "Date") && !inherits(value, "POSIXct") &&
+              !inherits(value, "oceancube_cf_time")))) {
           problems <- c(problems, paste0(prefix, "$current$", field, " is malformed"))
         } else if (!is.null(value) && !is.null(current$class) &&
                    !inherits(value, current$class)) {
@@ -679,6 +685,7 @@
 
 .provenance_compact <- function(x, depth = 0L) {
   if (is.null(x) || depth > 5L) return(NULL)
+  if (inherits(x, "oceancube_cf_time")) return(format(x))
   if (inherits(x, "POSIXct")) {
     out <- as.POSIXct(as.numeric(x), origin = "1970-01-01", tz = "UTC")
     names(out) <- names(x)

@@ -1,6 +1,6 @@
 # oceancube CF time and calendar architecture V1
 
-Status: approved architecture; runtime implementation pending B5
+Status: approved architecture; bounded core runtime implemented in B5
 
 Decision: DEC-023 — HYBRID CALENDAR-AWARE TIME MODEL
 
@@ -143,10 +143,49 @@ kind, canonical calendar/custom definition identity, precision and—only for
 UTC arithmetic—a leap-table identifier. Raw declarations remain CF metadata;
 engine versions remain software diagnostics. Provenance V1 is unchanged by B4.
 
+## B5 implementation status
+
+B5 implements the bounded core of DEC-023 as the internal plain-R numeric class
+`oceancube_cf_time`, schema `oceancube_cf_time` version `1.0.0`. Its numeric
+payload is elapsed seconds on a calendar-specific ordinal; attributes retain
+canonical and raw calendar identity, calendar family, historical chronology,
+precision, fixed source unit/units, source origin, and a plain origin
+descriptor. Supported years are 0001 through 9999. At that magnitude the
+double representation provides a documented sub-second tolerance of `1e-4`
+seconds. The state contains no environment, external pointer, connection, R6
+object, locale-dependent parser state, or runtime engine object.
+
+The production decoder accepts fixed seconds, minutes, hours, or days since a
+calendar-valid origin. It implements `standard`/`gregorian`,
+`proleptic_gregorian`, `julian`, `365_day`/`noleap`, `366_day`/`all_leap`, and
+`360_day`. Modern exactly representable Gregorian-family coordinates continue
+to be UTC `POSIXct`; mixed pre-reform standard and non-Gregorian coordinates
+use `oceancube_cf_time`. The standard reform gap is invalid and elapsed one day
+after Julian 1582-10-04 is Gregorian 1582-10-15.
+
+Eager and deferred NetCDF readers use the same decoder. Validation, inspection,
+serialization, collect, exact/nearest slice, closed-range crop, extract,
+transect, and non-temporal field-to-field operations preserve the class and
+calendar identity. Same-calendar ordering uses the internal elapsed-second key;
+formatted values include the calendar; unsupported arithmetic and
+cross-calendar comparison error explicitly. Provenance V1 keeps the same schema
+and records `class = oceancube_cf_time`, no timezone, and the canonical
+calendar without duplicating the coordinate array.
+
+B5 does not certify calendar-aware temporal aggregation, climatology, anomaly,
+trend, monthly wrappers, or time-series visualization. Those operations reject
+Tier-2 coordinates explicitly rather than running Gregorian code. CFtime remains
+an optional development oracle only and is not a runtime dependency.
+
+DEC-023 is therefore **APPROVED — HYBRID CALENDAR-AWARE TIME MODEL; CORE RUNTIME
+IMPLEMENTED/CERTIFIED** at the bounded level above. This does not close the
+remaining climatological/provider, static-field, vertical-science, UTC/TAI,
+perpetual, custom-calendar, or variable-month/year work.
+
 ## Unsupported cases and evolution
 
-B4 adds no runtime calendar. B5 implements the approved representation in
-stages and must preserve all current public behavior. UTC, TAI, `none`, custom
+B4 added no runtime calendar. B5 implements the bounded approved representation
+described above while preserving current public behavior. UTC, TAI, `none`, custom
 calendars, out-of-range values, unbounded precision and ambiguous provider
 encodings may remain preserve-only until separately certified. Schema evolution
 is versioned and must define migration plus semantic equality.

@@ -34,9 +34,10 @@ variables are read.}
 \item{dataset_id}{Optional dataset identifier.}
 }
 \value{
-An \verb{<ocean_cube>} object. CF time is decoded as UTC \code{POSIXct}
-without truncating sub-day or fractional-second precision. The reader
-attaches the internal versioned source model at \code{x$metadata$cf} before
+An \verb{<ocean_cube>} object. Exactly representable Gregorian-family CF
+time remains UTC \code{POSIXct}; supported non-Gregorian or mixed-calendar
+values use the internal plain-R \code{oceancube_cf_time} representation. The
+reader attaches the versioned source model at \code{x$metadata$cf} before
 supported metadata are interpreted for cube construction.
 }
 \description{
@@ -44,9 +45,11 @@ Reads selected NetCDF variables and standardizes them as a 5D
 \verb{[lon, lat, depth, time, var]} array.
 }
 \details{
-CF units in seconds, minutes, hours, or days since an offset-aware
-origin are supported. \code{standard} and \code{gregorian} are accepted on or after
-1582-10-15, and \code{proleptic_gregorian} is supported explicitly. Missing
-calendar metadata defaults to \code{standard}. Other calendars error rather
-than being reinterpreted as Gregorian.
+CF units in seconds, minutes, hours, or days since a calendar-valid
+origin are supported, including explicit \code{Z} and numeric UTC offsets.
+Calendars \code{standard}/\code{gregorian}, \code{proleptic_gregorian}, \code{julian},
+\code{365_day}/\code{noleap}, \code{366_day}/\code{all_leap}, and \code{360_day} are
+implemented. Missing calendar metadata defaults to \code{standard}. Months,
+years, UTC/TAI, \code{none}, and custom-calendar arithmetic remain explicitly
+unsupported.
 }

@@ -89,6 +89,7 @@ cube_trend <- function(
     min_n = 3L,
     diagnostics = FALSE) {
   cube_validate(x, strict = TRUE)
+  .calendar_operation_unsupported(x, "cube_trend")
   .trend_validate_arguments(method, time_unit, min_n, diagnostics)
   .trend_validate_historical_time(x)
 

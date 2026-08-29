@@ -6,7 +6,8 @@
 #'
 #' @param x A valid `<ocean_cube>` using the memory or NetCDF backend.
 #' @param longitude,latitude,depth,time,variable Optional selectors. `NULL`
-#'   keeps the complete axis.
+#'   keeps the complete axis. Calendar-aware time accepts compatible
+#'   `oceancube_cf_time` values or calendar-valid character dates.
 #' @param by Whether selectors are coordinate `"value"`s or one-based
 #'   `"index"` positions.
 #' @param match Coordinate matching method. `"exact"` requires a stored value;
@@ -30,6 +31,8 @@
 #' independent on each axis, chooses the earlier instant on temporal ties, and rejects
 #' requests outside the stored axis range. It is not interpolation and does not
 #' alter scientific values.
+#' Calendar-aware exact and nearest matching uses the same-calendar ordinal and
+#' sub-day metric; cross-calendar comparisons are rejected.
 #'
 #' Requested order and repeated spatial or depth coordinates are preserved.
 #' Resolved time coordinates must remain unique and strictly increasing because
@@ -289,7 +292,12 @@ cube_slice <- function(x, longitude = NULL, latitude = NULL, depth = NULL,
 }
 
 .slice_format_values <- function(x) {
-  paste(format(x, trim = TRUE, usetz = TRUE), collapse = ", ")
+  formatted <- if (!is.na(.time_class(x))) {
+    .time_format(x)
+  } else {
+    format(x, trim = TRUE, usetz = TRUE)
+  }
+  paste(formatted, collapse = ", ")
 }
 
 .slice_outside_domain <- function(axis, value, domain) {
@@ -392,32 +400,25 @@ cube_slice <- function(x, longitude = NULL, latitude = NULL, depth = NULL,
 }
 
 .slice_time_numeric <- function(x) {
-  if (inherits(x, "Date")) {
-    return(as.numeric(x) * 86400)
+  if (!inherits(x, c("Date", "POSIXct", "oceancube_cf_time"))) {
+    rlang::abort(
+      paste(
+        "The cube time coordinate cannot be matched safely as Date, POSIXct,",
+        "or oceancube_cf_time; use `by = \"index\"`."
+      ),
+      class = "oceancube_slice_time"
+    )
   }
-  if (inherits(x, "POSIXct")) {
-    return(as.numeric(x))
-  }
-  rlang::abort(
-    paste(
-      "The cube time coordinate cannot be matched safely as Date or POSIXct;",
-      "use `by = \"index\"`."
-    ),
-    class = "oceancube_slice_time"
-  )
+  .time_key(x)
 }
 
 .resolve_time_values <- function(axis_values, requested, method,
                                  tolerance = NULL) {
   .validate_slice_selector_vector(requested, "time", "temporal")
-  expected_class <- if (inherits(axis_values, "Date")) {
-    "Date"
-  } else if (inherits(axis_values, "POSIXct")) {
-    "POSIXct"
-  } else {
-    .slice_time_numeric(axis_values)
-  }
-  if (!inherits(requested, expected_class)) {
+  requested <- .time_parse_selector(requested, axis_values, arg = "time")
+  expected_class <- .time_class(axis_values)
+  if (!inherits(requested, expected_class) ||
+      !.time_compatible(requested, axis_values)) {
     .abort_badarg(
       "time",
       paste0(

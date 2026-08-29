@@ -61,7 +61,11 @@ cube_inspect <- function(x, missing = c("auto", "none", "full")) {
     if (surface) {
       return(list(differences = NA_real_, regular = NA, resolution = NA_real_, unit = "surface"))
     }
-    numeric_values <- if (time_axis) as.numeric(values) else as.numeric(values)
+    numeric_values <- if (time_axis && inherits(values, "oceancube_cf_time")) {
+      .time_key(values)
+    } else {
+      as.numeric(values)
+    }
     differences <- diff(numeric_values)
     positive <- differences[is.finite(differences) & differences > 0]
     increasing <- length(differences) == 0L || all(differences > 0)
@@ -105,9 +109,9 @@ cube_inspect <- function(x, missing = c("auto", "none", "full")) {
     time = axis_resolution(x$time, time_axis = TRUE)
   )
   time_provenance <- .find_time_provenance(x$provenance)
-  time_numeric <- as.numeric(x$time)
+  time_numeric <- .time_key(x$time)
   time_summary <- list(
-    class = if (inherits(x$time, "Date")) "Date" else "POSIXct",
+    class = .time_class(x$time),
     n = length(x$time),
     range = range(x$time),
     timezone = if (inherits(x$time, "POSIXct")) .time_timezone(x$time) else NA_character_,

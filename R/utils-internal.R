@@ -72,10 +72,11 @@
 }
 
 .validate_time_axis <- function(time, arg = "time", require_canonical_utc = TRUE,
-                                abort = TRUE) {
-  valid_class <- inherits(time, "Date") || inherits(time, "POSIXct")
+                                 abort = TRUE) {
+  valid_class <- inherits(time, "Date") || inherits(time, "POSIXct") ||
+    inherits(time, "oceancube_cf_time")
   nonempty <- valid_class && is.null(dim(time)) && length(time) > 0L
-  numeric_time <- if (nonempty) as.numeric(time) else numeric()
+  numeric_time <- if (nonempty) .time_key(time) else numeric()
   complete <- nonempty && !anyNA(time) && all(is.finite(numeric_time))
   duplicated_time <- complete && anyDuplicated(numeric_time) > 0L
   increasing <- complete && !duplicated_time &&
@@ -92,7 +93,7 @@
   )
   if (isTRUE(abort)) {
     if (!valid_class || !is.null(dim(time))) {
-      .abort_badarg(arg, "must be a Date or POSIXct vector.")
+      .abort_badarg(arg, "must be a Date, POSIXct, or oceancube_cf_time vector.")
     }
     if (!nonempty) .abort_badarg(arg, "must not be empty.")
     if (!complete) .abort_badarg(arg, "must contain only finite, non-missing values.")
@@ -126,13 +127,18 @@
     "Date"
   } else if (inherits(time, "POSIXct")) {
     "POSIXct"
+  } else if (inherits(time, "oceancube_cf_time")) {
+    "oceancube_cf_time"
   } else if (is.character(time)) {
     "character"
   } else {
     NA_character_
   }
   if (is.na(source_class)) {
-    .abort_badarg(arg, "must be Date, POSIXct, or unambiguous ISO character data.")
+    .abort_badarg(
+      arg,
+      "must be Date, POSIXct, or unambiguous ISO character data, or an internal oceancube_cf_time vector."
+    )
   }
 
   source_timezone <- if (inherits(time, "POSIXct")) .time_timezone(time) else NA_character_
@@ -142,7 +148,9 @@
     character()
   }
   normalization <- "preserved"
-  if (inherits(time, "Date")) {
+  if (inherits(time, "oceancube_cf_time")) {
+    values <- time
+  } else if (inherits(time, "Date")) {
     values <- time
   } else if (inherits(time, "POSIXct")) {
     values <- .as_utc_posixct(time)
@@ -175,19 +183,23 @@
       )
     }
   }
-  if (anyNA(values) || any(!is.finite(as.numeric(values)))) {
+  if (anyNA(values) || any(!is.finite(.time_key(values)))) {
     .abort_badarg(arg, "contains missing, non-finite, or undecodable values.")
   }
   if (isTRUE(validate_axis)) .validate_time_axis(values, arg = arg)
   list(
     values = values,
     provenance = list(
-      canonical_class = if (inherits(values, "Date")) "Date" else "POSIXct",
+      canonical_class = .time_class(values),
       canonical_timezone = if (inherits(values, "POSIXct")) "UTC" else NA_character_,
       source_class = source_class,
       source_timezone = source_timezone,
       source_offset = source_offset,
-      calendar = "proleptic_gregorian",
+      calendar = if (inherits(values, "oceancube_cf_time")) {
+        attr(values, "calendar", exact = TRUE)
+      } else {
+        "proleptic_gregorian"
+      },
       calendar_defaulted = FALSE,
       decoder = "oceancube::.canonicalize_time",
       decode_status = "decoded",
@@ -232,15 +244,10 @@
   NULL
 }
 
-.parse_cf_origin <- function(origin_text) {
-  origin_text <- trimws(origin_text)
-  if (grepl("^[0-9]{4}-[0-9]{2}-[0-9]{2}$", origin_text)) {
-    origin_text <- paste0(origin_text, "T00:00:00Z")
-  } else if (grepl("^[0-9]{4}-[0-9]{2}-[0-9]{2}[ T][0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?$", origin_text, perl = TRUE)) {
-    origin_text <- paste0(origin_text, "Z")
-  }
-  decoded <- tryCatch(
-    .parse_explicit_datetime(origin_text, arg = "NetCDF time origin"),
+.parse_cf_origin <- function(origin_text, calendar = "proleptic_gregorian") {
+  calendar <- .cf_calendar(calendar)
+  parsed <- tryCatch(
+    .cf_parse_components(trimws(origin_text), calendar, arg = "NetCDF time origin")[[1L]],
     error = function(error) {
       rlang::abort(
         paste0("Cannot parse NetCDF time origin `", origin_text, "`: ", conditionMessage(error)),
@@ -249,22 +256,44 @@
       )
     }
   )
-  list(value = decoded$values[[1L]], text = origin_text, offset = decoded$offsets[[1L]])
+  key <- .cf_components_to_key(list(parsed), calendar, arg = "NetCDF time origin")[[1L]]
+  normalized <- .cf_components_from_key(key, calendar, arg = "NetCDF time origin")[1L, , drop = FALSE]
+  list(
+    key = key,
+    text = trimws(origin_text),
+    offset = parsed$offset,
+    descriptor = list(
+      year = normalized$year[[1L]], month = normalized$month[[1L]],
+      day = normalized$day[[1L]], hour = normalized$hour[[1L]],
+      minute = normalized$minute[[1L]], second = normalized$second[[1L]],
+      input_offset = parsed$offset, calendar = calendar
+    )
+  )
+}
+
+.cf_keys_as_posixct <- function(key, calendar) {
+  calendar <- .cf_calendar(calendar)
+  if (!calendar %in% c("standard", "proleptic_gregorian")) return(NULL)
+  if (calendar == "standard" &&
+      any(key < .cf_gregorian_jdn(1582, 10, 15) * 86400)) return(NULL)
+  values <- .cf_components_from_key(key, calendar)
+  text <- sprintf(
+    "%04d-%02d-%02d %02d:%02d:%09.6f",
+    values$year, values$month, values$day,
+    values$hour, values$minute, values$second
+  )
+  decoded <- suppressWarnings(as.POSIXct(
+    strptime(text, format = "%Y-%m-%d %H:%M:%OS", tz = "UTC")
+  ))
+  if (anyNA(decoded)) return(NULL)
+  attr(decoded, "tzone") <- "UTC"
+  decoded
 }
 
 .decode_cf_time <- function(raw_values, units, calendar = NA_character_) {
   calendar_defaulted <- length(calendar) != 1L || is.na(calendar) || !nzchar(calendar)
-  calendar <- if (calendar_defaulted) "standard" else tolower(trimws(calendar))
-  supported <- c("standard", "gregorian", "proleptic_gregorian")
-  if (!calendar %in% supported) {
-    rlang::abort(
-      paste0(
-        "Calendar `", calendar, "` is unsupported because R Date/POSIXct cannot ",
-        "represent it safely; reinterpretation as Gregorian is not performed."
-      ),
-      class = "oceancube_netcdf_schema_error"
-    )
-  }
+  calendar_raw <- if (calendar_defaulted) "standard" else tolower(trimws(calendar))
+  calendar_canonical <- .cf_calendar(calendar_raw)
   if (!is.numeric(raw_values) || anyNA(raw_values) || any(!is.finite(raw_values))) {
     rlang::abort(
       "NetCDF time coordinate must contain finite numeric values.",
@@ -286,21 +315,20 @@
     )
   }
   unit <- tolower(groups[[2L]])
-  origin <- .parse_cf_origin(groups[[3L]])
+  origin <- .parse_cf_origin(groups[[3L]], calendar_canonical)
   multiplier <- switch(unit, seconds = 1, minutes = 60, hours = 3600, days = 86400)
-  decoded <- as.POSIXct(
-    as.numeric(origin$value) + as.numeric(raw_values) * multiplier,
-    origin = "1970-01-01",
-    tz = "UTC"
-  )
-  if (calendar %in% c("standard", "gregorian") &&
-      any(decoded < as.POSIXct("1582-10-15 00:00:00", tz = "UTC"))) {
-    rlang::abort(
-      paste0(
-        "Calendar `", calendar, "` before 1582-10-15 requires mixed ",
-        "Julian/Gregorian semantics and is rejected rather than reinterpreted."
-      ),
-      class = "oceancube_netcdf_schema_error"
+  decoded_key <- origin$key + as.numeric(raw_values) * multiplier
+  .cf_components_from_key(decoded_key, calendar_canonical, arg = "NetCDF time coordinate")
+  decoded <- .cf_keys_as_posixct(decoded_key, calendar_canonical)
+  if (is.null(decoded)) {
+    decoded <- .new_cf_time(
+      decoded_key,
+      calendar = calendar_canonical,
+      calendar_raw = calendar_raw,
+      source_unit = unit,
+      source_units = units,
+      source_origin = groups[[3L]],
+      origin_descriptor = origin$descriptor
     )
   }
   .validate_time_axis(decoded, arg = "NetCDF time coordinate")
@@ -308,26 +336,40 @@
     raw_values = as.numeric(raw_values),
     units = units,
     unit = unit,
-    calendar = calendar,
+    calendar = calendar_raw,
+    calendar_canonical = calendar_canonical,
     calendar_defaulted = calendar_defaulted,
-    origin = origin$value,
+    origin = if (!is.null(origin_base <- .cf_keys_as_posixct(origin$key, calendar_canonical))) {
+      origin_base[[1L]]
+    } else {
+      .new_cf_time(
+        origin$key, calendar_canonical, calendar_raw,
+        source_unit = unit, source_units = units,
+        source_origin = groups[[3L]], origin_descriptor = origin$descriptor
+      )
+    },
     origin_text = groups[[3L]],
     origin_offset = origin$offset,
     decoded_values = decoded,
     decoder = "oceancube::.decode_cf_time",
     decode_status = "decoded",
-    normalization = "CF numeric offsets decoded as UTC POSIXct"
+    normalization = if (inherits(decoded, "POSIXct")) {
+      "CF numeric offsets decoded as UTC POSIXct"
+    } else {
+      "CF numeric offsets decoded as calendar-aware oceancube_cf_time"
+    }
   )
 }
 
 .cf_time_provenance <- function(time_descriptor) {
+  decoded <- time_descriptor$decoded_values
   list(
-    canonical_class = "POSIXct",
-    canonical_timezone = "UTC",
+    canonical_class = .time_class(decoded),
+    canonical_timezone = if (inherits(decoded, "POSIXct")) "UTC" else NA_character_,
     source_class = "CF numeric time",
     source_timezone = time_descriptor$origin_offset,
     source_offset = time_descriptor$origin_offset,
-    calendar = time_descriptor$calendar,
+    calendar = time_descriptor$calendar_canonical %||% time_descriptor$calendar,
     source_calendar = time_descriptor$calendar,
     calendar_defaulted = isTRUE(time_descriptor$calendar_defaulted),
     cf_units = time_descriptor$units,
@@ -411,8 +453,8 @@
     .abort_badarg("depth", "must contain finite values, or be a single NA for a surface cube.")
   }
 
-  if (!inherits(time, c("Date", "POSIXct"))) {
-    .abort_badarg("time", "must inherit from Date or POSIXct.")
+  if (!inherits(time, c("Date", "POSIXct", "oceancube_cf_time"))) {
+    .abort_badarg("time", "must inherit from Date, POSIXct, or oceancube_cf_time.")
   }
   .validate_time_axis(time)
 
@@ -598,10 +640,11 @@
 
   if (!is.null(x$temporal_extent)) {
     extent <- x$temporal_extent
-    expected_time_class <- if (inherits(x$time, "Date")) "Date" else "POSIXct"
+    expected_time_class <- .time_class(x$time)
     if (!inherits(extent, expected_time_class) ||
         length(extent) != 2L ||
-        anyNA(extent) || any(!is.finite(as.numeric(extent)))) {
+        anyNA(extent) || any(!is.finite(.time_key(extent))) ||
+        !.time_compatible(extent, x$time)) {
       .abort_badarg(
         "temporal_extent",
         paste0("must contain two finite ", expected_time_class, " values matching `time`.")
@@ -610,10 +653,11 @@
     if (inherits(extent, "POSIXct") && !identical(.time_timezone(extent), "UTC")) {
       .abort_badarg("temporal_extent", "POSIXct limits must use canonical UTC.")
     }
-    if (extent[1] > extent[2]) {
+    if (.time_key(extent[1L]) > .time_key(extent[2L])) {
       .abort_badarg("temporal_extent", "must be ordered from start to end.")
     }
-    if (min(x$time) < extent[1] || max(x$time) > extent[2]) {
+    if (min(.time_key(x$time)) < .time_key(extent[1L]) ||
+        max(.time_key(x$time)) > .time_key(extent[2L])) {
       .abort_badarg("temporal_extent", "must contain the time coordinate.")
     }
   }

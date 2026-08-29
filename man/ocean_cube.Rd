@@ -31,10 +31,11 @@ ocean_cube(
 
 \item{lat}{Non-empty finite numeric vector of latitudes in \verb{[-90, 90]}.}
 
-\item{time}{Non-empty, unique, strictly increasing \code{Date}, \code{POSIXct}, or
-unambiguous ISO character vector. Civil dates remain \code{Date}; POSIXct
-instants retain sub-day precision and are normalized to UTC. Datetime
-strings must include \code{Z} or an explicit numeric UTC offset.}
+\item{time}{Non-empty, unique, strictly increasing \code{Date}, \code{POSIXct},
+internal \code{oceancube_cf_time}, or unambiguous ISO character vector. Civil
+dates remain \code{Date}; POSIXct instants retain sub-day precision and are
+normalized to UTC. Calendar-aware values produced by the NetCDF readers
+preserve their non-Gregorian calendar identity.}
 
 \item{data}{Numeric array. Preferred shape is 5D: \verb{[lon, lat, depth, time, var]}.
 A 4D array \verb{[lon, lat, time, var]} is accepted and internally promoted to
@@ -56,8 +57,8 @@ If named, names must match \code{vars} uniquely.}
 \item{spatial_extent}{Optional finite
 \code{c(lon_min, lon_max, lat_min, lat_max)} covering the coordinates.}
 
-\item{temporal_extent}{Optional ordered pair of \code{Date} or \code{POSIXct} values
-covering \code{time}.}
+\item{temporal_extent}{Optional ordered pair using the same temporal class
+and calendar semantics as \code{time}, covering the coordinate.}
 
 \item{depth_extent}{Optional finite ordered depth range covering \code{depth}, or
 \code{c(NA_real_, NA_real_)} for a surface cube.}

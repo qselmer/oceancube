@@ -13,16 +13,18 @@
 #' @param source Optional source label.
 #' @param dataset_id Optional dataset identifier.
 #'
-#' @return An `<ocean_cube>` object. CF time is decoded as UTC `POSIXct`
-#'   without truncating sub-day or fractional-second precision. The reader
-#'   attaches the internal versioned source model at `x$metadata$cf` before
+#' @return An `<ocean_cube>` object. Exactly representable Gregorian-family CF
+#'   time remains UTC `POSIXct`; supported non-Gregorian or mixed-calendar
+#'   values use the internal plain-R `oceancube_cf_time` representation. The
+#'   reader attaches the versioned source model at `x$metadata$cf` before
 #'   supported metadata are interpreted for cube construction.
 #'
-#' @details CF units in seconds, minutes, hours, or days since an offset-aware
-#'   origin are supported. `standard` and `gregorian` are accepted on or after
-#'   1582-10-15, and `proleptic_gregorian` is supported explicitly. Missing
-#'   calendar metadata defaults to `standard`. Other calendars error rather
-#'   than being reinterpreted as Gregorian.
+#' @details CF units in seconds, minutes, hours, or days since a calendar-valid
+#'   origin are supported, including explicit `Z` and numeric UTC offsets.
+#'   Calendars `standard`/`gregorian`, `proleptic_gregorian`, `julian`,
+#'   `365_day`/`noleap`, `366_day`/`all_leap`, and `360_day` are implemented.
+#'   Missing calendar metadata defaults to `standard`. Months, years, UTC/TAI,
+#'   `none`, and custom-calendar arithmetic remain explicitly unsupported.
 #' @export
 read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
                     depth_name = NULL, time_name = NULL, source = "netcdf",
@@ -141,7 +143,11 @@ read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
     variables = vars,
     backend = "memory"
   )
-  provenance_context$calendar <- time_descriptor$calendar
+  provenance_context$calendar <- if (inherits(time, "oceancube_cf_time")) {
+    attr(time, "calendar", exact = TRUE)
+  } else {
+    time_descriptor$calendar
+  }
   provenance <- .provenance_empty(provenance_context)
   provenance$source$locator <- list(
     type = "file",

@@ -22,7 +22,10 @@ code changes by itself.
 - 0.3.0-B3: CF supported-subset interpretation and validation implemented and
   certified
 - 0.3.0-B4: hybrid CF time/calendar representation architecture approved;
-  runtime implementation remains B5
+  bounded core runtime implemented and certified in B5
+- 0.3.0-B5: calendar-aware CF time engine implemented for fixed elapsed units,
+  supported historical calendars, hybrid base compatibility, selection,
+  preservation, and explicit Tier-2 temporal-analysis guards
 - Gate B (permission to begin vertical science): unsatisfied
 - 0.3.0-A3b: governed real-data fixtures and offline-CI evidence completed
 - 0.3.0-A4a: provenance V1 architecture and compatibility design completed
@@ -43,9 +46,10 @@ code changes by itself.
 - DEC-015: approved — HYBRID ACTIVE SUPPORTED-SUBSET ENGINE; canonical plain-R
   metadata is owned by oceancube and ncdfCF remains an optional
   oracle/reference/adapter
-- DEC-023: approved — HYBRID CALENDAR-AWARE TIME MODEL; current exact
-  Date/POSIXct values remain unchanged, non-base calendars use future
-  oceancube-owned plain state, and CFtime is a transient adapter/oracle
+- DEC-023: approved — HYBRID CALENDAR-AWARE TIME MODEL; CORE RUNTIME
+  IMPLEMENTED/CERTIFIED in B5; current exact Date/POSIXct values remain
+  unchanged, non-base calendars use oceancube-owned plain state, and CFtime is
+  an optional transient development oracle only
 - Public API: 39 exports; `cube_open` is the sole A5b addition
 - Runtime producer migrations: all identified producers complete and globally certified
 - Hardening findings: no unresolved S0/S1 blocker; accepted debt and
@@ -84,12 +88,13 @@ versioned CF 1.13 supported-subset contract, deterministic metadata-only
 diagnostics, structural relationship checks, explicit value/unit/table/grammar
 deferrals, and separate source/current interpretation. OISST `zlev` now
 resolves semantically in both readers and `A3B-001` is closed. B4 approves a
-hybrid calendar-aware time model: current exact Date/POSIXct behavior remains,
-future non-base calendars use oceancube-owned plain state, and CFtime may be a
-reconstructable transient adapter. `DEC-023` is approved; `A3B-002` and
-`A3B-003` remain open because B4 adds no runtime calendar or static-field
-support. No vertical, provider, multifile, remote, Zarr, or 3-D implementation
-is authorized by B4.
+hybrid calendar-aware time model. B5 implements its bounded plain-R runtime for
+fixed elapsed units, supported historical calendars, eager/deferred parity,
+selection, preservation, and explicit unsupported temporal analytics while
+keeping exact Date/POSIXct behavior. `DEC-023` is core-runtime certified;
+`A3B-002` and `A3B-003` remain open because static fields and climatological
+months-since/provider intent are not implemented. No vertical, provider,
+multifile, remote, Zarr, or 3-D implementation is authorized by B5.
 
 ## Change control
 

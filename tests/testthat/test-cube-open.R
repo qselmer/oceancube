@@ -246,9 +246,12 @@ test_that("cube_open validates variables and unsupported resources publicly", {
     "multiple CF candidates"
   )
 
-  unsupported <- make_netcdf_backend_fixture(calendar = "360_day")
-  withr::local_file(unsupported)
-  expect_error(cube_open(unsupported, vars = "temperature"), "unsupported")
+  calendar_aware <- make_netcdf_backend_fixture(calendar = "360_day")
+  withr::local_file(calendar_aware)
+  expect_s3_class(
+    cube_open(calendar_aware, vars = "temperature")$time,
+    "oceancube_cf_time"
+  )
 })
 
 test_that("cube_open vars NULL rejects a coordinate-only NetCDF", {

@@ -97,7 +97,7 @@ test_that("CF units retain fractions negative offsets and origin offsets", {
   expect_error(.decode_cf_time(0:1, "weeks since 2000-01-01", "gregorian"), "units must match")
 })
 
-test_that("CF calendar policy is explicit and conservative", {
+test_that("CF calendar policy is explicit and calendar-aware", {
   missing <- .decode_cf_time(0:1, "days since 2000-01-01", NA_character_)
   expect_identical(missing$calendar, "standard")
   expect_true(missing$calendar_defaulted)
@@ -105,16 +105,21 @@ test_that("CF calendar policy is explicit and conservative", {
     decoded <- .decode_cf_time(0:1, "days since 2000-01-01", calendar)
     expect_identical(decoded$calendar, calendar)
   }
-  for (calendar in c("julian", "365_day", "noleap", "366_day", "all_leap", "360_day", "none", "custom")) {
+  for (calendar in c("julian", "365_day", "noleap", "366_day", "all_leap", "360_day")) {
+    decoded <- .decode_cf_time(0:1, "days since 2000-01-01", calendar)
+    expect_s3_class(decoded$decoded_values, "oceancube_cf_time")
+    expect_identical(decoded$calendar, calendar)
+  }
+  for (calendar in c("none", "custom")) {
     expect_error(
       .decode_cf_time(0:1, "days since 2000-01-01", calendar),
-      paste0("Calendar `", calendar, "`.*reinterpretation as Gregorian is not performed")
+      paste0("Calendar `", calendar, "` is not supported")
     )
   }
   for (calendar in c("standard", "gregorian")) {
     expect_error(
       .decode_cf_time(0:1, "days since 1582-10-14", calendar),
-      "before 1582-10-15"
+      "reform gap"
     )
   }
   expect_no_error(.decode_cf_time(0:1, "days since 1500-01-01", "proleptic_gregorian"))

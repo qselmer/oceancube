@@ -1,0 +1,4 @@
+"fixture","source_time","metadata_scan","eager_read","deferred_open","B5_disposition","finding_status"
+"NOAA OISST v2.1 fv1","days since 1978-01-01 12:00:00; calendar absent standard","PASS","PASS POSIXct unchanged","PASS POSIXct unchanged","supported regression; no scientific result change","A3B-001 CLOSED"
+"NOAA ETOPO 2022 v1","no time dimension","PASS","EXPECTED REJECTION","EXPECTED REJECTION","no fabricated time; static-field contract excluded","A3B-002 OPEN"
+"NOAA WOA23 v3.3 fv1","months since 1955-01-01; climatology bounds; calendar absent","PASS","EXPECTED REJECTION","EXPECTED REJECTION","no duration-month/calendar-month/climatological-bin guess","A3B-003 OPEN; B6"

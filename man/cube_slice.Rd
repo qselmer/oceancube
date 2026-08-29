@@ -20,7 +20,8 @@ cube_slice(
 \item{x}{A valid \verb{<ocean_cube>} using the memory or NetCDF backend.}
 
 \item{longitude, latitude, depth, time, variable}{Optional selectors. \code{NULL}
-keeps the complete axis.}
+keeps the complete axis. Calendar-aware time accepts compatible
+\code{oceancube_cf_time} values or calendar-valid character dates.}
 
 \item{by}{Whether selectors are coordinate \code{"value"}s or one-based
 \code{"index"} positions.}
@@ -53,6 +54,8 @@ without an implicit floating-point tolerance. Nearest-neighbour matching is
 independent on each axis, chooses the earlier instant on temporal ties, and rejects
 requests outside the stored axis range. It is not interpolation and does not
 alter scientific values.
+Calendar-aware exact and nearest matching uses the same-calendar ordinal and
+sub-day metric; cross-calendar comparisons are rejected.
 
 Requested order and repeated spatial or depth coordinates are preserved.
 Resolved time coordinates must remain unique and strictly increasing because

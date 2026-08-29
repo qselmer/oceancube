@@ -362,11 +362,13 @@ test_that("time decoding is strict and preserves source metadata", {
     rep(3600, 3)
   )
 
-  unsupported <- make_netcdf_backend_fixture(calendar = "360_day")
-  withr::local_file(unsupported)
-  expect_error(
-    .new_netcdf_storage(unsupported, "temperature"),
-    "Calendar `360_day` is unsupported.*reinterpretation as Gregorian is not performed"
+  calendar_aware <- make_netcdf_backend_fixture(calendar = "360_day")
+  withr::local_file(calendar_aware)
+  calendar_storage <- .new_netcdf_storage(calendar_aware, "temperature")
+  expect_s3_class(calendar_storage$time$decoded_values, "oceancube_cf_time")
+  expect_identical(
+    attr(calendar_storage$time$decoded_values, "calendar", exact = TRUE),
+    "360_day"
   )
 })
 

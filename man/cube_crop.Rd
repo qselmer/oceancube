@@ -21,9 +21,10 @@ cube_crop(
 \item{longitude, latitude, depth}{Optional numeric ranges \code{c(lower, upper)}.
 \code{NULL} keeps the complete axis.}
 
-\item{time}{Optional two-value \code{Date} or \code{POSIXct} range compatible with
-\code{x$time}. POSIXct limits match elapsed instants and may use a display
-timezone other than the cube's canonical UTC.}
+\item{time}{Optional two-value temporal range compatible with \code{x$time}.
+Calendar-aware axes accept compatible \code{oceancube_cf_time} values or
+calendar-valid character dates. POSIXct limits match elapsed instants and may
+use a display timezone other than the cube's canonical UTC.}
 
 \item{variable}{Optional exact variable names. \code{NULL} keeps all variables.}
 
