@@ -516,6 +516,9 @@
       units = time_metadata$units,
       calendar = time_metadata$calendar
     )
+    time$climatology <- .cf_climatology_time_descriptor(
+      nc, resolved$time$name, variables, time
+    )
 
     dimension_names <- list(
       longitude = resolved$longitude$name,

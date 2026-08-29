@@ -290,6 +290,9 @@
   decoded
 }
 
+.cf_udunits_year_days <- 365.242198781
+.cf_udunits_month_days <- .cf_udunits_year_days / 12
+
 .decode_cf_time <- function(raw_values, units, calendar = NA_character_) {
   calendar_defaulted <- length(calendar) != 1L || is.na(calendar) || !nzchar(calendar)
   calendar_raw <- if (calendar_defaulted) "standard" else tolower(trimws(calendar))
@@ -300,23 +303,49 @@
       class = "oceancube_netcdf_schema_error"
     )
   }
-  pattern <- "^[[:space:]]*(seconds|minutes|hours|days)[[:space:]]+since[[:space:]]+(.+?)[[:space:]]*$"
+  pattern <- paste0(
+    "^[[:space:]]*(seconds?|minutes?|hours?|days?|months?|years?)",
+    "[[:space:]]+since[[:space:]]+(.+?)[[:space:]]*$"
+  )
   if (!is.character(units) || length(units) != 1L || is.na(units)) {
     rlang::abort(
-      "Time coordinate units must match '<seconds|minutes|hours|days> since <origin>'.",
+      paste0(
+        "Time coordinate units must match ",
+        "'<seconds|minutes|hours|days|months|years> since <origin>'."
+      ),
       class = "oceancube_netcdf_schema_error"
     )
   }
   groups <- regmatches(units, regexec(pattern, units, ignore.case = TRUE, perl = TRUE))[[1L]]
   if (length(groups) == 0L) {
     rlang::abort(
-      "Time coordinate units must match '<seconds|minutes|hours|days> since <origin>'.",
+      paste0(
+        "Time coordinate units must match ",
+        "'<seconds|minutes|hours|days|months|years> since <origin>'."
+      ),
       class = "oceancube_netcdf_schema_error"
     )
   }
-  unit <- tolower(groups[[2L]])
+  unit_raw <- tolower(groups[[2L]])
+  unit <- switch(
+    sub("s$", "", unit_raw),
+    second = "second",
+    minute = "minute",
+    hour = "hour",
+    day = "day",
+    month = "udunits_month",
+    year = "udunits_year"
+  )
   origin <- .parse_cf_origin(groups[[3L]], calendar_canonical)
-  multiplier <- switch(unit, seconds = 1, minutes = 60, hours = 3600, days = 86400)
+  multiplier <- switch(
+    unit,
+    second = 1,
+    minute = 60,
+    hour = 3600,
+    day = 86400,
+    udunits_month = .cf_udunits_month_days * 86400,
+    udunits_year = .cf_udunits_year_days * 86400
+  )
   decoded_key <- origin$key + as.numeric(raw_values) * multiplier
   .cf_components_from_key(decoded_key, calendar_canonical, arg = "NetCDF time coordinate")
   decoded <- .cf_keys_as_posixct(decoded_key, calendar_canonical)
@@ -336,6 +365,7 @@
     raw_values = as.numeric(raw_values),
     units = units,
     unit = unit,
+    unit_raw = unit_raw,
     calendar = calendar_raw,
     calendar_canonical = calendar_canonical,
     calendar_defaulted = calendar_defaulted,

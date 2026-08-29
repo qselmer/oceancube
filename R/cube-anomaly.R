@@ -82,6 +82,7 @@ cube_anomaly <- function(
     climatology,
     type = c("difference", "z")) {
   cube_validate(x, strict = TRUE)
+  .require_ordinary_chronology(x, "cube_anomaly")
   .calendar_operation_unsupported(x, "cube_anomaly")
   source_backend <- .cube_backend(x)
   if (!source_backend %in% c("memory", "netcdf")) {

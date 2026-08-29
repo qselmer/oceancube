@@ -118,11 +118,11 @@ test_that("ETOPO and WOA metadata scan before representability and decoding", {
   )
   expect_error(
     read_nc(woa_file, vars = c("t_an", "s_an")),
-    "Time coordinate units must match", fixed = TRUE
+    "Core will not infer a provider-specific offset correction", fixed = TRUE
   )
   expect_error(
     cube_open(woa_file, vars = c("t_an", "s_an")),
-    "Time coordinate units must match", fixed = TRUE
+    "Core will not infer a provider-specific offset correction", fixed = TRUE
   )
 })
 

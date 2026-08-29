@@ -85,6 +85,7 @@ cube_climatology <- function(
     diagnostics = FALSE) {
   leap_missing <- missing(leap)
   cube_validate(x, strict = TRUE)
+  .require_ordinary_chronology(x, "cube_climatology")
   .calendar_operation_unsupported(x, "cube_climatology")
 
   if (missing(by) || !is.character(by) || length(by) != 1L ||

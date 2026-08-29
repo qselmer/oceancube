@@ -84,6 +84,7 @@ cube_aggregate_time <- function(
     min_n = 1L,
     diagnostics = FALSE) {
   cube_validate(x, strict = TRUE)
+  .require_ordinary_chronology(x, "cube_aggregate_time")
   .calendar_operation_unsupported(x, "cube_aggregate_time")
 
   if (missing(by) || !is.character(by) || length(by) != 1L ||

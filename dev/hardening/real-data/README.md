@@ -44,7 +44,7 @@ The three deterministic outputs are:
 |---|---|---:|---|
 | Surface/time | `noaa-oisst21-surface-time-fv1.nc` | 64,088 | `CURRENT-PASS` with public `depth_name="zlev"` mapping |
 | Bathymetry | `noaa-etopo2022-bathymetry-fv1.nc` | 1,211,653 | `CURRENT-EXPECTED-LIMITATION`: static source has no time |
-| Vertical | `noaa-woa23-vertical-fv1.nc` | 57,343 | `CURRENT-EXPECTED-LIMITATION`: native `months since` is unsupported |
+| Vertical | `noaa-woa23-vertical-fv1.nc` | 57,343 | `CURRENT-EXPECTED-LIMITATION`: annual raw climatology support conflicts with declared coverage; generic UDUNITS months are supported |
 
 Combined size is 1,333,084 bytes. ETOPO is above the preferred 1 MB target but
 below the reportable 2 MB bound; retaining provider Float32 values avoids an

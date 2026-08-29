@@ -8,6 +8,7 @@
 #' @export
 annual_index <- function(x, threshold_pos = NULL, threshold_neg = NULL) {
   .check_cube(x)
+  .require_ordinary_chronology(x, "annual_index")
 
   years <- sort(unique(as.integer(format(x$time, "%Y"))))
   year_vec <- as.integer(format(x$time, "%Y"))

@@ -45,11 +45,13 @@ Reads selected NetCDF variables and standardizes them as a 5D
 \verb{[lon, lat, depth, time, var]} array.
 }
 \details{
-CF units in seconds, minutes, hours, or days since a calendar-valid
-origin are supported, including explicit \code{Z} and numeric UTC offsets.
+CF units in seconds, minutes, hours, days, UDUNITS months, or
+UDUNITS years since a calendar-valid origin are supported, including
+explicit \code{Z} and numeric UTC offsets.
 Calendars \code{standard}/\code{gregorian}, \code{proleptic_gregorian}, \code{julian},
-\code{365_day}/\code{noleap}, \code{366_day}/\code{all_leap}, and \code{360_day} are
-implemented. Missing calendar metadata defaults to \code{standard}. Months,
-years, UTC/TAI, \code{none}, and custom-calendar arithmetic remain explicitly
-unsupported.
+\verb{365_day}/\code{noleap}, \verb{366_day}/\code{all_leap}, and \verb{360_day} are implemented.
+Missing calendar metadata defaults to \code{standard}. A UDUNITS year is
+exactly 365.242198781 days and a UDUNITS month is one twelfth of that;
+neither performs civil-calendar advancement. UTC/TAI, \code{none}, and
+custom-calendar arithmetic remain explicitly unsupported.
 }

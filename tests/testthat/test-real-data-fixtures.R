@@ -196,7 +196,7 @@ test_that("NOAA WOA23 climatological real data records the current time limitati
       real_fixture_path("noaa-woa23-vertical-fv1.nc"),
       vars = c("t_an", "s_an")
     ),
-    "Time coordinate units must match '<seconds|minutes|hours|days> since <origin>'.",
+    "Core will not infer a provider-specific offset correction.",
     fixed = TRUE,
     class = "oceancube_netcdf_schema_error"
   )

@@ -19,12 +19,15 @@
 #'   reader attaches the versioned source model at `x$metadata$cf` before
 #'   supported metadata are interpreted for cube construction.
 #'
-#' @details CF units in seconds, minutes, hours, or days since a calendar-valid
-#'   origin are supported, including explicit `Z` and numeric UTC offsets.
+#' @details CF units in seconds, minutes, hours, days, UDUNITS months, or
+#'   UDUNITS years since a calendar-valid origin are supported, including
+#'   explicit `Z` and numeric UTC offsets.
 #'   Calendars `standard`/`gregorian`, `proleptic_gregorian`, `julian`,
 #'   `365_day`/`noleap`, `366_day`/`all_leap`, and `360_day` are implemented.
-#'   Missing calendar metadata defaults to `standard`. Months, years, UTC/TAI,
-#'   `none`, and custom-calendar arithmetic remain explicitly unsupported.
+#'   Missing calendar metadata defaults to `standard`. A UDUNITS year is
+#'   exactly 365.242198781 days and a UDUNITS month is one twelfth of that;
+#'   neither performs civil-calendar advancement. UTC/TAI, `none`, and
+#'   custom-calendar arithmetic remain explicitly unsupported.
 #' @export
 read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
                     depth_name = NULL, time_name = NULL, source = "netcdf",
@@ -89,6 +92,9 @@ read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
     if (isTRUE(calendar_attr$hasatt)) calendar_attr$value else NA_character_
   }, error = function(e) NA_character_)
   time_descriptor <- .decode_cf_time(time_raw, time_units, calendar = time_calendar)
+  climatology_descriptor <- .cf_climatology_time_descriptor(
+    nc, time_name, vars, time_descriptor
+  )
   time <- time_descriptor$decoded_values
 
   has_depth <- !is.null(depth_name) && any(vapply(vars, function(v) {
@@ -196,5 +202,6 @@ read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
     resolutions = resolutions,
     explicit_depth = has_depth
   )
+  cf <- .cf_attach_climatology_current(cf, climatology_descriptor)
   .attach_cube_metadata(out, .cf_wrap_metadata(cf))
 }

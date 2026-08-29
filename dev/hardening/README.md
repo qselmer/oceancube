@@ -459,3 +459,19 @@ permission to begin vertical science and still requires a sufficiently defined
 CF/vertical-coordinate contract, redistributable depth evidence, and approved
 vertical primitive semantics. No CF, vertical, provider, calendar, or runtime
 change is part of A-EXIT.
+
+## B6 CF climatological time adjudication
+
+B6 implements exact elapsed UDUNITS month/year duration units and a compact
+generic climatology descriptor under `metadata$cf$current`. It separates
+representative coordinates from potentially discontinuous support envelopes,
+requires the bounded within-years/over-years cell-method pattern, and guards
+ordinary temporal analytics on already-climatological fields.
+
+The governed WOA23 fixture exactly preserves official annual raw time `4614`
+and climatology bounds `4212,5028`. Literal CF/UDUNITS decoding places that
+support in 2306–2373, conflicting with the product's own 1955 start. Seasonal
+and monthly official siblings use coherent smaller offsets. The annual fixture
+therefore remains deterministically rejected without a WOA/provider branch or
+an inferred offset correction. `A3B-003` is reclassified; Gate B remains
+UNSATISFIED and B7 is not started. Full evidence is in `cf-climatology/`.

@@ -1,0 +1,7 @@
+"authority","resource","role","accessed"
+"CF Conventions Committee","https://cfconventions.org/Data/cf-conventions/cf-conventions-1.13/cf-conventions.html","Normative CF 1.13 sections 4.4 and 7.4; UDUNITS duration month/year and climatological time semantics","2026-08-29"
+"CF Conventions Committee","https://cfconventions.org/Data/cf-documents/requirements-recommendations/conformance-1.13.html","Normative requirements/recommendations cross-check","2026-08-29"
+"NOAA/NCEI","https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.nodc:NCEI-WOA23","Official WOA23 accession, coverage, product and distribution metadata","2026-08-29"
+"NOAA/NCEI","https://www.ncei.noaa.gov/access/world-ocean-atlas-2023/bin/woa23.pl","Official WOA23 product selector","2026-08-29"
+"NOAA/NCEI","https://www.ncei.noaa.gov/thredds-ocean/dodsC/woa23/DATA/temperature/netcdf/decav/1.00/woa23_decav_t00_01.nc.html","Official annual OPeNDAP metadata declaration","2026-08-29"
+"NOAA/NCEI","https://www.ncei.noaa.gov/thredds-ocean/catalog/woa23/DATA/temperature/netcdf/decav/1.00/catalog.html","Official annual/seasonal/monthly catalog identity","2026-08-29"

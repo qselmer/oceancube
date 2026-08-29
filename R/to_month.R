@@ -21,6 +21,7 @@
 #' @seealso [cube_aggregate_time()]
 to_month <- function(x, fun = mean) {
   .check_cube(x)
+  .require_ordinary_chronology(x, "to_month")
   .calendar_operation_unsupported(x, "to_month")
 
   method <- .to_month_builtin_method(fun)

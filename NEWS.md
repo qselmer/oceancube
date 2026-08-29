@@ -3,6 +3,10 @@
 ## Development
 
 - Opened the development cycle toward oceancube 0.3.0.
+- Adds exact elapsed UDUNITS month/year decoding and a bounded generic CF
+  climatological-time descriptor under current CF metadata. Climatological
+  cubes are guarded from ordinary temporal analytics; inconsistent provider
+  coverage is rejected without provider-specific repair.
 
 # oceancube 0.2.0
 

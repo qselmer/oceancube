@@ -859,6 +859,7 @@
   cf <- .cf_add_current_interpretation(
     cf, storage_resolutions, selected, "CURRENT_SUPPORTED_SUBSET"
   )
+  cf <- .cf_attach_climatology_current(cf, storage$time$climatology)
   .cf_wrap_metadata(cf)
 }
 
@@ -1138,6 +1139,13 @@
     ),
     variables = as.character(variables)
   )
+  if (!is.null(out$cf$current$chronology)) {
+    out$cf$current$chronology <- .cf_climatology_for_selection(
+      out$cf$current$chronology,
+      index$time,
+      variables
+    )
+  }
   out <- .cf_mark_current_interpretation(
     out,
     if (identical(metadata$cf$current$semantic_status, "DERIVATION_PENDING")) {

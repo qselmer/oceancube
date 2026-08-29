@@ -1,0 +1,4 @@
+"product","official file","time raw","bounds raw","literal representative","literal support","declared role","generic-model result"
+"annual","woa23_decav_t00_01.nc","4614","4212;5028","2339-07-02T15:00:37.263854Z","2306-01-01T00:16:57.112121Z;2373-12-31T11:33:03.390258Z","annual all-decades 1955-2022","REJECT: conflicts with declared start 1955-01-01"
+"seasonal winter","woa23_decav_t13_01.nc","397.5","0;807","1988-02-15T15:32:52.911224Z","1955-01-01T00:00:00Z;2022-04-01T12:54:31.797118Z","winter all-decades","COHERENT under literal elapsed-duration model"
+"monthly January","woa23_decav_t01_01.nc","396.5","0;805","1988-01-16T05:03:49.079987Z","1955-01-01T00:00:00Z;2022-01-30T15:56:24.134674Z","January all-decades","COHERENT under literal elapsed-duration model"

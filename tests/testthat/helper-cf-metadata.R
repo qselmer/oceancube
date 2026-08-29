@@ -94,6 +94,9 @@ make_cf_b2_fixture <- function(
       ncdf4::ncatt_put(
         nc, "temperature", "custom_variable_attribute", "preserve me"
       )
+      ncdf4::ncvar_put(
+        nc, "time_clim", matrix(c(0, 30, 30, 60), nrow = 2L)
+      )
       ncdf4::ncatt_put(
         nc, "extended_temperature", "grid_mapping", "crs: lon lat"
       )

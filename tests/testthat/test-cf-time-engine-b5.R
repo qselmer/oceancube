@@ -71,10 +71,16 @@ test_that("fixed units, offsets, fractions, and strict axes are enforced", {
   )
   expect_equal(diff(.time_key(decoded$decoded_values)), c(0.125, 0.25))
   expect_identical(decoded$origin_offset, "+01:30")
-  expect_identical(decoded$unit, "seconds")
+  expect_identical(decoded$unit, "second")
 
-  expect_error(.decode_cf_time(0:1, "months since 2001-01-01", "360_day"), "units must match")
-  expect_error(.decode_cf_time(0:1, "years since 2001-01-01", "360_day"), "units must match")
+  expect_identical(
+    .decode_cf_time(0:1, "months since 2001-01-01", "360_day")$unit,
+    "udunits_month"
+  )
+  expect_identical(
+    .decode_cf_time(0:1, "years since 2001-01-01", "360_day")$unit,
+    "udunits_year"
+  )
   expect_error(.decode_cf_time(c(0, Inf), "days since 2001-01-01", "360_day"), "finite numeric")
   expect_error(.decode_cf_time(c(0, 0), "days since 2001-01-01", "360_day"), "unique")
   expect_error(.decode_cf_time(c(1, 0), "days since 2001-01-01", "360_day"), "strictly increasing")

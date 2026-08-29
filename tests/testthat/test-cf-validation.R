@@ -170,9 +170,9 @@ test_that("real fixtures separate metadata interpretation from cube support", {
   expect_error(read_nc(etopo_file), "Could not identify time", fixed = TRUE)
   expect_error(cube_open(etopo_file), "Cannot resolve the time dimension")
   expect_error(read_nc(woa_file, vars = c("t_an", "s_an")),
-               "Time coordinate units must match", fixed = TRUE)
+               "Core will not infer a provider-specific offset correction", fixed = TRUE)
   expect_error(cube_open(woa_file, vars = c("t_an", "s_an")),
-               "Time coordinate units must match", fixed = TRUE)
+               "Core will not infer a provider-specific offset correction", fixed = TRUE)
 })
 
 test_that("eager deferred and collected cubes preserve B3 source semantics", {
