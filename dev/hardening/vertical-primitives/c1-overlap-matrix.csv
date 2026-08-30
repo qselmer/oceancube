@@ -1,0 +1,6 @@
+"case","source_bounds","requested","weights","result","status"
+"partial-cell clipping","0:2;2:6;6:10","1:2","1;0;0","10","PASS"
+"multi-cell nonuniform","0:2;2:6;6:10","1:7","1;4;1","21.6666666666667","PASS"
+"split output order","0:2;2:6;6:10","1:2;2:6;6:7","1;4;1","10;20;40","PASS"
+"descending storage","6:10;2:6;0:2","1:7","1;4;1 in storage mapping","21.6666666666667","PASS"
+"km equivalence","0:.002;.002:.006;.006:.010",".001:.007",".001;.004;.001","21.6666666666667","PASS"

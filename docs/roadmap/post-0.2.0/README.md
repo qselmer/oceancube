@@ -107,6 +107,16 @@ support nor provider repair was introduced. Height/pressure conversion,
 parametric evaluation, legacy reductions, multifile, remote, Zarr, and 3-D
 remain outside this authorization.
 
+C1 implements DEC-030 behind that bounded authorization. One internal vertical
+support engine now governs explicit-bounds thickness, volume, and layer means;
+certified layer weights use exact interval overlap and require full union
+coverage before payload reads. Zero coverage remains missing, gaps are rejected,
+descending storage and m/km conversion are explicit, and current derived bounds
+and provenance are truthful. The historical centre-derived `layer_mean()` path
+is numerically unchanged and explicitly uncertified, so B7-001 is
+PARTIALLY-CLOSED rather than erased. Gate B remains SATISFIED only for the
+DEC-029 metric-depth subset; 0.3.0-C is IN PROGRESS and C2 is next.
+
 ## Change control
 
 Future roadmap changes should update the provenance matrix first, reference an

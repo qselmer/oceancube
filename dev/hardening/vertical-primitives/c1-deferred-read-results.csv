@@ -1,0 +1,6 @@
+"case","validation_timing","depth_indices","status"
+"WOA partial coverage 0:7.5","before payload read","none","PASS"
+"WOA exact cell 0:2.5","after coverage validation","1","PASS"
+"WOA sub-layer 0.5:2","after coverage validation","1","PASS"
+"multiple output bins","one read of union","sorted unique contributors","PASS"
+"thickness and volume","metadata/coordinate only","none","PASS"

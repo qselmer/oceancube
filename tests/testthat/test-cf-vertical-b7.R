@@ -227,11 +227,16 @@ test_that("OISST explicit singleton and no-depth surface remain distinct", {
   expect_identical(surface$metadata$cf$current$vertical$kind, "SURFACE_SINGLETON")
 })
 
-test_that("meaning-changing transforms make vertical semantics pending", {
+test_that("certified layer means derive exact current vertical semantics", {
   x <- read_nc(monthly_woa_fixture(), vars = "t_an")
-  transformed <- layer_mean(x, c(0, 50, 200))
+  transformed <- layer_mean(x, c(0, 2.5))
   vertical <- transformed$metadata$cf$current$vertical
-  expect_identical(vertical$runtime_status, "VERTICAL_DERIVATION_PENDING")
-  expect_identical(vertical$geometry_status, "GEOMETRY_DERIVATION_PENDING")
-  expect_false(vertical$canonical_metric)
+  expect_identical(vertical$runtime_status, "VERTICAL_RUNTIME_SUPPORTED")
+  expect_identical(vertical$geometry_status, "GEOMETRY_METRIC_BOUNDS_SUPPORTED")
+  expect_identical(vertical$bounds, list(c(0, 2.5)))
+  expect_true(vertical$canonical_metric)
+  expect_identical(
+    transformed$metadata$cf$current$semantic_status,
+    "DERIVATION_PENDING"
+  )
 })

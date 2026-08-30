@@ -1,0 +1,6 @@
+"id","before","after","rationale"
+"B7-001","OPEN","PARTIALLY-CLOSED","certified explicit-bounds path complete; legacy centre-derived fallback retained and uncertified"
+"A3B-001","CLOSED","CLOSED","common semantic resolver unchanged"
+"A3B-002","OPEN","OPEN","static-field support not introduced"
+"A3B-003","OPEN-RECLASSIFIED","OPEN-RECLASSIFIED","annual WOA provider ambiguity not repaired"
+"C1-new","none","none","no new finding required"

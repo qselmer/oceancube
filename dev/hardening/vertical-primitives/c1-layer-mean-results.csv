@@ -1,0 +1,7 @@
+"case","expected","observed","status"
+"clipped 1:2","10","10","PASS"
+"nonuniform 1:7","21.6666666666667","21.6666666666667","PASS"
+"zero coverage 10:12","NA","NA","PASS"
+"gap 0:5","deterministic error","oceancube_vertical_partial_coverage","PASS"
+"output centre 1:7","4","4","PASS"
+"output bounds 1:7","1:7 with m/down","1:7 with m/down","PASS"

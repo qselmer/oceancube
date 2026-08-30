@@ -1,0 +1,6 @@
+"case","historical_expected","c1_observed","changed","certification"
+"irregular centres 0,10,40 over 0:40","26.25","26.25","FALSE","UNCERTIFIED"
+"offset 5:35","26.6666666666667","26.6666666666667","FALSE","UNCERTIFIED"
+"missing renormalization","32.5","32.5","FALSE","UNCERTIFIED"
+"outside support","NA","NA","FALSE","UNCERTIFIED"
+"descending historical edge behavior","NA","NA","FALSE","UNCERTIFIED"

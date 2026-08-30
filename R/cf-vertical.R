@@ -69,6 +69,12 @@
   "NONMONOTONIC"
 }
 
+.vertical_geometry_tolerance <- function(...) {
+  values <- unlist(list(...), recursive = TRUE, use.names = FALSE)
+  values <- abs(as.numeric(values[is.finite(values)]))
+  8 * sqrt(.Machine$double.eps) * max(c(1, values))
+}
+
 .cf_vertical_bounds_link <- function(cf, source_axis_id) {
   links <- Filter(function(link) {
     identical(link$source_path, source_axis_id) &&
@@ -155,7 +161,7 @@
   }
   lower <- pmin(paired[, 1L], paired[, 2L])
   upper <- pmax(paired[, 1L], paired[, 2L])
-  tolerance <- 1e-10
+  tolerance <- .vertical_geometry_tolerance(centers_for_bounds, paired)
   if (identical(status, "BOUNDS_VALID") &&
       (anyNA(paired) || any(!is.finite(paired)))) {
     status <- "BOUNDS_NONFINITE"
@@ -474,7 +480,8 @@
     upper <- pmax(paired[, 1L], paired[, 2L])
     ordered <- order(lower, upper)
     out$coverage_contiguous <- if (length(ordered) <= 1L) TRUE else all(
-      abs(lower[ordered][-1L] - upper[ordered][-length(ordered)]) <= 1e-10
+      abs(lower[ordered][-1L] - upper[ordered][-length(ordered)]) <=
+        .vertical_geometry_tolerance(lower, upper)
     )
     out$bounds_shape <- as.integer(c(length(depth_index), 2L))
   }
@@ -492,5 +499,43 @@
     "VERTICAL_DERIVATION_PENDING", "OCEANCUBE-SAFETY", "INFO",
     "A meaning-changing transform requires a new vertical semantic derivation."
   )
+  out
+}
+
+.cf_vertical_for_layer_mean <- function(vertical, bins, centers) {
+  .cf_vertical_validate(vertical)
+  out <- vertical
+  out$source_coordinate <- as.numeric(centers)
+  out$source_order <- .cf_vertical_source_order(out$source_coordinate)
+  out$runtime_status <- "VERTICAL_RUNTIME_SUPPORTED"
+  out$geometry_status <- "GEOMETRY_METRIC_BOUNDS_SUPPORTED"
+  out$bounds_target <- "oceancube:derived_layer_bounds"
+  out$bounds_status <- "BOUNDS_VALID"
+  out$bounds_units_raw <- vertical$units_raw
+  out$bounds_unit <- vertical$normalized_unit
+  out$bounds_shape <- as.integer(c(length(bins), 2L))
+  out$bounds <- lapply(bins, as.numeric)
+  out$coverage_contiguous <- length(bins) <= 1L || all(vapply(
+    seq_len(length(bins) - 1L),
+    function(i) {
+      abs(bins[[i]][[2L]] - bins[[i + 1L]][[1L]]) <=
+        .vertical_geometry_tolerance(bins[[i]], bins[[i + 1L]])
+    },
+    logical(1L)
+  ))
+  out$canonical_metric <- TRUE
+  out$surface_status <- if (length(centers) == 1L) {
+    "EXPLICIT_SINGLETON"
+  } else {
+    "MULTI_LEVEL"
+  }
+  out$diagnostics <- Filter(function(item) {
+    !identical(item$code, "VERTICAL_DERIVATION_PENDING")
+  }, out$diagnostics)
+  out$diagnostics[[length(out$diagnostics) + 1L]] <- .cf_vertical_diagnostic(
+    "VERTICAL_LAYER_MEAN_DERIVED", "OCEANCUBE-SAFETY", "INFO",
+    "Current metric-depth bounds were derived exactly from requested layer intervals."
+  )
+  .cf_vertical_validate(out)
   out
 }

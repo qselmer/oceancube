@@ -74,6 +74,9 @@ cube_layer_thickness <- function(x, depth_bounds = NULL,
   }
   attr(out, "bounds_source") <- vertical$source
   attr(out, "positive") <- vertical$positive
+  attr(out, "coverage_contiguous") <- vertical$coverage_contiguous
+  attr(out, "geometry_status") <- vertical$geometry_status
+  attr(out, "certification_status") <- vertical$certification_status
   out
 }
 
@@ -325,9 +328,34 @@ cube_cell_volume <- function(x, depth_bounds = NULL,
 }
 
 .cube_vertical_geometry <- function(x, depth_bounds) {
+  .vertical_support_engine(x, depth_bounds, mode = "geometry")
+}
+
+.vertical_support_engine <- function(x, depth_bounds = NULL,
+                                     mode = c("geometry", "layer_mean")) {
+  mode <- match.arg(mode)
   depth <- x$depth
   semantic <- x$metadata$cf$current$vertical
-  if (!is.null(semantic)) {
+  if (identical(mode, "layer_mean") && !is.null(semantic)) {
+    .cf_vertical_validate(semantic)
+    if (identical(semantic$runtime_status, "VERTICAL_DERIVATION_PENDING")) {
+      return(.vertical_legacy_support(depth))
+    }
+    if (!identical(semantic$kind, "DEPTH_LENGTH") ||
+        !identical(semantic$runtime_status, "VERTICAL_RUNTIME_SUPPORTED")) {
+      return(.vertical_legacy_support(depth))
+    }
+    if (!identical(semantic$geometry_status,
+                   "GEOMETRY_METRIC_BOUNDS_SUPPORTED")) {
+      rlang::abort(
+        paste0(
+          "CF metric depth aggregation requires valid explicit bounds; current status is `",
+          semantic$geometry_status, "`. Legacy centre inference is not permitted."
+        ),
+        class = "oceancube_vertical_geometry_unsupported"
+      )
+    }
+  } else if (!is.null(semantic)) {
     .cf_vertical_validate(semantic)
     if (!identical(semantic$kind, "DEPTH_LENGTH") ||
         !identical(semantic$runtime_status, "VERTICAL_RUNTIME_SUPPORTED")) {
@@ -358,6 +386,10 @@ cube_cell_volume <- function(x, depth_bounds = NULL,
     )
   }
   .validate_geometry_axis(depth, "depth")
+  if (identical(mode, "layer_mean") && is.null(semantic) &&
+      !.manual_vertical_explicit_declared(x)) {
+    return(.vertical_legacy_support(depth))
+  }
   metadata <- .vertical_bounds_metadata(x, depth_bounds)
   if (is.null(metadata$value)) {
     .abort_badarg(
@@ -380,7 +412,7 @@ cube_cell_volume <- function(x, depth_bounds = NULL,
       "must contain finite pairs with strictly positive thickness."
     )
   }
-  tolerance <- 1e-10
+  tolerance <- .vertical_geometry_tolerance(depth_for_bounds, paired)
   if (any(depth_for_bounds < lower - tolerance |
           depth_for_bounds > upper + tolerance)) {
     .abort_badarg(
@@ -394,13 +426,170 @@ cube_cell_volume <- function(x, depth_bounds = NULL,
           upper[ordered][-length(ordered)] - tolerance)) {
     .abort_badarg("depth_bounds", "contains overlapping vertical layers.")
   }
+  ordered_lower <- lower[ordered]
+  ordered_upper <- upper[ordered]
+  contiguous <- length(ordered) <= 1L || all(
+    abs(ordered_lower[-1L] - ordered_upper[-length(ordered)]) <= tolerance
+  )
+  cf_certified <- !is.null(semantic) && is.null(depth_bounds) &&
+    identical(semantic$kind, "DEPTH_LENGTH") &&
+    identical(semantic$runtime_status, "VERTICAL_RUNTIME_SUPPORTED") &&
+    identical(semantic$geometry_status, "GEOMETRY_METRIC_BOUNDS_SUPPORTED") &&
+    identical(semantic$bounds_status, "BOUNDS_VALID")
   list(
+    mode = "explicit_bounds",
+    centres = as.numeric(depth_for_bounds),
+    bounds = unname(paired),
     lower = lower,
     upper = upper,
     thickness_native = upper - lower,
     unit = metadata$unit,
+    depth_unit = metadata$depth_unit,
+    scale_to_m = if (identical(metadata$unit, "km")) 1000 else if (
+      identical(metadata$unit, "m")
+    ) 1 else NA_real_,
     positive = metadata$positive,
-    source = metadata$source
+    source_order = .cf_vertical_source_order(depth),
+    source = metadata$source,
+    bounds_source = metadata$source,
+    coverage_contiguous = contiguous,
+    geometry_status = "GEOMETRY_METRIC_BOUNDS_SUPPORTED",
+    support_basis = if (cf_certified) {
+      "CF_EXPLICIT_METRIC_DEPTH_BOUNDS"
+    } else {
+      "USER_DECLARED_EXPLICIT_DEPTH_BOUNDS"
+    },
+    certification_status = if (cf_certified) "CERTIFIED" else "UNCERTIFIED"
+  )
+}
+
+.manual_vertical_explicit_declared <- function(x) {
+  canonical <- x$storage$dimensions$canonical$depth
+  value <- attr(x$depth, "bounds", exact = TRUE) %||%
+    x$depth_bounds %||%
+    x$geometry$depth_bounds %||%
+    canonical$bounds
+  if (is.null(value)) return(FALSE)
+  raw_unit <- attr(value, "units", exact = TRUE) %||%
+    attr(value, "unit", exact = TRUE) %||%
+    attr(x$depth, "units", exact = TRUE) %||%
+    attr(x$depth, "unit", exact = TRUE) %||%
+    x$depth_units %||%
+    x$geometry$depth_units %||%
+    canonical$units
+  unit_key <- if (is.null(raw_unit) || !length(raw_unit) || is.na(raw_unit[[1L]])) {
+    ""
+  } else {
+    tolower(trimws(as.character(raw_unit[[1L]])))
+  }
+  supported_unit <- unit_key %in% c(
+    "m", "meter", "meters", "metre", "metres", "km", "kilometer",
+    "kilometers", "kilometre", "kilometres"
+  )
+  positive <- attr(x$depth, "positive", exact = TRUE) %||%
+    x$depth_positive %||%
+    x$geometry$depth_positive %||%
+    canonical$positive %||%
+    "unspecified"
+  supported_unit && as.character(positive)[[1L]] %in% c("up", "down")
+}
+
+.vertical_legacy_support <- function(depth) {
+  raw_unit <- attr(depth, "units", exact = TRUE) %||%
+    attr(depth, "unit", exact = TRUE)
+  list(
+    mode = "legacy_centres",
+    centres = as.numeric(depth),
+    edges = .depth_edges(depth),
+    unit = if (is.null(raw_unit)) NULL else as.character(raw_unit)[[1L]],
+    positive = attr(depth, "positive", exact = TRUE) %||% "unspecified",
+    source_order = .cf_vertical_source_order(depth),
+    source = "centres inferred by .depth_edges",
+    bounds_source = "legacy centre inference",
+    coverage_contiguous = NA,
+    geometry_status = "GEOMETRY_LEGACY_CENTRE_INFERENCE",
+    support_basis = "LEGACY_CENTRE_DERIVED_SUPPORT",
+    certification_status = "UNCERTIFIED"
+  )
+}
+
+.vertical_interval_coverage <- function(lower, upper, interval, tolerance) {
+  clipped_lower <- pmax(lower, interval[[1L]])
+  clipped_upper <- pmin(upper, interval[[2L]])
+  keep <- clipped_upper > clipped_lower
+  if (!any(keep)) return(0)
+  clipped <- cbind(clipped_lower[keep], clipped_upper[keep])
+  clipped <- clipped[order(clipped[, 1L], clipped[, 2L]), , drop = FALSE]
+  start <- clipped[1L, 1L]
+  end <- clipped[1L, 2L]
+  covered <- 0
+  if (nrow(clipped) > 1L) {
+    for (i in 2:nrow(clipped)) {
+      if (clipped[i, 1L] <= end + tolerance) {
+        end <- max(end, clipped[i, 2L])
+      } else {
+        covered <- covered + end - start
+        start <- clipped[i, 1L]
+        end <- clipped[i, 2L]
+      }
+    }
+  }
+  covered + end - start
+}
+
+.vertical_resolve_bins <- function(support, bins) {
+  if (identical(support$mode, "legacy_centres")) {
+    weights <- lapply(bins, function(interval) {
+      .depth_weights(interval[[1L]], interval[[2L]], support$edges)
+    })
+    coverage <- vapply(seq_along(bins), function(i) {
+      sum(weights[[i]]) / diff(bins[[i]])
+    }, numeric(1L))
+    return(list(
+      weights = weights,
+      coverage_fraction = coverage,
+      coverage_status = rep("LEGACY_UNCHECKED", length(bins)),
+      tolerance = NA_real_
+    ))
+  }
+  depth_factor <- .depth_conversion_factor(support$depth_unit, support$unit)
+  intervals <- lapply(bins, function(interval) as.numeric(interval) * depth_factor)
+  tolerance <- .vertical_geometry_tolerance(
+    support$lower, support$upper, unlist(intervals, use.names = FALSE)
+  )
+  weights <- lapply(intervals, function(interval) {
+    pmax(0, pmin(support$upper, interval[[2L]]) -
+      pmax(support$lower, interval[[1L]]))
+  })
+  covered <- vapply(intervals, function(interval) {
+    .vertical_interval_coverage(
+      support$lower, support$upper, interval, tolerance
+    )
+  }, numeric(1L))
+  width <- vapply(intervals, diff, numeric(1L))
+  status <- ifelse(
+    covered <= tolerance,
+    "ZERO_COVERAGE",
+    ifelse(abs(covered - width) <= tolerance, "FULL_COVERAGE", "PARTIAL_COVERAGE")
+  )
+  fraction <- pmin(1, pmax(0, covered / width))
+  fraction[status == "ZERO_COVERAGE"] <- 0
+  fraction[status == "FULL_COVERAGE"] <- 1
+  if (any(status == "PARTIAL_COVERAGE")) {
+    failed <- which(status == "PARTIAL_COVERAGE")
+    rlang::abort(
+      paste0(
+        "Requested vertical layer(s) ", paste(failed, collapse = ", "),
+        " have only partial explicit-bounds coverage; full coverage is required."
+      ),
+      class = "oceancube_vertical_partial_coverage"
+    )
+  }
+  list(
+    weights = weights,
+    coverage_fraction = fraction,
+    coverage_status = status,
+    tolerance = tolerance
   )
 }
 

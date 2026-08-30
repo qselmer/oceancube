@@ -18,3 +18,17 @@ An \verb{<ocean_cube>} with the depth dimension replaced by vertical layers.
 \description{
 Average an ocean cube over vertical layers
 }
+\details{
+For certified CF metric-depth cubes, weights are exact overlaps
+between requested intervals and explicit cell bounds. Every requested
+interval must have full geometric coverage; partial coverage (including
+internal gaps) errors before payload data are read, while zero coverage
+returns an all-missing layer. Missing scientific values are renormalized
+over finite contributing cells and do not change geometric coverage.
+
+Cubes without certified metric bounds retain the historical
+centre-derived \code{.depth_edges()} / \code{.depth_weights()} calculation for
+backward compatibility. That path is explicitly uncertified. Certified
+results carry requested output bounds and a derived current CF vertical
+descriptor; the immutable CF source record is preserved.
+}

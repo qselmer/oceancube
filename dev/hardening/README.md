@@ -487,3 +487,15 @@ dimensional metric ocean depth with certified CF semantics and explicit bounds.
 The annual WOA finding remains OPEN-RECLASSIFIED and static fields remain OPEN.
 The next authorized work is `0.3.0-C1 — VERTICAL PRIMITIVES AND
 EXPLICIT-BOUNDS HARDENING`; B7 does not execute it.
+
+## C1 vertical primitives and explicit-bounds hardening
+
+C1 executes the bounded work authorized by B7. `cube_layer_thickness()`,
+`cube_cell_volume()`, and `layer_mean()` now share an internal vertical support
+engine. Certified CF metric-depth layer means use exact cell/layer overlap,
+scale-aware full-union coverage, indexed reads, exact output bounds, truthful
+current vertical metadata, and provenance V1 parameters. Partial coverage and
+gaps error before payload access; zero coverage returns missing. The historical
+centre-derived path remains numerically unchanged and uncertified, making
+B7-001 PARTIALLY-CLOSED. Evidence is in `vertical-primitives/`; Gate B remains
+SATISFIED for the same DEC-029 subset and 0.3.0-C is IN PROGRESS.

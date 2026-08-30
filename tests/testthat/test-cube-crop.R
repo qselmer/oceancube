@@ -781,9 +781,9 @@ test_that("NetCDF crop remains usable after deleting the source file", {
   expect_identical(.cube_backend(result), "memory")
   expect_identical(.cube_read(result), expected)
   expect_no_error(summary(result))
-  expect_s3_class(
+  expect_error(
     layer_mean(result, depth = range(result$depth)),
-    "ocean_cube"
+    class = "oceancube_vertical_geometry_unsupported"
   )
   expect_error(
     .cube_read(fixture$cube),

@@ -1191,3 +1191,18 @@
   .cf_metadata_validate(out)
   out
 }
+
+.cf_metadata_for_layer_mean <- function(metadata, bins, centers,
+                                        certified = FALSE) {
+  if (is.null(metadata)) return(NULL)
+  out <- .cf_metadata_for_transform(metadata, "layer_mean")
+  if (isTRUE(certified) && !is.null(out$cf$current$vertical)) {
+    out$cf$current$vertical <- .cf_vertical_for_layer_mean(
+      metadata$cf$current$vertical,
+      bins = bins,
+      centers = centers
+    )
+  }
+  .cf_metadata_validate(out)
+  out
+}

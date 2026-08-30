@@ -128,9 +128,9 @@ test_that("collected cube remains usable after deleting the source file", {
   expect_identical(.cube_backend(collected), "memory")
   expect_identical(.cube_read(collected), expected)
   expect_s3_class(suppressWarnings(clim_month(collected)), "ocean_clim")
-  expect_s3_class(
+  expect_error(
     layer_mean(collected, depth = range(collected$depth)),
-    "ocean_cube"
+    class = "oceancube_vertical_geometry_unsupported"
   )
   expect_error(
     .cube_read(fixture$cube),

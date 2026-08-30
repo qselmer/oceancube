@@ -1,0 +1,6 @@
+"coverage","policy","payload_read","status"
+"full union coverage","compute overlap-weighted mean","indexed union only","PASS"
+"partial outer coverage","oceancube_vertical_partial_coverage","none","PASS"
+"internal gap","oceancube_vertical_partial_coverage","none","PASS"
+"zero coverage","all-missing output","none","PASS"
+"scientific NA under full geometry","renormalize finite positive weights","indexed union only","PASS"

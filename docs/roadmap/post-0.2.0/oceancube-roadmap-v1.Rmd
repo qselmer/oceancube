@@ -635,14 +635,13 @@ Lagrangian particle tracking are outside the core package roadmap.
 
 # Next gate
 
-Gate A is satisfied and the 0.3 development cycle is open. A1/A2/A3a/A3b, the
-complete A4 sequence through A4-EXIT, A4R, A5a/A5b, A6, and the global A-EXIT
-review have evidence. `0.3.0-A` is COMPLETE/CERTIFIED and the repository is
-in the staged 0.3.0-B CF/interoperability block. B1 through B5 are COMPLETE
-locally; DEC-015 and the DEC-023 bounded core are approved and certified. Gate
-B remains UNSATISFIED and vertical science is not authorized. The single
-recommended next subphase is `0.3.0-B6 — CF CLIMATOLOGICAL TIME AND WOA23
-ADJUDICATION`. It must resolve recurring climatological bins, bounds,
-cell_methods, months-since meaning, and provider evidence without generic
-duration-month guessing. B5 does not implement B6, vertical, static-field,
-provider, multifile, remote, Zarr, or 3-D behavior.
+`0.3.0-A` is COMPLETE/CERTIFIED. B1-B7 establish the bounded CF foundation;
+DEC-029 satisfies Gate B only for dimensional metric ocean depth with certified
+CF semantics and explicit bounds. C1 implements DEC-030: thickness, volume,
+and layer means share explicit vertical support, exact overlap, union coverage,
+truthful derived bounds, and provenance. Its centre-derived compatibility path
+is unchanged and uncertified, so B7-001 is PARTIALLY-CLOSED. `0.3.0-C` is now IN
+PROGRESS. Static fields, annual WOA provider repair, pressure/height conversion,
+parametric evaluation, integration, interpolation, multifile, remote, Zarr,
+and 3-D behavior remain outside this authorization. The single recommended
+next subphase is C2 under a separate scientific contract.

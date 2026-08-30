@@ -1,0 +1,6 @@
+"capability","status","certification","scope"
+"metric depth m/km with explicit valid bounds","SUPPORTED","CERTIFIED for CF current semantics","finite one-dimensional depth; positive up/down"
+"manual explicit bounds with declared m/km and direction","SUPPORTED","UNCERTIFIED user-declared","same overlap algorithm"
+"centre-derived legacy layer_mean","SUPPORTED","UNCERTIFIED","exact historical numerical behavior"
+"pressure height dimensionless parametric","REJECTED FOR GEOMETRY","OUTSIDE SCOPE","no conversion or formula evaluation"
+"integration interpolation static fields","NOT IMPLEMENTED","OUTSIDE SCOPE","future contract required"

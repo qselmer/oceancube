@@ -1,0 +1,5 @@
+"case","formula","unit","payload_read","status"
+"memory rectilinear","s2 area m2 * explicit thickness m","m3","FALSE","PASS"
+"memory conversion","m3 / 1e9","km3","FALSE","PASS"
+"WOA deferred","s2 area m2 * CF thickness m","m3","FALSE","PASS"
+"unsupported vertical kind","not computed","none","FALSE","PASS"
