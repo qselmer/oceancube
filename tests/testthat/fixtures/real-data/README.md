@@ -1,6 +1,6 @@
 # NOAA/NCEI real-data test fixtures
 
-These three files are small, derived test subsets. They are not complete or
+These four files are small, derived test subsets. They are not complete or
 original provider products. Ordinary oceancube tests read them locally and do
 not contact a provider, require credentials, invoke Python, or depend on the
 maintainer artifact directory. The exact derivations are in
@@ -65,7 +65,25 @@ provider files have no `calendar` attribute; this fixture does not invent one.
 - SHA-256: `70fddb97edcda4e8fb8a4ddbb3428823f5f6a47deba51ff3624659f660fb8456`
 - Size: 57,343 bytes
 
-The combined fixture size is 1,333,084 bytes. All final and feasible constrained
+## WOA23 January positive vertical ocean
+
+`noaa-woa23-monthly-vertical-fv1.nc` combines exact subsets of the official
+WOA23 January (`t01`) 1-degree all-decades temperature and salinity files. It
+retains `t_an`, `s_an`, raw time 396.5 months since 1955-01-01,
+`climatology_bounds=0,805`, positive-down metre depth, and the six provider
+depth/bounds pairs used by B7. The sampled layers are deliberately
+non-contiguous; their exact thicknesses are 2.5, 5, 5, 5, 15, and 25 m.
+
+- Source files: `woa23_decav_t01_01.nc`, `woa23_decav_s01_01.nc`
+- Dataset DOI: https://doi.org/10.25921/va26-hv25
+- Temperature volume DOI: https://doi.org/10.25923/54bh-1613
+- Salinity volume DOI: https://doi.org/10.25923/70qt-9574
+- Terms: openly available to the public; acknowledgment requested.
+- Derivation: `data-raw/fixtures/derive-woa23-monthly.R`
+- SHA-256: `38e306f9e9ccdc3494f734a7463629ba73b2e63d5b045da4c6cebc92589ae15d`
+- Size: 55,287 bytes
+
+The combined fixture size is 1,388,371 bytes. All final and feasible constrained
 source SHA-256 values, exact URLs, coordinate selections, classifications, and
 known current limitations are recorded in `fixture-manifest.csv`. SHA-256 is
 not recomputed during default tests because oceancube does not add a runtime or

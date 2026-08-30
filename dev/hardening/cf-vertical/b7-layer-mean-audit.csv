@@ -1,0 +1,2 @@
+"finding","current_behavior","b7_change","gate_b_certified","next_action"
+"B7-001","infers centre edges and overlap weights; output centres are requested arithmetic midpoints","none","FALSE","C1 explicit-bounds hardening"

@@ -475,3 +475,15 @@ and monthly official siblings use coherent smaller offsets. The annual fixture
 therefore remains deterministically rejected without a WOA/provider branch or
 an inferred offset correction. `A3B-003` is reclassified; Gate B remains
 UNSATISFIED and B7 is not started. Full evidence is in `cf-climatology/`.
+
+## B7 CF vertical semantics and Gate B
+
+B7 supersedes the forward-looking Gate-B statement above without rewriting the
+historical A-EXIT or B6 evidence. The `oceancube_cf_vertical` 1.0.0 current
+descriptor, governed WOA23 January fixture, eager/deferred/collect parity,
+explicit CF-bounds thickness and rectilinear volume, and safe unsupported-case
+handling are certified in `cf-vertical/`. Gate B is now SATISFIED only for
+dimensional metric ocean depth with certified CF semantics and explicit bounds.
+The annual WOA finding remains OPEN-RECLASSIFIED and static fields remain OPEN.
+The next authorized work is `0.3.0-C1 — VERTICAL PRIMITIVES AND
+EXPLICIT-BOUNDS HARDENING`; B7 does not execute it.

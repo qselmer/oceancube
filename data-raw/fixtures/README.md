@@ -1,6 +1,6 @@
 # Governed real-data fixture derivation
 
-These maintainer scripts regenerate the three NOAA/NCEI real-data fixtures
+These maintainer scripts regenerate the four NOAA/NCEI real-data fixtures
 approved for oceancube 0.3.0-A3b. They are intentionally separate from the
 ordinary test suite: regeneration uses provider network access, while tests use
 only the committed files under `tests/testthat/fixtures/real-data/`.
@@ -11,6 +11,7 @@ Run each script from the repository root with Rscript:
 Rscript --vanilla data-raw/fixtures/derive-oisst21.R
 Rscript --vanilla data-raw/fixtures/derive-etopo2022.R
 Rscript --vanilla data-raw/fixtures/derive-woa23.R
+Rscript --vanilla data-raw/fixtures/derive-woa23-monthly.R
 ```
 
 An alternate output may be supplied as `--output=<path>`. This is used by the

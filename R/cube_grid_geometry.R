@@ -51,6 +51,13 @@ cube_cell_area <- function(x, unit = c("m2", "km2")) {
 #' @param unit Output unit: native depth units, metres, or kilometres.
 #'
 #' @return A numeric vector in cube depth order.
+#'
+#' @details For NetCDF cubes, a certified dimensional metric-depth descriptor
+#'   at `x$metadata$cf$current$vertical` supplies CF bounds automatically.
+#'   Height, pressure, dimensionless, parametric, unresolved, and
+#'   derivation-pending vertical coordinates are not geometric depth and are
+#'   rejected. The supported physical-unit subset is metres and kilometres;
+#'   no pressure-to-depth or height-to-depth conversion is performed.
 #' @export
 cube_layer_thickness <- function(x, depth_bounds = NULL,
                                  unit = c("native", "m", "km")) {
@@ -84,6 +91,11 @@ cube_layer_thickness <- function(x, depth_bounds = NULL,
 #'   (`"km3"`).
 #'
 #' @return A longitude-by-latitude-by-depth numeric array.
+#'
+#' @details This operation is valid only for rectilinear horizontal cells and
+#'   dimensional metric ocean depth with explicit valid bounds. CF height,
+#'   pressure, dimensionless, and parametric vertical coordinates cannot be
+#'   used as geometric thickness.
 #' @export
 cube_cell_volume <- function(x, depth_bounds = NULL,
                              unit = c("m3", "km3")) {
@@ -314,6 +326,30 @@ cube_cell_volume <- function(x, depth_bounds = NULL,
 
 .cube_vertical_geometry <- function(x, depth_bounds) {
   depth <- x$depth
+  semantic <- x$metadata$cf$current$vertical
+  if (!is.null(semantic)) {
+    .cf_vertical_validate(semantic)
+    if (!identical(semantic$kind, "DEPTH_LENGTH") ||
+        !identical(semantic$runtime_status, "VERTICAL_RUNTIME_SUPPORTED")) {
+      rlang::abort(
+        paste0(
+          "Metric depth geometry is unavailable for CF vertical kind `",
+          semantic$kind, "` (", semantic$runtime_status, ")."
+        ),
+        class = "oceancube_vertical_geometry_unsupported"
+      )
+    }
+    if (is.null(depth_bounds) &&
+        !identical(semantic$geometry_status, "GEOMETRY_METRIC_BOUNDS_SUPPORTED")) {
+      rlang::abort(
+        paste0(
+          "Metric depth geometry requires valid explicit CF bounds; current status is `",
+          semantic$geometry_status, "`."
+        ),
+        class = "oceancube_vertical_geometry_unsupported"
+      )
+    }
+  }
   if (!is.numeric(depth) || !is.null(dim(depth)) || !length(depth) ||
       anyNA(depth) || any(!is.finite(depth))) {
     .abort_badarg(
@@ -372,6 +408,12 @@ cube_cell_volume <- function(x, depth_bounds = NULL,
   attached <- attr(x$depth, "bounds", exact = TRUE)
   source <- "argument"
   value <- depth_bounds
+  semantic <- x$metadata$cf$current$vertical
+  if (is.null(value) && !is.null(semantic) && length(semantic$bounds)) {
+    value <- do.call(rbind, semantic$bounds)
+    attr(value, "units") <- semantic$bounds_unit %||% semantic$normalized_unit
+    source <- paste0("CF ", semantic$bounds_target)
+  }
   if (is.null(value) && !is.null(attached)) {
     value <- attached
     source <- "depth attribute"
@@ -398,12 +440,14 @@ cube_cell_volume <- function(x, depth_bounds = NULL,
       attr(x$depth, "unit", exact = TRUE) %||%
       x$depth_units %||%
       x$geometry$depth_units %||%
+      semantic$normalized_unit %||%
       canonical$units
   )
   unit <- bound_unit %||% depth_unit
   positive <- attr(x$depth, "positive", exact = TRUE) %||%
     x$depth_positive %||%
     x$geometry$depth_positive %||%
+    semantic$positive %||%
     canonical$positive %||%
     "unspecified"
   list(

@@ -632,6 +632,14 @@
       )
     )
 
+    vertical <- .cf_vertical_descriptor(
+      nc = nc,
+      cf = cf_for_resolution,
+      source_axis_id = if (all(has_depth)) resolved$depth$name else NULL,
+      centers = logical_depth,
+      explicit = all(has_depth)
+    )
+
     shape <- stats::setNames(
       as.integer(c(
         canonical$longitude$length,
@@ -651,6 +659,7 @@
       dimensions = list(canonical = canonical, shape = shape),
       variables = list(order = variables, map = variable_map),
       time = time,
+      vertical = vertical,
       decoding = list(
         raw_datavals = TRUE,
         missing_before_scale = TRUE,
@@ -699,6 +708,7 @@
     "dimensions",
     "variables",
     "time",
+    "vertical",
     "decoding",
     "options"
   )
@@ -1393,6 +1403,7 @@
     cf <- .cf_scan_netcdf(storage$file$normalized_path)
     metadata <- .cf_metadata_from_storage(cf, storage)
   }
+  .cf_vertical_validate(storage$vertical)
   .cf_metadata_validate(metadata)
   canonical <- storage$dimensions$canonical
   source <- source %||% storage$options$source %||% "netcdf"

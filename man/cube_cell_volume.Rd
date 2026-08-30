@@ -24,3 +24,9 @@ Volumes combine geodesic horizontal cell areas with explicit vertical layer
 thicknesses. No scientific cube values are read or aggregated; the result is
 grid geometry, not a spatial indicator.
 }
+\details{
+This operation is valid only for rectilinear horizontal cells and
+dimensional metric ocean depth with explicit valid bounds. CF height,
+pressure, dimensionless, and parametric vertical coordinates cannot be
+used as geometric thickness.
+}

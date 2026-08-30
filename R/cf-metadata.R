@@ -544,6 +544,9 @@
   )) {
     add("units", attributes$units, "time")
   }
+  if (identical(.cf_vertical_unit(attributes$units)$family, "PRESSURE")) {
+    add("units", attributes$units, "depth")
+  }
 
   positive <- tolower(as.character(attributes$positive %||% NA_character_))
   if (positive %in% c("up", "down")) {
@@ -774,7 +777,7 @@
 }
 
 .cf_build_current <- function(cf, selected_variables, resolutions,
-                              explicit_depth) {
+                              explicit_depth, vertical = NULL) {
   axes <- lapply(c("longitude", "latitude", "depth", "time"), function(axis) {
     resolution <- resolutions[[axis]]
     if (identical(axis, "depth") && !isTRUE(explicit_depth)) {
@@ -806,6 +809,7 @@
     links = as.integer(related_links),
     semantic_status = "CURRENT_SUPPORTED_SUBSET"
   )
+  if (!is.null(vertical)) cf$current$vertical <- vertical
   cf <- .cf_add_current_interpretation(
     cf, resolutions, selected_variables, "CURRENT_SUPPORTED_SUBSET"
   )
@@ -860,6 +864,7 @@
     cf, storage_resolutions, selected, "CURRENT_SUPPORTED_SUBSET"
   )
   cf <- .cf_attach_climatology_current(cf, storage$time$climatology)
+  cf$current$vertical <- storage$vertical
   .cf_wrap_metadata(cf)
 }
 
@@ -1080,6 +1085,9 @@
         ))
       }
     }
+    if (!is.null(cf$current$vertical)) {
+      .cf_vertical_validate(cf$current$vertical)
+    }
   }
   tryCatch(
     serialize(cf, connection = NULL),
@@ -1146,6 +1154,12 @@
       variables
     )
   }
+  if (!is.null(out$cf$current$vertical)) {
+    out$cf$current$vertical <- .cf_vertical_for_selection(
+      out$cf$current$vertical,
+      index$depth
+    )
+  }
   out <- .cf_mark_current_interpretation(
     out,
     if (identical(metadata$cf$current$semantic_status, "DERIVATION_PENDING")) {
@@ -1168,6 +1182,11 @@
     operation = as.character(operation),
     status = "current semantic derivation pending"
   )
+  if (!is.null(out$cf$current$vertical)) {
+    out$cf$current$vertical <- .cf_vertical_for_transform(
+      out$cf$current$vertical
+    )
+  }
   out <- .cf_mark_current_interpretation(out, "DERIVATION_PENDING")
   .cf_metadata_validate(out)
   out

@@ -1,0 +1,6 @@
+"state","read_nc","cube_open","cube_collect","result"
+"vertical descriptor","oceancube_cf_vertical 1.0.0","identical","identical","PASS"
+"depth","0;10;20;50;100;200","identical","identical","PASS"
+"bounds","six source pairs","identical","identical","PASS"
+"semantic status","VERTICAL_RUNTIME_SUPPORTED","identical","identical","PASS"
+"geometry status","GEOMETRY_METRIC_BOUNDS_SUPPORTED","identical","identical","PASS"

@@ -25,3 +25,11 @@ thickness is the positive distance between bounds, so axes declared positive
 upward or positive downward retain cube order without producing negative
 thicknesses.
 }
+\details{
+For NetCDF cubes, a certified dimensional metric-depth descriptor
+at \code{x$metadata$cf$current$vertical} supplies CF bounds automatically.
+Height, pressure, dimensionless, parametric, unresolved, and
+derivation-pending vertical coordinates are not geometric depth and are
+rejected. The supported physical-unit subset is metres and kilometres;
+no pressure-to-depth or height-to-depth conversion is performed.
+}

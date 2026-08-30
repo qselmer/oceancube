@@ -200,7 +200,14 @@ read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
     cf,
     selected_variables = vars,
     resolutions = resolutions,
-    explicit_depth = has_depth
+    explicit_depth = has_depth,
+    vertical = .cf_vertical_descriptor(
+      nc = nc,
+      cf = cf,
+      source_axis_id = if (isTRUE(has_depth)) depth_name else NULL,
+      centers = depth,
+      explicit = has_depth
+    )
   )
   cf <- .cf_attach_climatology_current(cf, climatology_descriptor)
   .attach_cube_metadata(out, .cf_wrap_metadata(cf))

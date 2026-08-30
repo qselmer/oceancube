@@ -1,0 +1,8 @@
+"check","result","evidence"
+"thickness metres","PASS","2.5;5;5;5;15;25"
+"bounds source","PASS","CF depth_bnds"
+"coverage contiguous","FALSE","explicit gaps retained"
+"volume shape","PASS","9x12x6"
+"volume units","PASS","m3"
+"payload read","FALSE","geometry smoke mocks scientific backend read"
+"centres inferred","FALSE","explicit-bounds-only contract"

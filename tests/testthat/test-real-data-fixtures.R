@@ -2,7 +2,7 @@ real_fixture_path <- function(name) {
   testthat::test_path("fixtures", "real-data", name)
 }
 
-test_that("NOAA real-data manifest governs exactly three offline fixtures", {
+test_that("NOAA real-data manifest governs exactly four offline fixtures", {
   manifest <- utils::read.csv(
     real_fixture_path("fixture-manifest.csv"),
     stringsAsFactors = FALSE,
@@ -11,14 +11,18 @@ test_that("NOAA real-data manifest governs exactly three offline fixtures", {
   files <- c(
     "noaa-oisst21-surface-time-fv1.nc",
     "noaa-etopo2022-bathymetry-fv1.nc",
-    "noaa-woa23-vertical-fv1.nc"
+    "noaa-woa23-vertical-fv1.nc",
+    "noaa-woa23-monthly-vertical-fv1.nc"
   )
   paths <- vapply(files, real_fixture_path, character(1L))
 
-  expect_identical(nrow(manifest), 3L)
+  expect_identical(nrow(manifest), 4L)
   expect_setequal(
     manifest$fixture_id,
-    c("FIXTURE-SURFACE-TIME-001", "FIXTURE-BATHYMETRY-001", "FIXTURE-VERTICAL-001")
+    c(
+      "FIXTURE-SURFACE-TIME-001", "FIXTURE-BATHYMETRY-001",
+      "FIXTURE-VERTICAL-001", "FIXTURE-VERTICAL-MONTHLY-001"
+    )
   )
   expect_true(all(file.exists(paths)))
   expect_equal(as.numeric(file.info(paths)$size), manifest$size_bytes)

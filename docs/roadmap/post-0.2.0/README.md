@@ -26,7 +26,12 @@ code changes by itself.
 - 0.3.0-B5: calendar-aware CF time engine implemented for fixed elapsed units,
   supported historical calendars, hybrid base compatibility, selection,
   preservation, and explicit Tier-2 temporal-analysis guards
-- Gate B (permission to begin vertical science): unsatisfied
+- 0.3.0-B6: generic bounded climatological-time semantics implemented;
+  annual WOA23 remains safely rejected and A3B-003 is OPEN-RECLASSIFIED
+- 0.3.0-B7: CF vertical semantics and explicit-bounds metric geometry
+  implemented and certified for the governed WOA23 January fixture
+- Gate B (permission to begin vertical science): satisfied for dimensional
+  metric ocean depth with certified CF semantics and explicit bounds
 - 0.3.0-A3b: governed real-data fixtures and offline-CI evidence completed
 - 0.3.0-A4a: provenance V1 architecture and compatibility design completed
 - 0.3.0-A4b1: internal provenance V1 core engine and legacy normalizer completed
@@ -50,6 +55,8 @@ code changes by itself.
   IMPLEMENTED/CERTIFIED in B5; current exact Date/POSIXct values remain
   unchanged, non-base calendars use oceancube-owned plain state, and CFtime is
   an optional transient development oracle only
+- DEC-029: approved — dimensional metric ocean depth with certified CF
+  semantics and explicit bounds is the authorized Gate-B subset
 - Public API: 39 exports; `cube_open` is the sole A5b addition
 - Runtime producer migrations: all identified producers complete and globally certified
 - Hardening findings: no unresolved S0/S1 blocker; accepted debt and
@@ -77,9 +84,8 @@ separate API and methodological review approves them.
 
 A-EXIT certifies `0.3.0-A` complete after A1-A6 evidence, with `A1-009`
 closed, 39 exports retained, and no unresolved S0/S1 blocker. This permits the
-staged `0.3.0-B` CF/interoperability block to begin, but Gate B remains
-unsatisfied because its canonical vertical-science prerequisites have not yet
-been met. B1 establishes the lossless CF 1.13 architecture and HYBRID engine
+staged `0.3.0-B` CF/interoperability block to begin. B1 establishes the
+lossless CF 1.13 architecture and HYBRID engine
 decision. B2 implements the versioned `x$metadata$cf` source/current model,
 single scanner, simple links, schema validation, shared conflict-aware axis
 resolver, eager/deferred parity, exact collect preservation, and safe
@@ -91,10 +97,15 @@ resolves semantically in both readers and `A3B-001` is closed. B4 approves a
 hybrid calendar-aware time model. B5 implements its bounded plain-R runtime for
 fixed elapsed units, supported historical calendars, eager/deferred parity,
 selection, preservation, and explicit unsupported temporal analytics while
-keeping exact Date/POSIXct behavior. `DEC-023` is core-runtime certified;
-`A3B-002` and `A3B-003` remain open because static fields and climatological
-months-since/provider intent are not implemented. No vertical, provider,
-multifile, remote, Zarr, or 3-D implementation is authorized by B5.
+keeping exact Date/POSIXct behavior. `DEC-023` is core-runtime certified. B6
+adds bounded generic climatological time while safely rejecting the inconsistent
+annual WOA23 encoding. B7 implements the CF vertical descriptor and certifies
+the dimensional metric ocean-depth subset with explicit bounds against the
+governed WOA23 January product. Gate B is SATISFIED under DEC-029. `A3B-002`
+remains OPEN and `A3B-003` remains OPEN-RECLASSIFIED; neither static-field
+support nor provider repair was introduced. Height/pressure conversion,
+parametric evaluation, legacy reductions, multifile, remote, Zarr, and 3-D
+remain outside this authorization.
 
 ## Change control
 
