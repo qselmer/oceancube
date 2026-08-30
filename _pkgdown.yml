@@ -72,6 +72,7 @@ reference:
   - title: Summaries and linkage
     contents:
       - annual_index
+      - depth_sample
       - layer_mean
       - layer_integral
       - link_events

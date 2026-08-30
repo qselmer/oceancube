@@ -125,6 +125,14 @@ metadata plus Provenance V1. Point/sum/other/ambiguous semantics and non-depth
 vertical kinds remain unsupported. B7-001 remains PARTIALLY-CLOSED, Gate B
 remains bounded to DEC-029, and 0.3.0-C remains IN PROGRESS.
 
+C3 implements DEC-032 and adds exactly one export,
+`depth_sample(x, depth, method)`. Automatic plans independently map CF cell
+means to explicit-cell containment and CF point values to local linear
+interpolation. No extrapolation or explicit-gap bridging is allowed, shared
+interior cell boundaries are ambiguous, and outputs have no physical layer
+bounds. Existing discrete selection is unchanged; Gate B remains bounded to
+DEC-029, B7-001 remains PARTIALLY-CLOSED, and 0.3.0-C remains IN PROGRESS.
+
 ## Change control
 
 Future roadmap changes should update the provenance matrix first, reference an

@@ -1,0 +1,6 @@
+"case","variables","target_m","expected","observed","status"
+"classification","t_an;s_an","n/a","VERTICAL_CELL_MEAN","VERTICAL_CELL_MEAN","PASS"
+"contained cell","t_an;s_an","8;10;12","10 m source cell mean","10 m source cell mean","PASS"
+"isolated cell outer edges","t_an;s_an","7.5;12.5","10 m source cell mean","10 m source cell mean","PASS"
+"explicit gap","t_an;s_an","5","gap error","gap error","PASS"
+"deferred read","t_an;s_an","10","depth index 2 only","depth index 2 only","PASS"

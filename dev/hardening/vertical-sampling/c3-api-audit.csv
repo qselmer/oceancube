@@ -1,0 +1,8 @@
+"item","before","after","status"
+"exports","40","41","PASS"
+"new export","none","depth_sample","PASS"
+"new signature","none","x;depth;method","PASS"
+"nearest method","absent","absent","PASS"
+"existing signatures","baseline","unchanged","PASS"
+"version","0.2.0.9000","0.2.0.9000","PASS"
+"dependencies","baseline","unchanged","PASS"

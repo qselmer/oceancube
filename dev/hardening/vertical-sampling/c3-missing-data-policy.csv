@@ -1,0 +1,5 @@
+"method","case","result","fallback"
+"cell","containing value nonfinite","NA","none"
+"linear","either bracket nonfinite","NA","none"
+"linear","exact source point nonfinite","NA","none"
+"all","alternate finite depth exists","unchanged policy","no search or imputation"

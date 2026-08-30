@@ -1,0 +1,41 @@
+# `depth_sample()`
+
+**Category:** Vertical sampling
+
+**Status:** experimental development API; DEC-032 certified subset
+
+## Purpose
+
+Reconstruct values at requested physical metric depths without duplicating
+nearest-neighbour selection.
+
+## Real signature
+
+```r
+depth_sample(x, depth, method = c("auto", "cell", "linear"))
+```
+
+## Method resolution
+
+`auto` maps CF vertical cell means to `cell` sampling and CF vertical point
+values to `linear` interpolation, independently by variable. Explicit methods
+require every selected variable to have the compatible semantics.
+
+Cell sampling requires valid explicit source bounds and returns the containing
+cell mean under a piecewise-constant reconstruction. Point interpolation uses
+an exact stored value when matched, otherwise the two adjacent point values.
+Explicit gaps, shared interior cell boundaries, outside-domain targets and
+unsupported vertical/value semantics are errors. No extrapolation, nearest
+fallback or missing-value imputation occurs.
+
+## Output safety
+
+The result is memory-backed, keeps scientific units, and uses the requested
+depth coordinates. It deliberately has no physical layer bounds, preventing
+automatic use by thickness, volume or vertical-integration functions.
+
+`cube_slice()` selects stored coordinates and `cube_extract()` returns stored
+cells; neither API is changed by C3.
+
+Related functions: `cube_slice()`, `cube_extract()`, `layer_mean()`,
+`layer_integral()`.

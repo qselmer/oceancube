@@ -3,6 +3,10 @@
 ## Development
 
 - Opened the development cycle toward oceancube 0.3.0.
+- Adds `depth_sample()` for certified metric-depth reconstruction: exact
+  source-cell sampling for CF cell means and local linear interpolation for CF
+  point values. It rejects explicit gaps, ambiguous interior boundaries and
+  extrapolation, and sampled outputs never inherit physical layer bounds.
 - Adds `layer_integral()` for certified metric integration of CF vertical cell
   means over explicit depth bounds. It uses canonical metre overlaps, strict
   missingness, symbolic derived units, indexed deferred reads, and never

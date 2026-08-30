@@ -1,0 +1,7 @@
+"dimension","supported","requirement","unsupported"
+"vertical axis","TRUE","DEPTH_LENGTH; VERTICAL_RUNTIME_SUPPORTED; m or km","pressure;height;dimensionless;parametric;surface;unknown"
+"cell sampling","TRUE","VERTICAL_CELL_MEAN; valid explicit source bounds","centre inference;point;sum;other;ambiguous;unresolved"
+"linear sampling","TRUE","VERTICAL_POINT; finite strict monotonic coordinates","cell mean;sum;other;ambiguous;unresolved"
+"domain","TRUE","contained cell; exact point; adjacent point bracket","extrapolation;explicit gap;ambiguous shared boundary"
+"storage","TRUE","memory;local deferred NetCDF","remote;multifile;Zarr"
+"interpolation","TRUE","local two-point linear only","nearest;spline;PCHIP;horizontal;temporal;multidimensional"

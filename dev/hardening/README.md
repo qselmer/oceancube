@@ -512,3 +512,16 @@ derived semantics and symbolic units are explicit and no false `depth: sum`
 claim is created. B7-001 remains PARTIALLY-CLOSED because legacy centre
 inference remains, Gate B remains SATISFIED for DEC-029, and 0.3.0-C remains IN
 PROGRESS.
+
+## C3 certified vertical depth sampling and interpolation
+
+C3 approves and implements DEC-032 with the sole new export `depth_sample()`.
+It reuses C2 value semantics: cell means use explicit-cell containment under a
+piecewise-constant reconstruction, while point values use exact matches or
+local two-point linear interpolation. Mixed automatic plans remain truthful per
+variable. Geometry, gaps, boundaries and domains are resolved before one union
+depth read; missing values are never imputed. Sampled outputs deliberately have
+no physical layer bounds, so thickness, volume, integration and even bounded
+layer means cannot falsely certify them. No C3-specific residual finding was
+opened; B7-001 remains PARTIALLY-CLOSED, Gate B remains SATISFIED for DEC-029,
+and 0.3.0-C remains IN PROGRESS.

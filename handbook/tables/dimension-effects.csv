@@ -25,6 +25,7 @@
 "cube_polygon_weights","ocean_cube + polygon","data.frame",TRUE,FALSE,TRUE,"Compute sparse polygon-cell intersection weights."
 "cube_slice","ocean_cube","ocean_cube",FALSE,TRUE,FALSE,"Select discrete coordinates or indices."
 "cube_transect","ocean_cube + path","data.frame",FALSE,FALSE,FALSE,"Extract ordered paired spatial locations."
+"depth_sample","ocean_cube","ocean_cube",TRUE,FALSE,FALSE,"Replace the depth axis with requested point coordinates without physical layer bounds."
 "download_nc","request","file(s)",TRUE,FALSE,FALSE,"Download a Copernicus product through the configured client."
 "layer_mean","ocean_cube","ocean_cube",FALSE,TRUE,FALSE,"Compute a vertical layer summary."
 "layer_integral","ocean_cube","ocean_cube",FALSE,TRUE,FALSE,"Replace depth cells with requested certified metric integrals."

@@ -860,6 +860,12 @@
     coast_dist = "oceancube:s2_coast_distance",
     layer_mean = "oceancube:depth_layer_mean",
     layer_integral = "oceancube:vertical_metric_integral",
+    depth_sample = switch(
+      record$resolved_method %||% "mixed",
+      cell = "oceancube:vertical_cell_mean_sampling",
+      linear = "oceancube:vertical_linear_point_interpolation",
+      "oceancube:vertical_mixed_depth_sampling"
+    ),
     crop_stock = "oceancube:stock_mask",
     NULL
   )

@@ -25,6 +25,7 @@
 "cube_polygon_weights",TRUE,TRUE,FALSE,FALSE,TRUE,FALSE,"Compute sparse polygon-cell intersection weights."
 "cube_slice",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Select discrete coordinates or indices."
 "cube_transect",TRUE,TRUE,FALSE,TRUE,FALSE,FALSE,"Extract ordered paired spatial locations."
+"depth_sample",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Sample cell means or interpolate point values through one bounded union depth read."
 "download_nc",FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,"Download a Copernicus product through the configured client."
 "layer_mean",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Compute a vertical layer summary through bounded depth reads; output is a memory cube."
 "layer_integral",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Integrate certified CF vertical cell means through one bounded depth-index read."

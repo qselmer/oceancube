@@ -1,0 +1,6 @@
+"case","requested","depth_indices_read","read_count","status"
+"point linear","5 m","1;2","1","PASS"
+"cell contained","12 m","2","1","PASS"
+"mixed auto","12 m","1;2 union","1","PASS"
+"unsupported semantics","5 m","none","0","PASS geometry-first"
+"gap or outside","invalid target","none","0","PASS geometry-first"

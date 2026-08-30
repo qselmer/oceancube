@@ -1091,6 +1091,9 @@
     if (!is.null(cf$current$vertical_reduction)) {
       .cf_vertical_reduction_validate(cf$current$vertical_reduction)
     }
+    if (!is.null(cf$current$vertical_sampling)) {
+      .cf_vertical_sampling_validate(cf$current$vertical_sampling)
+    }
   }
   tryCatch(
     serialize(cf, connection = NULL),
@@ -1170,6 +1173,14 @@
         variables
       )
   }
+  if (!is.null(out$cf$current$vertical_sampling)) {
+    out$cf$current$vertical_sampling <-
+      .cf_vertical_sampling_for_selection(
+        out$cf$current$vertical_sampling,
+        index$depth,
+        variables
+      )
+  }
   out <- .cf_mark_current_interpretation(
     out,
     if (identical(metadata$cf$current$semantic_status, "DERIVATION_PENDING")) {
@@ -1198,6 +1209,7 @@
     )
   }
   out$cf$current$vertical_reduction <- NULL
+  out$cf$current$vertical_sampling <- NULL
   out <- .cf_mark_current_interpretation(out, "DERIVATION_PENDING")
   .cf_metadata_validate(out)
   out
@@ -1316,4 +1328,71 @@
     certified_geometry = certified,
     descriptor = descriptor
   )
+}
+
+.cf_vertical_sampling_validate <- function(x) {
+  required <- c(
+    "schema_name", "schema_version", "requested_depths", "requested_unit",
+    "method_requested", "variables", "input_source_order",
+    "no_extrapolation", "gap_policy", "boundary_policy",
+    "missing_value_policy", "output_support", "output_bounds_status",
+    "current_standard_name_status", "current_cell_methods_status",
+    "certification_status", "resolved_method"
+  )
+  if (!is.list(x) || length(setdiff(required, names(x))) ||
+      !identical(x$schema_name, "oceancube_vertical_sampling") ||
+      !identical(x$schema_version, "1.0.0") ||
+      !is.numeric(x$requested_depths) || !length(x$requested_depths) ||
+      !x$method_requested %in% c("auto", "cell", "linear") ||
+      !x$resolved_method %in% c("cell", "linear", "mixed") ||
+      !is.list(x$variables) || !length(x$variables) ||
+      !isTRUE(x$no_extrapolation) ||
+      !identical(x$output_bounds_status, "BOUNDS_NOT_APPLICABLE") ||
+      !identical(x$certification_status, "CERTIFIED") ||
+      any(vapply(x$variables, function(item) {
+        !is.list(item) || !all(c(
+          "variable", "input_value_semantics", "resolved_method",
+          "output_value_semantics", "scientific_method_id",
+          "certification_status"
+        ) %in% names(item)) ||
+          !item$resolved_method %in% c("cell", "linear") ||
+          !identical(item$certification_status, "CERTIFIED")
+      }, logical(1L)))) {
+    .cf_metadata_abort("Invalid current CF vertical-sampling descriptor.")
+  }
+  invisible(TRUE)
+}
+
+.cf_vertical_sampling_for_selection <- function(x, depth_index, variables) {
+  .cf_vertical_sampling_validate(x)
+  out <- x
+  out$requested_depths <- out$requested_depths[depth_index]
+  variable_names <- as.character(variables)
+  variable_basenames <- vapply(variable_names, .cf_basename, character(1L))
+  keep <- vapply(out$variables, function(item) {
+    item$variable %in% variable_names ||
+      .cf_basename(item$variable) %in% variable_basenames
+  }, logical(1L))
+  out$variables <- out$variables[keep]
+  methods <- unique(vapply(
+    out$variables, `[[`, character(1L), "resolved_method"
+  ))
+  out$resolved_method <- if (length(methods) == 1L) methods[[1L]] else "mixed"
+  .cf_vertical_sampling_validate(out)
+  out
+}
+
+.cf_metadata_for_vertical_sampling <- function(metadata, targets, descriptor) {
+  if (is.null(metadata)) return(NULL)
+  .cf_vertical_sampling_validate(descriptor)
+  out <- .cf_metadata_for_transform(metadata, "depth_sample")
+  if (!is.null(metadata$cf$current$vertical)) {
+    out$cf$current$vertical <- .cf_vertical_for_sampling(
+      metadata$cf$current$vertical,
+      targets
+    )
+  }
+  out$cf$current$vertical_sampling <- descriptor
+  .cf_metadata_validate(out)
+  out
 }

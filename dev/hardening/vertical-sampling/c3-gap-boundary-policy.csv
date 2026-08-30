@@ -1,0 +1,7 @@
+"case","policy","observed","status"
+"shared interior cell boundary","error oceancube_vertical_boundary_ambiguous","error","PASS"
+"outer cell boundary","accept sole containing cell","accepted","PASS"
+"explicit cell gap","error oceancube_vertical_sampling_gap","error","PASS"
+"explicit point-bracket gap","error oceancube_vertical_sampling_gap","error","PASS"
+"outside support/domain","error oceancube_vertical_sampling_outside","error","PASS"
+"extrapolation","never","not implemented","PASS"

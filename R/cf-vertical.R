@@ -546,3 +546,40 @@
 .cf_vertical_for_layer_mean <- function(vertical, bins, centers) {
   .cf_vertical_for_reduction(vertical, bins, centers, "layer_mean")
 }
+
+.cf_vertical_for_sampling <- function(vertical, targets) {
+  .cf_vertical_validate(vertical)
+  out <- vertical
+  out$source_coordinate <- as.numeric(targets)
+  out$source_order <- .cf_vertical_source_order(out$source_coordinate)
+  out$runtime_status <- "VERTICAL_RUNTIME_SUPPORTED"
+  out$geometry_status <- "GEOMETRY_NO_BOUNDS"
+  out$bounds_target <- NA_character_
+  out$bounds_status <- "BOUNDS_MISSING"
+  out$bounds_units_raw <- NA_character_
+  out$bounds_unit <- NA_character_
+  out$bounds_shape <- integer()
+  out$bounds <- list()
+  out$coverage_contiguous <- NA
+  out$canonical_metric <- TRUE
+  out$surface_status <- if (length(targets) == 1L) {
+    "EXPLICIT_SINGLETON"
+  } else {
+    "MULTI_LEVEL"
+  }
+  out$diagnostics <- Filter(function(item) {
+    !item$code %in% c(
+      "VERTICAL_DERIVATION_PENDING", "VERTICAL_REDUCTION_DERIVED",
+      "VERTICAL_SAMPLING_NO_CELL_SUPPORT"
+    )
+  }, out$diagnostics)
+  out$diagnostics[[length(out$diagnostics) + 1L]] <- .cf_vertical_diagnostic(
+    "VERTICAL_SAMPLING_NO_CELL_SUPPORT", "OCEANCUBE-SAFETY", "INFO",
+    paste0(
+      "Requested depth samples are point coordinates without physical cell ",
+      "bounds; metric layer geometry is intentionally unsupported."
+    )
+  )
+  .cf_vertical_validate(out)
+  out
+}

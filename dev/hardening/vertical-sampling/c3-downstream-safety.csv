@@ -1,0 +1,5 @@
+"operation","sampled_geometry","expected","observed","status"
+"cube_layer_thickness","GEOMETRY_NO_BOUNDS","reject","reject","PASS"
+"cube_cell_volume","GEOMETRY_NO_BOUNDS","reject","reject","PASS"
+"layer_integral","GEOMETRY_NO_BOUNDS","reject","reject","PASS"
+"layer_mean bounded path","GEOMETRY_NO_BOUNDS","reject","reject","PASS; no C3-001 finding required"

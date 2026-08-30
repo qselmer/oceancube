@@ -74,6 +74,12 @@ uses metre overlap and a piecewise-constant cell-mean assumption. Point values,
 pre-accumulated vertical sums, pressure/height conversions, parametric axes,
 interpolation, and extrapolation are rejected rather than guessed.
 
+`depth_sample()` extends that bounded vertical foundation without changing
+discrete selection: CF cell means are sampled from their explicit containing
+cell, while CF point values may use local two-point linear interpolation.
+Explicit gaps, shared interior cell boundaries and extrapolation are rejected.
+The result has requested point-depth coordinates but no certified layer bounds.
+
 ## Minimal example
 
 ``` r
@@ -137,8 +143,9 @@ boundary](https://qselmer.github.io/oceancube/handbook/11-spatind-boundary.html)
 
 The navigable [OceanCube
 Handbook](https://qselmer.github.io/oceancube/handbook/) explains the
-five-dimensional contract, backends, the current 40-export development API
-(the frozen 38-export release plus `cube_open()` and `layer_integral()`), checked
+five-dimensional contract, backends, the current 41-export development API
+(the frozen 38-export release plus `cube_open()`, `layer_integral()`, and
+`depth_sample()`), checked
 workflows, the `spatind` boundary, troubleshooting, and the project’s
 Git release policy. Its executable sources live in
 [`handbook/`](handbook/).
