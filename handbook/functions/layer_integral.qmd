@@ -1,0 +1,48 @@
+# `layer_integral()`
+
+**Category:** Vertical summary
+**Status:** experimental development API; DEC-031 certified subset
+
+## Purpose
+
+Integrate CF vertical cell means across one or more requested metric-depth
+intervals. It accepts memory and deferred local NetCDF cubes.
+
+## Real signature
+
+```r
+layer_integral(x, depth)
+```
+
+## Certified input
+
+The vertical coordinate must be dimensional metric ocean depth with explicit
+valid CF bounds and full geometric coverage. Every selected variable must have
+an exact vertical `cell_methods` classification of `mean`. Point values,
+pre-accumulated sums, other or ambiguous methods, pressure, height,
+dimensionless and parametric coordinates are rejected.
+
+## Numerical and missing-data semantics
+
+For source cell means `x_i` and exact overlap lengths `w_i` converted to
+metres, the result is `sum(x_i * w_i)`. Partial-cell use is explicitly
+piecewise constant. Any non-finite value with positive overlap makes that
+output missing; the integral is not renormalized. Partial geometric coverage
+errors before payload access and zero coverage returns missing without a read.
+
+## Units and CF safety
+
+Output units are bounded symbolic expressions `<source unit> m`; source unit
+`1` becomes `m`. They are not normalized or dimensionally validated. Source CF
+metadata is immutable, current `standard_name` derivation remains pending, and
+the operation never fabricates `depth: sum` as a metric-integration claim.
+
+## Example
+
+```r
+# Given a governed CF file with depth cell means and explicit bounds:
+# x <- cube_open("ocean-column.nc", vars = "temperature")
+# integrated <- layer_integral(x, c(0, 10, 50, 100))
+```
+
+Related functions: `layer_mean()`, `cube_layer_thickness()`, `cube_open()`.

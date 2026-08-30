@@ -1,0 +1,4 @@
+"operation","weights","coverage","missing_values","certification"
+"layer_mean certified","explicit native-unit overlap","full required; zero NA","finite contributors renormalized","geometry and cell-mean semantics recorded separately"
+"layer_mean legacy","centre-derived historical weights","legacy unchecked","finite contributors renormalized","UNCERTIFIED"
+"layer_integral","explicit overlap converted to metres","full required; partial error; zero NA","any nonfinite positive-overlap contributor gives NA","CERTIFIED only for CF vertical cell means"

@@ -1,0 +1,4 @@
+"case","requested_m","depth_indices_read","read_count","status"
+"one-cell integral","0:10","1","1","PASS"
+"partial coverage","0:35","none","0","PASS geometry-first"
+"zero coverage","40:50","none","0","PASS"

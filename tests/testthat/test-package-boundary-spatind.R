@@ -17,7 +17,8 @@ test_that("only approved APIs extend the boundary", {
     "cube_climatology",
     "cube_trend",
     "viz.timeseries",
-    "cube_open"
+    "cube_open",
+    "layer_integral"
   )
   observed <- getNamespaceExports("oceancube")
 

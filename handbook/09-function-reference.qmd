@@ -1,6 +1,7 @@
 # Public function reference
 
-The 38 cards below document the frozen 0.2.0 API. Canonical engines are
+The 40 cards below comprise the frozen 38-export 0.2.0 API plus the approved
+development exports `cube_open()` and `layer_integral()`. Canonical engines are
 listed before compatibility helpers.
 
 ## Connection and download
@@ -13,6 +14,7 @@ listed before compatibility helpers.
 
 - [`ocean_cube()`](functions/ocean_cube.qmd)
 - [`read_nc()`](functions/read_nc.qmd)
+- [`cube_open()`](functions/cube_open.qmd)
 - [`cube_collect()`](functions/cube_collect.qmd)
 
 ## Validation and inspection
@@ -66,4 +68,5 @@ listed before compatibility helpers.
 
 - [`annual_index()`](functions/annual_index.qmd)
 - [`layer_mean()`](functions/layer_mean.qmd)
+- [`layer_integral()`](functions/layer_integral.qmd)
 - [`link_events()`](functions/link_events.qmd)

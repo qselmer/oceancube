@@ -1,0 +1,5 @@
+"case","variable","bounds_m","cell_method","expected","observed","status"
+"exact layer","t_an","7.5:12.5","depth: mean","source value * 5","source value * 5","PASS"
+"sub-layer","t_an","8:12","depth: mean","source value * 4","source value * 4","PASS"
+"gap","t_an","0:50","depth: mean","partial-coverage error before read","partial-coverage error before read","PASS"
+"full column","t_an","0:200","depth: mean","unsupported because standard-depth support has gaps","not claimed","EXPECTED-UNSUPPORTED"

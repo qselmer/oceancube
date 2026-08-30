@@ -1,0 +1,21 @@
+# `cube_open()`
+
+**Category:** Construction and backend
+**Status:** experimental development API
+
+## Purpose
+
+Open a local read-only NetCDF file as a deferred `<ocean_cube>` descriptor
+without reading the complete scientific payload.
+
+## Real signature
+
+```r
+cube_open(file, vars = NULL, lon_name = NULL, lat_name = NULL,
+          depth_name = NULL, time_name = NULL, source = NULL,
+          dataset_id = NULL)
+```
+
+Use `cube_collect()` when an independent in-memory cube is required. Remote,
+multifile, write, Zarr and lazy-compute-graph behavior remain outside the
+contract.

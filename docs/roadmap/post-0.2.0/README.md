@@ -117,6 +117,14 @@ is numerically unchanged and explicitly uncertified, so B7-001 is
 PARTIALLY-CLOSED rather than erased. Gate B remains SATISFIED only for the
 DEC-029 metric-depth subset; 0.3.0-C is IN PROGRESS and C2 is next.
 
+C2 implements DEC-031 and adds exactly one export, `layer_integral(x, depth)`.
+The shared reducer admits metric integration only for certified CF vertical
+cell means with explicit bounds and full coverage, computes canonical metre
+overlap, applies strict integral missingness, and records truthful current
+metadata plus Provenance V1. Point/sum/other/ambiguous semantics and non-depth
+vertical kinds remain unsupported. B7-001 remains PARTIALLY-CLOSED, Gate B
+remains bounded to DEC-029, and 0.3.0-C remains IN PROGRESS.
+
 ## Change control
 
 Future roadmap changes should update the provenance matrix first, reference an

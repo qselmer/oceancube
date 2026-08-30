@@ -3,6 +3,10 @@
 ## Development
 
 - Opened the development cycle toward oceancube 0.3.0.
+- Adds `layer_integral()` for certified metric integration of CF vertical cell
+  means over explicit depth bounds. It uses canonical metre overlaps, strict
+  missingness, symbolic derived units, indexed deferred reads, and never
+  substitutes the unrelated CF `depth: sum` cell method.
 - Adds exact elapsed UDUNITS month/year decoding and a bounded generic CF
   climatological-time descriptor under current CF metadata. Climatological
   cubes are guarded from ordinary temporal analytics; inconsistent provider

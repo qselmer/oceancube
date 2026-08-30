@@ -1,0 +1,4 @@
+"variable","source_unit","integration_measure","integration_unit","derived_unit","normalization_status"
+"temperature","K","vertical length","m","K m","SYMBOLIC_UNNORMALIZED_UNVALIDATED"
+"t_an","degrees_celsius","vertical length","m","degrees_celsius m","SYMBOLIC_UNNORMALIZED_UNVALIDATED"
+"s_an","1","vertical length","m","m","SYMBOLIC_UNNORMALIZED_UNVALIDATED"

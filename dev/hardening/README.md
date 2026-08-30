@@ -499,3 +499,16 @@ gaps error before payload access; zero coverage returns missing. The historical
 centre-derived path remains numerically unchanged and uncertified, making
 B7-001 PARTIALLY-CLOSED. Evidence is in `vertical-primitives/`; Gate B remains
 SATISFIED for the same DEC-029 subset and 0.3.0-C is IN PROGRESS.
+
+## C2 certified vertical reduction and column integration
+
+C2 approves and implements DEC-031. `layer_mean()` and the sole new export
+`layer_integral()` share one reducer and the C1 explicit-bounds support engine.
+Certified integration is limited to exact CF vertical cell means, canonical
+metre overlap, full geometric coverage, piecewise-constant cell means and
+strict missingness. Point, sum, other and ambiguous value semantics are
+rejected before payload access. Source CF metadata remains immutable; current
+derived semantics and symbolic units are explicit and no false `depth: sum`
+claim is created. B7-001 remains PARTIALLY-CLOSED because legacy centre
+inference remains, Gate B remains SATISFIED for DEC-029, and 0.3.0-C remains IN
+PROGRESS.

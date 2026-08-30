@@ -1088,6 +1088,9 @@
     if (!is.null(cf$current$vertical)) {
       .cf_vertical_validate(cf$current$vertical)
     }
+    if (!is.null(cf$current$vertical_reduction)) {
+      .cf_vertical_reduction_validate(cf$current$vertical_reduction)
+    }
   }
   tryCatch(
     serialize(cf, connection = NULL),
@@ -1160,6 +1163,13 @@
       index$depth
     )
   }
+  if (!is.null(out$cf$current$vertical_reduction)) {
+    out$cf$current$vertical_reduction <-
+      .cf_vertical_reduction_for_selection(
+        out$cf$current$vertical_reduction,
+        variables
+      )
+  }
   out <- .cf_mark_current_interpretation(
     out,
     if (identical(metadata$cf$current$semantic_status, "DERIVATION_PENDING")) {
@@ -1187,22 +1197,123 @@
       out$cf$current$vertical
     )
   }
+  out$cf$current$vertical_reduction <- NULL
   out <- .cf_mark_current_interpretation(out, "DERIVATION_PENDING")
   .cf_metadata_validate(out)
   out
 }
 
-.cf_metadata_for_layer_mean <- function(metadata, bins, centers,
-                                        certified = FALSE) {
+.cf_vertical_reduction_validate <- function(x) {
+  required <- c(
+    "schema_name", "schema_version", "method", "input_value_semantics",
+    "geometric_support", "integration_measure", "integration_unit",
+    "subcell_assumption", "coverage_policy", "missing_value_policy",
+    "derived_units", "unit_status", "current_standard_name_status",
+    "cf_cell_method_status", "geometric_certification",
+    "value_semantic_certification", "certification_status"
+  )
+  if (!is.list(x) || length(setdiff(required, names(x))) ||
+      !identical(x$schema_name, "oceancube_vertical_reduction") ||
+      !identical(x$schema_version, "1.0.0") ||
+      !x$method %in% c("overlap_weighted_mean", "metric_cell_mean_integral") ||
+      !is.list(x$input_value_semantics) || !is.list(x$derived_units) ||
+      !x$certification_status %in% c("CERTIFIED", "UNCERTIFIED")) {
+    .cf_metadata_abort("Invalid current CF vertical-reduction descriptor.")
+  }
+  invisible(TRUE)
+}
+
+.cf_vertical_reduction_for_selection <- function(x, variables) {
+  .cf_vertical_reduction_validate(x)
+  out <- x
+  variable_names <- as.character(variables)
+  variable_basenames <- vapply(variable_names, .cf_basename, character(1L))
+  keep <- vapply(out$input_value_semantics, function(item) {
+    item$variable %in% variable_names ||
+      .cf_basename(item$variable) %in% variable_basenames
+  }, logical(1L))
+  out$input_value_semantics <- out$input_value_semantics[keep]
+  if (length(out$derived_units) && !is.null(names(out$derived_units))) {
+    unit_names <- names(out$derived_units)
+    unit_keep <- unit_names %in% variable_names |
+      vapply(unit_names, .cf_basename, character(1L)) %in% variable_basenames
+    out$derived_units <- out$derived_units[unit_keep]
+  }
+  value_certified <- length(out$input_value_semantics) > 0L && all(vapply(
+    out$input_value_semantics,
+    function(item) identical(item$status, "VERTICAL_CELL_MEAN"),
+    logical(1L)
+  ))
+  out$value_semantic_certification <- if (value_certified) {
+    "CERTIFIED"
+  } else {
+    "UNCERTIFIED"
+  }
+  out$certification_status <- if (
+    identical(out$geometric_certification, "CERTIFIED") && value_certified
+  ) {
+    "CERTIFIED"
+  } else {
+    "UNCERTIFIED"
+  }
+  .cf_vertical_reduction_validate(out)
+  out
+}
+
+.cf_metadata_for_vertical_reduction <- function(
+    metadata, operation, bins, centers, certified_geometry = FALSE,
+    descriptor) {
   if (is.null(metadata)) return(NULL)
-  out <- .cf_metadata_for_transform(metadata, "layer_mean")
-  if (isTRUE(certified) && !is.null(out$cf$current$vertical)) {
-    out$cf$current$vertical <- .cf_vertical_for_layer_mean(
+  .cf_vertical_reduction_validate(descriptor)
+  out <- .cf_metadata_for_transform(metadata, operation)
+  if (isTRUE(certified_geometry) && !is.null(out$cf$current$vertical)) {
+    out$cf$current$vertical <- .cf_vertical_for_reduction(
       metadata$cf$current$vertical,
       bins = bins,
-      centers = centers
+      centers = centers,
+      operation = operation
     )
   }
+  out$cf$current$vertical_reduction <- descriptor
   .cf_metadata_validate(out)
   out
+}
+
+.cf_metadata_for_layer_mean <- function(metadata, bins, centers,
+                                        certified = FALSE,
+                                        descriptor = NULL) {
+  if (is.null(descriptor)) {
+    if (is.null(metadata)) return(NULL)
+    descriptor <- list(
+      schema_name = "oceancube_vertical_reduction",
+      schema_version = "1.0.0",
+      method = "overlap_weighted_mean",
+      input_value_semantics = list(),
+      geometric_support = if (isTRUE(certified)) {
+        "CF_EXPLICIT_METRIC_DEPTH_BOUNDS"
+      } else {
+        "LEGACY_OR_UNCERTIFIED"
+      },
+      integration_measure = "not_applicable",
+      integration_unit = NA_character_,
+      subcell_assumption = "piecewise_constant_cell_mean",
+      coverage_policy = "full geometric coverage required; zero coverage returns NA; gaps are not filled",
+      missing_value_policy = "finite contributors are renormalized over positive overlap",
+      derived_units = list(),
+      unit_status = "UNCHANGED",
+      current_standard_name_status = "DERIVATION_PENDING",
+      cf_cell_method_status = "DERIVATION_PENDING_NO_SYNTHETIC_VERTICAL_SUM",
+      geometric_certification = if (isTRUE(certified)) "CERTIFIED" else "UNCERTIFIED",
+      value_semantic_certification = "UNCERTIFIED",
+      certification_status = "UNCERTIFIED"
+    )
+  }
+  .cf_metadata_for_vertical_reduction(
+    metadata,
+    operation = "layer_mean",
+    bins = bins,
+    centers = centers,
+    certified_geometry = certified,
+    descriptor = descriptor
+  )
 }

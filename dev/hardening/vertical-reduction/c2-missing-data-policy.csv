@@ -1,0 +1,5 @@
+"operation","geometry_coverage","data_completeness","result","renormalized"
+"layer_mean","FULL","partial finite","finite-weight mean","TRUE"
+"layer_integral","FULL","any nonfinite positive overlap","NA","FALSE"
+"both","PARTIAL","not inspected","ERROR before payload read","FALSE"
+"both","ZERO","not inspected","NA without payload read","FALSE"

@@ -1,0 +1,6 @@
+"dimension","supported","requirement","unsupported"
+"vertical axis","TRUE","DEPTH_LENGTH; VERTICAL_RUNTIME_SUPPORTED","pressure;height;dimensionless;parametric;unknown"
+"geometry","TRUE","explicit valid metric bounds; full union coverage","centre inference;partial coverage;gaps"
+"values","TRUE","exact vertical cell mean","point;sum;other;ambiguous;unresolved"
+"integration measure","TRUE","canonical metre length","pressure or density conversion"
+"storage","TRUE","memory;local deferred NetCDF","remote;multifile;Zarr"

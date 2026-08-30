@@ -859,6 +859,7 @@
     cube_polygon_weights = "oceancube:s2_polygon_cell_intersection",
     coast_dist = "oceancube:s2_coast_distance",
     layer_mean = "oceancube:depth_layer_mean",
+    layer_integral = "oceancube:vertical_metric_integral",
     crop_stock = "oceancube:stock_mask",
     NULL
   )

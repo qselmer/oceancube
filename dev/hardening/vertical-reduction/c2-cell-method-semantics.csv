@@ -1,0 +1,7 @@
+"variable","raw_cell_methods","resolved_vertical_axis","recognized_vertical_method","status","eligible","reason"
+"t_an","area: mean depth: mean time: mean within years time: mean over years","depth","mean","VERTICAL_CELL_MEAN","TRUE","exact source-axis cell mean"
+"s_an","area: mean depth: mean time: mean within years time: mean over years","depth","mean","VERTICAL_CELL_MEAN","TRUE","exact source-axis cell mean"
+"synthetic_point","z: point","z","point","VERTICAL_POINT","FALSE","point values cannot be integrated as cell means"
+"synthetic_sum","z: sum","z","sum","VERTICAL_CELL_SUM","FALSE","pre-accumulated sums are not metric cell means"
+"synthetic_other","z: maximum","z","maximum","VERTICAL_CELL_OTHER","FALSE","unsupported vertical cell method"
+"synthetic_ambiguous","z: mean z: sum","z","mean;sum","VERTICAL_CELL_METHOD_AMBIGUOUS","FALSE","conflicting vertical methods"

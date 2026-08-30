@@ -67,6 +67,13 @@ and is therefore not a valid trend input. Grid primitives include
 `cube_cell_area()`, `cube_layer_thickness()`, `cube_cell_volume()`, and
 `cube_polygon_weights()`.
 
+The development API also provides `layer_integral()` for a deliberately narrow
+CF subset: dimensional metric ocean depth, explicit valid bounds, full
+geometric coverage, and variables declared as vertical cell means. Integration
+uses metre overlap and a piecewise-constant cell-mean assumption. Point values,
+pre-accumulated vertical sums, pressure/height conversions, parametric axes,
+interpolation, and extrapolation are rejected rather than guessed.
+
 ## Minimal example
 
 ``` r
@@ -130,7 +137,8 @@ boundary](https://qselmer.github.io/oceancube/handbook/11-spatind-boundary.html)
 
 The navigable [OceanCube
 Handbook](https://qselmer.github.io/oceancube/handbook/) explains the
-five-dimensional contract, backends, all 38 public exports, checked
+five-dimensional contract, backends, the current 40-export development API
+(the frozen 38-export release plus `cube_open()` and `layer_integral()`), checked
 workflows, the `spatind` boundary, troubleshooting, and the project’s
 Git release policy. Its executable sources live in
 [`handbook/`](handbook/).

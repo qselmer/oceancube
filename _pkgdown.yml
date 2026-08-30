@@ -73,6 +73,7 @@ reference:
     contents:
       - annual_index
       - layer_mean
+      - layer_integral
       - link_events
 articles:
   - title: Get started

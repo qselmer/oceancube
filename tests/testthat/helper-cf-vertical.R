@@ -2,14 +2,15 @@ make_cf_vertical_fixture <- function(
     values = c(0, 10, 20), units = "m", standard_name = "depth",
     positive = "down", axis = "Z", bounds = NULL, bounds_units = units,
     bounds_shape = "valid", formula_terms = NULL,
-    boundary_formula_terms = NULL, vertical_name = "z") {
+    boundary_formula_terms = NULL, vertical_name = "z",
+    cell_methods = NULL, data_values = NULL, variable_units = "K") {
   file <- tempfile("oceancube-cf-vertical-", fileext = ".nc")
   lon <- ncdf4::ncdim_def("lon", "degrees_east", c(-80, -79))
   lat <- ncdf4::ncdim_def("lat", "degrees_north", c(-12, -11))
   z <- ncdf4::ncdim_def(vertical_name, units %||% "", values)
   time <- ncdf4::ncdim_def("time", "days since 2000-01-01", 0)
   definitions <- list(
-    ncdf4::ncvar_def("temperature", "K", list(lon, lat, z, time))
+    ncdf4::ncvar_def("temperature", variable_units, list(lon, lat, z, time))
   )
   if (!is.null(bounds)) {
     vertices <- if (identical(bounds_shape, "valid")) 2L else 3L
@@ -29,9 +30,13 @@ make_cf_vertical_fixture <- function(
     )
   }
   nc <- ncdf4::nc_create(file, definitions, force_v4 = TRUE)
+  payload <- data_values %||% seq_len(2L * 2L * length(values))
   ncdf4::ncvar_put(nc, "temperature", array(
-    seq_len(2L * 2L * length(values)), dim = c(2L, 2L, length(values), 1L)
+    payload, dim = c(2L, 2L, length(values), 1L)
   ))
+  if (!is.null(cell_methods)) {
+    ncdf4::ncatt_put(nc, "temperature", "cell_methods", cell_methods)
+  }
   if (!is.null(standard_name)) ncdf4::ncatt_put(nc, vertical_name, "standard_name", standard_name)
   if (!is.null(positive)) ncdf4::ncatt_put(nc, vertical_name, "positive", positive)
   if (!is.null(axis)) ncdf4::ncatt_put(nc, vertical_name, "axis", axis)

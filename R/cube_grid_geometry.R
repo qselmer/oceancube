@@ -332,7 +332,7 @@ cube_cell_volume <- function(x, depth_bounds = NULL,
 }
 
 .vertical_support_engine <- function(x, depth_bounds = NULL,
-                                     mode = c("geometry", "layer_mean")) {
+                                     mode = c("geometry", "layer_mean", "integral")) {
   mode <- match.arg(mode)
   depth <- x$depth
   semantic <- x$metadata$cf$current$vertical

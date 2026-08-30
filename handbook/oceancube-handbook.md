@@ -82,11 +82,11 @@ inference, change-point, or regime analysis.
 
 Always inspect time coverage, missingness, sample counts, and units before interpreting climatology products.
 # Grid geometry and weights
-For rectilinear grids, `cube_cell_area()` returns horizontal area, `cube_layer_thickness()` derives vertical thickness, and `cube_cell_volume()` combines both. `cube_polygon_weights()` returns sparse intersections suitable for downstream aggregation.
+For rectilinear grids, `cube_cell_area()` returns horizontal area, `cube_layer_thickness()` derives vertical thickness, and `cube_cell_volume()` combines both. `layer_integral()` integrates certified CF vertical cell means over explicit metric-depth bounds using metre overlap and strict missingness; it rejects point values and pre-accumulated vertical sums. `cube_polygon_weights()` returns sparse intersections suitable for downstream aggregation.
 
 CRS must be known and compatible. Curvilinear/unstructured grids and general antimeridian handling are outside the current core. Polygon weights are experimental during the 0.x series.
 # Public function reference
-The authoritative, categorized 38-export index is
+The authoritative, categorized 40-export development index is
 [handbook/09-function-reference.qmd](09-function-reference.qmd). It links to
 one card per public export and lists canonical engines before compatibility
 helpers; this consolidated surface does not duplicate that index.

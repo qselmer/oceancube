@@ -502,7 +502,7 @@
   out
 }
 
-.cf_vertical_for_layer_mean <- function(vertical, bins, centers) {
+.cf_vertical_for_reduction <- function(vertical, bins, centers, operation) {
   .cf_vertical_validate(vertical)
   out <- vertical
   out$source_coordinate <- as.numeric(centers)
@@ -533,9 +533,16 @@
     !identical(item$code, "VERTICAL_DERIVATION_PENDING")
   }, out$diagnostics)
   out$diagnostics[[length(out$diagnostics) + 1L]] <- .cf_vertical_diagnostic(
-    "VERTICAL_LAYER_MEAN_DERIVED", "OCEANCUBE-SAFETY", "INFO",
-    "Current metric-depth bounds were derived exactly from requested layer intervals."
+    "VERTICAL_REDUCTION_DERIVED", "OCEANCUBE-SAFETY", "INFO",
+    paste0(
+      "Current metric-depth bounds were derived exactly from requested `",
+      operation, "` intervals."
+    )
   )
   .cf_vertical_validate(out)
   out
+}
+
+.cf_vertical_for_layer_mean <- function(vertical, bins, centers) {
+  .cf_vertical_for_reduction(vertical, bins, centers, "layer_mean")
 }

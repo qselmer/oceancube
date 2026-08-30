@@ -25,6 +25,11 @@ interval must have full geometric coverage; partial coverage (including
 internal gaps) errors before payload data are read, while zero coverage
 returns an all-missing layer. Missing scientific values are renormalized
 over finite contributing cells and do not change geometric coverage.
+Geometric certification and value-semantic certification are separate:
+only variables recognized from preserved CF \code{cell_methods} as exact
+vertical cell means receive combined certification. Other value semantics
+retain the backward-compatible numerical operation but are explicitly
+uncertified.
 
 Cubes without certified metric bounds retain the historical
 centre-derived \code{.depth_edges()} / \code{.depth_weights()} calculation for
