@@ -1,0 +1,8 @@
+"dimension","supported","policy","status"
+"input","current certified oceancube_vertical_gradient 1.0.0 memory cube","no implicit gradient calculation","PASS"
+"polarity","absolute;positive;negative","explicit generic ranking","PASS"
+"support","CONTIGUOUS_SUPPORT;POINT_SUPPORT_UNBOUNDED;GAPPED_SUPPORT","gapped only by support=all","PASS"
+"profiles","longitude x latitude x time x variable","no spatial temporal or variable pooling","PASS"
+"output","base data.frame","one candidate or diagnostic row per profile-variable","PASS"
+"excluded","raw cubes;non-gradient derived cubes;thermocline;oxycline;halocline;MLD","deterministic rejection or future boundary","PASS"
+"methods","threshold;smoothing;prominence;width;second derivative","not implemented","PASS"

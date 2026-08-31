@@ -141,6 +141,17 @@ integrals are rejected. Midpoint outputs have no physical bounds, and explicit
 support gaps are recorded without interpolation. Gate B remains SATISFIED,
 B7-001 remains PARTIALLY-CLOSED, and 0.3.0-C remains IN PROGRESS.
 
+C5 implements DEC-034 and adds exactly one export,
+`depth_feature(x, polarity, support)`. It consumes only certified C4 gradient
+outputs and ranks one strongest signed-gradient candidate per horizontal
+profile, time and variable. The default local policy excludes gapped secants;
+an explicit all-support request may rank them only as gapped candidates. Flat
+profiles receive no feature, ties remain ambiguous, and missing gradients
+reduce completeness rather than silently certifying a global maximum. C5 does
+not interpret candidates as thermoclines, oxyclines, haloclines or MLD. Gate B
+remains SATISFIED, B7-001 remains PARTIALLY-CLOSED, and 0.3.0-C remains IN
+PROGRESS.
+
 ## Change control
 
 Future roadmap changes should update the provenance matrix first, reference an

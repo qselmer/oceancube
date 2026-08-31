@@ -1,0 +1,5 @@
+"polarity","eligible","score","no_match","status"
+"absolute","abs(G) greater than tolerance","abs(G)","all finite values effectively zero gives FLAT_PROFILE","PASS"
+"positive","G greater than tolerance","G","NO_MATCHING_POLARITY","PASS"
+"negative","G less than negative tolerance","-G","NO_MATCHING_POLARITY","PASS"
+"all","ties within scale-aware tolerance","no storage-order tie breaker","AMBIGUOUS_TIE","PASS"

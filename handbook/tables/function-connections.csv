@@ -25,6 +25,7 @@
 "cube_polygon_weights","cube_cell_area","spatind","Compute sparse polygon-cell intersection weights."
 "cube_slice","ocean_cube","cube_extract","Select discrete coordinates or indices."
 "cube_transect","cube_crop","analysis","Extract ordered paired spatial locations."
+"depth_feature","depth_gradient/cube_slice/cube_crop","future transition diagnostics","Rank one generic strongest-gradient candidate without variable-name interpretation."
 "depth_gradient","read_nc/cube_open/depth_sample/layer_mean","analysis","Compute signed point or cell-mean secants with explicit spacing and gap evidence."
 "depth_sample","read_nc/cube_open","analysis","Sample certified cell means or linearly interpolate certified point values at physical depths."
 "download_nc","cm_connect","read_nc","Download a Copernicus product through the configured client."

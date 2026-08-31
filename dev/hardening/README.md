@@ -538,3 +538,17 @@ spacing and explicit support-gap state, while no gap is filled. Gradient
 midpoints have symbolic per-metre units and no physical layer bounds. No C4
 finding was opened; B7-001 remains PARTIALLY-CLOSED, Gate B remains SATISFIED,
 and 0.3.0-C remains IN PROGRESS.
+
+## C5 certified vertical feature detection
+
+C5 approves and implements DEC-034 with the sole new export
+`depth_feature()`. It consumes the current C4 gradient descriptor and payload
+without recalculating gradients or reading NetCDF. Absolute, positive and
+negative polarity are explicit. Local ranking includes contiguous and point
+brackets but excludes gapped secants; `support = "all"` may return only a
+truthfully labelled gapped candidate. Scale-aware ties remain ambiguous,
+effective-zero absolute profiles remain flat, and incomplete profiles may
+return only an observed candidate. The table retains C4 midpoint, canonical
+depth, source pair, spacing, gap and signed units; spacing/2 is a localization
+scale, not uncertainty. No C5 finding was opened; B7-001 remains
+PARTIALLY-CLOSED, Gate B remains SATISFIED, and 0.3.0-C remains IN PROGRESS.

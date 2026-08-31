@@ -1,0 +1,5 @@
+"case","n_support_eligible","n_finite_gradient","completeness","selected_gradient","certification","status"
+"one missing","3","2","0.666666666667","4","OBSERVED_CANDIDATE_INCOMPLETE_PROFILE","PASS"
+"all missing","3","0","0","NA","NO_CANDIDATE","PASS"
+"no local support","0","0","NA","NA","NO_CANDIDATE","PASS"
+"missing one horizontal profile","3","2","0.666666666667","profile-local","other profiles complete","PASS"

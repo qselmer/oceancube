@@ -1,0 +1,5 @@
+"case","gradient","polarity","n_tied","selected_depth","status"
+"positive tie","1;5;5;2","positive","2","NA","PASS"
+"absolute signed tie","1;-5;5;2","absolute","2","NA","PASS"
+"negative tie","-4;-1;-4","negative","2","NA","PASS"
+"within-tolerance tie","5;5.00000001;1","positive","2","NA","PASS"

@@ -1,0 +1,7 @@
+"case","gradient","polarity","selected_gradient","feature_depth_m","status"
+"absolute","1;-5;3","absolute","-5","15","PASS"
+"positive","1;4;-7;2","positive","4","15","PASS"
+"negative","1;4;-7;2","negative","-7","25","PASS"
+"flat","0;0;0","absolute","NA","NA","PASS"
+"effective zero","1e-9;0;-1e-9","absolute","NA","NA","PASS"
+"single gradient","-2","negative","-2","5","PASS"

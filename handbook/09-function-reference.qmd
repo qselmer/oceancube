@@ -1,8 +1,9 @@
 # Public function reference
 
-The 42 cards below comprise the frozen 38-export 0.2.0 API plus the approved
+The 43 cards below comprise the frozen 38-export 0.2.0 API plus the approved
 development exports `cube_open()`, `layer_integral()`, `depth_sample()`, and
-`depth_gradient()`. Canonical engines are listed before compatibility helpers.
+`depth_gradient()`, and `depth_feature()`. Canonical engines are listed before
+compatibility helpers.
 
 ## Connection and download
 
@@ -66,6 +67,7 @@ development exports `cube_open()`, `layer_integral()`, `depth_sample()`, and
 
 ## Summaries, events, and stock utilities
 
+- [`depth_feature()`](functions/depth_feature.qmd)
 - [`depth_gradient()`](functions/depth_gradient.qmd)
 - [`depth_sample()`](functions/depth_sample.qmd)
 - [`annual_index()`](functions/annual_index.qmd)

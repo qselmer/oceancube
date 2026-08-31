@@ -3,6 +3,11 @@
 ## Development
 
 - Opened the development cycle toward oceancube 0.3.0.
+- Adds `depth_feature()` for conservative strongest-gradient candidate
+  detection on certified `depth_gradient()` outputs. Absolute, positive, and
+  negative polarity are explicit; local support excludes gapped secants, ties
+  remain ambiguous, and incomplete profiles cannot claim a guaranteed global
+  maximum.
 - Adds `depth_gradient()` for signed adjacent-level vertical secants with
   respect to canonical positive-down depth in metres. Point and certified
   cell-mean semantics remain distinct; midpoint outputs have no layer bounds,

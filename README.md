@@ -87,6 +87,13 @@ cell-mean inputs remain semantically distinct, irregular spacing is honored,
 and support gaps are diagnosed without interpolation. Gradient outputs carry
 symbolic per-metre units and no physical layer bounds.
 
+`depth_feature()` reduces a certified gradient cube to one conservative
+strongest-gradient candidate or diagnostic status per horizontal profile,
+time, and variable. Polarity is explicit; the default local policy excludes
+gapped secants, ties remain ambiguous, and missing gradients reduce profile
+completeness. The result is a data frame of generic candidates, not automatic
+thermocline, oxycline, halocline, mixed-layer, or density interpretations.
+
 ## Minimal example
 
 ``` r
@@ -150,9 +157,9 @@ boundary](https://qselmer.github.io/oceancube/handbook/11-spatind-boundary.html)
 
 The navigable [OceanCube
 Handbook](https://qselmer.github.io/oceancube/handbook/) explains the
-five-dimensional contract, backends, the current 42-export development API
+five-dimensional contract, backends, the current 43-export development API
 (the frozen 38-export release plus `cube_open()`, `layer_integral()`,
-`depth_sample()`, and `depth_gradient()`), checked
+`depth_sample()`, `depth_gradient()`, and `depth_feature()`), checked
 workflows, the `spatind` boundary, troubleshooting, and the project’s
 Git release policy. Its executable sources live in
 [`handbook/`](handbook/).

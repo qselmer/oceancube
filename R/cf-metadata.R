@@ -1461,12 +1461,18 @@
   out$support_relation <- out$support_relation[depth_index]
   out$support_gap_m <- out$support_gap_m[depth_index]
   variable_names <- as.character(variables)
-  variable_basenames <- vapply(variable_names, .cf_basename, character(1L))
-  keep <- vapply(out$variables, function(item) {
-    item$variable %in% variable_names ||
-      .cf_basename(item$variable) %in% variable_basenames
-  }, logical(1L))
-  out$variables <- out$variables[keep]
+  out$variables <- lapply(variable_names, function(variable) {
+    keep <- vapply(out$variables, function(item) {
+      identical(item$variable, variable) ||
+        identical(.cf_basename(item$variable), .cf_basename(variable))
+    }, logical(1L))
+    if (sum(keep) != 1L) {
+      .cf_metadata_abort(
+        "Vertical-gradient variables do not align with the current selection."
+      )
+    }
+    out$variables[[which(keep)]]
+  })
   methods <- unique(vapply(
     out$variables, `[[`, character(1L), "resolved_method"
   ))

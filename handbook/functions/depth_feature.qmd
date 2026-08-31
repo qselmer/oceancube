@@ -1,0 +1,45 @@
+# `depth_feature()`
+
+**Category:** Vertical feature detection
+
+**Status:** experimental development API; DEC-034 certified subset
+
+## Purpose
+
+Reduce a current certified `depth_gradient()` cube to one strongest generic
+gradient candidate or conservative diagnostic status per longitude, latitude,
+time, and variable.
+
+## Real signature
+
+```r
+depth_feature(
+  x,
+  polarity = c("absolute", "positive", "negative"),
+  support = c("local", "all")
+)
+```
+
+## Scientific contract
+
+`absolute` ranks gradient magnitude while retaining the signed value;
+`positive` and `negative` rank only gradients beyond a scale-aware zero
+tolerance. Tied maxima remain ambiguous. Missing eligible gradients reduce
+profile completeness, so a result from an incomplete profile is only the
+strongest observed candidate.
+
+The default `local` policy admits `CONTIGUOUS_SUPPORT` and
+`POINT_SUPPORT_UNBOUNDED` but excludes `GAPPED_SUPPORT`. `support = "all"` may
+rank a gapped C4 secant only as `GAPPED_SECANT_CANDIDATE`. No gap is filled.
+
+Feature depth is the C4 midpoint; `feature_depth_m` is canonical positive-down
+metres. `localization_half_span_m` is `spacing_m / 2`, a resolution scale and
+not statistical uncertainty. C5 does not infer thermocline, oxycline,
+halocline, mixed-layer depth, thresholds, smoothing, prominence, width, or
+curvature.
+
+The output is a base data frame with longitude fastest, followed by latitude,
+time, and variable. C5 reads no NetCDF scientific payload from a C4 memory
+gradient result.
+
+Related functions: `depth_gradient()`, `cube_slice()`, `cube_crop()`.

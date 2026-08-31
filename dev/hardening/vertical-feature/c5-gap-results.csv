@@ -1,0 +1,6 @@
+"case","gradient","policy","selected_gradient","support_relation","support_gap_m","status"
+"mixed support","2;10;3","local","3","CONTIGUOUS_SUPPORT","0","PASS"
+"mixed support","2;10;3","all","10","GAPPED_SUPPORT","5","PASS"
+"only gapped","2;10;3","local","NA","NA","NA","PASS"
+"point bracket","1;5;3","local","5","POINT_SUPPORT_UNBOUNDED","NA","PASS"
+"gap filling","not applicable","all","rank existing secant only","GAPPED_SUPPORT","preserved","PASS"
