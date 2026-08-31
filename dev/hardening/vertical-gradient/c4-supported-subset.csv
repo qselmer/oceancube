@@ -1,0 +1,7 @@
+"dimension","supported","policy","status"
+"coordinate","DEPTH_LENGTH m/km positive-down runtime; positive-up only if B7 certifies it","canonical metres positive down","PASS"
+"point values","original CF point or C3 interpolated point","adjacent point secant","PASS"
+"cell means","original CF cell mean or certified C1 layer mean with valid bounds","adjacent representative-cell-mean secant","PASS"
+"storage","increasing or decreasing strictly monotonic","preserve pair order","PASS"
+"spacing","uniform or irregular","actual signed canonical delta and absolute spacing_m","PASS"
+"excluded","surface pressure height dimensionless parametric manual unresolved integral gradient output","deterministic rejection","PASS"

@@ -866,6 +866,12 @@
       linear = "oceancube:vertical_linear_point_interpolation",
       "oceancube:vertical_mixed_depth_sampling"
     ),
+    depth_gradient = switch(
+      record$resolved_method %||% "mixed",
+      point = "oceancube:adjacent_point_secant_gradient",
+      cell = "oceancube:adjacent_cell_mean_secant_gradient",
+      "oceancube:mixed_adjacent_vertical_secant_gradient"
+    ),
     crop_stock = "oceancube:stock_mask",
     NULL
   )

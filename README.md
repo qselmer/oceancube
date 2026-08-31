@@ -80,6 +80,13 @@ cell, while CF point values may use local two-point linear interpolation.
 Explicit gaps, shared interior cell boundaries and extrapolation are rejected.
 The result has requested point-depth coordinates but no certified layer bounds.
 
+`depth_gradient()` provides the first certified derivative primitive. It
+computes signed adjacent-level secants with respect to physical ocean depth in
+metres, positive downward, and locates them at source-unit midpoints. Point and
+cell-mean inputs remain semantically distinct, irregular spacing is honored,
+and support gaps are diagnosed without interpolation. Gradient outputs carry
+symbolic per-metre units and no physical layer bounds.
+
 ## Minimal example
 
 ``` r
@@ -143,9 +150,9 @@ boundary](https://qselmer.github.io/oceancube/handbook/11-spatind-boundary.html)
 
 The navigable [OceanCube
 Handbook](https://qselmer.github.io/oceancube/handbook/) explains the
-five-dimensional contract, backends, the current 41-export development API
-(the frozen 38-export release plus `cube_open()`, `layer_integral()`, and
-`depth_sample()`), checked
+five-dimensional contract, backends, the current 42-export development API
+(the frozen 38-export release plus `cube_open()`, `layer_integral()`,
+`depth_sample()`, and `depth_gradient()`), checked
 workflows, the `spatind` boundary, troubleshooting, and the project’s
 Git release policy. Its executable sources live in
 [`handbook/`](handbook/).

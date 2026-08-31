@@ -1,0 +1,40 @@
+# `depth_gradient()`
+
+**Category:** Vertical derivatives
+
+**Status:** experimental development API; DEC-033 certified subset
+
+## Purpose
+
+Compute a signed, transparent adjacent-level secant for every supported
+vertical profile variable.
+
+## Real signature
+
+```r
+depth_gradient(x, method = c("auto", "point", "cell"))
+```
+
+## Scientific contract
+
+For adjacent values, the result is `(X[i+1] - X[i]) / (D[i+1] - D[i])`, where
+`D` is physical ocean depth in metres, positive downward. Output coordinates
+are source-unit midpoints. Irregular spacing and increasing/decreasing storage
+are supported without changing the scientific sign.
+
+`auto` resolves original or C3-derived point values to point secants and
+certified source/C1 cell means to cell-mean secants. C3 cell reconstructions,
+C2 metric integrals, unsupported value classes, and a second derivative are
+rejected. Explicit support gaps may be spanned by a finite secant but are never
+filled; relation, spacing and gap size remain recorded.
+
+## Output safety
+
+Variable units become symbolic per-metre units. The memory result contains
+`n - 1` midpoint depths and no physical layer bounds, preventing automatic use
+by thickness, volume, or vertical-integration functions. C4 does not implement
+feature detection, smoothing, higher-order stencils, density, or coordinate
+conversion.
+
+Related functions: `depth_sample()`, `layer_mean()`, `layer_integral()`,
+`cube_layer_thickness()`.

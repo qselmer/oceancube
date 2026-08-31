@@ -525,3 +525,16 @@ no physical layer bounds, so thickness, volume, integration and even bounded
 layer means cannot falsely certify them. No C3-specific residual finding was
 opened; B7-001 remains PARTIALLY-CLOSED, Gate B remains SATISFIED for DEC-029,
 and 0.3.0-C remains IN PROGRESS.
+
+## C4 certified vertical gradient primitives
+
+C4 approves and implements DEC-033 with the sole new export
+`depth_gradient()`. A single internal metric-depth resolver converts B7 depth
+coordinates to metres positive downward before signed adjacent-pair secants.
+Original/C3-derived point values and original/C1-derived cell means remain
+distinct; C3 cell reconstructions, C2 integrals, unsupported semantic classes
+and second derivatives are rejected. Every pair records representative
+spacing and explicit support-gap state, while no gap is filled. Gradient
+midpoints have symbolic per-metre units and no physical layer bounds. No C4
+finding was opened; B7-001 remains PARTIALLY-CLOSED, Gate B remains SATISFIED,
+and 0.3.0-C remains IN PROGRESS.

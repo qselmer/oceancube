@@ -1,0 +1,8 @@
+"item","observed","expected","status"
+"classification","t_an and s_an CELL_MEAN_SECANT_GRADIENT","adjacent standard-level cell-mean secants","PASS"
+"output midpoint m","5;15;35;75;150","pair midpoints","PASS"
+"spacing_m","10;10;30;50;100","actual representative spacing","PASS"
+"support_relation","GAPPED_SUPPORT x5","no continuous derivative claim","PASS"
+"support_gap_m","5;5;25;45;75","explicit CF bounds separation","PASS"
+"manual t_an first finite","-0.01224995","(X_10m-X_0m)/10m","PASS"
+"deferred read","one indexed read of levels 1:6","all scientifically required levels once","PASS"

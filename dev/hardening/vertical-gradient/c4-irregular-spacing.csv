@@ -1,0 +1,3 @@
+"source_depth_m","source_value","spacing_m","expected_gradient","observed","status"
+"0;5;20;70","7;22;67;217","5;15;50","3;3;3","3;3;3","PASS"
+"2.5;12.5;35","6;26;71","10;22.5","2;2","2;2","PASS"

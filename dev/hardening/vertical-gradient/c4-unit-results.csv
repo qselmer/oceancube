@@ -1,0 +1,6 @@
+"source_unit","depth_unit","derived_unit","unit_status","numeric_parity","status"
+"K","m","K m-1","SYMBOLIC_UNNORMALIZED","baseline","PASS"
+"K","km","K m-1","SYMBOLIC_UNNORMALIZED","identical to metre encoding","PASS"
+"1","m","m-1","SYMBOLIC_DIMENSIONLESS_PER_METRE","not applicable","PASS"
+"furlong","m","furlong m-1","SYMBOLIC_UNNORMALIZED","not applicable","PASS"
+"missing","m","none","rejected","not applicable","PASS"

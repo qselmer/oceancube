@@ -25,6 +25,7 @@
 "cube_polygon_weights","Grid geometry","experimental","ocean_cube + polygon","data.frame","true","true","false","false","true"
 "cube_slice","Selection and extraction","stable","ocean_cube","ocean_cube","true","true","true","true","false"
 "cube_transect","Selection and extraction","experimental","ocean_cube + path","data.frame","true","true","true","false","true"
+"depth_gradient","Vertical derivatives","experimental","ocean_cube","ocean_cube","true","true","true","true","false"
 "depth_sample","Vertical sampling","experimental","ocean_cube","ocean_cube","true","true","true","true","false"
 "download_nc","Connection and acquisition","stable","request","file(s)","false","false","false","false","false"
 "layer_mean","Vertical summary","stable","ocean_cube","ocean_cube","true","true","true","true","false"

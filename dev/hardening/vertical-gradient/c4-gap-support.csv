@@ -1,0 +1,6 @@
+"case","support_relation","spacing_m","support_gap_m","values_created_in_gap","status"
+"contiguous cells","CONTIGUOUS_SUPPORT;CONTIGUOUS_SUPPORT","10;10","0;0","FALSE","PASS"
+"gapped cells","GAPPED_SUPPORT;GAPPED_SUPPORT","10;22.5","5;15","FALSE","PASS"
+"points without bounds","POINT_SUPPORT_UNBOUNDED;POINT_SUPPORT_UNBOUNDED","10;10","NA;NA","FALSE","PASS"
+"WOA monthly","GAPPED_SUPPORT x5","10;10;30;50;100","5;5;25;45;75","FALSE","PASS"
+"overlapping bounds","rejected","not applicable","not applicable","FALSE","PASS"

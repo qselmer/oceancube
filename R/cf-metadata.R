@@ -1094,6 +1094,9 @@
     if (!is.null(cf$current$vertical_sampling)) {
       .cf_vertical_sampling_validate(cf$current$vertical_sampling)
     }
+    if (!is.null(cf$current$vertical_gradient)) {
+      .cf_vertical_gradient_validate(cf$current$vertical_gradient)
+    }
   }
   tryCatch(
     serialize(cf, connection = NULL),
@@ -1181,6 +1184,14 @@
         variables
       )
   }
+  if (!is.null(out$cf$current$vertical_gradient)) {
+    out$cf$current$vertical_gradient <-
+      .cf_vertical_gradient_for_selection(
+        out$cf$current$vertical_gradient,
+        index$depth,
+        variables
+      )
+  }
   out <- .cf_mark_current_interpretation(
     out,
     if (identical(metadata$cf$current$semantic_status, "DERIVATION_PENDING")) {
@@ -1210,6 +1221,7 @@
   }
   out$cf$current$vertical_reduction <- NULL
   out$cf$current$vertical_sampling <- NULL
+  out$cf$current$vertical_gradient <- NULL
   out <- .cf_mark_current_interpretation(out, "DERIVATION_PENDING")
   .cf_metadata_validate(out)
   out
@@ -1393,6 +1405,87 @@
     )
   }
   out$cf$current$vertical_sampling <- descriptor
+  .cf_metadata_validate(out)
+  out
+}
+
+.cf_vertical_gradient_validate <- function(x) {
+  required <- c(
+    "schema_name", "schema_version", "derivative_coordinate",
+    "derivative_coordinate_unit", "derivative_positive_direction",
+    "method_requested", "resolved_method", "variables", "source_depths",
+    "canonical_metric_depths_m", "output_depths", "source_pair_indices",
+    "spacing_m", "support_relation", "support_gap_m", "gradient_equation",
+    "missing_value_policy", "output_bounds_status", "output_geometry_status",
+    "standard_name_status", "cell_methods_status", "certification_status"
+  )
+  n <- length(x$output_depths)
+  if (!is.list(x) || length(setdiff(required, names(x))) ||
+      !identical(x$schema_name, "oceancube_vertical_gradient") ||
+      !identical(x$schema_version, "1.0.0") ||
+      !identical(x$derivative_coordinate_unit, "m") ||
+      !identical(x$derivative_positive_direction, "down") ||
+      !x$method_requested %in% c("auto", "point", "cell") ||
+      !x$resolved_method %in% c("point", "cell", "mixed") ||
+      !is.list(x$variables) || !length(x$variables) ||
+      !is.numeric(x$output_depths) || !length(x$output_depths) ||
+      length(x$spacing_m) != n || length(x$support_relation) != n ||
+      length(x$support_gap_m) != n || length(x$source_pair_indices) != n ||
+      any(!x$support_relation %in% c(
+        "CONTIGUOUS_SUPPORT", "GAPPED_SUPPORT", "POINT_SUPPORT_UNBOUNDED"
+      )) ||
+      !identical(x$output_bounds_status, "BOUNDS_NOT_APPLICABLE") ||
+      !identical(x$output_geometry_status, "GEOMETRY_NO_BOUNDS") ||
+      !identical(x$certification_status, "CERTIFIED") ||
+      any(vapply(x$variables, function(item) {
+        !is.list(item) || !all(c(
+          "variable", "input_value_semantics", "semantic_source",
+          "resolved_method", "output_value_semantics", "source_unit",
+          "output_unit", "unit_status", "scientific_method_id",
+          "certification_status"
+        ) %in% names(item)) ||
+          !item$resolved_method %in% c("point", "cell") ||
+          !identical(item$certification_status, "CERTIFIED")
+      }, logical(1L)))) {
+    .cf_metadata_abort("Invalid current CF vertical-gradient descriptor.")
+  }
+  invisible(TRUE)
+}
+
+.cf_vertical_gradient_for_selection <- function(x, depth_index, variables) {
+  .cf_vertical_gradient_validate(x)
+  out <- x
+  out$output_depths <- out$output_depths[depth_index]
+  out$source_pair_indices <- out$source_pair_indices[depth_index]
+  out$spacing_m <- out$spacing_m[depth_index]
+  out$support_relation <- out$support_relation[depth_index]
+  out$support_gap_m <- out$support_gap_m[depth_index]
+  variable_names <- as.character(variables)
+  variable_basenames <- vapply(variable_names, .cf_basename, character(1L))
+  keep <- vapply(out$variables, function(item) {
+    item$variable %in% variable_names ||
+      .cf_basename(item$variable) %in% variable_basenames
+  }, logical(1L))
+  out$variables <- out$variables[keep]
+  methods <- unique(vapply(
+    out$variables, `[[`, character(1L), "resolved_method"
+  ))
+  out$resolved_method <- if (length(methods) == 1L) methods[[1L]] else "mixed"
+  .cf_vertical_gradient_validate(out)
+  out
+}
+
+.cf_metadata_for_vertical_gradient <- function(metadata, midpoints, descriptor) {
+  if (is.null(metadata)) return(NULL)
+  .cf_vertical_gradient_validate(descriptor)
+  out <- .cf_metadata_for_transform(metadata, "depth_gradient")
+  if (!is.null(metadata$cf$current$vertical)) {
+    out$cf$current$vertical <- .cf_vertical_for_gradient(
+      metadata$cf$current$vertical,
+      midpoints
+    )
+  }
+  out$cf$current$vertical_gradient <- descriptor
   .cf_metadata_validate(out)
   out
 }

@@ -3,6 +3,10 @@
 ## Development
 
 - Opened the development cycle toward oceancube 0.3.0.
+- Adds `depth_gradient()` for signed adjacent-level vertical secants with
+  respect to canonical positive-down depth in metres. Point and certified
+  cell-mean semantics remain distinct; midpoint outputs have no layer bounds,
+  and explicit support gaps are recorded rather than filled.
 - Adds `depth_sample()` for certified metric-depth reconstruction: exact
   source-cell sampling for CF cell means and local linear interpolation for CF
   point values. It rejects explicit gaps, ambiguous interior boundaries and

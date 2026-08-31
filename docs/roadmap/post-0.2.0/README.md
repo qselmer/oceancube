@@ -133,6 +133,14 @@ interior cell boundaries are ambiguous, and outputs have no physical layer
 bounds. Existing discrete selection is unchanged; Gate B remains bounded to
 DEC-029, B7-001 remains PARTIALLY-CLOSED, and 0.3.0-C remains IN PROGRESS.
 
+C4 implements DEC-033 and adds exactly one export, `depth_gradient(x, method)`.
+It defines signed adjacent-level secants against canonical physical ocean depth
+in metres, positive downward. Point values, certified cell means and supported
+derived values remain distinguishable; C3 cell reconstructions and C2
+integrals are rejected. Midpoint outputs have no physical bounds, and explicit
+support gaps are recorded without interpolation. Gate B remains SATISFIED,
+B7-001 remains PARTIALLY-CLOSED, and 0.3.0-C remains IN PROGRESS.
+
 ## Change control
 
 Future roadmap changes should update the provenance matrix first, reference an

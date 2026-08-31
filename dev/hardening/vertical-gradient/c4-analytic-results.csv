@@ -1,0 +1,5 @@
+"case","source_depth_m","source_value","output_depth_source_unit","expected_gradient_per_m","observed","status"
+"linear point","0;10;20","1;21;41","5;15","2;2","2;2","PASS"
+"nonlinear point z^2","0;10;20","0;100;400","5;15","10;30","10;30","PASS"
+"linear cell mean","5;15;25","11;31;51","10;20","2;2","2;2","PASS"
+"gapped cell centres","2.5;12.5;35","5;25;70","7.5;23.75","2;2","2;2","PASS"

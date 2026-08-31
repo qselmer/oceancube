@@ -1,0 +1,7 @@
+"producer","current_semantics","depth_gradient_behavior","status"
+"depth_sample linear","INTERPOLATED_POINT_VALUE","derived point secants certified","PASS"
+"depth_sample cell","SAMPLED_CELL_MEAN_RECONSTRUCTION","deterministic rejection","PASS"
+"depth_sample mixed","contains unsupported cell reconstruction","whole operation rejected","PASS"
+"layer_mean certified","CERTIFIED overlap_weighted_mean","derived cell-mean secants certified","PASS"
+"layer_integral","metric_cell_mean_integral","deterministic rejection","PASS"
+"depth_gradient","VERTICAL_SECANT_GRADIENT","second derivative rejected","PASS"
