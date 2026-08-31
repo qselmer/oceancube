@@ -1,0 +1,3 @@
+"variable","source_path","standard_name","raw_units","cell_methods","vertical_type","recognized_family","unit_status","status"
+"t_an","t_an","sea_water_temperature","degrees_celsius","area: mean depth: mean time: mean within years time: mean over years","DEPTH_LENGTH; meters; positive down","temperature","RECOGNIZED_COMPATIBLE","PASS"
+"s_an","s_an","sea_water_practical_salinity","1","area: mean depth: mean time: mean within years time: mean over years","DEPTH_LENGTH; meters; positive down","salinity","RECOGNIZED_COMPATIBLE","PASS"

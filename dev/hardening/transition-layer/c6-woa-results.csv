@@ -1,0 +1,5 @@
+"diagnostic","support","rows","resolved_complete","resolved_incomplete","no_candidate","representative_depth_m","representative_gradient","representative_spacing_m","representative_gap_m","status"
+"thermocline","local",108,0,0,108,NA,NA,NA,NA,"PASS"
+"thermocline","all",108,75,4,29,35,-0.0695833206176758,30,25,"PASS"
+"halocline","local",108,0,0,108,NA,NA,NA,NA,"PASS"
+"halocline","all",108,75,4,29,150,-0.00434097290039063,100,75,"PASS"

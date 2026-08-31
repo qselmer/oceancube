@@ -873,6 +873,11 @@
       "oceancube:mixed_adjacent_vertical_secant_gradient"
     ),
     depth_feature = "oceancube:strongest_vertical_gradient_candidate",
+    transition_layer = paste0(
+      "oceancube:variable_aware_",
+      record$diagnostic %||% "transition",
+      "_gradient_candidate"
+    ),
     crop_stock = "oceancube:stock_mask",
     NULL
   )

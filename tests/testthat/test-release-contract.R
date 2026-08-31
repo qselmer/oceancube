@@ -42,6 +42,7 @@ test_that("the public API surface includes the approved 0.2 additions", {
     depth_sample = c("x", "depth", "method"),
     depth_gradient = c("x", "method"),
     depth_feature = c("x", "polarity", "support"),
+    transition_layer = c("x", "diagnostic", "variable", "support"),
     link_events = c("x", "events", "lon_col", "lat_col", "date_col",
                     "depth_col", "vars", "prefix", "time_tolerance",
                     "keep_grid"),

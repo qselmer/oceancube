@@ -3,6 +3,12 @@
 ## Development
 
 - Opened the development cycle toward oceancube 0.3.0.
+- Adds `transition_layer()` as the bounded variable-aware interpretation layer
+  above `depth_gradient()` and `depth_feature()`. Preserved source CF
+  `standard_name` and compatible units authorize unthresholded thermocline
+  (negative temperature-gradient) and halocline (absolute salinity-gradient)
+  candidates; gaps, ties, incompleteness, sign, basis, provenance, and QA
+  remain explicit.
 - Adds `depth_feature()` for conservative strongest-gradient candidate
   detection on certified `depth_gradient()` outputs. Absolute, positive, and
   negative polarity are explicit; local support excludes gapped secants, ties

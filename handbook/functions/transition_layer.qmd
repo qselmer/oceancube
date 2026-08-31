@@ -1,0 +1,51 @@
+# `transition_layer()`
+
+**Category:** Variable-aware vertical diagnostics
+
+**Status:** experimental development API; DEC-035 certified subset
+
+## Purpose
+
+Interpret one conservative C5 feature per horizontal profile and time as an
+unthresholded thermocline-gradient or halocline-gradient candidate, using
+preserved source CF identity rather than variable-name heuristics.
+
+## Real signature
+
+```r
+transition_layer(
+  x,
+  diagnostic,
+  variable = NULL,
+  support = c("local", "all")
+)
+```
+
+## Scientific contract
+
+The required `diagnostic` is either `"thermocline"` or `"halocline"`.
+Thermocline uses the strongest eligible negative gradient for
+`sea_water_temperature`, potential temperature, or conservative temperature.
+Halocline uses the strongest eligible absolute gradient for the bounded CF
+salinity set. Exact preserved source `standard_name` plus compatible units are
+mandatory; variable names and `long_name` never establish eligibility.
+
+A direct source profile is selected to one variable, passed through
+`depth_gradient(method = "auto")`, then through `depth_feature()` with the
+diagnostic polarity. A certified C4 gradient originating directly from source
+semantics skips the gradient calculation. C1, C2, C3, and gradients derived
+from C1/C3 are excluded from the initial subset.
+
+The default local support excludes explicit gaps. `support = "all"` may
+return only a truthfully labelled gapped candidate. Ties, missingness,
+completeness, signed gradient, quantity basis, bracket, spacing, support gap,
+and C5 certification remain visible. No physical-strength threshold is
+applied. `localization_half_span_m` is a vertical-resolution scale, not
+statistical uncertainty.
+
+Oxycline is deferred because gradient polarity alone cannot establish the
+upper or lower branch around an oxygen minimum or OMZ core. MLD, pycnocline,
+density, smoothing, peak prominence, width, curvature, and secondary features
+are also outside C6.
+
+Related functions: `depth_gradient()`, `depth_feature()`, `cube_slice()`.

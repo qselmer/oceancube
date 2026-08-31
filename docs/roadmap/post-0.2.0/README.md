@@ -152,6 +152,16 @@ not interpret candidates as thermoclines, oxyclines, haloclines or MLD. Gate B
 remains SATISFIED, B7-001 remains PARTIALLY-CLOSED, and 0.3.0-C remains IN
 PROGRESS.
 
+C6 implements DEC-035 and adds exactly one export,
+`transition_layer(x, diagnostic, variable, support)`. It resolves physical
+quantity only from preserved source CF `standard_name` plus bounded compatible
+units, then composes C4 and C5 rather than duplicating their numerics. The
+certified subset includes unthresholded thermocline-gradient and
+halocline-gradient candidates with explicit basis, sign, gaps, ties and
+completeness. Oxycline remains deferred until an OMZ-core and profile-branch
+contract exists. Gate B remains SATISFIED, B7-001 remains PARTIALLY-CLOSED,
+and 0.3.0-C remains IN PROGRESS.
+
 ## Change control
 
 Future roadmap changes should update the provenance matrix first, reference an

@@ -1,0 +1,7 @@
+"input","direct","gradient_then_c6","reason","status"
+"source profile","supported","supported","original source/current CF semantics","PASS"
+"C1 layer_mean","rejected","rejected","vertical averaging may change feature position or magnitude","PASS"
+"C2 layer_integral","rejected","not a supported C4 gradient input","integrated values are not source profiles","PASS"
+"C3 depth_sample linear","rejected","rejected","interpolation may change feature position or magnitude","PASS"
+"C3 cell reconstruction","rejected","not a supported C4 gradient input","piecewise reconstruction is outside C6","PASS"
+"C5 data.frame","rejected","not applicable","not an ocean_cube","PASS"

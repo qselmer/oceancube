@@ -94,6 +94,15 @@ gapped secants, ties remain ambiguous, and missing gradients reduce profile
 completeness. The result is a data frame of generic candidates, not automatic
 thermocline, oxycline, halocline, mixed-layer, or density interpretations.
 
+`transition_layer()` adds the first bounded variable-aware interpretation.
+It uses preserved source CF `standard_name` and compatible declared units—not
+variable names—to identify temperature or salinity, then composes the existing
+gradient and feature engines. C6 reports unthresholded thermocline-gradient or
+halocline-gradient candidates while retaining gaps, ties, incomplete profiles,
+quantity basis, sign, provenance, and resolution limits. Oxycline, MLD,
+pycnocline, density, smoothing, and physical-strength thresholds remain
+outside this contract.
+
 ## Minimal example
 
 ``` r
@@ -157,9 +166,10 @@ boundary](https://qselmer.github.io/oceancube/handbook/11-spatind-boundary.html)
 
 The navigable [OceanCube
 Handbook](https://qselmer.github.io/oceancube/handbook/) explains the
-five-dimensional contract, backends, the current 43-export development API
+five-dimensional contract, backends, the current 44-export development API
 (the frozen 38-export release plus `cube_open()`, `layer_integral()`,
-`depth_sample()`, `depth_gradient()`, and `depth_feature()`), checked
+`depth_sample()`, `depth_gradient()`, `depth_feature()`, and
+`transition_layer()`), checked
 workflows, the `spatind` boundary, troubleshooting, and the project’s
 Git release policy. Its executable sources live in
 [`handbook/`](handbook/).

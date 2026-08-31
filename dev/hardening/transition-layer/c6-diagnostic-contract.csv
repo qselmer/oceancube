@@ -1,0 +1,5 @@
+"diagnostic","semantic_family","c5_polarity","definition_id","threshold_applied","interpretation","status"
+"thermocline","temperature","negative","THERMOCLINE_MAX_NEGATIVE_TEMPERATURE_GRADIENT",FALSE,"unthresholded gradient candidate","PASS"
+"halocline","salinity","absolute","HALOCLINE_MAX_ABSOLUTE_SALINITY_GRADIENT",FALSE,"unthresholded gradient candidate","PASS"
+"upper_oxycline","oxygen","not implemented","deferred",FALSE,"requires oxygen minimum/OMZ branch context","PASS"
+"lower_oxycline","oxygen","not implemented","deferred",FALSE,"requires oxygen minimum/OMZ branch context","PASS"

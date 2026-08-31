@@ -552,3 +552,18 @@ return only an observed candidate. The table retains C4 midpoint, canonical
 depth, source pair, spacing, gap and signed units; spacing/2 is a localization
 scale, not uncertainty. No C5 finding was opened; B7-001 remains
 PARTIALLY-CLOSED, Gate B remains SATISFIED, and 0.3.0-C remains IN PROGRESS.
+
+## C6 variable-aware transition-layer diagnostics
+
+C6 approves and implements DEC-035 with the sole new export
+`transition_layer()`. Exact preserved source CF `standard_name`, followed by a
+bounded compatible-unit check, establishes temperature or salinity identity;
+variable names and `long_name` never do. A thermocline candidate is the
+strongest eligible negative temperature gradient, while a halocline candidate
+is the strongest eligible absolute salinity gradient. Both compose C4/C5,
+remain unthresholded candidates, and retain basis, sign, support gaps, ties,
+incompleteness and resolution limits. Direct C1/C2/C3 products and gradients
+derived from C1/C3 remain excluded. Oxycline is deferred to C7 because gradient
+sign alone cannot establish the upper or lower branch around an oxygen minimum.
+Gate B remains SATISFIED, B7-001 remains PARTIALLY-CLOSED, and 0.3.0-C remains
+IN PROGRESS.

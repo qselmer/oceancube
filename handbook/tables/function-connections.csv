@@ -37,6 +37,7 @@
 "signal_noise","clim_day/clim_month via canonical cube_anomaly z","cube_trend/analysis","Apply identity or abs transformation to one canonical standardized-anomaly calculation."
 "stock_mask","geometry","crop_stock","Create a legacy stock mask."
 "to_month","ocean_cube","clim_month","Compatibility wrapper for monthly temporal aggregation."
+"transition_layer","read_nc/cube_open/depth_gradient","analysis","Interpret unthresholded thermocline or halocline gradient candidates from preserved source CF identity."
 "viz.map","cube_slice/cube_crop/cube_aggregate_time/cube_anomaly/cube_trend","presentation","Visualize one horizontal layer, including singleton-time trend output."
 "viz.section","cube_slice/cube_crop","presentation","Visualize one stored vertical plane."
 "viz.profile","cube_extract/cube_crop","presentation","Visualize one stored depth profile."

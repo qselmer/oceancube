@@ -1,0 +1,6 @@
+"family","accepted_raw_or_pattern","unit_family","conversion","status"
+"temperature","K;kelvin;degree_Celsius;degrees_Celsius;degree_C;degrees_C;degrees_celsius","TEMPERATURE_K_OR_C_INTERVAL","none;offset cancels in differencing","PASS"
+"generic/practical/cox/knudsen salinity","1;1e-3;1e-03;0.001","DIMENSIONLESS_SALINITY_SCALE","none","PASS"
+"absolute/reference salinity","g kg-1;g kg^-1;g kg**-1;g/kg","SALINITY_MASS_FRACTION_G_PER_KG","none","PASS"
+"temperature invalid control","mol m-3","incompatible","rejected","PASS"
+"absolute salinity invalid control","1","incompatible","rejected","PASS"

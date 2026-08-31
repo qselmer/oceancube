@@ -1,0 +1,5 @@
+"input","diagnostic","backend","payload_reads","variables_read","levels_read","status"
+"governed WOA deferred","thermocline","netcdf",1,"t_an",6,"PASS"
+"governed WOA deferred","halocline","netcdf",1,"s_an",6,"PASS"
+"governed WOA eager","thermocline","memory",0,"none",0,"PASS"
+"certified C4 gradient","thermocline","memory",0,"none",0,"PASS"

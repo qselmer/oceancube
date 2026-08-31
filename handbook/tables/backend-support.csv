@@ -37,6 +37,7 @@
 "signal_noise",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Compute abs(z), or signed z, through one bounded canonical z-anomaly calculation; output is a memory cube."
 "stock_mask",TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,"Create a legacy stock mask."
 "to_month",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Supported reducers delegate to selective temporal aggregation; deprecated custom functions may read the full cube."
+"transition_layer",TRUE,TRUE,FALSE,TRUE,FALSE,TRUE,"Read only the selected source variable once or consume a certified memory gradient with zero NetCDF payload reads."
 "viz.map",TRUE,TRUE,FALSE,TRUE,FALSE,FALSE,"Read only one selected horizontal layer and return a ggplot object."
 "viz.section",TRUE,TRUE,FALSE,TRUE,FALSE,FALSE,"Read only one selected vertical plane and return a ggplot object."
 "viz.profile",TRUE,TRUE,FALSE,TRUE,FALSE,FALSE,"Read only one selected vertical profile and return a ggplot object."

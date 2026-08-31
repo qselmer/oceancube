@@ -1,0 +1,6 @@
+"case","basis","unit","feature_depth_m","gradient_direction","diagnostic_strength","status"
+"positive practical salinity","PRACTICAL_SALINITY","1",15,"INCREASING_WITH_DEPTH",0.1,"PASS"
+"negative practical salinity","PRACTICAL_SALINITY","1",15,"DECREASING_WITH_DEPTH",0.1,"PASS"
+"absolute salinity","ABSOLUTE_SALINITY","g kg-1",15,"INCREASING_WITH_DEPTH",0.1,"PASS"
+"reference salinity","REFERENCE_SALINITY","g/kg",15,"INCREASING_WITH_DEPTH",0.1,"PASS"
+"equal absolute maxima","PRACTICAL_SALINITY","1",NA,NA,NA,"PASS"
