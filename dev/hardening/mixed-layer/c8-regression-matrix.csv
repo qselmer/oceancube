@@ -1,0 +1,9 @@
+surface,expected,result,status
+existing 45 exports,no numerical change,no kernels modified,PASS
+transition_layer thermocline,unchanged,unchanged,PASS
+transition_layer halocline,unchanged,unchanged,PASS
+upper oxycline,unchanged,unchanged,PASS
+lower oxycline,unchanged,unchanged,PASS
+oxygen_boundary,unchanged,unchanged,PASS
+WOA23 t_an,cell-mean rejection,rejected,PASS
+OISST,surface-only rejection,rejected,PASS

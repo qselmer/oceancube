@@ -1,0 +1,12 @@
+property,value,status
+implemented_method,temperature_threshold,PASS
+reference_definition,physical metres positive downward,PASS
+default_reference_depth_m,10,PASS
+departure_definition,abs(T(z)-Tref),PASS
+default_threshold,0.2 K-or-degree-Celsius interval,PASS
+selection,first physical crossing deeper than reference,PASS
+input,direct VERTICAL_POINT temperature profile,PASS
+cell_mean_runtime,REJECTED,PASS
+density_runtime,FALSE,PASS
+gradient_runtime,FALSE,PASS
+hybrid_runtime,FALSE,PASS

@@ -73,7 +73,7 @@ test_that("C7 exposes one exact new API and preserves transition signature", {
     names(formals(oxygen_boundary)),
     c("x", "threshold", "threshold_unit", "variable", "support")
   )
-  expect_identical(length(getNamespaceExports("oceancube")), 45L)
+  expect_identical(length(getNamespaceExports("oceancube")), 46L)
   expect_error(oxygen_boundary(c7_oxygen()),
                class = "oceancube_oxygen_threshold")
 })

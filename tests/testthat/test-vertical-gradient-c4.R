@@ -417,5 +417,5 @@ test_that("metadata provenance serialization and privacy are deterministic", {
 
 test_that("C4 adds exactly one public signature", {
   expect_identical(names(formals(depth_gradient)), c("x", "method"))
-  expect_identical(length(getNamespaceExports("oceancube")), 45L)
+  expect_identical(length(getNamespaceExports("oceancube")), 46L)
 })

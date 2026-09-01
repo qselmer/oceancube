@@ -1,0 +1,7 @@
+case,rule,result,status
+exact departure point,abs departure equals threshold,MLD_EXACT_THRESHOLD_POINT,PASS
+local monotonic bracket,linear interpolation in departure,MLD_INTERPOLATED_THRESHOLD_CROSSING,PASS
+temperature inversion,absolute departure,WARMER_WITH_DEPTH accepted,PASS
+multiple crossings,first physical crossing selected,later crossings ignored,PASS
+strongest gradient,not an MLD criterion,FORBIDDEN,PASS
+deepest crossing,not an MLD criterion,FORBIDDEN,PASS

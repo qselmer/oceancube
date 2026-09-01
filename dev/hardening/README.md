@@ -581,3 +581,18 @@ The governed WOA23 January oxygen fixture certifies a 47-cell 0–1000 m profile
 subset and one-read deferred I/O. No density conversion, universal ODZ
 threshold, saturation, AOU, smoothing, or width is added. Gate B remains
 SATISFIED, B7-001 remains PARTIALLY-CLOSED, and 0.3.0-C remains IN PROGRESS.
+
+## C8 mixed-layer depth and density architecture
+
+C8 approves and implements DEC-037 through the sole new export
+`mixed_layer_depth()`. The certified runtime is restricted to direct CF
+point-temperature profiles and the first absolute temperature departure from a
+configurable physical reference (defaults 10 m and 0.2 K/degree-Celsius
+interval). Exact/interpolated references and crossings require local adjacent
+support; gaps, missing paths, inversions, multiple crossings, open bottoms,
+physical storage order, units, provenance, and QA remain explicit. WOA23 cell
+means and surface-only OISST remain rejected. A separate TEOS-10 architecture
+governs future SA/CT/pressure and existing-density paths without adding a
+dependency or calculating density, potential density, pressure, pycnocline, or
+N2. Gate B remains SATISFIED, B7-001 remains PARTIALLY-CLOSED, and 0.3.0-C
+remains IN PROGRESS.

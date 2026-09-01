@@ -1,0 +1,5 @@
+support,case,result,exact_mld,status
+local,gap before crossing,MLD_UNRESOLVED_BEFORE_SUPPORT_GAP,FALSE,PASS
+all,first apparent crossing through gap,GAPPED_MLD_THRESHOLD_BRACKET,FALSE,PASS
+all,gapped reference bracket,REFERENCE_GAPPED_BRACKET,FALSE,PASS
+any,non-adjacent source levels,no interpolation,FALSE,PASS

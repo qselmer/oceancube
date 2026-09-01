@@ -1,0 +1,16 @@
+criterion,result,status
+DEC-037,APPROVED IMPLEMENTED C8,PASS
+temperature-threshold MLD,direct point profiles only,PASS
+density architecture,documented runtime deferred,PASS
+variable-name heuristics,FALSE,PASS
+TEOS-10 dependency added,FALSE,PASS
+density or potential density calculated,FALSE,PASS
+pressure conversion added,FALSE,PASS
+density gradient hybrid MLD implemented,FALSE,PASS
+pycnocline or N2 implemented,FALSE,PASS
+source suite,76 files;789 cases;6097 expectations;1370.660 seconds;0 failures;0 errors;0 warnings;0 skips,PASS
+build,governed clean snapshot excluding .git and transient artifacts,PASS
+tarball,3034990 bytes;SHA256 971EFD71FBD56E337FAF0D1F0A2ECD61731D170E43C17450DD7F57AFFDDED1FB,PASS
+R CMD check,Status OK;0 errors;0 warnings;0 notes,PASS
+installed public smoke,API 46;all C8 scenarios and C6-C7 regressions;0 internal calls,PASS
+local certification,complete,PASS

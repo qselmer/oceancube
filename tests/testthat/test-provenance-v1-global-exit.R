@@ -358,7 +358,7 @@ test_that("runtime source contains no active legacy provenance producer", {
   expect_length(make_definitions, 1L)
   expect_length(make_calls, 0L)
   expect_length(grep("attr\\([^,]+, [\"']oceancube_provenance[\"']\\) <-",
-                     source, perl = TRUE), 8L)
+                     source, perl = TRUE), 9L)
   expect_length(grep("attr\\([^,]+, [\"']provenance[\"']\\) <-",
                      source, perl = TRUE), 1L)
 })

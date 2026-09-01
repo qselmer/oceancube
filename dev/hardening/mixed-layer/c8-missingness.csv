@@ -1,0 +1,6 @@
+case,result,mld_depth_m,status
+missing reference point,REFERENCE_TEMPERATURE_UNRESOLVED,NA,PASS
+missing reference bracket,REFERENCE_TEMPERATURE_UNRESOLVED,NA,PASS
+missing before crossing,MLD_UNRESOLVED_INCOMPLETE_PATH,NA,PASS
+missing after crossing,selected first crossing unchanged,resolved,PASS
+no crossing on complete path,MLD_OPEN_AT_PROFILE_BOTTOM,NA,PASS

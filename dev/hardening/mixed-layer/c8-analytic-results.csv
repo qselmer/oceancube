@@ -1,0 +1,7 @@
+scenario,reference_temperature,threshold,mld_depth_m,direction,result
+classical synthetic,25.0,0.2,24.2857142857143,COOLER_WITH_DEPTH,PASS
+exact source point,25.0,0.2,30.0,COOLER_WITH_DEPTH,PASS
+temperature inversion,25.0,0.2,23.3333333333333,WARMER_WITH_DEPTH,PASS
+reference interpolation,25.0,0.2,17.5,COOLER_WITH_DEPTH,PASS
+descending storage,25.0,0.2,24.2857142857143,COOLER_WITH_DEPTH,PASS
+kilometre depth encoding,25.0,0.2,24.2857142857143,COOLER_WITH_DEPTH,PASS

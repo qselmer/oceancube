@@ -1,0 +1,11 @@
+path,required_state,decision,status
+A,Absolute Salinity plus Conservative Temperature plus pressure,separate semantic validation,DEFERRED_C9
+B,Practical Salinity plus in-situ temperature plus pressure,explicit TEOS-10 transformations and position required,DEFERRED_C9
+C,Practical Salinity plus potential temperature plus pressure,reference pressure and explicit transformations required,DEFERRED_C9
+D,existing certified density variable,density basis and reference pressure required,DEFERRED_C9
+shortcut SP equals SA,forbidden,no silent equivalence,PASS
+shortcut in-situ temperature equals CT,forbidden,no silent equivalence,PASS
+pressure conversion,not implemented,C9 review required,PASS
+TEOS-10 dependency,not added,C9 review required,PASS
+density-threshold MLD,not implemented,density engine prerequisite,PASS
+pycnocline and N2,not implemented,density engine prerequisite,PASS

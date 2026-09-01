@@ -879,6 +879,7 @@
       "_gradient_candidate"
     ),
     oxygen_boundary = "oceancube:explicit_oxygen_threshold_zone_boundary",
+    mixed_layer_depth = "oceancube:first_temperature_threshold_departure",
     crop_stock = "oceancube:stock_mask",
     NULL
   )

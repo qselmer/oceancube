@@ -44,6 +44,8 @@ test_that("the public API surface includes the approved 0.2 additions", {
     depth_feature = c("x", "polarity", "support"),
     transition_layer = c("x", "diagnostic", "variable", "support"),
     oxygen_boundary = c("x", "threshold", "threshold_unit", "variable", "support"),
+    mixed_layer_depth = c("x", "method", "variable", "reference_depth_m",
+                          "threshold", "support"),
     link_events = c("x", "events", "lon_col", "lat_col", "date_col",
                     "depth_col", "vars", "prefix", "time_tolerance",
                     "keep_grid"),

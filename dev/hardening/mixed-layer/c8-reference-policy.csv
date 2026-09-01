@@ -1,0 +1,6 @@
+case,method,result,status
+exact source point,observed value,REFERENCE_EXACT_POINT,PASS
+local adjacent finite bracket,linear interpolation,REFERENCE_INTERPOLATED_POINT,PASS
+explicitly gapped bracket,no interpolation,REFERENCE_GAPPED_BRACKET,PASS
+outside observed domain,no extrapolation,REFERENCE_DEPTH_OUTSIDE_PROFILE,PASS
+missing bracket value,no bridging,REFERENCE_TEMPERATURE_UNRESOLVED,PASS

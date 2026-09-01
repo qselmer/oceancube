@@ -2,6 +2,12 @@
 
 ## Development
 
+- Adds `mixed_layer_depth()` for the first locally supported absolute
+  temperature departure from a configurable near-surface reference. C8 is
+  restricted to direct CF point-temperature profiles; gaps, missing paths,
+  inversions, open bottoms, provenance, and QA remain explicit. Density-based,
+  gradient, and hybrid MLD definitions are deferred to a separately certified
+  TEOS-10 thermodynamic engine.
 - Adds `oxygen_boundary()` and extends `transition_layer()` with branch-aware
   `upper_oxycline` and `lower_oxycline` candidates. Oxygen identity is gated by
   preserved CF `standard_name` and same-family units; the core, gaps,

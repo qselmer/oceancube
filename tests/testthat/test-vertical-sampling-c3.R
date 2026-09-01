@@ -474,5 +474,5 @@ test_that("WOA deferred sampling reads only the contained source cell", {
 
 test_that("C3 adds exactly one stable public signature", {
   expect_identical(names(formals(depth_sample)), c("x", "depth", "method"))
-  expect_identical(length(getNamespaceExports("oceancube")), 45L)
+  expect_identical(length(getNamespaceExports("oceancube")), 46L)
 })

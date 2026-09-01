@@ -23,7 +23,8 @@ test_that("only approved APIs extend the boundary", {
     "depth_gradient",
     "depth_feature",
     "transition_layer",
-    "oxygen_boundary"
+    "oxygen_boundary",
+    "mixed_layer_depth"
   )
   observed <- getNamespaceExports("oceancube")
 

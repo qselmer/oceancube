@@ -1,0 +1,6 @@
+standard_name,basis,unit_subset,status
+sea_water_temperature,IN_SITU_SEA_WATER_TEMPERATURE,Kelvin and Celsius forms,CERTIFIED
+sea_water_potential_temperature,POTENTIAL_TEMPERATURE,Kelvin and Celsius forms,CERTIFIED
+sea_water_conservative_temperature,CONSERVATIVE_TEMPERATURE,Kelvin and Celsius forms,CERTIFIED
+variable_name,FORBIDDEN_HEURISTIC,,REJECTED
+long_name,FORBIDDEN_HEURISTIC,,REJECTED

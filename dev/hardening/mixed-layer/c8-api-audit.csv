@@ -1,0 +1,8 @@
+property,before,after,status
+exports,45,46,PASS
+sole new export,,mixed_layer_depth,PASS
+mixed_layer_depth signature,,x;method;variable;reference_depth_m;threshold;support,PASS
+transition_layer signature,x;diagnostic;variable;support,x;diagnostic;variable;support,PASS
+oxygen_boundary signature,x;threshold;threshold_unit;variable;support,x;threshold;threshold_unit;variable;support,PASS
+version,0.2.0.9000,0.2.0.9000,PASS
+dependency fields,unchanged,unchanged,PASS
