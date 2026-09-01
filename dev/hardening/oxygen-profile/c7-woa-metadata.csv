@@ -1,0 +1,10 @@
+field,value
+provider,NOAA/NCEI
+product,World Ocean Atlas 2023 January dissolved oxygen
+source_file,woa23_all_o01_01.nc
+standard_name,moles_of_oxygen_per_unit_mass_in_sea_water
+units,micromoles_per_kilogram
+cell_methods,area mean;depth mean;time climatological means
+subset,lon -83.5..-81.5;lat -17.5..-15.5;depth 0..1000 m
+source_sha256,bccd1abc57ab106e6564e0312d09de835985ce7a74e431f8834e021a10876591
+fixture_sha256,03b6b836485145d53f85a1cfd1d3e59921525fc413a52a95127db105cccca74f

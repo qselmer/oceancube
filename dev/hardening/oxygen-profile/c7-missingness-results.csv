@@ -1,0 +1,3 @@
+case,result,core_certified
+one missing level,INCOMPLETE_OXYGEN_PROFILE,FALSE
+complete profile,UNIQUE_MINIMUM,TRUE

@@ -1,0 +1,36 @@
+# `oxygen_boundary()`
+
+**Category:** Oxygen-profile diagnostics
+
+**Status:** experimental development API; DEC-036 certified C7 subset
+
+## Purpose
+
+Resolve the connected low-oxygen component containing a certified profile
+minimum and report its observed upper/lower boundary evidence for an explicit
+user threshold. The package supplies no default OMZ/ODZ threshold.
+
+## Real signature
+
+```r
+oxygen_boundary(
+  x,
+  threshold,
+  threshold_unit = NULL,
+  variable = NULL,
+  support = c("local", "all")
+)
+```
+
+`threshold_unit = NULL` means the exact source unit. Only exact multiplicative
+conversion inside the source quantity family is allowed. Point crossings may
+be exact or locally interpolated across contiguous support. Cell means and
+gapped brackets remain bracket-only evidence; open edges are not extrapolated,
+and exact thickness requires two exact/interpolated point boundaries.
+
+Oxygen identity is established exclusively from supported preserved CF
+`standard_name` plus units. Variable names, `long_name`, saturation, AOU,
+density conversions, mL/L, smoothing, and universal classifications are not
+part of C7.
+
+Related functions: `transition_layer()`, `depth_gradient()`, `depth_feature()`.

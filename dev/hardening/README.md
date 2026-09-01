@@ -567,3 +567,17 @@ derived from C1/C3 remain excluded. Oxycline is deferred to C7 because gradient
 sign alone cannot establish the upper or lower branch around an oxygen minimum.
 Gate B remains SATISFIED, B7-001 remains PARTIALLY-CLOSED, and 0.3.0-C remains
 IN PROGRESS.
+
+## C7 branch-aware oxygen-profile diagnostics
+
+C7 approves and implements DEC-036 with the sole new export
+`oxygen_boundary()`, while preserving the `transition_layer()` signature and
+adding `upper_oxycline`/`lower_oxycline` values. Preserved CF oxygen identity
+and bounded same-family units gate all results. A complete-profile minimum
+resolves the core before C4/C5 gradients are ranked on physical upper or lower
+branches. Threshold zones require an explicit user criterion; point crossings,
+cell-mean brackets, gaps, and open edges retain different evidence strength.
+The governed WOA23 January oxygen fixture certifies a 47-cell 0–1000 m profile
+subset and one-read deferred I/O. No density conversion, universal ODZ
+threshold, saturation, AOU, smoothing, or width is added. Gate B remains
+SATISFIED, B7-001 remains PARTIALLY-CLOSED, and 0.3.0-C remains IN PROGRESS.

@@ -1,0 +1,4 @@
+family,examples,canonical,cross_basis
+AMOUNT_PER_MASS,mol/kg;mmol/kg;umol/kg,mol kg-1,REJECTED
+AMOUNT_PER_VOLUME,mol/m3;mmol/m3;umol/m3;mol/L;mmol/L;umol/L,mol m-3,REJECTED
+MASS_PER_VOLUME,kg/m3;g/m3;mg/m3;mg/L,kg m-3,REJECTED

@@ -2,6 +2,11 @@
 
 ## Development
 
+- Adds `oxygen_boundary()` and extends `transition_layer()` with branch-aware
+  `upper_oxycline` and `lower_oxycline` candidates. Oxygen identity is gated by
+  preserved CF `standard_name` and same-family units; the core, gaps,
+  cell-mean brackets, explicit user threshold, provenance, and QA remain
+  visible. No universal OMZ/ODZ threshold is introduced.
 - Opened the development cycle toward oceancube 0.3.0.
 - Adds `transition_layer()` as the bounded variable-aware interpretation layer
   above `depth_gradient()` and `depth_feature()`. Preserved source CF

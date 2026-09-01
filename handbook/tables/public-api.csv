@@ -38,6 +38,7 @@
 "stock_mask","Masks and context","stable","stock geometry","mask","true","true","false","false","false"
 "to_month","Time and climatology","stable","ocean_cube","ocean_cube","true","true","true","true","false"
 "transition_layer","Variable-aware vertical diagnostics","experimental","source-profile or certified gradient ocean_cube","data.frame","true","true","true","false","true"
+"oxygen_boundary","Oxygen-profile diagnostics","experimental","direct source-profile ocean_cube","data.frame","true","true","true","false","true"
 "viz.map","Visualization","experimental","ocean_cube","ggplot","true","true","false","false","false"
 "viz.section","Visualization","experimental","ocean_cube","ggplot","true","true","false","false","false"
 "viz.profile","Visualization","experimental","ocean_cube","ggplot","true","true","false","false","false"

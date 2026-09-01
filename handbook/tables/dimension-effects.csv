@@ -38,6 +38,7 @@
 "stock_mask","stock geometry","mask",TRUE,FALSE,FALSE,"Create a legacy stock mask."
 "to_month","ocean_cube","ocean_cube",FALSE,TRUE,FALSE,"Aggregate daily or irregular observations to months."
 "transition_layer","source-profile or certified gradient ocean_cube","data.frame",FALSE,TRUE,FALSE,"Return one interpreted candidate or conservative status per longitude latitude and time for one CF-eligible variable."
+"oxygen_boundary","direct source-profile ocean_cube","data.frame",FALSE,TRUE,FALSE,"Return one explicit-threshold oxygen-zone row per longitude latitude and time."
 "viz.map","ocean_cube","ggplot",TRUE,FALSE,FALSE,"Visualize one selected layer without transforming the scientific cube."
 "viz.section","ocean_cube","ggplot",TRUE,FALSE,FALSE,"Visualize one selected vertical plane without transforming the scientific cube."
 "viz.profile","ocean_cube","ggplot",TRUE,FALSE,FALSE,"Visualize one selected depth profile without transforming the scientific cube."

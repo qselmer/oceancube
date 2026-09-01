@@ -49,6 +49,12 @@ transition_layer <- function(
       class = "oceancube_transition_diagnostic"
     )
   }
+  if (is.character(diagnostic) && length(diagnostic) == 1L &&
+      !is.na(diagnostic) && diagnostic %in%
+      c("upper_oxycline", "lower_oxycline")) {
+    support <- match.arg(support)
+    return(.transition_oxygen(x, diagnostic, variable, support))
+  }
   definition <- .transition_definition(diagnostic)
   support <- match.arg(support)
   .check_cube(x)

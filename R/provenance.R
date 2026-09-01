@@ -878,6 +878,7 @@
       record$diagnostic %||% "transition",
       "_gradient_candidate"
     ),
+    oxygen_boundary = "oceancube:explicit_oxygen_threshold_zone_boundary",
     crop_stock = "oceancube:stock_mask",
     NULL
   )

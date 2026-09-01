@@ -1,0 +1,5 @@
+case,status,upper_m,lower_m,thickness_m
+synthetic20,THRESHOLD_ZONE_PRESENT,57.1428571429,100,42.8571428571
+absent4,THRESHOLD_ZONE_ABSENT,,,
+span300,THRESHOLD_ZONE_SPANS_PROFILE,,,
+multiple component,THRESHOLD_ZONE_PRESENT,,,20

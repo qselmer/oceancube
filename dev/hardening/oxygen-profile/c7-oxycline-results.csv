@@ -1,0 +1,4 @@
+case,upper_depth_m,upper_gradient,lower_depth_m,lower_gradient,status
+synthetic,30,-5,125,1.2,PASS
+plateau,10,,125,,PASS
+descending,30,-5,125,1.2,PASS

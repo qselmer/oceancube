@@ -1,0 +1,6 @@
+case,result,certified
+unique minimum,UNIQUE_MINIMUM,TRUE
+contiguous minimum plateau,CONTIGUOUS_MINIMUM_PLATEAU,TRUE
+disjoint tied minima,AMBIGUOUS_DISJOINT_MINIMA,FALSE
+flat profile,FLAT_OXYGEN_PROFILE,FALSE
+incomplete profile,INCOMPLETE_OXYGEN_PROFILE,FALSE

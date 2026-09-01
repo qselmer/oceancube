@@ -101,7 +101,11 @@ gradient and feature engines. C6 reports unthresholded thermocline-gradient or
 halocline-gradient candidates while retaining gaps, ties, incomplete profiles,
 quantity basis, sign, provenance, and resolution limits. Oxycline, MLD,
 pycnocline, density, smoothing, and physical-strength thresholds remain
-outside this contract.
+outside the C6 contract. C7 additionally resolves branch-aware upper/lower
+oxycline candidates around a complete-profile oxygen minimum. The separate
+`oxygen_boundary()` reports the core-containing component for an explicit
+user threshold; point crossings, cell-mean brackets, gaps, and open edges are
+kept distinct, with no universal OMZ/ODZ default.
 
 ## Minimal example
 
@@ -166,7 +170,7 @@ boundary](https://qselmer.github.io/oceancube/handbook/11-spatind-boundary.html)
 
 The navigable [OceanCube
 Handbook](https://qselmer.github.io/oceancube/handbook/) explains the
-five-dimensional contract, backends, the current 44-export development API
+five-dimensional contract, backends, the current 45-export development API
 (the frozen 38-export release plus `cube_open()`, `layer_integral()`,
 `depth_sample()`, `depth_gradient()`, `depth_feature()`, and
 `transition_layer()`), checked

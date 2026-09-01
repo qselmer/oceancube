@@ -292,5 +292,5 @@ test_that("WOA23 monthly cell means support exact and subcell integration", {
 
 test_that("C2 adds one stable public signature", {
   expect_identical(names(formals(layer_integral)), c("x", "depth"))
-  expect_identical(length(getNamespaceExports("oceancube")), 44L)
+  expect_identical(length(getNamespaceExports("oceancube")), 45L)
 })

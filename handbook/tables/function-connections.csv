@@ -38,6 +38,7 @@
 "stock_mask","geometry","crop_stock","Create a legacy stock mask."
 "to_month","ocean_cube","clim_month","Compatibility wrapper for monthly temporal aggregation."
 "transition_layer","read_nc/cube_open/depth_gradient","analysis","Interpret unthresholded thermocline or halocline gradient candidates from preserved source CF identity."
+"oxygen_boundary","read_nc/cube_open/transition_layer","analysis","Resolve an explicit-threshold core-containing oxygen component and conservative boundary evidence."
 "viz.map","cube_slice/cube_crop/cube_aggregate_time/cube_anomaly/cube_trend","presentation","Visualize one horizontal layer, including singleton-time trend output."
 "viz.section","cube_slice/cube_crop","presentation","Visualize one stored vertical plane."
 "viz.profile","cube_extract/cube_crop","presentation","Visualize one stored depth profile."

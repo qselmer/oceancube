@@ -1,0 +1,7 @@
+property,contract
+threshold,finite non-negative explicit scalar
+NULL unit,exact source unit
+component,core-containing connected component
+point boundary,exact or local linear interpolation
+cell mean,bounded bracket only
+extrapolation,forbidden

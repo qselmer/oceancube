@@ -2,13 +2,13 @@
 
 **Category:** Variable-aware vertical diagnostics
 
-**Status:** experimental development API; DEC-035 certified subset
+**Status:** experimental development API; DEC-035/C6 and DEC-036/C7 subsets
 
 ## Purpose
 
 Interpret one conservative C5 feature per horizontal profile and time as an
-unthresholded thermocline-gradient or halocline-gradient candidate, using
-preserved source CF identity rather than variable-name heuristics.
+unthresholded thermocline, halocline, upper-oxycline, or lower-oxycline
+candidate, using preserved source CF identity rather than name heuristics.
 
 ## Real signature
 
@@ -23,7 +23,8 @@ transition_layer(
 
 ## Scientific contract
 
-The required `diagnostic` is either `"thermocline"` or `"halocline"`.
+The required `diagnostic` is `"thermocline"`, `"halocline"`,
+`"upper_oxycline"`, or `"lower_oxycline"`.
 Thermocline uses the strongest eligible negative gradient for
 `sea_water_temperature`, potential temperature, or conservative temperature.
 Halocline uses the strongest eligible absolute gradient for the bounded CF
@@ -43,9 +44,13 @@ and C5 certification remain visible. No physical-strength threshold is
 applied. `localization_half_span_m` is a vertical-resolution scale, not
 statistical uncertainty.
 
-Oxycline is deferred because gradient polarity alone cannot establish the
-upper or lower branch around an oxygen minimum or OMZ core. MLD, pycnocline,
-density, smoothing, peak prominence, width, curvature, and secondary features
-are also outside C6.
+For oxygen, a complete-profile global minimum/core is resolved first. The
+upper candidate is the strongest negative gradient on the shallow branch; the
+lower candidate is the strongest positive gradient on the deep branch.
+Plateaus, disjoint minima, flat/incomplete profiles, and gaps remain explicit.
+No threshold or oxycline width is inferred here; use `oxygen_boundary()` with
+an explicit threshold for boundary evidence. MLD, pycnocline, density,
+smoothing, prominence, width, curvature, saturation, and AOU remain outside C7.
 
-Related functions: `depth_gradient()`, `depth_feature()`, `cube_slice()`.
+Related functions: `oxygen_boundary()`, `depth_gradient()`, `depth_feature()`,
+`cube_slice()`.

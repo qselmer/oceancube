@@ -85,7 +85,7 @@ test_that("C6 exposes one exact public signature", {
     names(formals(transition_layer)),
     c("x", "diagnostic", "variable", "support")
   )
-  expect_identical(length(getNamespaceExports("oceancube")), 44L)
+  expect_identical(length(getNamespaceExports("oceancube")), 45L)
   expect_error(transition_layer(c6_temperature()),
                class = "oceancube_transition_diagnostic")
   expect_error(transition_layer(c6_temperature(), "oxycline"),

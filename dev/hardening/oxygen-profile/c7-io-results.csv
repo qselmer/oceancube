@@ -1,0 +1,3 @@
+input,operation,payload_reads,variable,levels,status
+deferred WOA23,upper_oxycline,1,o_an,47,PASS
+deferred WOA23,oxygen_boundary,1,o_an,47,PASS

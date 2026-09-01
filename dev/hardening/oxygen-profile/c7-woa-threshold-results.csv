@@ -1,0 +1,2 @@
+threshold,unit,component_top_m,component_bottom_m,upper_status,lower_status,exact_thickness
+20,micromoles_per_kilogram,275,425,CELL_MEAN_THRESHOLD_BRACKET_ONLY,CELL_MEAN_THRESHOLD_BRACKET_ONLY,FALSE

@@ -1,0 +1,3 @@
+branch,domain,polarity,ranking
+UPPER,at-or-shallower-than-core-shallow-edge,negative,C5 strongest eligible
+LOWER,at-or-deeper-than-core-deep-edge,positive,C5 strongest eligible

@@ -1,6 +1,6 @@
 # NOAA/NCEI real-data test fixtures
 
-These four files are small, derived test subsets. They are not complete or
+These five files are small, derived test subsets. They are not complete or
 original provider products. Ordinary oceancube tests read them locally and do
 not contact a provider, require credentials, invoke Python, or depend on the
 maintainer artifact directory. The exact derivations are in
@@ -83,7 +83,25 @@ non-contiguous; their exact thicknesses are 2.5, 5, 5, 5, 15, and 25 m.
 - SHA-256: `38e306f9e9ccdc3494f734a7463629ba73b2e63d5b045da4c6cebc92589ae15d`
 - Size: 55,287 bytes
 
-The combined fixture size is 1,388,371 bytes. All final and feasible constrained
+## WOA23 January dissolved oxygen
+
+`noaa-woa23-monthly-oxygen-fv1.nc` is an exact 3 x 3 Peru subset of the
+official WOA23 January all-decades dissolved-oxygen file. It preserves `o_an`,
+its CF `standard_name`, `micromoles_per_kilogram`, the provider cell-mean
+methods, native climatological time, and 47 contiguous depth cells from 0 to
+1000 m. The explicit 20 micromoles per kilogram criterion used in C7 tests is
+test evidence only; it is not a package default or universal ODZ definition.
+
+- Source file: `woa23_all_o01_01.nc`
+- Dataset DOI: https://doi.org/10.25921/va26-hv25
+- Dissolved oxygen volume DOI: https://doi.org/10.25923/rb67-ns53
+- Terms: openly available to the public; acknowledgment requested.
+- Derivation: `data-raw/fixtures/derive-woa23-oxygen.R`
+- Source SHA-256: `bccd1abc57ab106e6564e0312d09de835985ce7a74e431f8834e021a10876591`
+- Fixture SHA-256: `03b6b836485145d53f85a1cfd1d3e59921525fc413a52a95127db105cccca74f`
+- Size: 48,229 bytes
+
+The combined fixture size is 1,436,600 bytes. All final and feasible constrained
 source SHA-256 values, exact URLs, coordinate selections, classifications, and
 known current limitations are recorded in `fixture-manifest.csv`. SHA-256 is
 not recomputed during default tests because oceancube does not add a runtime or

@@ -1,0 +1,6 @@
+property,before,after,status
+exports,44,45,PASS
+sole new export,,oxygen_boundary,PASS
+transition_layer signature,x;diagnostic;variable;support,x;diagnostic;variable;support,PASS
+oxygen_boundary signature,,x;threshold;threshold_unit;variable;support,PASS
+version,0.2.0.9000,0.2.0.9000,PASS

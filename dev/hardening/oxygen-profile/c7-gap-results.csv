@@ -1,0 +1,5 @@
+case,support,result
+point threshold gap,all,GAPPED_THRESHOLD_BRACKET_ONLY
+point threshold gap,local,LOCAL_SUPPORT_GAP_COMPONENT_EDGE
+cell mean gap,all,GAPPED_CELL_MEAN_THRESHOLD_BRACKET_ONLY
+lower oxycline gap,all,GAPPED_LOWER_OXYCLINE_GRADIENT_CANDIDATE

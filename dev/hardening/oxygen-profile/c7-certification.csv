@@ -1,0 +1,12 @@
+criterion,result,status
+DEC-036,APPROVED IMPLEMENTED C7,PASS
+CF semantic hard gate,exact standard_name plus bounded units,PASS
+universal threshold,FALSE,PASS
+cross-basis conversion,REJECTED,PASS
+fixture deterministic,byte-identical SHA256,PASS
+source suite,75 files;774 cases;6027 expectations;1422.780 seconds;0 failures;0 errors;0 warnings;0 skips,PASS
+build,snapshot fallback excluding .git and governed transient artifacts,PASS
+tarball,3021949 bytes;SHA256 8B95368D0BEF590019C0EAA5BB156784A6CFA8CEAC10918A203942C8DB329EED,PASS
+R CMD check,0 errors;0 warnings;0 notes,PASS
+installed public smoke,API 45;C6 and C7 synthetic/real-data regressions,PASS
+local certification,complete,PASS

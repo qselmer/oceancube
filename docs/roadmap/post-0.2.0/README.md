@@ -162,6 +162,15 @@ completeness. Oxycline remains deferred until an OMZ-core and profile-branch
 contract exists. Gate B remains SATISFIED, B7-001 remains PARTIALLY-CLOSED,
 and 0.3.0-C remains IN PROGRESS.
 
+C7 implements DEC-036 and adds exactly one export, `oxygen_boundary()`. It
+also extends the unchanged `transition_layer()` signature with branch-aware
+upper/lower oxycline diagnostic values. Exact preserved CF oxygen identity,
+bounded same-family units, a complete-profile minimum/core, and C4/C5 support
+policy are mandatory. Explicit thresholds define only the core-containing
+component; cell means and gaps remain bracket-only and no universal OMZ/ODZ
+threshold is introduced. The development API is 45 exports. Gate B remains
+SATISFIED, B7-001 remains PARTIALLY-CLOSED, and 0.3.0-C remains IN PROGRESS.
+
 ## Change control
 
 Future roadmap changes should update the provenance matrix first, reference an
