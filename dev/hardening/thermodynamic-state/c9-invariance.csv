@@ -1,0 +1,7 @@
+invariance,result,tolerance,status
+Kelvin vs Celsius,identical physical state,1.5e-8,PASS
+metre vs kilometre,identical physical state,1.5e-8,PASS
+ascending vs descending depth,identical after physical reordering,1.5e-8,PASS
+-172 vs 188 longitude,identical GSW state after deterministic normalization,1.5e-8,PASS
+multi-location,independent pressure and SA correction,1.5e-8,PASS
+latitude dependence,preserved,1.5e-8,PASS

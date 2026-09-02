@@ -1,0 +1,4 @@
+fixture,reason,result,status
+noaa-woa23-monthly-vertical-fv1.nc,T and S are depth cell means,REJECTED VERTICAL_CELL_MEAN,PASS
+noaa-oisst21-surface-time-fv1.nc,no paired salinity and no multi-level metric depth,REJECTED,PASS
+noaa-woa23-monthly-oxygen-fv1.nc,no paired T S state,REJECTED,PASS

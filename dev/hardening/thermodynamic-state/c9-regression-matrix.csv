@@ -1,0 +1,12 @@
+surface,result,status
+C1 vertical primitives,unchanged,PASS
+C2 layer integration,unchanged,PASS
+C3 depth sampling,unchanged,PASS
+C4 depth gradient,unchanged,PASS
+C5 depth feature,unchanged,PASS
+C6 thermocline halocline,unchanged,PASS
+C7 oxycline oxygen boundaries,unchanged,PASS
+C8 temperature MLD,unchanged and no density method,PASS
+B5 calendar semantics,unchanged,PASS
+B6 climatological time,unchanged,PASS
+B7 vertical taxonomy,unchanged,PASS

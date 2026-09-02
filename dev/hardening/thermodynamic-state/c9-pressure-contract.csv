@@ -1,0 +1,5 @@
+mode,source,conversion,extra_payload_reads,status
+derived,metric depth plus latitude,gsw_p_from_z with z=-depth_m,0,PASS
+explicit,CF sea_water_pressure dbar,identity,0,PASS
+explicit,CF sea_water_pressure Pa,multiply 1e-4,0,PASS
+automatic source pressure search,NULL means derived only,not applicable,PASS

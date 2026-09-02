@@ -1,0 +1,10 @@
+family,accepted_standard_name,basis,status
+salinity,sea_water_practical_salinity,PRACTICAL_SALINITY_PSS78,PASS
+salinity,sea_water_absolute_salinity,ABSOLUTE_SALINITY,PASS
+temperature,sea_water_temperature,IN_SITU_TEMPERATURE,PASS
+temperature,sea_water_potential_temperature,POTENTIAL_TEMPERATURE_REF_0_DBAR,PASS
+temperature,sea_water_conservative_temperature,CONSERVATIVE_TEMPERATURE,PASS
+salinity,sea_water_salinity,REJECTED,PASS
+salinity,sea_water_reference_salinity,REJECTED,PASS
+salinity,sea_water_preformed_salinity,REJECTED,PASS
+heuristics,variable name and long_name,FALSE,PASS

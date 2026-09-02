@@ -1,0 +1,5 @@
+case,policy,result,status
+official profile,source SA CT p complete,inside,PASS
+missing source state,not evaluated,missing retained,PASS
+SA35 CT-4 p100,complete state,outside operation aborted,PASS
+mixed inside and outside,no mixed certification,operation aborted,PASS

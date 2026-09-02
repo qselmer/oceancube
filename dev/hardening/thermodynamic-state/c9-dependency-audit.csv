@@ -1,0 +1,19 @@
+field,result,status
+CRAN availability,available,PASS
+package version,1.2-0,PASS
+publication date,2024-08-19,PASS
+license,GPL >=2 plus bundled GSW license,PASS
+NeedsCompilation,yes,PASS
+supported R,R >= 3.5.0,PASS
+local R,R 4.5.1 ucrt Windows,PASS
+local installation,CRAN Windows binary isolated library,PASS
+local load,successful,PASS
+Windows availability,CRAN r-devel release oldrel binaries and checks OK,PASS
+macOS availability,CRAN arm64 and x86_64 binaries and checks OK,PASS
+Linux availability,source package and CRAN clang/gcc checks OK,PASS
+upstream,https://github.com/TEOS-10/GSW-R,PASS
+GSW-C release,3.06-16-0,PASS
+GSW-C commit,657216dd4f5ea079b5f0e021a4163e2d26893371,PASS
+institutional provenance,SCOR/IAPSO WG127,PASS
+dependency placement,Suggests optional runtime,PASS
+auto-install,FALSE,PASS

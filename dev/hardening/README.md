@@ -596,3 +596,16 @@ governs future SA/CT/pressure and existing-density paths without adding a
 dependency or calculating density, potential density, pressure, pycnocline, or
 N2. Gate B remains SATISFIED, B7-001 remains PARTIALLY-CLOSED, and 0.3.0-C
 remains IN PROGRESS.
+
+## C9 TEOS-10 thermodynamic state
+
+C9 approves and implements DEC-038 through the sole new export
+`thermodynamic_state()`. Exact preserved CF identities authorize six bounded
+SP/SA and in-situ/potential/Conservative Temperature paths. Sea pressure is
+either derived with `gsw_p_from_z(-depth_m, latitude)` or supplied by an exact
+CF `sea_water_pressure` variable. `gsw` 1.2-0 is optional via `Suggests`; its
+75-term funnel gates every complete source state, and the output preserves
+full reference-pressure potential density, metadata, Provenance V1, and QA.
+Cell means, generic salinity, runtime installation, fallbacks, density MLD,
+pycnocline, and N2 remain outside C9. Gate B remains SATISFIED, B7-001 remains
+PARTIALLY-CLOSED, and 0.3.0-C remains IN PROGRESS.

@@ -931,6 +931,63 @@
   invisible(TRUE)
 }
 
+.cf_thermodynamic_state_validate <- function(x) {
+  required <- c(
+    "schema_name", "schema_version", "method", "gsw_package_version",
+    "gsw_c_release", "gsw_c_commit", "salinity", "temperature", "pressure",
+    "input_path", "reference_pressure_dbar", "gsw_functions",
+    "funnel_policy", "input_value_semantics", "nonlinear_interpretation",
+    "output_variables", "certification_status"
+  )
+  output_required <- c(
+    "variable", "standard_name", "unit", "reference_pressure_dbar",
+    "value_semantics"
+  )
+  expected <- c(
+    "absolute_salinity", "conservative_temperature", "sea_water_pressure",
+    "sea_water_density", "sea_water_potential_density"
+  )
+  if (!is.list(x) || length(setdiff(required, names(x))) ||
+      !identical(x$schema_name, "oceancube_thermodynamic_state") ||
+      !identical(x$schema_version, "1.0.0") ||
+      !identical(x$method, "TEOS-10") ||
+      !is.numeric(x$reference_pressure_dbar) ||
+      length(x$reference_pressure_dbar) != 1L ||
+      !is.finite(x$reference_pressure_dbar) || x$reference_pressure_dbar < 0 ||
+      !is.character(x$gsw_functions) || anyNA(x$gsw_functions) ||
+      !is.list(x$output_variables) || !length(x$output_variables) ||
+      any(vapply(x$output_variables, function(item) {
+        !is.list(item) || length(setdiff(output_required, names(item))) ||
+          !is.character(item$variable) || length(item$variable) != 1L ||
+          is.na(item$variable) || !item$variable %in% expected ||
+          !is.character(item$standard_name) ||
+          length(item$standard_name) != 1L || is.na(item$standard_name) ||
+          !is.character(item$unit) || length(item$unit) != 1L ||
+          is.na(item$unit)
+      }, logical(1L)))) {
+    .cf_metadata_abort("Invalid current TEOS-10 thermodynamic-state descriptor.")
+  }
+  variables <- vapply(
+    x$output_variables, `[[`, character(1L), "variable"
+  )
+  if (anyDuplicated(variables) || !identical(variables, expected[expected %in% variables])) {
+    .cf_metadata_abort(
+      "Invalid current TEOS-10 thermodynamic output-variable order."
+    )
+  }
+  invisible(TRUE)
+}
+
+.cf_thermodynamic_state_for_selection <- function(x, variables) {
+  .cf_thermodynamic_state_validate(x)
+  out <- x
+  keep <- vapply(out$output_variables, `[[`, character(1L), "variable") %in%
+    variables
+  out$output_variables <- out$output_variables[keep]
+  .cf_thermodynamic_state_validate(out)
+  out
+}
+
 .cf_validate_cf <- function(cf, require_current = TRUE) {
   if (!is.list(cf) ||
       !identical(cf$schema_name, "oceancube_cf_metadata") ||
@@ -1051,10 +1108,24 @@
   }
 
   if (isTRUE(require_current)) {
+    thermodynamic_variables <- character()
+    if (!is.null(cf$current$thermodynamic_state)) {
+      .cf_thermodynamic_state_validate(cf$current$thermodynamic_state)
+      thermodynamic_variables <- vapply(
+        cf$current$thermodynamic_state$output_variables,
+        `[[`, character(1L), "variable"
+      )
+    }
+    current_variables_valid <- all(
+      cf$current$variables %in% cf$source$variables$order
+    ) || (
+      length(thermodynamic_variables) > 0L &&
+        all(cf$current$variables %in% thermodynamic_variables)
+    )
     if (!is.list(cf$current) ||
         !is.character(cf$current$variables) ||
         anyDuplicated(cf$current$variables) ||
-        !all(cf$current$variables %in% cf$source$variables$order) ||
+        !current_variables_valid ||
         !is.integer(cf$current$links) ||
         anyNA(cf$current$links) || anyDuplicated(cf$current$links) ||
         any(cf$current$links < 1L | cf$current$links > length(cf$source$links)) ||
@@ -1190,6 +1261,12 @@
         out$cf$current$vertical_gradient,
         index$depth,
         variables
+      )
+  }
+  if (!is.null(out$cf$current$thermodynamic_state)) {
+    out$cf$current$thermodynamic_state <-
+      .cf_thermodynamic_state_for_selection(
+        out$cf$current$thermodynamic_state, variables
       )
   }
   out <- .cf_mark_current_interpretation(

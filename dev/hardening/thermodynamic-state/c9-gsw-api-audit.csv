@@ -1,0 +1,8 @@
+function,available,certified_use,status
+gsw_p_from_z,TRUE,depth plus latitude to sea pressure,PASS
+gsw_SA_from_SP,TRUE,SP to SA with p lon lat,PASS
+gsw_CT_from_t,TRUE,in-situ temperature to CT,PASS
+gsw_CT_from_pt,TRUE,pt0 to CT,PASS
+gsw_rho,TRUE,in-situ and reference-pressure density,PASS
+gsw_sigma0,TRUE,zero-reference cross-check only,PASS
+gsw_infunnel,TRUE,complete source-state accuracy gate,PASS

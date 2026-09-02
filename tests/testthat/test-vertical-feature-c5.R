@@ -86,7 +86,7 @@ test_that("C5 exposes one exact public signature", {
   expect_identical(
     names(formals(depth_feature)), c("x", "polarity", "support")
   )
-  expect_identical(length(getNamespaceExports("oceancube")), 46L)
+  expect_identical(length(getNamespaceExports("oceancube")), 47L)
 })
 
 test_that("absolute detection preserves sign and complete C4 diagnostics", {

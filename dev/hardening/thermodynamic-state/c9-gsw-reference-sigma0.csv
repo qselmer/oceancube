@@ -1,0 +1,3 @@
+reference,max_absolute_error,tolerance,status
+official_gsw_sigma0,0,1.5e-8,PASS
+rho_SA_CT_0_minus_1000_vs_sigma0,0,1.5e-8,PASS

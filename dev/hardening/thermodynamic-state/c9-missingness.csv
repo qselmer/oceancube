@@ -1,0 +1,5 @@
+missing_input,pressure,SA,CT,rho,potential_density,status
+temperature,finite if derived,dependency-specific,NA,NA,NA,PASS
+salinity,finite if derived,NA,direct CT may remain finite,NA,NA,PASS
+explicit pressure,NA,direct SA may remain finite,direct CT or pt0 route may remain finite,NA,NA,PASS
+unrelated cell,unchanged,unchanged,unchanged,unchanged,unchanged,PASS

@@ -1,0 +1,8 @@
+item,before,after,status
+public exports,46,47,PASS
+new export,none,thermodynamic_state,PASS
+Imports,unchanged,unchanged,PASS
+LinkingTo,absent,absent,PASS
+Suggests gsw,absent,gsw >= 1.2-0,PASS
+version,0.2.0.9000,0.2.0.9000,PASS
+generic GSW wrapper,FALSE,FALSE,PASS

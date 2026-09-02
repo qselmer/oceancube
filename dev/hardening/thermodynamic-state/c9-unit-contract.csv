@@ -1,0 +1,9 @@
+quantity,source_unit,conversion,status
+Practical Salinity,1,identity PSS-78,PASS
+Absolute Salinity,g kg-1 or g/kg,identity,PASS
+Absolute Salinity,kg kg-1,multiply 1000,PASS
+temperature,K or kelvin,subtract 273.15,PASS
+temperature,governed degree Celsius forms,identity,PASS
+sea pressure,dbar,identity,PASS
+sea pressure,Pa,multiply 1e-4,PASS
+Practical Salinity,1e-3,REJECTED,PASS

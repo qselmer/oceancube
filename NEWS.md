@@ -2,6 +2,13 @@
 
 ## Development
 
+- Adds `thermodynamic_state()` as the certified C9 TEOS-10 bridge from exact
+  CF Practical/Absolute Salinity and in-situ/potential/Conservative
+  Temperature to SA, CT, sea pressure, in-situ density, and reference-pressure
+  potential density. The compiled `gsw` dependency is optional via `Suggests`;
+  complete source states must pass its 75-term funnel, while cell means,
+  generic salinity identities, fallbacks, density MLD, pycnocline, and N2
+  remain rejected or deferred.
 - Adds `mixed_layer_depth()` for the first locally supported absolute
   temperature departure from a configurable near-surface reference. C8 is
   restricted to direct CF point-temperature profiles; gaps, missing paths,

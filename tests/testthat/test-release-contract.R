@@ -46,6 +46,8 @@ test_that("the public API surface includes the approved 0.2 additions", {
     oxygen_boundary = c("x", "threshold", "threshold_unit", "variable", "support"),
     mixed_layer_depth = c("x", "method", "variable", "reference_depth_m",
                           "threshold", "support"),
+    thermodynamic_state = c("x", "salinity", "temperature", "pressure",
+                            "reference_pressure_dbar"),
     link_events = c("x", "events", "lon_col", "lat_col", "date_col",
                     "depth_col", "vars", "prefix", "time_tolerance",
                     "keep_grid"),

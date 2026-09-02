@@ -1,0 +1,11 @@
+criterion,result,status
+DEC-038,APPROVED IMPLEMENTED C9,PASS
+TEOS-10 framework,gsw 1.2-0 optional via Suggests,PASS
+official numerical parity,max absolute error 4.55e-13 tolerance 1.5e-8,PASS
+public API,47 exports one new thermodynamic_state,PASS
+source suite,77 files 806 cases 6184 expectations 0 failures 0 errors 0 warnings 0 skips 1509.050 seconds,PASS
+build,governed direct build blocked by .git turn-diffs; clean distribution snapshot build succeeded,PASS
+tarball,oceancube_0.2.0.9000.tar.gz 3049347 bytes SHA256 F99CC2C25B816598091258D6F0B4974E9FC5337E2D0B1E0341D9ECF8128C2D7C,PASS
+R CMD check,--no-manual Status OK 0 errors 0 warnings 0 notes,PASS
+installed public smoke,isolated source-installed gsw 1.2-0 and oceancube tarball; 47 exports; 0 internal calls,PASS
+push,NOT PERFORMED,PASS

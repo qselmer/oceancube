@@ -74,7 +74,7 @@ test_that("C8 exposes exactly one new public function and bounded method", {
     names(formals(mixed_layer_depth)),
     c("x", "method", "variable", "reference_depth_m", "threshold", "support")
   )
-  expect_identical(length(getNamespaceExports("oceancube")), 46L)
+  expect_identical(length(getNamespaceExports("oceancube")), 47L)
   source <- c8_temperature()
   expect_error(
     mixed_layer_depth(source, method = "density_threshold"),
