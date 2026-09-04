@@ -1,0 +1,5 @@
+case,expected,status
+increasing_pressure,accepted,PASS
+repeated_pressure,rejected,PASS
+decreasing_pressure,rejected,PASS
+p_mid,retained_full_variable,PASS

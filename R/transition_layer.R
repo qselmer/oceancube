@@ -3,8 +3,9 @@
 #' @param x A direct certified source-profile `<ocean_cube>` or an already
 #'   computed certified C4 vertical-gradient `<ocean_cube>`. C1, C2, and C3
 #'   derived profiles are outside the initial certified subset.
-#' @param diagnostic Required diagnostic name. C6 supports exactly
-#'   `"thermocline"` and `"halocline"`.
+#' @param diagnostic Required diagnostic name. Supported routes are
+#'   `"thermocline"`, `"halocline"`, oxygen boundary diagnostics, and the C10
+#'   `"pycnocline"` candidate.
 #' @param variable Optional exact current variable name. `NULL` automatically
 #'   selects the sole variable whose preserved source CF `standard_name` is
 #'   eligible; zero or multiple eligible variables are errors.
@@ -24,8 +25,11 @@
 #' candidate is the strongest eligible absolute salinity gradient. Neither is
 #' thresholded, smoothed, or a claim that a physically strong layer exists.
 #'
-#' The function estimates no layer top, bottom, width, thickness, statistical
-#' uncertainty, oxycline, mixed-layer depth, pycnocline, or density diagnostic.
+#' The pycnocline route accepts only certified C9 potential density referenced
+#' to 0 dbar and composes [depth_gradient()] with positive-polarity
+#' [depth_feature()]. It is an operational gradient candidate, not a universal
+#' complete pycnocline definition. The function estimates no layer top, bottom,
+#' width, thickness, or statistical uncertainty.
 #' `localization_half_span_m` remains a vertical-resolution scale inherited
 #' from C5, not statistical uncertainty.
 #'
@@ -48,6 +52,11 @@ transition_layer <- function(
       "`diagnostic` is required and must be thermocline or halocline.",
       class = "oceancube_transition_diagnostic"
     )
+  }
+  if (is.character(diagnostic) && length(diagnostic) == 1L &&
+      !is.na(diagnostic) && identical(diagnostic, "pycnocline")) {
+    support <- match.arg(support)
+    return(.transition_pycnocline(x, variable, support))
   }
   if (is.character(diagnostic) && length(diagnostic) == 1L &&
       !is.na(diagnostic) && diagnostic %in%

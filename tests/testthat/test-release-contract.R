@@ -48,6 +48,7 @@ test_that("the public API surface includes the approved 0.2 additions", {
                           "threshold", "support"),
     thermodynamic_state = c("x", "salinity", "temperature", "pressure",
                             "reference_pressure_dbar"),
+    stratification = c("x", "metric", "support"),
     link_events = c("x", "events", "lon_col", "lat_col", "date_col",
                     "depth_col", "vars", "prefix", "time_tolerance",
                     "keep_grid"),

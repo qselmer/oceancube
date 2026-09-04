@@ -11,13 +11,13 @@ transition_layer(
 )
 }
 \arguments{
-\item{x}{A direct certified source-profile \code{<ocean_cube>} or an already
-computed certified C4 vertical-gradient \code{<ocean_cube>}. C1, C2, and C3
-derived profiles are outside the initial certified subset.}
+\item{x}{A direct certified source-profile \code{<ocean_cube>}, an already
+computed certified C4 vertical-gradient \code{<ocean_cube>}, or a certified C9
+thermodynamic state for the pycnocline route.}
 
 \item{diagnostic}{Required diagnostic name: \code{"thermocline"},
-\code{"halocline"}, \code{"upper_oxycline"}, or
-\code{"lower_oxycline"}.}
+\code{"halocline"}, \code{"upper_oxycline"}, \code{"lower_oxycline"}, or
+\code{"pycnocline"}.}
 
 \item{variable}{Optional exact current variable name. \code{NULL} selects the
 sole variable whose preserved source CF \code{standard_name} is eligible;
@@ -34,8 +34,8 @@ diagnostic status, Provenance V1, and bounded QA.
 }
 \description{
 Interpret a generic C5 gradient candidate as an unthresholded thermocline,
-halocline, or branch-aware oxycline candidate only when preserved source CF
-identity and units authorize that interpretation.
+halocline, branch-aware oxycline, or C9 potential-density pycnocline candidate
+only when certified semantic identity authorizes that interpretation.
 }
 \details{
 Physical eligibility is determined only from immutable preserved source CF
@@ -47,11 +47,14 @@ the strongest eligible absolute salinity gradient and preserves its sign.
 Direct source profiles compose \code{depth_gradient()} and
 \code{depth_feature()}. Existing certified gradients are not differentiated a
 second time. Gaps, ties, missingness, completeness, source brackets, spacing,
-support gaps, and certification limits remain authoritative. Oxygen diagnostics
-first resolve a complete-profile minimum/core, then rank negative gradients on
+support gaps, and certification limits remain authoritative. The pycnocline
+route accepts only C9 potential density referenced to 0 dbar and uses the
+strongest positive gradient; it is an operational candidate rather than a
+universal complete layer definition. Oxygen diagnostics first resolve a
+complete-profile minimum/core, then rank negative gradients on
 the upper branch or positive gradients on the lower branch. No threshold,
-smoothing, prominence, width, curvature, density, mixed-layer depth, or
-pycnocline is calculated. \code{localization_half_span_m} is a vertical
+smoothing, prominence, width, curvature, or mixed-layer depth is calculated.
+\code{localization_half_span_m} is a vertical
 resolution scale, not statistical uncertainty.
 }
 \examples{
@@ -60,6 +63,7 @@ transition_layer(cube, diagnostic = "thermocline")
 transition_layer(cube, diagnostic = "halocline", support = "all")
 transition_layer(cube, diagnostic = "upper_oxycline")
 transition_layer(cube, diagnostic = "lower_oxycline")
+transition_layer(state, diagnostic = "pycnocline")
 
 gradient <- depth_gradient(cube)
 transition_layer(gradient, diagnostic = "thermocline")

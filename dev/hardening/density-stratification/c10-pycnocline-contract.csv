@@ -1,0 +1,5 @@
+rule,expected,status
+input,CERTIFIED_C9_REF_0_DBAR,PASS
+gradient,C4_depth_gradient,PASS
+ranking,C5_positive_depth_feature,PASS
+claim,unthresholded_candidate,PASS

@@ -1,0 +1,6 @@
+rule,expected,status
+function,gsw_Nsquared,PASS
+input,C9_SA_CT_p_latitude,PASS
+signed_output,preserve_negative_N2,PASS
+smoothing,FALSE,PASS
+missing_bridge,FALSE,PASS

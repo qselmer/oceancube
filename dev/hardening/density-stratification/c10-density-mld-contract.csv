@@ -1,0 +1,6 @@
+rule,expected,status
+density_basis,POTENTIAL_DENSITY_REF_0_DBAR,PASS
+reference_depth_m,10,PASS
+omitted_threshold,0.03_kg_m-3,PASS
+departure_rule,positive_only,PASS
+raw_density,rejected,PASS

@@ -879,8 +879,13 @@
       "_gradient_candidate"
     ),
     oxygen_boundary = "oceancube:explicit_oxygen_threshold_zone_boundary",
-    mixed_layer_depth = "oceancube:first_temperature_threshold_departure",
+    mixed_layer_depth = if (identical(record$method, "density_threshold")) {
+      "oceancube:first_positive_potential_density_threshold_departure"
+    } else {
+      "oceancube:first_temperature_threshold_departure"
+    },
     thermodynamic_state = "oceancube:teos10_thermodynamic_state",
+    stratification = "oceancube:teos10_gsw_nsquared",
     crop_stock = "oceancube:stock_mask",
     NULL
   )

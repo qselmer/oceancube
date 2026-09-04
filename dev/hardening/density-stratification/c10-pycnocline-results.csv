@@ -1,0 +1,5 @@
+case,expected,status
+synthetic,C4_C5_exact_agreement,PASS
+tie,AMBIGUOUS_TIE,PASS
+negative_only,NO_MATCHING_POLARITY,PASS
+netcdf_reads,0,PASS

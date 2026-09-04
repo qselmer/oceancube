@@ -1,0 +1,6 @@
+item,expected,status
+API_exports,48,PASS
+sole_new_export,stratification,PASS
+mixed_layer_depth_signature,unchanged,PASS
+transition_layer_signature,unchanged,PASS
+version,0.2.0.9000,PASS

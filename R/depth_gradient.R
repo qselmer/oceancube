@@ -195,6 +195,7 @@ depth_gradient <- function(x, method = c("auto", "point", "cell")) {
   gradient <- current$vertical_gradient %||% NULL
   sampling <- current$vertical_sampling %||% NULL
   reduction <- current$vertical_reduction %||% NULL
+  thermodynamic <- current$thermodynamic_state %||% NULL
   fallback <- .vertical_value_semantics(x)
   out <- lapply(x$vars, function(variable) {
     if (!is.null(gradient)) {
@@ -203,6 +204,30 @@ depth_gradient <- function(x, method = c("auto", "point", "cell")) {
         resolved_method = NA_character_, source = "current vertical_gradient",
         input_value_semantics = "VERTICAL_SECANT_GRADIENT",
         output_value_semantics = NA_character_, certification_status = "UNSUPPORTED"
+      ))
+    }
+    thermodynamic_item <- if (is.null(thermodynamic)) NULL else {
+      .vertical_gradient_current_item(thermodynamic$output_variables, variable)
+    }
+    if (!is.null(thermodynamic_item)) {
+      .cf_thermodynamic_state_validate(thermodynamic)
+      certified <- identical(
+        thermodynamic$certification_status, "CERTIFIED_C9_TEOS10_STATE"
+      ) && identical(
+        thermodynamic_item$value_semantics,
+        "TEOS10_POINT_STATE_FROM_REPRESENTATIVE_SOURCE_VALUES"
+      )
+      return(list(
+        variable = variable,
+        status = if (certified) "DERIVED_VERTICAL_POINT" else
+          "CURRENT_THERMODYNAMIC_STATE_UNCERTIFIED",
+        resolved_method = if (certified) "point" else NA_character_,
+        source = "current thermodynamic_state",
+        input_value_semantics = thermodynamic_item$value_semantics,
+        output_value_semantics = if (certified) {
+          "DERIVED_POINT_SECANT_GRADIENT"
+        } else NA_character_,
+        certification_status = if (certified) "CERTIFIED" else "UNSUPPORTED"
       ))
     }
     sampled <- if (is.null(sampling)) NULL else {

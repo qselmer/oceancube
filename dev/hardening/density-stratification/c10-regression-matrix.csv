@@ -1,0 +1,5 @@
+contract,expected,status
+C1_C9,numerical_and_semantic_unchanged,PASS
+temperature_MLD,exact_legacy_output,PASS
+transition_existing,unchanged,PASS
+DESCRIPTION,unchanged,PASS

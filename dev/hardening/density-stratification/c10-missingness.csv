@@ -1,0 +1,4 @@
+case,expected,status
+internal_NA,split_finite_runs,PASS
+singleton_run,unresolved,PASS
+missing_bridge,FALSE,PASS

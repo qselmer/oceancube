@@ -102,7 +102,7 @@ test_that("C9 exposes one bounded API and deterministic dependency behavior", {
     names(formals(thermodynamic_state)),
     c("x", "salinity", "temperature", "pressure", "reference_pressure_dbar")
   )
-  expect_identical(length(getNamespaceExports("oceancube")), 47L)
+  expect_identical(length(getNamespaceExports("oceancube")), 48L)
   expect_error(
     thermodynamic_state(c9_profile(), reference_pressure_dbar = -1),
     class = "oceancube_teos10_reference_pressure"
@@ -453,7 +453,7 @@ test_that("C1 through C8 public contracts and numerical behavior do not change",
                    c("x", "diagnostic", "variable", "support"))
   expect_error(
     mixed_layer_depth(c9_profile(), method = "density_threshold"),
-    class = "oceancube_mld_method_unsupported"
+    class = "oceancube_c10_state_input"
   )
   temperature <- cube_slice(c9_profile(
     salinity_values = rep(35, 6),

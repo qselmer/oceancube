@@ -2,7 +2,7 @@
 % Please edit documentation in R/mixed_layer_depth.R
 \name{mixed_layer_depth}
 \alias{mixed_layer_depth}
-\title{Estimate temperature-threshold mixed-layer depth}
+\title{Estimate temperature- or density-threshold mixed-layer depth}
 \usage{
 mixed_layer_depth(
   x,
@@ -14,19 +14,21 @@ mixed_layer_depth(
 )
 }
 \arguments{
-\item{x}{A direct source-profile \verb{<ocean_cube>} with one eligible preserved
-CF temperature variable and certified metric-depth point semantics.}
+\item{x}{A direct source-profile \verb{<ocean_cube>} for the C8 temperature
+method, or a certified C9 thermodynamic-state cube for the C10 density
+method.}
 
-\item{method}{Mixed-layer method. C8 supports only
-\code{"temperature_threshold"}.}
+\item{method}{\code{"temperature_threshold"} or \code{"density_threshold"}.}
 
-\item{variable}{Optional exact eligible current temperature variable name.}
+\item{variable}{Optional exact eligible temperature variable, or exactly
+\code{sea_water_potential_density} for the density method.}
 
 \item{reference_depth_m}{Finite non-negative reference depth in canonical
 physical metres, positive downward.}
 
-\item{threshold}{Finite positive absolute temperature-departure threshold in
-K/degree-Celsius-equivalent magnitude.}
+\item{threshold}{Finite positive departure threshold. If omitted, the
+method-specific defaults are 0.2 K/degree Celsius for temperature and
+0.03 kg m-3 for potential density.}
 
 \item{support}{Vertical connectivity policy. \code{"local"} stops at the first
 explicit support gap; \code{"all"} may inspect beyond it but never localizes an
@@ -39,7 +41,7 @@ reference depth. Unresolved rows retain the governing reference, gap,
 missingness, or open-bottom status.
 }
 \description{
-Estimate temperature-threshold mixed-layer depth
+Estimate temperature- or density-threshold mixed-layer depth
 }
 \details{
 C8 implements only a point-profile temperature threshold. The reference
@@ -50,9 +52,9 @@ bracket may be linearly interpolated in departure magnitude. Missing values
 and explicit gaps are never bridged, and no crossing before the observed
 bottom is reported as open rather than replaced by the deepest level.
 
-Cell-mean profiles, density thresholds, gradient and hybrid definitions,
-pycnoclines, stratification, and pressure or TEOS-10 conversions are outside
-the C8 runtime contract.
+The C10 density method consumes only C9 potential density referenced to
+exactly 0 dbar and uses the first positive departure from the 10 m reference;
+it never uses absolute density departure or recomputes TEOS-10 state.
 }
 \examples{
 \dontrun{

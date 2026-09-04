@@ -988,6 +988,65 @@
   out
 }
 
+.cf_stratification_validate <- function(x) {
+  required <- c(
+    "schema_name", "schema_version", "method",
+    "source_thermodynamic_schema", "source_thermodynamic_schema_version",
+    "source_thermodynamic_certification", "gsw_package_version",
+    "gsw_function", "metric", "n2_standard_name",
+    "source_absolute_salinity_variable",
+    "source_conservative_temperature_variable", "source_pressure_variable",
+    "latitude_source", "source_pair_indices", "source_depth_midpoints",
+    "canonical_depth_midpoints_m", "support_policy", "support_relation",
+    "support_gap_m", "missingness_policy", "pressure_monotonicity_rule",
+    "output_geometry", "output_bounds_status", "output_variables",
+    "certification_status"
+  )
+  expected <- c(
+    "buoyancy_frequency_squared", "sea_water_pressure_midpoint"
+  )
+  if (!is.list(x) || length(setdiff(required, names(x))) ||
+      !identical(x$schema_name, "oceancube_stratification") ||
+      !identical(x$schema_version, "1.0.0") ||
+      !identical(x$method, "TEOS10_GSW_NSQUARED") ||
+      !identical(x$gsw_function, "gsw_Nsquared") ||
+      !identical(x$metric, "N2") ||
+      !x$support_policy %in% c("local", "all") ||
+      !identical(x$output_geometry, "GEOMETRY_NO_BOUNDS") ||
+      !identical(x$output_bounds_status, "BOUNDS_MISSING") ||
+      !identical(x$certification_status, "CERTIFIED_C10_TEOS10_N2") ||
+      !is.list(x$output_variables) || !length(x$output_variables)) {
+    .cf_metadata_abort("Invalid current C10 stratification descriptor.")
+  }
+  variables <- vapply(x$output_variables, function(item) {
+    if (!is.list(item) || !all(c(
+      "variable", "standard_name", "unit", "value_semantics"
+    ) %in% names(item))) {
+      return(NA_character_)
+    }
+    item$variable
+  }, character(1L))
+  if (anyNA(variables) || anyDuplicated(variables) ||
+      !identical(variables, expected[expected %in% variables]) ||
+      length(x$source_pair_indices) != length(x$source_depth_midpoints) ||
+      length(x$source_pair_indices) != length(x$canonical_depth_midpoints_m) ||
+      length(x$source_pair_indices) != length(x$support_relation) ||
+      length(x$source_pair_indices) != length(x$support_gap_m)) {
+    .cf_metadata_abort("Invalid C10 stratification output alignment.")
+  }
+  invisible(TRUE)
+}
+
+.cf_stratification_for_selection <- function(x, variables) {
+  .cf_stratification_validate(x)
+  out <- x
+  keep <- vapply(out$output_variables, `[[`, character(1L), "variable") %in%
+    variables
+  out$output_variables <- out$output_variables[keep]
+  .cf_stratification_validate(out)
+  out
+}
+
 .cf_validate_cf <- function(cf, require_current = TRUE) {
   if (!is.list(cf) ||
       !identical(cf$schema_name, "oceancube_cf_metadata") ||
@@ -1116,11 +1175,22 @@
         `[[`, character(1L), "variable"
       )
     }
+    stratification_variables <- character()
+    if (!is.null(cf$current$stratification)) {
+      .cf_stratification_validate(cf$current$stratification)
+      stratification_variables <- vapply(
+        cf$current$stratification$output_variables,
+        `[[`, character(1L), "variable"
+      )
+    }
     current_variables_valid <- all(
       cf$current$variables %in% cf$source$variables$order
     ) || (
       length(thermodynamic_variables) > 0L &&
         all(cf$current$variables %in% thermodynamic_variables)
+    ) || (
+      length(stratification_variables) > 0L &&
+        all(cf$current$variables %in% stratification_variables)
     )
     if (!is.list(cf$current) ||
         !is.character(cf$current$variables) ||
@@ -1269,6 +1339,12 @@
         out$cf$current$thermodynamic_state, variables
       )
   }
+  if (!is.null(out$cf$current$stratification)) {
+    out$cf$current$stratification <-
+      .cf_stratification_for_selection(
+        out$cf$current$stratification, variables
+      )
+  }
   out <- .cf_mark_current_interpretation(
     out,
     if (identical(metadata$cf$current$semantic_status, "DERIVATION_PENDING")) {
@@ -1299,6 +1375,7 @@
   out$cf$current$vertical_reduction <- NULL
   out$cf$current$vertical_sampling <- NULL
   out$cf$current$vertical_gradient <- NULL
+  out$cf$current$stratification <- NULL
   out <- .cf_mark_current_interpretation(out, "DERIVATION_PENDING")
   .cf_metadata_validate(out)
   out
@@ -1569,6 +1646,33 @@
     )
   }
   out$cf$current$vertical_gradient <- descriptor
+  .cf_metadata_validate(out)
+  out
+}
+
+.cf_metadata_for_stratification <- function(metadata, midpoints, descriptor) {
+  if (is.null(metadata)) return(NULL)
+  .cf_stratification_validate(descriptor)
+  out <- .cf_metadata_for_transform(metadata, "stratification")
+  out$cf$current$variables <- vapply(
+    descriptor$output_variables, `[[`, character(1L), "variable"
+  )
+  out$cf$current$links <- integer()
+  out$cf$current$semantic_status <- "CURRENT_SUPPORTED_SUBSET"
+  out$cf$current$derivation <- NULL
+  if (!is.null(metadata$cf$current$vertical)) {
+    out$cf$current$vertical <- .cf_vertical_for_gradient(
+      metadata$cf$current$vertical, midpoints
+    )
+  }
+  out$cf$current$vertical_reduction <- NULL
+  out$cf$current$vertical_sampling <- NULL
+  out$cf$current$vertical_gradient <- NULL
+  out$cf$current$thermodynamic_state <- NULL
+  out$cf$current$stratification <- descriptor
+  out <- .cf_mark_current_interpretation(
+    out, "CURRENT_SUPPORTED_SUBSET", out$cf$current$variables
+  )
   .cf_metadata_validate(out)
   out
 }

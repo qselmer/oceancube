@@ -1,0 +1,5 @@
+case,expected,status
+default_threshold,0.03,PASS
+explicit_threshold,used_exactly,PASS
+inversion,continue_and_record,PASS
+open_bottom,NA_depth,PASS

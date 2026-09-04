@@ -1,0 +1,5 @@
+item,authority,status
+density_mld_10m_0.03,de_Boyer_Montegut_2004,PASS
+N2_algorithm,TEOS10_GSW_R_gsw_Nsquared,PASS
+N2_standard_name,CF_standard_name_table,PASS
+pycnocline_terminology,operational_gradient_candidate,PASS

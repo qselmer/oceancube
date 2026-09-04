@@ -730,6 +730,7 @@ thermodynamic_state <- function(
   current$vertical_reduction <- NULL
   current$vertical_sampling <- NULL
   current$vertical_gradient <- NULL
+  current$stratification <- NULL
   current$thermodynamic_state <- descriptor
   out$cf$current <- current
   out$cf$interpretation$current$status <- "CURRENT_SUPPORTED_SUBSET"

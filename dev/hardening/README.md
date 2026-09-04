@@ -609,3 +609,13 @@ full reference-pressure potential density, metadata, Provenance V1, and QA.
 Cell means, generic salinity, runtime installation, fallbacks, density MLD,
 pycnocline, and N2 remain outside C9. Gate B remains SATISFIED, B7-001 remains
 PARTIALLY-CLOSED, and 0.3.0-C remains IN PROGRESS.
+
+## C10 density diagnostics and TEOS-10 stratification
+
+C10 approves and implements DEC-039 with stratification() as the sole new
+export. Density MLD and pycnocline extend existing signatures and consume only
+certified C9 potential density at 0 dbar. MLD uses the classical positive
++0.03 kg m-3 departure from 10 m; pycnocline composes C4/C5. Signed N2 and GSW
+p_mid come only from gsw_Nsquared() over contiguous finite C9 SA/CT/p runs,
+with strict pressure geometry, explicit gaps, no smoothing, and zero NetCDF
+reads. C1-C10 are COMPLETE/CERTIFIED and the next step is C-EXIT.

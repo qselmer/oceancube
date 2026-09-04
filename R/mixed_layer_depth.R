@@ -1,14 +1,16 @@
-#' Estimate temperature-threshold mixed-layer depth
+#' Estimate temperature- or density-threshold mixed-layer depth
 #'
-#' @param x A direct source-profile `<ocean_cube>` with one eligible preserved
-#'   CF temperature variable and certified metric-depth point semantics.
-#' @param method Mixed-layer method. C8 supports only
-#'   `"temperature_threshold"`.
-#' @param variable Optional exact eligible current temperature variable name.
+#' @param x A direct source-profile `<ocean_cube>` for the C8 temperature
+#'   method, or a certified C9 thermodynamic-state cube for the C10 density
+#'   method.
+#' @param method `"temperature_threshold"` or `"density_threshold"`.
+#' @param variable Optional exact eligible temperature variable, or exactly
+#'   `sea_water_potential_density` for the density method.
 #' @param reference_depth_m Finite non-negative reference depth in canonical
 #'   physical metres, positive downward.
-#' @param threshold Finite positive absolute temperature-departure threshold in
-#'   K/degree-Celsius-equivalent magnitude.
+#' @param threshold Finite positive departure threshold. If omitted, the
+#'   method-specific defaults are 0.2 K/degree Celsius for temperature and
+#'   0.03 kg m-3 for potential density.
 #' @param support Vertical connectivity policy. `"local"` stops at the first
 #'   explicit support gap; `"all"` may inspect beyond it but never localizes an
 #'   exact MLD through a gapped path.
@@ -27,9 +29,9 @@
 #' and explicit gaps are never bridged, and no crossing before the observed
 #' bottom is reported as open rather than replaced by the deepest level.
 #'
-#' Cell-mean profiles, density thresholds, gradient and hybrid definitions,
-#' pycnoclines, stratification, and pressure or TEOS-10 conversions are outside
-#' the C8 runtime contract.
+#' The C10 density method consumes only C9 potential density referenced to
+#' exactly 0 dbar and uses the first positive departure from the 10 m reference;
+#' it never uses absolute density departure or recomputes TEOS-10 state.
 #'
 #' @references
 #' de Boyer Montegut, C. et al. (2004). Mixed layer depth over the global
@@ -50,6 +52,16 @@ mixed_layer_depth <- function(
     reference_depth_m = 10,
     threshold = 0.2,
     support = c("local", "all")) {
+  threshold_missing <- missing(threshold)
+  if (is.character(method) && length(method) == 1L && !is.na(method) &&
+      identical(method, "density_threshold")) {
+    support <- match.arg(support)
+    threshold_effective <- if (threshold_missing) 0.03 else threshold
+    return(.density_mld(
+      x, variable, reference_depth_m, threshold_effective, support,
+      threshold_source = if (threshold_missing) "METHOD_DEFAULT" else "EXPLICIT"
+    ))
+  }
   if (!is.character(method) || length(method) != 1L || is.na(method) ||
       !identical(method, "temperature_threshold")) {
     rlang::abort(
