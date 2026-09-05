@@ -1,0 +1,6 @@
+case,expected,result
+temperature_MLD_no_crossing,MLD_OPEN_AT_PROFILE_BOTTOM,PASS
+density_MLD_no_crossing,MLD_OPEN_AT_PROFILE_BOTTOM,PASS
+oxygen_upper_edge,UPPER_BOUNDARY_OPEN_AT_PROFILE_EDGE,PASS
+oxygen_lower_edge,LOWER_BOUNDARY_OPEN_AT_PROFILE_EDGE,PASS
+sampling_extrapolation,ERROR,PASS

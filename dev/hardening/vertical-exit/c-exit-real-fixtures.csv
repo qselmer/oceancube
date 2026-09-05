@@ -1,0 +1,6 @@
+relative_path,provider,purpose,bytes,sha256,current_expected_role,status
+tests/testthat/fixtures/real-data/noaa-oisst21-surface-time-fv1.nc,NOAA/NCEI,OISST v2.1 surface/time regression,64088,8ae631afcafa6a5855a92c90b1d6098f3cefd2f534ea93ae47023f91db66d072,surface/time; vertical diagnostics not applicable,SUPPORTED_PASS
+tests/testthat/fixtures/real-data/noaa-etopo2022-bathymetry-fv1.nc,NOAA/NCEI,ETOPO 2022 static bathymetry,1211653,7b67bf4291015afc47a5218db25a6254eaa60d55c7afa1517bee5ff853cafddc,static/no-time governed limitation A3B-002,EXPECTED_LIMITATION
+tests/testthat/fixtures/real-data/noaa-woa23-vertical-fv1.nc,NOAA/NCEI,WOA23 annual temperature/salinity,57343,70fddb97edcda4e8fb8a4ddbb3428823f5f6a47deba51ff3624659f660fb8456,known time-encoding conflict; deterministic rejection A3B-003,EXPECTED_LIMITATION_OPEN_RECLASSIFIED
+tests/testthat/fixtures/real-data/noaa-woa23-monthly-vertical-fv1.nc,NOAA/NCEI,WOA23 January temperature/salinity,55287,38e306f9e9ccdc3494f734a7463629ba73b2e63d5b045da4c6cebc92589ae15d,certified cell means; C8/C9 reject,CERTIFIED_VERTICAL_PASS
+tests/testthat/fixtures/real-data/noaa-woa23-monthly-oxygen-fv1.nc,NOAA/NCEI,WOA23 January oxygen,48229,03b6b836485145d53f85a1cfd1d3e59921525fc413a52a95127db105cccca74f,C7 governed positive fixture,CERTIFIED_OXYGEN_PASS

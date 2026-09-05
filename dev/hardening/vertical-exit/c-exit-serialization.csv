@@ -1,0 +1,13 @@
+object,result
+vertical_reduction,PASS
+sampled_cube,PASS
+gradient_cube,PASS
+feature_table,PASS
+transition_table,PASS
+MLD_table,PASS
+thermodynamic_state,PASS
+stratification_cube,PASS
+signed_negative_N2,PRESERVED_SAVE_RDS_AND_SERIALIZE
+p_mid_vs_geometric_midpoint,PRESERVED_AS_DISTINCT_METADATA
+cube_slice_of_state,PASS
+cube_slice_of_signed_N2,PASS

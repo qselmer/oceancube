@@ -1,0 +1,13 @@
+function,formals,status
+cube_layer_thickness,x|depth_bounds|unit,PASS
+cube_cell_volume,x|depth_bounds|unit,PASS
+layer_mean,x|depth,PASS
+layer_integral,x|depth,PASS
+depth_sample,x|depth|method,PASS
+depth_gradient,x|method,PASS
+depth_feature,x|polarity|support,PASS
+transition_layer,x|diagnostic|variable|support,PASS
+oxygen_boundary,x|threshold|threshold_unit|variable|support,PASS
+mixed_layer_depth,x|method|variable|reference_depth_m|threshold|support,PASS
+thermodynamic_state,x|salinity|temperature|pressure|reference_pressure_dbar,PASS
+stratification,x|metric|support,PASS

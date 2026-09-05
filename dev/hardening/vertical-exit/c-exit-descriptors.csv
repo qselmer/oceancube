@@ -1,0 +1,8 @@
+descriptor,schema_name,schema_version,producer,allowed_downstream_consumer,status
+vertical,oceancube_cf_vertical,1.0.0,CF vertical resolver,C1-C10 certified geometry,PASS
+vertical_reduction,oceancube_vertical_reduction,1.0.0,layer_mean/layer_integral,certified gradient or terminal product,PASS
+vertical_sampling,oceancube_vertical_sampling,1.0.0,depth_sample,certified point-gradient path,PASS
+vertical_gradient,oceancube_vertical_gradient,1.0.0,depth_gradient,depth_feature/transition_layer/oxygen_boundary/pycnocline,PASS
+thermodynamic_state,oceancube_thermodynamic_state,1.0.0,thermodynamic_state,density MLD/pycnocline/stratification,PASS
+stratification,oceancube_stratification,1.0.0,stratification,selection or terminal pair-midpoint product,PASS
+stale_descriptors,not_applicable,not_applicable,derived builders,CLEARED_OR_REJECTED,PASS

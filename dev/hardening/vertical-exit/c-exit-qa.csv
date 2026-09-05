@@ -1,0 +1,9 @@
+family,required_evidence,result
+reductions,coverage_weights_reads_status,PASS
+sampling,method_targets_reads_status,PASS
+gradients,spacing_support_missing_pairs,PASS
+features,ties_completeness_support,PASS
+transitions,identity_basis_status,PASS
+TEOS10,gsw_version_inputs_funnel_reads,PASS
+density_and_N2,threshold_reference_runs_signed_counts,PASS
+status_count_parity,reported_counts_equal_outputs,PASS

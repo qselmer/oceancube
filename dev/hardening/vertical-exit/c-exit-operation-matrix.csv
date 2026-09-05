@@ -1,0 +1,11 @@
+phase,public_operation,global_result
+C1,cube_layer_thickness|cube_cell_volume|layer_mean,PASS
+C2,layer_integral,PASS
+C3,depth_sample,PASS
+C4,depth_gradient,PASS
+C5,depth_feature,PASS
+C6,transition_layer thermocline|halocline,PASS
+C7,transition_layer upper_oxycline|lower_oxycline|oxygen_boundary,PASS
+C8,mixed_layer_depth temperature_threshold,PASS
+C9,thermodynamic_state,PASS
+C10,mixed_layer_depth density_threshold|transition_layer pycnocline|stratification,PASS

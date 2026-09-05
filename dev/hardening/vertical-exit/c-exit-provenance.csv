@@ -1,0 +1,7 @@
+requirement,result,notes
+schema_version,PASS,Provenance_V1_1.0.0
+operation_lineage,PASS,C1_C10_outputs_retain_operation_records
+multi_step_continuity,PASS,temperature_and_density_compositions
+source_metadata_separation,PASS,source_CF_immutable
+privacy,PASS,no_absolute_path_username_hostname_or_secret
+serialization,PASS,round_trip_identical

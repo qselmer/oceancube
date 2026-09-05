@@ -1,0 +1,10 @@
+audit,result,notes
+scientific_test_network_dependency,NONE,offline_fixtures_only
+deferred_descriptor,PASS,no_persistent_handle
+bounded_reads,PASS,operation_specific_depth_and_variable selections
+memory_outputs,PASS,derived scientific products materialized
+source_identity,PASS,path_size_mtime_schema contract unchanged
+C9_memory_to_density_MLD,PASS,0 NetCDF payload reads
+C9_memory_to_pycnocline,PASS,0 NetCDF payload reads
+C9_memory_to_stratification,PASS,0 NetCDF payload reads
+derived_selection,PASS,C9 state and C10 N2 descriptors remain bounded

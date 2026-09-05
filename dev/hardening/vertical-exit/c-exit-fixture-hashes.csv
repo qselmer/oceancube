@@ -1,0 +1,6 @@
+fixture,size_bytes,sha256,manifest_match,status
+noaa-etopo2022-bathymetry-fv1.nc,1211653,7b67bf4291015afc47a5218db25a6254eaa60d55c7afa1517bee5ff853cafddc,TRUE,PASS
+noaa-oisst21-surface-time-fv1.nc,64088,8ae631afcafa6a5855a92c90b1d6098f3cefd2f534ea93ae47023f91db66d072,TRUE,PASS
+noaa-woa23-monthly-oxygen-fv1.nc,48229,03b6b836485145d53f85a1cfd1d3e59921525fc413a52a95127db105cccca74f,TRUE,PASS
+noaa-woa23-monthly-vertical-fv1.nc,55287,38e306f9e9ccdc3494f734a7463629ba73b2e63d5b045da4c6cebc92589ae15d,TRUE,PASS
+noaa-woa23-vertical-fv1.nc,57343,70fddb97edcda4e8fb8a4ddbb3428823f5f6a47deba51ff3624659f660fb8456,TRUE,PASS

@@ -1,0 +1,5 @@
+audit,result,notes
+A6_peak_RSS_regression,PASS,existing governed evidence unchanged
+connection_lifecycle,PASS,zero persistent NetCDF handles
+large_local,NOT_RUN,maintainer_only and nonblocking
+new_runtime_allocation_path,NONE,C_EXIT_changes_no_runtime

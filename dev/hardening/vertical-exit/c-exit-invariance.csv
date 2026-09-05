@@ -1,0 +1,6 @@
+dimension,applicable_scope,result,notes
+metres_vs_kilometres,C1_C4_C8_C10,PASS,canonical metres agree
+ascending_vs_descending,C1_C10,PASS,physical results agree
+positive_down,all_certified_depth_profiles,PASS,canonical convention
+positive_up,bounded_geometry_only,PASS,named transitions reject unsupported positive-up input
+irregular_spacing,C3_C10,PASS,actual metric separation used

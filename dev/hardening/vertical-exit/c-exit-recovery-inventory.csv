@@ -1,0 +1,33 @@
+path,old_status,classification,recover,reason,needs_update
+NEWS.md,M,DO_NOT_RECOVER,FALSE,canonical documentation rebuilt after gates,TRUE
+dev/hardening/vertical-exit/README.md,A,VALID_REUSABLE_WITH_GOVERNANCE_UPDATE,TRUE,repository-only C-EXIT overview,TRUE
+dev/hardening/vertical-exit/c-exit-ambiguity.csv,A,VALID_REUSABLE,TRUE,scientific ambiguity evidence,TRUE
+dev/hardening/vertical-exit/c-exit-api-diff.csv,A,VALID_REUSABLE,TRUE,API freeze evidence,FALSE
+dev/hardening/vertical-exit/c-exit-certification.csv,A,VALID_REUSABLE_WITH_GOVERNANCE_UPDATE,TRUE,certification summary,TRUE
+dev/hardening/vertical-exit/c-exit-commit-chain.csv,A,VALID_REUSABLE_WITH_GOVERNANCE_UPDATE,TRUE,phase ancestry evidence,TRUE
+dev/hardening/vertical-exit/c-exit-composition.csv,A,VALID_REUSABLE,TRUE,cross-component science evidence,TRUE
+dev/hardening/vertical-exit/c-exit-descriptors.csv,A,VALID_REUSABLE,TRUE,current descriptor evidence,TRUE
+dev/hardening/vertical-exit/c-exit-errors.csv,A,VALID_REUSABLE,TRUE,error-class evidence,FALSE
+dev/hardening/vertical-exit/c-exit-fixture-hashes.csv,A,VALID_REUSABLE,TRUE,governed hash evidence,FALSE
+dev/hardening/vertical-exit/c-exit-gaps.csv,A,VALID_REUSABLE,TRUE,gap-policy evidence,FALSE
+dev/hardening/vertical-exit/c-exit-governance.csv,A,VALID_REUSABLE_WITH_GOVERNANCE_UPDATE,TRUE,C-GOVR changed canonical truth,TRUE
+dev/hardening/vertical-exit/c-exit-invariance.csv,A,VALID_REUSABLE,TRUE,invariance evidence,FALSE
+dev/hardening/vertical-exit/c-exit-io.csv,A,VALID_REUSABLE,TRUE,I/O evidence,TRUE
+dev/hardening/vertical-exit/c-exit-memory.csv,A,VALID_REUSABLE,TRUE,memory-backend evidence,FALSE
+dev/hardening/vertical-exit/c-exit-missingness.csv,A,VALID_REUSABLE,TRUE,missingness evidence,TRUE
+dev/hardening/vertical-exit/c-exit-open-boundaries.csv,A,VALID_REUSABLE,TRUE,boundary evidence,TRUE
+dev/hardening/vertical-exit/c-exit-operation-matrix.csv,A,VALID_REUSABLE,TRUE,C1-C10 operation matrix,FALSE
+dev/hardening/vertical-exit/c-exit-provenance.csv,A,VALID_REUSABLE,TRUE,lineage evidence,FALSE
+dev/hardening/vertical-exit/c-exit-public-api.csv,A,VALID_REUSABLE,TRUE,48-export evidence,FALSE
+dev/hardening/vertical-exit/c-exit-public-signatures.csv,A,VALID_REUSABLE,TRUE,signature freeze evidence,FALSE
+dev/hardening/vertical-exit/c-exit-qa.csv,A,VALID_REUSABLE,TRUE,QA evidence,FALSE
+dev/hardening/vertical-exit/c-exit-real-fixtures.csv,A,VALID_REUSABLE,TRUE,fixture role evidence,TRUE
+dev/hardening/vertical-exit/c-exit-regression.csv,A,VALID_REUSABLE,TRUE,regression evidence,TRUE
+dev/hardening/vertical-exit/c-exit-serialization.csv,A,VALID_REUSABLE,TRUE,serialization evidence,TRUE
+dev/hardening/vertical-exit/c-exit-value-semantics.csv,A,VALID_REUSABLE,TRUE,value-semantics evidence,FALSE
+docs/roadmap/post-0.2.0/README.md,M,DO_NOT_RECOVER,FALSE,current canonical roadmap rebuilt after gates,TRUE
+docs/roadmap/post-0.2.0/oceancube-roadmap-v1.Rmd,M,DO_NOT_RECOVER,FALSE,current canonical roadmap rebuilt after gates,TRUE
+docs/roadmap/post-0.2.0/roadmap-decisions.csv,M,DO_NOT_RECOVER,FALSE,C-GOVR register is authoritative and DEC-040 added manually,TRUE
+docs/roadmap/post-0.2.0/roadmap-provenance.csv,M,DO_NOT_RECOVER,FALSE,current canonical provenance rebuilt after gates,TRUE
+inst/architecture/oceancube-vertical-science-exit-v1.md,A,VALID_REUSABLE_WITH_GOVERNANCE_UPDATE,TRUE,distributed exit contract,TRUE
+tests/testthat/test-vertical-science-global-exit.R,A,VALID_REUSABLE,TRUE,allowed global integration harness,TRUE

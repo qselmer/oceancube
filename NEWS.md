@@ -2,19 +2,30 @@
 
 ## Development
 
+- Certifies the C1-C10 vertical-ocean engine as globally coherent within its
+  bounded supported subsets. DEC-040 freezes canonical positive-down metric
+  depth, distinct value and diagnostic semantics, explicit gap/missingness
+  behavior, the C9-to-C10 TEOS-10 chain, signed N-squared, immutable source CF,
+  Provenance V1, and the repository-only hardening-evidence policy. Phase C is
+  complete and certified locally; remote exit remains pending.
+- Adds `stratification()` and extends `mixed_layer_depth()` plus
+  `transition_layer()` with the certified C10 density-MLD, pycnocline-candidate,
+  and signed TEOS-10 N-squared paths over C9 state. Temperature and density MLD,
+  pycnocline and maximum N-squared remain separate scientific quantities.
 - Adds `thermodynamic_state()` as the certified C9 TEOS-10 bridge from exact
   CF Practical/Absolute Salinity and in-situ/potential/Conservative
   Temperature to SA, CT, sea pressure, in-situ density, and reference-pressure
   potential density. The compiled `gsw` dependency is optional via `Suggests`;
   complete source states must pass its 75-term funnel, while cell means,
   generic salinity identities, fallbacks, density MLD, pycnocline, and N2
-  remain rejected or deferred.
+  remain rejected unless covered by the separately certified C10 contract.
 - Adds `mixed_layer_depth()` for the first locally supported absolute
   temperature departure from a configurable near-surface reference. C8 is
   restricted to direct CF point-temperature profiles; gaps, missing paths,
   inversions, open bottoms, provenance, and QA remain explicit. Density-based,
   gradient, and hybrid MLD definitions are deferred to a separately certified
-  TEOS-10 thermodynamic engine.
+  TEOS-10 thermodynamic engine; the density method is now certified separately
+  through C9/C10 state.
 - Adds `oxygen_boundary()` and extends `transition_layer()` with branch-aware
   `upper_oxycline` and `lower_oxycline` candidates. Oxygen identity is gated by
   preserved CF `standard_name` and same-family units; the core, gaps,

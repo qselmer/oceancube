@@ -1,0 +1,17 @@
+area,requirement,result,status
+starting_state,dev-0.3.0 at C-GOVR,9865434038b1c7dbbe4da3959341d27d15029ee6,PASS
+API,exports,48,PASS
+version,DESCRIPTION,0.2.0.9000,PASS
+runtime,R files changed,0,PASS
+integration_test,two fresh sessions,67 expectations each; 59.15 and 61.27 seconds,PASS
+full_tests,final source suite,79 files; 824 cases; 6311 expectations; 1700.24 seconds; 0 failures errors test warnings or skips,PASS
+direct_build,direct checkout,KNOWN_CODEX_GIT_REFS_COPY_DEFECT_ONLY,CLASSIFIED
+build,governed clean snapshot,oceancube_0.2.0.9000.tar.gz; 1753449 bytes; sha256 75ffc2d87a6c03c2944a192344fa15a7e45e49aec88279d3ea3075d514ceb2bb,PASS
+tarball_contract,distributed and repository-only paths,vertical exit architecture present; evidence policy present; global test present; dev/hardening/vertical-exit absent,PASS
+check,R CMD check --no-manual,Status OK; 0 errors; 0 warnings; 0 notes; installed test PASS 6298; gsw tests executed,PASS
+installed_without_gsw,isolated library with gsw temporarily hidden and restored,package load/API 48/non-TEOS PASS; thermodynamic_state and stratification missing-dependency errors deterministic,PASS
+installed_with_gsw,public C1-C10 smoke and API 48,gsw 1.2.0; all required public families PASS; API 48; internal calls 0,PASS
+phase,C1-C10,COMPLETE_CERTIFIED,PASS
+phase,C_GOVR,COMPLETE_CERTIFIED_LOCAL_REMOTE,PASS
+phase,C_EXIT,LOCAL_COMPLETE_CERTIFIED,PASS
+phase,0.3.0-C,COMPLETE_CERTIFIED_LOCALLY_REMOTE_EXIT_PENDING,PASS

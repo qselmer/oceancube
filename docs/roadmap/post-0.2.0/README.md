@@ -183,8 +183,12 @@ exports and C1-C10 are technically COMPLETE/CERTIFIED.
 C-GOVR reconciles DEC-037, DEC-038, and DEC-039 into the canonical decision
 register and defines the boundary between distributed package contracts and
 repository-only `dev/hardening/**` evidence. The reconciliation is complete
-locally; C-EXIT remains blocked pending remote C-GOVR certification and a
-fresh bounded rerun. Phase 0.3.0-C therefore remains IN PROGRESS.
+and certified locally and remotely. C-EXIT adds DEC-040 after a fresh bounded
+global rerun and certifies C1-C10 together without changing runtime, dependencies,
+version, signatures, or the 48-export API. Phase 0.3.0-C is therefore
+COMPLETE/CERTIFIED LOCALLY — REMOTE EXIT PENDING. The only planned next phase,
+after remote C-EXIT certification, is 0.3.0-D1 architecture and contract work;
+D1 has not started.
 
 ## Change control
 

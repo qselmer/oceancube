@@ -1,0 +1,9 @@
+scope,result,evidence
+C1_C10_phase_tests,PASS,existing_dedicated_test_files
+global_integration_repeat_1,PASS,67 expectations; 59.15 seconds; fresh session
+global_integration_repeat_2,PASS,67 expectations; 61.27 seconds; fresh session
+full_source_suite,PASS,79 files; 824 cases; 6311 expectations; 1700.24 seconds; 0 failures/errors/warnings/skips
+final_tarball_check,PASS,Status OK; installed suite 6298 expectations; 0 failures/warnings/skips; 0 check errors/warnings/notes
+previous_numeric_results_changed,FALSE,full_regression_suite
+unexpected_warnings,0,testthat_summary
+future_features_implemented,FALSE,static_scope_audit

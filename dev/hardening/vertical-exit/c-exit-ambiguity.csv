@@ -1,0 +1,12 @@
+case,expected,result
+gradient_tie,AMBIGUOUS_TIE,PASS
+flat_gradient,NO_MATCHING_POLARITY,PASS
+pycnocline_tie,AMBIGUOUS_TIE,PASS
+flat_temperature,UNRESOLVED_WHERE_APPROPRIATE,PASS
+flat_salinity,UNRESOLVED_WHERE_APPROPRIATE,PASS
+flat_oxygen,UNRESOLVED_WHERE_APPROPRIATE,PASS
+flat_potential_density,UNRESOLVED_WHERE_APPROPRIATE,PASS
+thermocline_halocline_tie,AMBIGUOUS_TIE,PASS
+oxygen_disjoint_minima,AMBIGUOUS_DISJOINT_MINIMA,PASS
+shared_cell_boundary,AMBIGUOUS_BOUNDARY_ERROR,PASS
+multiple_semantic_variables,AMBIGUOUS_VARIABLE_ERROR,PASS

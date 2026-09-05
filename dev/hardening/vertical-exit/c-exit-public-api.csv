@@ -1,0 +1,7 @@
+metric,expected,observed,status
+exports,48,48,PASS
+new_exports,0,0,PASS
+removed_exports,0,0,PASS
+signature_changes,0,0,PASS
+version,0.2.0.9000,0.2.0.9000,PASS
+gsw_dependency,Suggests_only,Suggests_only,PASS
