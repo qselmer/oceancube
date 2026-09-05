@@ -1,0 +1,6 @@
+"function_name","scientific_data_identical","semantic_state_identical","legitimate_backend_difference","status"
+"viz.map",TRUE,TRUE,TRUE,"PASS"
+"viz.profile",TRUE,TRUE,TRUE,"PASS"
+"viz.section",TRUE,TRUE,TRUE,"PASS"
+"viz.transect",TRUE,TRUE,TRUE,"PASS"
+"viz.timeseries",TRUE,TRUE,TRUE,"PASS"

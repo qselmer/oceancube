@@ -1,0 +1,7 @@
+path,change,scope,public_behavior,status
+R/viz-data.R,ADDED,internal renderer-neutral prepared-data schema,NONE,PASS
+R/viz-map.R,MODIFIED,prepare/render split with existing behavior preserved,IDENTICAL,PASS
+R/viz-profile.R,MODIFIED,prepare/render split with existing behavior preserved,IDENTICAL,PASS
+R/viz-section.R,MODIFIED,prepare/render split with existing behavior preserved,IDENTICAL,PASS
+R/viz-transect.R,MODIFIED,prepare/render split with existing behavior preserved,IDENTICAL,PASS
+R/viz-timeseries.R,MODIFIED,prepare/render split with existing behavior preserved,IDENTICAL,PASS

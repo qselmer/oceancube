@@ -1,0 +1,19 @@
+field,type,required,invariant
+schema_name,character,TRUE,exactly oceancube_viz_data
+schema_version,character,TRUE,exactly 1.0.0
+kind,character,TRUE,bounded D1B kind
+data,data.frame,TRUE,bounded selected renderer-neutral rows
+roles,list,TRUE,complete explicit role map
+variables,list,TRUE,authoritative available variable metadata only
+coordinates,list,TRUE,columns and row counts align with data
+selection,list-or-NULL,TRUE,upstream selection state
+time,list,TRUE,class calendar range order and selection
+depth,list,TRUE,scientific values separate from display reversal
+source_semantics,list,TRUE,bounded rendered_from plus resolution status
+geometry,list,TRUE,kind-specific renderer-neutral geometry
+projection,list,TRUE,no D1B transformation
+scale,list,TRUE,UNSPECIFIED_CONTINUOUS plus display limits
+support,list,TRUE,rows missingness backend and selection support
+provenance,list-or-NULL,TRUE,retained upstream Provenance V1
+qa,list-or-NULL,TRUE,retained upstream QA
+renderer_hints,list,TRUE,serializable non-scientific display state

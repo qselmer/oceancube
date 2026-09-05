@@ -1,0 +1,6 @@
+"function_name","build_data_identical","labels_identical","layers_identical","mappings_identical","scales_identical","coordinates_identical","status"
+"viz.map",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"PASS"
+"viz.profile",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"PASS"
+"viz.section",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"PASS"
+"viz.transect",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"PASS"
+"viz.timeseries",TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,"PASS"

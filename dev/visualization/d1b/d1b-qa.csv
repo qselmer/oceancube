@@ -1,0 +1,6 @@
+"function_name","retained","support_retained","aesthetics_created_from_qa","status"
+"viz.map",TRUE,TRUE,FALSE,"PASS"
+"viz.profile",TRUE,TRUE,FALSE,"PASS"
+"viz.section",TRUE,TRUE,FALSE,"PASS"
+"viz.transect",TRUE,TRUE,FALSE,"PASS"
+"viz.timeseries",TRUE,TRUE,FALSE,"PASS"

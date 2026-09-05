@@ -86,6 +86,31 @@ viz.timeseries <- function(
     title = NULL,
     subtitle = NULL,
     caption = NULL) {
+  prepared <- .viz_prepare_timeseries(
+    x = x, variable = variable, longitude = longitude, latitude = latitude,
+    depth = depth, time_from = time_from, time_to = time_to, match = match,
+    tolerance = tolerance, limits = limits, na.rm = na.rm, points = points,
+    title = title, subtitle = subtitle, caption = caption
+  )
+  .viz_render_ggplot(prepared)
+}
+
+.viz_prepare_timeseries <- function(
+    x,
+    variable,
+    longitude = NULL,
+    latitude = NULL,
+    depth = NULL,
+    time_from = NULL,
+    time_to = NULL,
+    match = c("exact", "nearest"),
+    tolerance = NULL,
+    limits = NULL,
+    na.rm = FALSE,
+    points = FALSE,
+    title = NULL,
+    subtitle = NULL,
+    caption = NULL) {
   cube_validate(x, strict = TRUE)
   .calendar_operation_unsupported(x, "viz.timeseries")
 
@@ -426,55 +451,69 @@ viz.timeseries <- function(
     variable
   }
 
-  plot <- ggplot2::ggplot(
-    series,
-    ggplot2::aes(x = .data$time, y = .data$value)
-  ) +
-    ggplot2::geom_line(na.rm = na.rm)
-  if (isTRUE(points)) {
-    plot <- plot + ggplot2::geom_point(na.rm = na.rm)
-  }
-  plot <- plot +
-    ggplot2::scale_y_continuous(
-      limits = limits,
-      oob = function(values, range) {
-        pmax(range[[1L]], pmin(range[[2L]], values))
-      }
-    ) +
-    ggplot2::labs(
-      title = title,
-      subtitle = subtitle,
-      caption = caption,
-      x = "Time",
-      y = value_label
-    )
-
-  attr(plot, "oceancube_variable") <- variable
-  attr(plot, "oceancube_longitude") <- as.numeric(selected_longitude)
-  attr(plot, "oceancube_latitude") <- as.numeric(selected_latitude)
-  attr(plot, "oceancube_depth") <- selected_depth
-  attr(plot, "oceancube_time_range") <- represented_time_range
-  attr(plot, "oceancube_n_time") <- n_time
-  attr(plot, "oceancube_backend") <- backend
-  attr(plot, "oceancube_match") <- match
-  attr(plot, "oceancube_tolerance") <- tolerance
-  attr(plot, "oceancube_match_distance_km") <- match_distance_km
-  attr(plot, "oceancube_selection") <- selection_metadata
-  attr(plot, "oceancube_provenance") <- provenance
-  attr(plot, "oceancube_qa") <- qa
+  plot_attributes <- list(
+    oceancube_variable = variable,
+    oceancube_longitude = as.numeric(selected_longitude),
+    oceancube_latitude = as.numeric(selected_latitude),
+    oceancube_depth = selected_depth,
+    oceancube_time_range = represented_time_range,
+    oceancube_n_time = n_time,
+    oceancube_backend = backend,
+    oceancube_match = match,
+    oceancube_tolerance = tolerance,
+    oceancube_match_distance_km = match_distance_km,
+    oceancube_selection = selection_metadata,
+    oceancube_provenance = .viz_private_state(provenance),
+    oceancube_qa = .viz_private_state(qa)
+  )
   if ("longitude_requested" %in% names(extracted)) {
-    attr(plot, "oceancube_longitude_requested") <- requested_longitude
-    attr(plot, "oceancube_longitude_distance") <-
-      unique(extracted$longitude_distance)
+    plot_attributes$oceancube_longitude_requested <- requested_longitude
+    plot_attributes$oceancube_longitude_distance <- unique(extracted$longitude_distance)
   }
   if ("latitude_requested" %in% names(extracted)) {
-    attr(plot, "oceancube_latitude_requested") <- requested_latitude
-    attr(plot, "oceancube_latitude_distance") <-
-      unique(extracted$latitude_distance)
+    plot_attributes$oceancube_latitude_requested <- requested_latitude
+    plot_attributes$oceancube_latitude_distance <- unique(extracted$latitude_distance)
   }
   if ("depth_requested" %in% names(extracted)) {
-    attr(plot, "oceancube_depth_requested") <- unique(extracted$depth_requested)
-    attr(plot, "oceancube_depth_distance") <- unique(extracted$depth_distance)
+    plot_attributes$oceancube_depth_requested <- unique(extracted$depth_requested)
+    plot_attributes$oceancube_depth_distance <- unique(extracted$depth_distance)
   }
-  plot
+  roles <- .viz_named_roles(
+    x = "time", y = "value", value = "value", time = "time"
+  )
+  .new_oceancube_viz_data(
+    kind = "TIMESERIES",
+    data = series,
+    roles = roles,
+    variables = .viz_variable_metadata(x, variable, units),
+    coordinates = .viz_coordinate_metadata(
+      series, roles, list(time = attr(x$time, "units", exact = TRUE))
+    ),
+    selection = selection_metadata,
+    time = .viz_time_metadata(series$time,
+                              list(from = time_from, to = time_to)),
+    depth = .viz_depth_metadata(selected_depth, FALSE,
+                                attr(x$depth, "units", exact = TRUE)),
+    source_semantics = .viz_source_semantics(x),
+    geometry = list(
+      x = "time", y = "value", value = "value",
+      longitude = as.numeric(selected_longitude),
+      latitude = as.numeric(selected_latitude), depth = selected_depth
+    ),
+    projection = list(source_crs = NULL, target_crs = NULL,
+                      status = "NOT_APPLICABLE"),
+    scale = list(classification = "UNSPECIFIED_CONTINUOUS", limits = limits),
+    support = list(
+      rows = nrow(series), missing_values = sum(is.na(series$value)),
+      backend = backend, selection_status = "SELECTED",
+      match_distance_km = match_distance_km
+    ),
+    provenance = .viz_private_state(provenance),
+    qa = .viz_private_state(qa),
+    renderer_hints = list(
+      title = title, subtitle = subtitle, caption = caption, na.rm = na.rm,
+      points = points, value_label = value_label,
+      plot_attributes = plot_attributes
+    )
+  )
 }

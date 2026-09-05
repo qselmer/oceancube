@@ -1,7 +1,10 @@
 # Governed Phase-D visualization gallery
 
-This repository-only scaffold defines the certification surface for future
-visualization implementations. D1A intentionally generates no graphic.
+This repository-only gallery defines the certification surface for Phase-D
+visualization implementations. D1A created the governance scaffold; D1B adds
+five deterministic, network-free baseline graphics for the existing public
+API without adding a visualization capability or intentional appearance
+change.
 
 Future layout:
 
@@ -35,3 +38,10 @@ Soft repository limits per artifact are 2 MiB for PNG/SVG/PDF, 5 MiB for HTML,
 short previews, a representative frame, compressed video, and generated-on-
 demand full galleries over committing large binaries. External tiles, imagery,
 coastlines, or bathymetry must never be fetched during gallery rendering.
+
+The D1B scripts load an installed `oceancube` package, construct the governed
+`d1b-gallery-deterministic-v1` cube with public APIs, call only public `viz.*`
+functions, and save 1800 x 1200 PNG output at 300 dpi. Their manifest status is
+`GENERATED_BASELINE_PENDING_MAINTAINER`. Pending review does not block the D1B
+internal refactor, but a maintainer must review these baselines before D2 makes
+any intentional appearance change.

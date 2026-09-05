@@ -1,0 +1,6 @@
+"function_name","baseline_physical_count","d1b_physical_count","baseline_values_requested","d1b_values_requested","baseline_values_in_envelope","d1b_values_in_envelope","read_delta","renderer_payload_reads","status"
+"viz.map","longitude=3;latitude=2;depth=1;time=1","longitude=3;latitude=2;depth=1;time=1",6,6,6,6,0,0,"PASS"
+"viz.profile","longitude=1;latitude=1;depth=2;time=1","longitude=1;latitude=1;depth=2;time=1",2,2,2,2,0,0,"PASS"
+"viz.section","longitude=3;latitude=1;depth=2;time=1","longitude=3;latitude=1;depth=2;time=1",6,6,6,6,0,0,"PASS"
+"viz.transect","path_points=3;unique_pairs=3;depth=2;time=1","path_points=3;unique_pairs=3;depth=2;time=1",6,6,6,6,0,0,"PASS"
+"viz.timeseries","longitude=1;latitude=1;depth=1;time=4","longitude=1;latitude=1;depth=1;time=4",4,4,4,4,0,0,"PASS"

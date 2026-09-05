@@ -1,0 +1,6 @@
+"function_name","retained","schema_version","preparation_step_added","path_private_copy","status"
+"viz.map",TRUE,"1.0.0",FALSE,TRUE,"PASS"
+"viz.profile",TRUE,"1.0.0",FALSE,TRUE,"PASS"
+"viz.section",TRUE,"1.0.0",FALSE,TRUE,"PASS"
+"viz.transect",TRUE,"1.0.0",FALSE,TRUE,"PASS"
+"viz.timeseries",TRUE,"1.0.0",FALSE,TRUE,"PASS"

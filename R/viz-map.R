@@ -40,6 +40,17 @@
 viz.map <- function(x, variable, time = NULL, depth = NULL, limits = NULL,
                     na.rm = TRUE, coastline = NULL, title = NULL,
                     subtitle = NULL, caption = NULL) {
+  prepared <- .viz_prepare_map(
+    x = x, variable = variable, time = time, depth = depth, limits = limits,
+    na.rm = na.rm, coastline = coastline, title = title,
+    subtitle = subtitle, caption = caption
+  )
+  .viz_render_ggplot(prepared)
+}
+
+.viz_prepare_map <- function(x, variable, time = NULL, depth = NULL,
+                             limits = NULL, na.rm = TRUE, coastline = NULL,
+                             title = NULL, subtitle = NULL, caption = NULL) {
   cube_validate(x, strict = TRUE)
 
   abort_viz <- function(message, class = "oceancube_viz_error", parent = NULL) {
@@ -222,60 +233,49 @@ viz.map <- function(x, variable, time = NULL, depth = NULL, limits = NULL,
     variable
   }
 
-  plot <- ggplot2::ggplot(
-    layer,
-    ggplot2::aes(
-      x = .data$longitude,
-      y = .data$latitude,
-      fill = .data$value
+  roles <- .viz_named_roles(
+    x = "longitude", y = "latitude", value = "value",
+    longitude = "longitude", latitude = "latitude"
+  )
+  .new_oceancube_viz_data(
+    kind = "MAP_LAYER",
+    data = layer,
+    roles = roles,
+    variables = .viz_variable_metadata(x, variable, units),
+    coordinates = .viz_coordinate_metadata(
+      layer, roles, list(longitude = attr(x$lon, "units", exact = TRUE),
+                         latitude = attr(x$lat, "units", exact = TRUE))
+    ),
+    selection = attr(extracted, "oceancube_selection", exact = TRUE),
+    time = .viz_time_metadata(selected_time, time),
+    depth = .viz_depth_metadata(
+      selected_depth, FALSE, attr(x$depth, "units", exact = TRUE)
+    ),
+    source_semantics = .viz_source_semantics(x),
+    geometry = list(
+      x = "longitude", y = "latitude", value = "value",
+      regular_grid = regular_grid
+    ),
+    projection = list(source_crs = NULL, target_crs = NULL, status = "UNKNOWN"),
+    scale = list(classification = "UNSPECIFIED_CONTINUOUS", limits = limits),
+    support = list(
+      rows = nrow(layer), missing_values = sum(is.na(layer$value)),
+      backend = backend, selection_status = "SELECTED"
+    ),
+    provenance = .viz_private_state(
+      attr(extracted, "oceancube_provenance", exact = TRUE)
+    ),
+    qa = .viz_private_state(attr(extracted, "oceancube_qa", exact = TRUE)),
+    renderer_hints = list(
+      title = title, subtitle = subtitle, caption = caption,
+      na.rm = na.rm, coastline = coastline, coastline_type = coastline_type,
+      value_label = scale_title,
+      plot_attributes = list(
+        oceancube_variable = variable,
+        oceancube_time = selected_time,
+        oceancube_depth = selected_depth,
+        oceancube_backend = backend
+      )
     )
   )
-  if (regular_grid) {
-    plot <- plot + ggplot2::geom_raster(na.rm = na.rm)
-  } else {
-    plot <- plot + ggplot2::geom_tile(na.rm = na.rm)
-  }
-  plot <- plot +
-    ggplot2::scale_fill_continuous(
-      name = scale_title,
-      limits = limits,
-      oob = function(values, range) {
-        pmax(range[[1L]], pmin(range[[2L]], values))
-      }
-    ) +
-    ggplot2::labs(title = title, subtitle = subtitle, caption = caption,
-                  x = "Longitude", y = "Latitude")
-
-  if (identical(coastline_type, "sf")) {
-    coastline_data <- if (inherits(coastline, "sfc")) {
-      sf::st_sf(geometry = coastline)
-    } else {
-      coastline
-    }
-    plot <- plot + ggplot2::geom_sf(
-      data = coastline_data,
-      inherit.aes = FALSE,
-      fill = NA,
-      colour = "black"
-    )
-  } else if (identical(coastline_type, "data.frame")) {
-    plot <- plot + ggplot2::geom_path(
-      data = coastline,
-      mapping = ggplot2::aes(
-        x = .data$longitude,
-        y = .data$latitude,
-        group = .data$group
-      ),
-      inherit.aes = FALSE,
-      colour = "black"
-    )
-  }
-
-  plot <- suppressMessages(plot + ggplot2::coord_equal(expand = FALSE))
-
-  attr(plot, "oceancube_variable") <- variable
-  attr(plot, "oceancube_time") <- selected_time
-  attr(plot, "oceancube_depth") <- selected_depth
-  attr(plot, "oceancube_backend") <- backend
-  plot
 }

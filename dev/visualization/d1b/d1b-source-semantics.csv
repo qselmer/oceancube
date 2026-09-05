@@ -1,0 +1,6 @@
+rendered_from,resolution_rule,D1B_runtime
+RAW_POINTS,only an authoritative raw-observation input contract,NOT_MANUFACTURED
+GRIDDED_FIELD,only authoritative source metadata,UNRESOLVED_WHEN_ABSENT
+MODEL_FIELD,only authoritative model-source metadata,UNRESOLVED_WHEN_ABSENT
+DERIVED_FIELD,certified derived object class or explicit provenance,RESOLVED_FROM_CERTIFIED_CLASS
+NA,insufficient authority,classification_status=UNRESOLVED

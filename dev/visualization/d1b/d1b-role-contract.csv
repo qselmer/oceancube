@@ -1,0 +1,10 @@
+role,meaning,unused_representation
+x,horizontal renderer role,NULL
+y,vertical renderer role,NULL
+value,scientific value column,NULL
+group,grouping identity column,NULL
+time,stored time column,NULL
+depth,scientific positive-down depth column,NULL
+longitude,stored longitude column,NULL
+latitude,stored latitude column,NULL
+distance,requested or matched cumulative distance column,NULL

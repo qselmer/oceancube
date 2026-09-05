@@ -1,0 +1,14 @@
+check,expected,observed,status,evidence
+baseline_public_parity,exact,exact,PASS,d1b-public-parity.csv
+ggplot_build_parity,exact,exact,PASS,d1b-ggplot-parity.csv
+error_parity,exact_normalized,exact_normalized,PASS,d1b-error-parity.csv
+warning_parity,exact,exact,PASS,d1b-warning-parity.csv
+memory_backend_parity,scientific_and_semantic_identity,scientific_and_semantic_identity,PASS,d1b-backend-parity.csv
+netcdf_backend_parity,scientific_and_semantic_identity,scientific_and_semantic_identity,PASS,d1b-backend-parity.csv
+netcdf_read_delta,0,0,PASS,d1b-read-parity.csv
+renderer_payload_reads,0,0,PASS,d1b-read-parity.csv
+phase_c_regression,0_failures,0_failures,PASS,d1b-full-tests.csv
+deferred_netcdf_regression,0_failures,0_failures,PASS,d1b-full-tests.csv
+previously_supported_values_changed,FALSE,FALSE,PASS,d1b-public-parity.csv
+intentional_appearance_changes,NONE,NONE,PASS,d1b-ggplot-parity.csv
+full_suite,"81 files; 836 cases; 6381 expectations; 0 failures/errors/warnings/skips","81 files; 836 cases; 6381 expectations; 0 failures/errors/warnings/skips",PASS,d1b-full-tests.csv

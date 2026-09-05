@@ -375,7 +375,9 @@ test_that("cube_extract series API is the sole data-selection layer", {
   expect_identical(observed$format, "long")
   expect_false(observed$keep_index)
   expect_true(observed$keep_distance)
-  implementation <- paste(deparse(body(viz.timeseries)), collapse = "\n")
+  implementation <- paste(
+    deparse(body(.viz_prepare_timeseries)), collapse = "\n"
+  )
   expect_match(implementation, "cube_extract\\(")
   expect_false(grepl("\\.cube_read|ncvar_get|cube_collect|\\$data", implementation))
 })

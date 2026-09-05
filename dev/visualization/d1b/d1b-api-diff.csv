@@ -1,0 +1,10 @@
+measure,baseline,final,delta,status
+package_version,0.2.0.9000,0.2.0.9000,0,PASS
+public_exports,48,48,0,PASS
+visualization_exports,5,5,0,PASS
+public_signatures_changed,0,0,0,PASS
+exports_added,0,0,0,PASS
+exports_removed,0,0,0,PASS
+DESCRIPTION_changed,FALSE,FALSE,0,PASS
+NAMESPACE_changed,FALSE,FALSE,0,PASS
+dependencies_changed,FALSE,FALSE,0,PASS

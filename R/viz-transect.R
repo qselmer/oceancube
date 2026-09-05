@@ -87,6 +87,36 @@ viz.transect <- function(
     title = NULL,
     subtitle = NULL,
     caption = NULL) {
+  prepared <- .viz_prepare_transect(
+    x = x, path = path, variable = variable, time = time, depth = depth,
+    lon_col = lon_col, lat_col = lat_col, id_col = id_col, match = match,
+    tolerance = tolerance, mode = mode, distance = distance, limits = limits,
+    na.rm = na.rm, reverse_depth = reverse_depth, points = points,
+    title = title, subtitle = subtitle, caption = caption
+  )
+  .viz_render_ggplot(prepared)
+}
+
+.viz_prepare_transect <- function(
+    x,
+    path,
+    variable,
+    time = NULL,
+    depth = NULL,
+    lon_col = "longitude",
+    lat_col = "latitude",
+    id_col = NULL,
+    match = c("exact", "nearest"),
+    tolerance = NULL,
+    mode = c("auto", "section", "horizontal"),
+    distance = c("requested", "matched"),
+    limits = NULL,
+    na.rm = TRUE,
+    reverse_depth = TRUE,
+    points = TRUE,
+    title = NULL,
+    subtitle = NULL,
+    caption = NULL) {
   abort_viz <- function(message, class = "oceancube_viz_error", parent = NULL) {
     rlang::abort(
       message,
@@ -349,70 +379,77 @@ viz.transect <- function(
     "Distance along matched grid path (km)"
   }
 
-  if (identical(resolved_mode, "section")) {
-    plot <- ggplot2::ggplot(
-      layer,
-      ggplot2::aes(
-        x = .data[[distance_column]], y = .data$depth, fill = .data$value
-      )
-    )
-    if (isTRUE(regular_grid)) {
-      plot <- plot + ggplot2::geom_raster(na.rm = na.rm)
-    } else {
-      plot <- plot + ggplot2::geom_tile(na.rm = na.rm)
-    }
-    plot <- plot +
-      ggplot2::scale_fill_continuous(
-        name = value_label,
-        limits = limits,
-        oob = function(values, range) {
-          pmax(range[[1L]], pmin(range[[2L]], values))
-        }
-      ) +
-      ggplot2::labs(
-        title = title, subtitle = subtitle, caption = caption,
-        x = distance_label, y = depth_label
-      )
-    if (isTRUE(reverse_depth)) {
-      plot <- plot + ggplot2::scale_y_reverse()
-    }
-  } else {
-    plot <- ggplot2::ggplot(
-      layer,
-      ggplot2::aes(x = .data[[distance_column]], y = .data$value)
-    ) +
-      ggplot2::geom_line(na.rm = na.rm)
-    if (isTRUE(points)) {
-      plot <- plot + ggplot2::geom_point(na.rm = na.rm)
-    }
-    plot <- plot +
-      ggplot2::scale_y_continuous(
-        limits = limits,
-        oob = function(values, range) {
-          pmax(range[[1L]], pmin(range[[2L]], values))
-        }
-      ) +
-      ggplot2::labs(
-        title = title, subtitle = subtitle, caption = caption,
-        x = distance_label, y = value_label
-      )
-  }
-
   depth_range <- if (isTRUE(surface)) {
     c(NA_real_, NA_real_)
   } else {
     range(selected_depth)
   }
-  attr(plot, "oceancube_variable") <- variable
-  attr(plot, "oceancube_time") <- selected_time
-  attr(plot, "oceancube_mode") <- resolved_mode
-  attr(plot, "oceancube_distance") <- distance
-  attr(plot, "oceancube_depth_range") <- depth_range
-  attr(plot, "oceancube_backend") <- backend
-  attr(plot, "oceancube_match") <- match
-  attr(plot, "oceancube_tolerance") <- tolerance
-  attr(plot, "oceancube_max_match_distance_km") <-
-    max(extracted$match_distance_km)
-  attr(plot, "oceancube_path_points") <- length(point_orders)
-  plot
+  roles <- .viz_named_roles(
+    x = distance_column,
+    y = if (identical(resolved_mode, "section")) "depth" else "value",
+    value = "value",
+    group = "point_order",
+    depth = if (identical(resolved_mode, "section")) "depth" else NULL,
+    distance = distance_column
+  )
+  kind <- if (identical(resolved_mode, "section")) {
+    "TRANSECT_SECTION"
+  } else {
+    "TRANSECT_LINE"
+  }
+  .new_oceancube_viz_data(
+    kind = kind,
+    data = layer,
+    roles = roles,
+    variables = .viz_variable_metadata(x, variable, units),
+    coordinates = .viz_coordinate_metadata(
+      layer, roles,
+      list(distance = "km", depth = attr(x$depth, "units", exact = TRUE))
+    ),
+    selection = attr(extracted, "oceancube_selection", exact = TRUE),
+    time = .viz_time_metadata(selected_time, time),
+    depth = .viz_depth_metadata(selected_depth, reverse_depth,
+                                attr(x$depth, "units", exact = TRUE)),
+    source_semantics = .viz_source_semantics(x),
+    geometry = list(
+      x = distance_column,
+      y = if (identical(resolved_mode, "section")) "depth" else "value",
+      value = "value", distance_column = distance_column,
+      distance_semantics = distance, regular_grid = if (exists("regular_grid")) {
+        regular_grid
+      } else {
+        FALSE
+      }
+    ),
+    projection = list(source_crs = NULL, target_crs = NULL,
+                      status = "NOT_APPLICABLE"),
+    scale = list(classification = "UNSPECIFIED_CONTINUOUS", limits = limits),
+    support = list(
+      rows = nrow(layer), missing_values = sum(is.na(layer$value)),
+      backend = backend, selection_status = "SELECTED",
+      maximum_match_distance_km = max(extracted$match_distance_km),
+      path_points = length(point_orders)
+    ),
+    provenance = .viz_private_state(
+      attr(extracted, "oceancube_provenance", exact = TRUE)
+    ),
+    qa = .viz_private_state(attr(extracted, "oceancube_qa", exact = TRUE)),
+    renderer_hints = list(
+      title = title, subtitle = subtitle, caption = caption, na.rm = na.rm,
+      points = points, value_label = value_label, depth_label = depth_label,
+      distance_label = distance_label,
+      plot_attributes = list(
+        oceancube_variable = variable,
+        oceancube_time = selected_time,
+        oceancube_mode = resolved_mode,
+        oceancube_distance = distance,
+        oceancube_depth_range = depth_range,
+        oceancube_backend = backend,
+        oceancube_match = match,
+        oceancube_tolerance = tolerance,
+        oceancube_max_match_distance_km = max(extracted$match_distance_km),
+        oceancube_path_points = length(point_orders)
+      )
+    )
+  )
 }

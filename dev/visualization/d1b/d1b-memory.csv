@@ -1,0 +1,6 @@
+"function_name","selected_scientific_payload_bytes","prepared_object_bytes","ggplot_object_bytes","source_cube_bytes","retains_source_cube","status"
+"viz.map",1304,40544,364592,10872,FALSE,"PASS"
+"viz.profile",896,39184,364048,10872,FALSE,"PASS"
+"viz.section",1312,41456,365296,10872,FALSE,"PASS"
+"viz.transect",1568,39392,365984,10872,FALSE,"PASS"
+"viz.timeseries",1152,62384,387112,10872,FALSE,"PASS"

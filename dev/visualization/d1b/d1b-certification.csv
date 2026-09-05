@@ -1,0 +1,40 @@
+gate,expected,observed,status,notes
+starting_sha,079b353a552ee941d3132baa3e376c552fa71cc1,079b353a552ee941d3132baa3e376c552fa71cc1,PASS,exact D1A parent
+baseline_installation,isolated installed package,artifacts/d1b-work/baseline-lib,PASS,built from exact starting SHA
+schema_name,oceancube_viz_data,oceancube_viz_data,PASS,internal plain-R state
+schema_version,1.0.0,1.0.0,PASS,validated before rendering
+supported_kinds,"MAP_LAYER; PROFILE; SECTION; TRANSECT_SECTION; TRANSECT_LINE; TIMESERIES","MAP_LAYER; PROFILE; SECTION; TRANSECT_SECTION; TRANSECT_LINE; TIMESERIES",PASS,bounded exact set
+live_backend_handles,0,0,PASS,prepared objects retain no cube or connection
+scene_runtime,FALSE,FALSE,PASS,scene schema only architecturally frozen
+source_file_removal_after_prepare,PASS,PASS,PASS,render consumes prepared state only
+path_privacy,PASS,PASS,PASS,no absolute private path or username
+serialization,PASS,PASS,PASS,serialize and RDS round trips
+public_api,48,48,PASS,no export change
+public_return_classes,ggplot_x5,ggplot_x5,PASS,installed smoke
+internal_triple_colon_calls_in_smoke,0,0,PASS,public API only
+version,0.2.0.9000,0.2.0.9000,PASS,no bump
+DESCRIPTION_changed,FALSE,FALSE,PASS,unchanged
+NAMESPACE_changed,FALSE,FALSE,PASS,48 exports retained
+dependencies_changed,FALSE,FALSE,PASS,no dependency addition
+D1A_reference_validator,PASS,PASS,PASS,"60 references; 50 resolved; 9 exemplars"
+D1A_inventory_validator,PASS,PASS,PASS,"140 concepts; 10 families; 114 public candidates"
+DEC_041_count,1,1,PASS,decision IDs unique
+DEC_042_count,1,1,PASS,approved prepared-data contract
+next_available_decision,DEC-043,DEC-043,PASS,not allocated
+gallery_pngs,5,5,PASS,deterministic 1800x1200 artifacts
+gallery_review,GENERATED_BASELINE_PENDING_MAINTAINER,GENERATED_BASELINE_PENDING_MAINTAINER,PASS,human review required before D2 appearance changes
+gallery_network_dependency,NONE,NONE,PASS,offline scripts
+R_CMD_build,PASS,PASS,PASS,clean-source snapshot method
+tarball,oceancube_0.2.0.9000.tar.gz,oceancube_0.2.0.9000.tar.gz,PASS,source package
+tarball_bytes,3086497,3086497,PASS,exact final runtime source
+tarball_sha256,4359993b7522ffcd7a36a32a1be2987af9881d4bc5b1c1d4990dd425a0ed7bb8,4359993b7522ffcd7a36a32a1be2987af9881d4bc5b1c1d4990dd425a0ed7bb8,PASS,exact final runtime source
+architecture_in_tarball,TRUE,TRUE,PASS,both visualization architecture files
+D1B_tests_in_tarball,TRUE,TRUE,PASS,contract and parity tests
+dev_evidence_absent_from_tarball,TRUE,TRUE,PASS,repository-only evidence
+R_CMD_check,"0 errors; 0 warnings; 0 notes","0 errors; 0 warnings; 0 notes",PASS,Status OK
+full_test_suite,"0 failures; 0 errors; 0 warnings; 0 skips","0 failures; 0 errors; 0 warnings; 0 skips",PASS,"81 files; 836 cases; 6381 expectations; 956.16 seconds"
+phase_D,IN_PROGRESS,IN_PROGRESS,PASS,not complete
+D1A,COMPLETE_CERTIFIED,COMPLETE_CERTIFIED,PASS,local and remote
+D1B,LOCAL_COMPLETE_CERTIFIED,LOCAL_COMPLETE_CERTIFIED,PASS,pending remote authorization
+D2,NOT_STARTED,NOT_STARTED,PASS,outside scope
+push,NOT_PERFORMED,NOT_PERFORMED,PASS,authorization required after local commit

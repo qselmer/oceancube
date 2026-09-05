@@ -62,6 +62,29 @@ viz.profile <- function(
     title = NULL,
     subtitle = NULL,
     caption = NULL) {
+  prepared <- .viz_prepare_profile(
+    x = x, variable = variable, longitude = longitude, latitude = latitude,
+    time = time, depth = depth, limits = limits, na.rm = na.rm,
+    reverse_depth = reverse_depth, points = points, title = title,
+    subtitle = subtitle, caption = caption
+  )
+  .viz_render_ggplot(prepared)
+}
+
+.viz_prepare_profile <- function(
+    x,
+    variable,
+    longitude = NULL,
+    latitude = NULL,
+    time = NULL,
+    depth = NULL,
+    limits = NULL,
+    na.rm = TRUE,
+    reverse_depth = TRUE,
+    points = TRUE,
+    title = NULL,
+    subtitle = NULL,
+    caption = NULL) {
   cube_validate(x, strict = TRUE)
 
   abort_viz <- function(message, class = "oceancube_viz_error", parent = NULL) {
@@ -278,37 +301,45 @@ viz.profile <- function(
     "Depth"
   }
 
-  plot <- ggplot2::ggplot(
-    profile,
-    ggplot2::aes(x = .data$value, y = .data$depth)
-  ) +
-    ggplot2::geom_line(na.rm = na.rm, orientation = "y")
-  if (isTRUE(points)) {
-    plot <- plot + ggplot2::geom_point(na.rm = na.rm)
-  }
-  plot <- plot +
-    ggplot2::scale_x_continuous(
-      limits = limits,
-      oob = function(values, range) {
-        pmax(range[[1L]], pmin(range[[2L]], values))
-      }
-    ) +
-    ggplot2::labs(
-      title = title,
-      subtitle = subtitle,
-      caption = caption,
-      x = value_label,
-      y = depth_label
+  roles <- .viz_named_roles(
+    x = "value", y = "depth", value = "value", depth = "depth"
+  )
+  .new_oceancube_viz_data(
+    kind = "PROFILE",
+    data = profile,
+    roles = roles,
+    variables = .viz_variable_metadata(x, variable, units),
+    coordinates = .viz_coordinate_metadata(
+      profile, roles, list(depth = attr(x$depth, "units", exact = TRUE))
+    ),
+    selection = attr(extracted, "oceancube_selection", exact = TRUE),
+    time = .viz_time_metadata(selected_time, time),
+    depth = .viz_depth_metadata(selected_depth, reverse_depth,
+                                attr(x$depth, "units", exact = TRUE)),
+    source_semantics = .viz_source_semantics(x),
+    geometry = list(x = "value", y = "depth", value = "value"),
+    projection = list(source_crs = NULL, target_crs = NULL,
+                      status = "NOT_APPLICABLE"),
+    scale = list(classification = "UNSPECIFIED_CONTINUOUS", limits = limits),
+    support = list(
+      rows = nrow(profile), missing_values = sum(is.na(profile$value)),
+      backend = backend, selection_status = "SELECTED"
+    ),
+    provenance = .viz_private_state(
+      attr(extracted, "oceancube_provenance", exact = TRUE)
+    ),
+    qa = .viz_private_state(attr(extracted, "oceancube_qa", exact = TRUE)),
+    renderer_hints = list(
+      title = title, subtitle = subtitle, caption = caption, na.rm = na.rm,
+      points = points, value_label = value_label, depth_label = depth_label,
+      plot_attributes = list(
+        oceancube_variable = variable,
+        oceancube_longitude = as.numeric(selected_longitude),
+        oceancube_latitude = as.numeric(selected_latitude),
+        oceancube_time = selected_time,
+        oceancube_depth_range = range(selected_depth),
+        oceancube_backend = backend
+      )
     )
-  if (isTRUE(reverse_depth)) {
-    plot <- plot + ggplot2::scale_y_reverse()
-  }
-
-  attr(plot, "oceancube_variable") <- variable
-  attr(plot, "oceancube_longitude") <- as.numeric(selected_longitude)
-  attr(plot, "oceancube_latitude") <- as.numeric(selected_latitude)
-  attr(plot, "oceancube_time") <- selected_time
-  attr(plot, "oceancube_depth_range") <- range(selected_depth)
-  attr(plot, "oceancube_backend") <- backend
-  plot
+  )
 }

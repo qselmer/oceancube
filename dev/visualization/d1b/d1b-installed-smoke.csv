@@ -1,0 +1,6 @@
+"function_name","return_class","inherits_ggplot","rendered","internal_triple_colon_calls","installed_exports","version","status"
+"viz.map","ggplot2::ggplot",TRUE,TRUE,0,48,"0.2.0.9000","PASS"
+"viz.profile","ggplot2::ggplot",TRUE,TRUE,0,48,"0.2.0.9000","PASS"
+"viz.section","ggplot2::ggplot",TRUE,TRUE,0,48,"0.2.0.9000","PASS"
+"viz.transect","ggplot2::ggplot",TRUE,TRUE,0,48,"0.2.0.9000","PASS"
+"viz.timeseries","ggplot2::ggplot",TRUE,TRUE,0,48,"0.2.0.9000","PASS"

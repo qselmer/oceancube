@@ -1,0 +1,6 @@
+"function_name","serialize_unserialize","saveRDS_readRDS","validates_after_roundtrip","render_after_roundtrip","status"
+"viz.map",TRUE,TRUE,TRUE,TRUE,"PASS"
+"viz.profile",TRUE,TRUE,TRUE,TRUE,"PASS"
+"viz.section",TRUE,TRUE,TRUE,TRUE,"PASS"
+"viz.transect",TRUE,TRUE,TRUE,TRUE,"PASS"
+"viz.timeseries",TRUE,TRUE,TRUE,TRUE,"PASS"

@@ -1,0 +1,6 @@
+classification,D1B_status,rule
+UNSPECIFIED_CONTINUOUS,IMPLEMENTED,current continuous scales retained without scientific inference
+SEQUENTIAL,DEFERRED_D2,never inferred from variable name
+DIVERGING,DEFERRED_D2,centre must come from scientific semantics
+CYCLIC,DEFERRED_D2,origin and wrap must be explicit
+CATEGORICAL,DEFERRED_D2,class semantics must be authoritative

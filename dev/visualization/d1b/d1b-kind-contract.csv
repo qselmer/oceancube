@@ -1,0 +1,7 @@
+kind,public_function,geometry,status
+MAP_LAYER,viz.map,longitude-latitude-value,IMPLEMENTED
+PROFILE,viz.profile,value-depth,IMPLEMENTED
+SECTION,viz.section,longitude-or-latitude-depth-value,IMPLEMENTED
+TRANSECT_SECTION,viz.transect,distance-depth-value,IMPLEMENTED
+TRANSECT_LINE,viz.transect,distance-value,IMPLEMENTED
+TIMESERIES,viz.timeseries,time-value,IMPLEMENTED

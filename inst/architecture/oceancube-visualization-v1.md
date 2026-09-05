@@ -3,8 +3,10 @@
 Decision: **DEC-041 — APPROVED — RENDERER-NEUTRAL OCEAN VISUALIZATION
 ARCHITECTURE**.
 
-Status: D1A local architecture contract. It contains no renderer implementation,
-new export, dependency, numerical algorithm, or scientific transformation.
+Status: D1A architecture certified locally and remotely. D1B implements its
+internal prepared 2-D data contract without a new export, dependency, numerical
+algorithm, scientific transformation, or visualization capability; the scene
+runtime remains deferred to D5.
 
 ## Purpose and scope
 
@@ -318,7 +320,8 @@ design references, never scientific specifications.
 
 ## Future sequence
 
-1. D1B: renderer-neutral data/scene contracts and existing-viz refactor plan.
+1. D1B: implemented renderer-neutral prepared-data contract, architecturally
+   frozen scene contract, and existing-viz prepare/render refactor.
 2. D2: core 2-D, Hovmöller, map styles, and composition.
 3. D3: T-S/SA-CT, curtain, bathymetry, and supplied ocean diagnostics.
 4. D4: interactive, animation, and bounded communication extensions.
@@ -326,5 +329,7 @@ design references, never scientific specifications.
 6. D-EXIT: cross-mode scientific, object, visual, gallery, and human-review
    certification.
 
-Phase D is in progress after D1A; D1B is not started. Phase E and 0.5 remain
-outside the authorized scope.
+Phase D is in progress after D1A. D1B is locally COMPLETE/CERTIFIED with the
+internal renderer-neutral prepared-data contract and existing-viz parity; it
+awaits remote certification. D2 is not started. Phase E and 0.5 remain outside
+the authorized scope.

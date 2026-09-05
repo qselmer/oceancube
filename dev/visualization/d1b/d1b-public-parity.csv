@@ -1,0 +1,6 @@
+"function_name","signature_identical","return_class_identical","scientific_data_identical","attributes_identical","status"
+"viz.map",TRUE,TRUE,TRUE,TRUE,"PASS"
+"viz.profile",TRUE,TRUE,TRUE,TRUE,"PASS"
+"viz.section",TRUE,TRUE,TRUE,TRUE,"PASS"
+"viz.transect",TRUE,TRUE,TRUE,TRUE,"PASS"
+"viz.timeseries",TRUE,TRUE,TRUE,TRUE,"PASS"

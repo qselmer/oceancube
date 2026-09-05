@@ -355,7 +355,9 @@ test_that("delegation uses only the public cube_transect data API", {
   expect_identical(observed$mode, "section")
   expect_identical(observed$format, "long")
   expect_false(observed$keep_index)
-  implementation <- paste(deparse(body(viz.transect)), collapse = "\n")
+  implementation <- paste(
+    deparse(body(.viz_prepare_transect)), collapse = "\n"
+  )
   expect_match(implementation, "cube_transect\\(", fixed = FALSE)
   expect_false(grepl("\\.cube_read|cube_collect|ncvar_get", implementation))
 })

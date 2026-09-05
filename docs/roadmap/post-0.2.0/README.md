@@ -189,10 +189,13 @@ COMPLETE/CERTIFIED locally and remotely.
 
 D1A adds DEC-041 and the global ocean-visualization inventory plus
 renderer-neutral architecture. It changes no runtime, tests, exports,
-dependencies, or version. Phase 0.3.0-D is IN PROGRESS and D1A is LOCAL
-COMPLETE/CERTIFIED. The single next subphase, only after remote D1A
-certification, is D1B renderer-neutral visualization-data contracts and the
-existing-viz refactor plan; D1B has not started.
+dependencies, or version and is COMPLETE/CERTIFIED locally and remotely.
+D1B adds DEC-042, implements the internal renderer-neutral
+`oceancube_viz_data` v1.0.0 contract, and refactors the five existing public
+visualization functions into preparation and rendering while preserving their
+public signatures and observed behavior. Phase 0.3.0-D remains IN PROGRESS;
+D1B is LOCAL COMPLETE/CERTIFIED pending remote certification, and D2 has not
+started.
 
 ## Change control
 

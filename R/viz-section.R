@@ -57,6 +57,29 @@ viz.section <- function(
     title = NULL,
     subtitle = NULL,
     caption = NULL) {
+  prepared <- .viz_prepare_section(
+    x = x, variable = variable, section = section, time = time,
+    longitude = longitude, latitude = latitude, depth = depth,
+    limits = limits, na.rm = na.rm, reverse_depth = reverse_depth,
+    title = title, subtitle = subtitle, caption = caption
+  )
+  .viz_render_ggplot(prepared)
+}
+
+.viz_prepare_section <- function(
+    x,
+    variable,
+    section = c("longitude-depth", "latitude-depth"),
+    time = NULL,
+    longitude = NULL,
+    latitude = NULL,
+    depth = NULL,
+    limits = NULL,
+    na.rm = TRUE,
+    reverse_depth = TRUE,
+    title = NULL,
+    subtitle = NULL,
+    caption = NULL) {
   cube_validate(x, strict = TRUE)
 
   abort_viz <- function(message, class = "oceancube_viz_error", parent = NULL) {
@@ -303,44 +326,56 @@ viz.section <- function(
     variable
   }
 
-  plot <- ggplot2::ggplot(
-    layer,
-    ggplot2::aes(
-      x = .data[[horizontal]],
-      y = .data$depth,
-      fill = .data$value
+  roles <- .viz_named_roles(
+    x = horizontal, y = "depth", value = "value", depth = "depth",
+    longitude = if (identical(horizontal, "longitude")) "longitude" else NULL,
+    latitude = if (identical(horizontal, "latitude")) "latitude" else NULL
+  )
+  .new_oceancube_viz_data(
+    kind = "SECTION",
+    data = layer,
+    roles = roles,
+    variables = .viz_variable_metadata(x, variable, units),
+    coordinates = .viz_coordinate_metadata(
+      layer, roles,
+      list(longitude = attr(x$lon, "units", exact = TRUE),
+           latitude = attr(x$lat, "units", exact = TRUE),
+           depth = attr(x$depth, "units", exact = TRUE))
+    ),
+    selection = attr(extracted, "oceancube_selection", exact = TRUE),
+    time = .viz_time_metadata(selected_time, time),
+    depth = .viz_depth_metadata(selected_depth, reverse_depth,
+                                attr(x$depth, "units", exact = TRUE)),
+    source_semantics = .viz_source_semantics(x),
+    geometry = list(
+      x = horizontal, y = "depth", value = "value", horizontal = horizontal,
+      fixed_axis = fixed_axis, fixed_coordinate = as.numeric(selected_fixed),
+      regular_grid = regular_grid
+    ),
+    projection = list(source_crs = NULL, target_crs = NULL,
+                      status = "NOT_APPLICABLE"),
+    scale = list(classification = "UNSPECIFIED_CONTINUOUS", limits = limits),
+    support = list(
+      rows = nrow(layer), missing_values = sum(is.na(layer$value)),
+      backend = backend, selection_status = "SELECTED"
+    ),
+    provenance = .viz_private_state(
+      attr(extracted, "oceancube_provenance", exact = TRUE)
+    ),
+    qa = .viz_private_state(attr(extracted, "oceancube_qa", exact = TRUE)),
+    renderer_hints = list(
+      title = title, subtitle = subtitle, caption = caption, na.rm = na.rm,
+      value_label = scale_title,
+      plot_attributes = list(
+        oceancube_variable = variable,
+        oceancube_time = selected_time,
+        oceancube_section = section,
+        oceancube_fixed_coordinate = stats::setNames(
+          as.numeric(selected_fixed), fixed_axis
+        ),
+        oceancube_depth_range = range(selected_depth),
+        oceancube_backend = backend
+      )
     )
   )
-  if (regular_grid) {
-    plot <- plot + ggplot2::geom_raster(na.rm = na.rm)
-  } else {
-    plot <- plot + ggplot2::geom_tile(na.rm = na.rm)
-  }
-  plot <- plot +
-    ggplot2::scale_fill_continuous(
-      name = scale_title,
-      limits = limits,
-      oob = function(values, range) {
-        pmax(range[[1L]], pmin(range[[2L]], values))
-      }
-    ) +
-    ggplot2::labs(
-      title = title,
-      subtitle = subtitle,
-      caption = caption,
-      x = if (identical(horizontal, "longitude")) "Longitude" else "Latitude",
-      y = "Depth"
-    )
-  if (isTRUE(reverse_depth)) {
-    plot <- plot + ggplot2::scale_y_reverse()
-  }
-
-  attr(plot, "oceancube_variable") <- variable
-  attr(plot, "oceancube_time") <- selected_time
-  attr(plot, "oceancube_section") <- section
-  attr(plot, "oceancube_fixed_coordinate") <-
-    stats::setNames(as.numeric(selected_fixed), fixed_axis)
-  attr(plot, "oceancube_depth_range") <- range(selected_depth)
-  attr(plot, "oceancube_backend") <- backend
-  plot
 }
