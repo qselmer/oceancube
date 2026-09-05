@@ -637,11 +637,11 @@ Lagrangian particle tracking are outside the core package roadmap.
 
 `0.3.0-A` is COMPLETE/CERTIFIED. B1-B7 establish the bounded CF foundation;
 DEC-029 satisfies Gate B only for dimensional metric ocean depth with certified
-CF semantics and explicit bounds. C1 implements DEC-030: thickness, volume,
-and layer means share explicit vertical support, exact overlap, union coverage,
-truthful derived bounds, and provenance. Its centre-derived compatibility path
-is unchanged and uncertified, so B7-001 is PARTIALLY-CLOSED. `0.3.0-C` is now IN
-PROGRESS. Static fields, annual WOA provider repair, pressure/height conversion,
-parametric evaluation, integration, interpolation, multifile, remote, Zarr,
-and 3-D behavior remain outside this authorization. The single recommended
-next subphase is C2 under a separate scientific contract.
+CF semantics and explicit bounds. C1-C10 are technically COMPLETE/CERTIFIED and
+the development API contains 48 exports. C-GOVR reconciles the C8-C10 decisions
+DEC-037 through DEC-039 into the canonical register and documents why
+`dev/hardening/**` remains repository-only evidence under the intentional
+source-build exclusion. C-EXIT remains blocked pending remote C-GOVR
+certification and a fresh bounded rerun, so `0.3.0-C` remains IN PROGRESS. The
+single recommended next subphase, only after remote C-GOVR certification, is
+the resumed vertical-ocean-science C-EXIT certification.

@@ -1,0 +1,10 @@
+check,expected,actual,status
+canonical_pre_state,"DEC-001 through DEC-036","DEC-001 through DEC-036",PASS
+highest_pre_existing_decision,DEC-036,DEC-036,PASS
+DEC-001_through_DEC-036_preserved,TRUE,TRUE,PASS
+DEC-037_count,1,1,PASS
+DEC-038_count,1,1,PASS
+DEC-039_count,1,1,PASS
+DEC-040_count,0,0,PASS
+decision_ids_unique,TRUE,TRUE,PASS
+next_available_decision_id,DEC-040,DEC-040,PASS

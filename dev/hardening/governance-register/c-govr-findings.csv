@@ -1,0 +1,3 @@
+finding_id,classification,initial_condition,resolution,status,reconciliation_date
+CEXIT-GOV-001,governance-register-gap,"DEC-037 through DEC-039 phase evidence existed but the canonical register ended at DEC-036","Canonical rows DEC-037 through DEC-039 reconciled without changing DEC-001 through DEC-036","CLOSED BY C-GOVR",2026-09-05
+CEXIT-SPEC-001,certification-specification-mistake,"Repository-only dev/hardening/vertical-exit evidence was incorrectly required in the distributed source tarball","Distributed contract and repository-only evidence policy made explicit; intentional dev exclusion retained","CLOSED BY C-GOVR",2026-09-05

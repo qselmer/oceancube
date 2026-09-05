@@ -1,0 +1,12 @@
+metric,before,after,delta,status
+public_exports,48,48,0,PASS
+exports_added,0,0,0,PASS
+exports_removed,0,0,0,PASS
+signatures_changed,0,0,0,PASS
+version,0.2.0.9000,0.2.0.9000,0,PASS
+DESCRIPTION_changed,FALSE,FALSE,0,PASS
+NAMESPACE_changed,FALSE,FALSE,0,PASS
+R_changed,FALSE,FALSE,0,PASS
+tests_testthat_changed,FALSE,FALSE,0,PASS
+dependencies_changed,FALSE,FALSE,0,PASS
+previously_supported_numerical_results_changed,FALSE,FALSE,0,"PASS — ZERO-RUNTIME-DIFF"

@@ -171,6 +171,21 @@ component; cell means and gaps remain bracket-only and no universal OMZ/ODZ
 threshold is introduced. The development API is 45 exports. Gate B remains
 SATISFIED, B7-001 remains PARTIALLY-CLOSED, and 0.3.0-C remains IN PROGRESS.
 
+C8 implements DEC-037 and adds exactly one export, `mixed_layer_depth()`. Its
+certified runtime is the first absolute temperature departure from a
+configurable near-surface reference on direct point profiles. C9 implements
+DEC-038 and adds exactly one export, `thermodynamic_state()`, using optional
+`gsw` as the bounded TEOS-10 authority. C10 implements DEC-039 and adds exactly
+one export, `stratification()`, while extending density MLD and pycnocline
+diagnostics over certified C9 potential density. The development API is 48
+exports and C1-C10 are technically COMPLETE/CERTIFIED.
+
+C-GOVR reconciles DEC-037, DEC-038, and DEC-039 into the canonical decision
+register and defines the boundary between distributed package contracts and
+repository-only `dev/hardening/**` evidence. The reconciliation is complete
+locally; C-EXIT remains blocked pending remote C-GOVR certification and a
+fresh bounded rerun. Phase 0.3.0-C therefore remains IN PROGRESS.
+
 ## Change control
 
 Future roadmap changes should update the provenance matrix first, reference an

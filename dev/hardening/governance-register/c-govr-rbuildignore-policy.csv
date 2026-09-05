@@ -1,0 +1,6 @@
+item,expected,actual,status
+dev_rule,"^dev($|/)","^dev($|/)",PASS
+policy_architecture_in_tarball,TRUE,TRUE,PASS
+governance_evidence_in_tarball,FALSE,FALSE,PASS
+dev_hardening_required_in_tarball,FALSE,FALSE,PASS
+CEXIT-SPEC-001_resolution,"CLOSED BY C-GOVR","CLOSED BY C-GOVR",PASS

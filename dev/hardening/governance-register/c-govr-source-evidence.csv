@@ -1,0 +1,12 @@
+decision_id,source_type,path_or_commit,exists_or_resolves,status
+DEC-037,architecture,inst/architecture/oceancube-mixed-layer-v1.md,TRUE,PASS
+DEC-037,architecture,inst/architecture/oceancube-density-teos10-v1.md,TRUE,PASS
+DEC-037,evidence,dev/hardening/mixed-layer/README.md,TRUE,PASS
+DEC-037,commit,24f387bad736ce2a7f41ee51366d3fa04cc063e3,TRUE,PASS
+DEC-038,architecture,inst/architecture/oceancube-density-teos10-v2.md,TRUE,PASS
+DEC-038,evidence,dev/hardening/thermodynamic-state/README.md,TRUE,PASS
+DEC-038,commit,3ed956461e24bca638a59a75f020e36a95142527,TRUE,PASS
+DEC-039,architecture,inst/architecture/oceancube-density-diagnostics-v1.md,TRUE,PASS
+DEC-039,architecture,inst/architecture/oceancube-stratification-v1.md,TRUE,PASS
+DEC-039,evidence,dev/hardening/density-stratification/README.md,TRUE,PASS
+DEC-039,commit,731ab8b077834499ca29d16595c1744049630590,TRUE,PASS

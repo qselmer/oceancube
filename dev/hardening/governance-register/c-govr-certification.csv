@@ -1,0 +1,18 @@
+criterion,result,status
+history_repair,"blocked C-EXIT preserved; active branch reset to exact C10",PASS
+canonical_register,"DEC-037 through DEC-039 added; DEC-001 through DEC-036 preserved; DEC-040 absent",PASS
+decision_source_traceability,"C8 C9 C10 architecture evidence and exact commits recorded",PASS
+certification_evidence_policy,"distributed contract separated from repository-only evidence",PASS
+CEXIT-GOV-001,"CLOSED BY C-GOVR",PASS
+CEXIT-SPEC-001,"CLOSED BY C-GOVR",PASS
+governance_validator,"39 rows; unique IDs; DEC-001 through DEC-036 preserved; DEC-037 through DEC-039 once; DEC-040 absent; sources and policy verified",PASS
+runtime_diff,0,PASS
+scientific_suite,"not rerun because runtime test API dependency and numerical code diffs are zero",PASS
+direct_build,"blocked solely while copying .git/refs/codex/turn-diffs",BLOCKED_KNOWN_CODEX_DEFECT
+governed_build,"clean complete source snapshot excluding .git and ignored/transient artifacts",PASS
+tarball,"oceancube_0.2.0.9000.tar.gz; 1747873 bytes; SHA256 E632AE1673B61E0798DE79283C2648C508C7AF07AD5B78ED0427F902A737460A",PASS
+tarball_policy,"distributed policy present once; dev/hardening/governance-register absent",PASS
+R_CMD_check,"--no-manual --no-tests; UTF-8 Windows locale; Status OK; 0 errors; 0 warnings; 0 notes",PASS
+static_diff_gate,"R DESCRIPTION NAMESPACE tests/testthat unchanged",PASS
+phase_status,"C1-C10 COMPLETE/CERTIFIED; C-GOVR local reconciliation; C-EXIT pending rerun; 0.3.0-C IN PROGRESS",PASS
+next,"remote C-GOVR certification then resume C-EXIT",PASS
