@@ -182,13 +182,17 @@ exports and C1-C10 are technically COMPLETE/CERTIFIED.
 
 C-GOVR reconciles DEC-037, DEC-038, and DEC-039 into the canonical decision
 register and defines the boundary between distributed package contracts and
-repository-only `dev/hardening/**` evidence. The reconciliation is complete
-and certified locally and remotely. C-EXIT adds DEC-040 after a fresh bounded
-global rerun and certifies C1-C10 together without changing runtime, dependencies,
-version, signatures, or the 48-export API. Phase 0.3.0-C is therefore
-COMPLETE/CERTIFIED LOCALLY — REMOTE EXIT PENDING. The only planned next phase,
-after remote C-EXIT certification, is 0.3.0-D1 architecture and contract work;
-D1 has not started.
+repository-only `dev/hardening/**` evidence. C-EXIT adds DEC-040 after a fresh
+bounded global rerun and certifies C1-C10 together without changing runtime,
+dependencies, version, signatures, or the 48-export API. Phase 0.3.0-C is
+COMPLETE/CERTIFIED locally and remotely.
+
+D1A adds DEC-041 and the global ocean-visualization inventory plus
+renderer-neutral architecture. It changes no runtime, tests, exports,
+dependencies, or version. Phase 0.3.0-D is IN PROGRESS and D1A is LOCAL
+COMPLETE/CERTIFIED. The single next subphase, only after remote D1A
+certification, is D1B renderer-neutral visualization-data contracts and the
+existing-viz refactor plan; D1B has not started.
 
 ## Change control
 

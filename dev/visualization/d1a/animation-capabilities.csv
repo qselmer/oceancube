@@ -1,0 +1,8 @@
+mode,advances,prepared_input,primary_renderer,output,scientific_invariant,target_phase,status,reference_ids
+STATIC,"nothing","one prepared view","ggplot2","PNG;TIFF;SVG;PDF","Rendering does not mutate values or semantics.",D2,"CORE","R001"
+INTERACTIVE,"selection or camera only","one prepared 2-D view","ggiraph","HTML","Hover click zoom and selection cannot recalculate science.",D4,"OPTIONAL","R003"
+ANIMATED,"time depth scenario ensemble","ordered prepared frames","gganimate","GIF;MP4;frame sequence","Only explicit frame index changes; common scale policy recorded.",D4,"OPTIONAL","R004"
+INTERACTIVE_FRAMES,"time depth or scenario","bounded prepared frames","plotly","HTML","Frame payload is precomputed and browser budget bounded.",D4,"ADAPTER","R002"
+3D_INTERACTIVE,"camera or scene selection","oceancube_viz_scene","rgl","WebGL;HTML;screenshot","Scene data and coordinate semantics remain invariant under interaction.",D5,"OPTIONAL","R005"
+3D_ANIMATED,"time or camera","ordered scenes or fixed scene plus camera path","rgl","frame sequence;GIF;MP4","Data change only for precomputed scientific frames; camera-only motion labelled.",D5,"OPTIONAL","R005"
+CINEMATIC_3D,"camera and lighting","bounded prepared surface/scene","rayshader","PNG;frame sequence;MP4","Lighting is communicative display; values remain queryable separately.",D5,"ADAPTER","R006;R007"

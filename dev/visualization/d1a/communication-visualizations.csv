@@ -1,0 +1,11 @@
+concept,candidate_api,classification,target_phase,input_contract,renderer,recommendation,reason,reference_ids
+stripes,"viz.stripes","COMMUNICATION_EXTENSION",D4,"already-computed one-dimensional series; explicit time and baseline metadata","ggplot2; optional gganimate","COMMUNICATION_EXTENSION","Compact and established but not a primary diagnostic; preserve numerical companion.","V05;V06;R019"
+spiral,"viz.spiral","COMMUNICATION_EXTENSION",D4,"already-computed cyclic series; explicit angle radius group and baseline","ggplot2; gganimate","COMMUNICATION_EXTENSION","Validated communication form; cyclic geometry must be explicit.","C001;C002;V07;V08"
+helix,"viz.helix","DEFERRED",D5,"already-computed cyclic series with explicit z=time/year","rgl; plotly","DEFERRED","Useful communication concept but requires scene and accessibility evidence first.","V09;R005;R002"
+globe,"viz.globe","OPTIONAL_D",D4_D5,"global prepared scalar field with traceable CRS and explicit projection","ggplot2+sf; plotly/threejs adapter","OPTIONAL_D","Static true projection can precede interactive sphere; avoid decorative-only scientific claims.","V02;T002;R008"
+before_after_slider,"internal recipe","DEFERRED",D4,"two aligned prepared fields with common scale","HTML adapter","DEFERRED","Interaction pattern does not justify an export yet.","T004"
+storyboard,"viz.compose style","OPTIONAL_D",D4,"ordered prepared panels and annotations","patchwork","OPTIONAL_D","General composition covers the need.","T003;R010"
+extreme_event_timeline,"viz.timeseries overlay","OPTIONAL_D",D4,"externally supplied events and prepared series","ggplot2; ggiraph; gganimate","OPTIONAL_D","Detection stays upstream.","P001;T003"
+event_sequence,"viz.compose style","OPTIONAL_D",D4,"prepared event states with common scale","patchwork; gganimate","OPTIONAL_D","Static small multiples or animation share prepared data.","P001;R004;R010"
+communication_multipanel,"viz.compose style","OPTIONAL_D",D4,"heterogeneous prepared plot objects","patchwork","OPTIONAL_D","No dedicated export required if compositor retains provenance.","V03;V04;R010"
+camera_orbit,"viz.animate style","OPTIONAL_D",D5,"fixed prepared 3-D scene and explicit camera path","rgl; rayshader","OPTIONAL_D","Camera motion only; scientific scene invariant.","R005;R006"

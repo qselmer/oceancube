@@ -1,0 +1,10 @@
+reference_id,title,geometry,purpose,classification,scientific_specification,redistribution,notes
+V01,"Mediterranean scalar field over geographic or satellite context","map with contextual raster","communication and regional interpretation","DESIGN_EXEMPLAR",FALSE,"DO NOT REDISTRIBUTE","Separate scientific field from licensed basemap and acquire context explicitly."
+V02,"Copernicus El Nino warming anomaly on global globe","global scalar globe","communication of a global anomaly","DESIGN_EXEMPLAR",FALSE,"DO NOT REDISTRIBUTE","Requires an already-computed anomaly and traceable coordinates."
+V03,"Overview map plus zoom inset plus temporal series","composed map and series","context plus local evolution","DESIGN_EXEMPLAR",FALSE,"DO NOT REDISTRIBUTE","Supports a general compositor rather than a dedicated public export."
+V04,"SST anomaly time series plus trend map plus anomaly map","three-panel change summary","analytical change summary","DESIGN_EXEMPLAR",FALSE,"DO NOT REDISTRIBUTE","Consumes explicit anomaly and trend products; renderer performs no science."
+V05,"Global Ocean warming stripes","one-dimensional stripes","compact climate communication","DESIGN_EXEMPLAR",FALSE,"DO NOT REDISTRIBUTE","Requires explicit time series and anomaly or value semantics."
+V06,"Time-axis warming stripes","one-dimensional time raster","compact temporal communication","DESIGN_EXEMPLAR",FALSE,"DO NOT REDISTRIBUTE","Time axis remains explicit and ordered."
+V07,"Monthly and yearly climate spiral","polar cyclic traces","climate communication","DESIGN_EXEMPLAR",FALSE,"DO NOT REDISTRIBUTE","Angle radius grouping and baseline semantics must be explicit."
+V08,"Stacked spiral or cyclic annual temperature traces","stacked polar traces","compare annual cycles","DESIGN_EXEMPLAR",FALSE,"DO NOT REDISTRIBUTE","May be analytical or communicative depending annotations and density."
+V09,"Three-dimensional thermal helix with year vertical","3-D cyclic helix","temporal communication","DESIGN_EXEMPLAR",FALSE,"DO NOT REDISTRIBUTE","Consumes precomputed series and must expose vertical time semantics."

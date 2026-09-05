@@ -1,0 +1,2 @@
+viz_id,function,style,renderer,dataset,variable,purpose,script,output_file,output_type,width,height,dpi,interactive,animated,3d,review_status,reviewer,notes
+EXAMPLE,"viz.map","raster","ggplot2","governed-fixture-id","temperature","scientific analysis","scripts/example.R","static/example.png","PNG",1800,1200,300,FALSE,FALSE,FALSE,"PENDING","","Template row only; replace in future manifest.csv."

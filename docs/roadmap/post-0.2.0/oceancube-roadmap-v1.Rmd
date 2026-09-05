@@ -641,8 +641,13 @@ CF semantics and explicit bounds. C1-C10 are technically COMPLETE/CERTIFIED and
 the development API contains 48 exports. C-GOVR reconciles the C8-C10 decisions
 DEC-037 through DEC-039 into the canonical register and documents why
 `dev/hardening/**` remains repository-only evidence under the intentional
-source-build exclusion. C-EXIT now certifies the complete bounded C1-C10 chain
-locally through DEC-040 without runtime or API change. Thus `0.3.0-C` is
-COMPLETE/CERTIFIED LOCALLY — REMOTE EXIT PENDING. The single recommended next
-phase, only after remote C-EXIT certification, is 0.3.0-D1 oceanographic
-visualization architecture and contract; D1 has not started.
+source-build exclusion. C-EXIT certifies the complete bounded C1-C10 chain
+locally and remotely through DEC-040 without runtime or API change. Thus
+`0.3.0-C` is COMPLETE/CERTIFIED. D1A adds DEC-041, a persistent reference
+registry, global visualization inventory, renderer evaluation,
+renderer-neutral architecture, and gallery governance without changing
+runtime, tests, dependencies, exports, or version. Phase `0.3.0-D` is IN
+PROGRESS and D1A is LOCAL COMPLETE/CERTIFIED. The single recommended next
+subphase, only after remote D1A certification, is D1B renderer-neutral
+visualization-data contracts and the existing-viz refactor plan; D1B has not
+started.

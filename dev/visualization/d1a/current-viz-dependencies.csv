@@ -1,0 +1,12 @@
+dependency,current_location,current_use,change_in_D1A,future_posture,notes
+ggplot2,"DESCRIPTION Imports","all five current viz functions and ggplot return class",NONE,"CORE_IMPORT","Canonical static 2-D grammar already required."
+rlang,"DESCRIPTION Imports",".data pronoun in visualization mappings",NONE,"CORE_IMPORT","Existing dependency; no D1A change."
+sf,"DESCRIPTION Suggests","optional supplied coastline class handling in viz.map",NONE,"OPTIONAL_SUGGESTS","No download and no implicit CRS transform."
+ggiraph,"not declared","candidate interactive 2-D adapter",NONE,"FUTURE_SUGGESTS","D1B/D4 evidence required before declaration."
+plotly,"not declared","candidate secondary interactive/WebGL/3-D adapter",NONE,"FUTURE_SUGGESTS","Not approved as core."
+gganimate,"not declared","candidate animation grammar",NONE,"FUTURE_SUGGESTS","Output backend remains optional."
+rgl,"not declared","candidate primary R-native scientific 3-D adapter",NONE,"FUTURE_SUGGESTS","Headless and system requirements forbid core promotion without D5 evidence."
+rayshader,"not declared","candidate specialized bathymetry/cinematic renderer",NONE,"FUTURE_SUGGESTS","Not a general scientific scene backend."
+patchwork,"not declared","candidate composition engine",NONE,"FUTURE_SUGGESTS","D2 should validate object and guide behavior."
+cmocean,"not declared","canonical oceanographic palette reference candidate",NONE,"FUTURE_SUGGESTS_OR_INTERNAL_VALUES","License and dependency strategy to be bounded in implementation."
+vdiffr,"not declared","candidate visual regression layer",NONE,"FUTURE_SUGGESTS","Visual tests supplement numeric and object tests."

@@ -1,0 +1,10 @@
+phase,status,scope,entry_gate,exit_evidence,explicit_exclusions
+D1A,"LOCAL_COMPLETE_CERTIFIED","global inventory; references; renderer and API architecture","C-EXIT remote certified","DEC-041; validators; structural build/check","runtime; dependencies; new exports"
+D1B,"NOT_STARTED","renderer-neutral oceancube_viz_data and oceancube_viz_scene contracts plus existing viz refactor plan","D1A remote certified","prototype contracts and compatibility plan","new public views unless separately authorized"
+D2,"NOT_STARTED","core 2-D scientific views; Hovmoller; map styles; composition","D1B certified","governed gallery plus numeric object and visual tests","ocean-specialized calculations; vectors; 3-D"
+D3,"NOT_STARTED","ocean-specialized TS curtain bathymetry and supplied diagnostic overlays","D2 certified and C contracts preserved","governed ocean gallery and semantic tests","TEOS-10 inside viz; downloads; vector science"
+D4,"NOT_STARTED","interactive 2-D; animation; bounded communication views","D3 certified","HTML/GIF/MP4 gallery samples and human review","unbounded 4-D; renderer-side science"
+D5,"NOT_STARTED","small/medium surfaces slices curtains isosurfaces and helix","D4 certified plus scene/memory gates","headless CI and governed 3-D gallery","large volume; large voxels; huge sequences"
+D-EXIT,"NOT_STARTED","global visualization certification","D1B-D5 bounded subsets certified","cross-renderer scientific parity and human visual gate","Phase E vector science; 0.5 volume architecture"
+E,"NOT_STARTED","vector/flow semantics and implementations","D renderer compatibility only","component alignment speed direction and vector-calculus evidence","not started by D1A"
+0.5,"NOT_STARTED","lazy chunk storage and large-volume architecture","future explicit authorization","scalable memory I/O remote-rendering evidence","not promised by Phase D"

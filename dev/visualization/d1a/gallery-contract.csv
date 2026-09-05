@@ -1,0 +1,11 @@
+contract_id,requirement,status,notes
+GAL-001,"Every certified viz capability has at least one governed deterministic gallery example","APPROVED","Network-free fixture or small simulated cube."
+GAL-002,"Every candidate is visually inspected by a named human reviewer before certification","APPROVED","Unit tests alone are insufficient."
+GAL-003,"Scientific data tests object contract tests and visual regression tests remain separate","APPROVED","Screenshots cannot substitute numerical truth."
+GAL-004,"Manifest records function style renderer dataset variable purpose script output dimensions and review","APPROVED","See manifest-template.csv."
+GAL-005,"Static representative formats include PNG plus SVG or PDF where suitable","APPROVED","Journal sizing DPI fonts and transparency reviewed."
+GAL-006,"Interactive examples use bounded self-contained or dependency-declared HTML","APPROVED","Avoid enormous embedded payloads and remote tiles."
+GAL-007,"Animation examples use short previews representative frames or compressed MP4","APPROVED","Do not commit large frame sets."
+GAL-008,"3-D examples include a deterministic screenshot and optional bounded HTML","APPROVED","Camera and lighting recorded."
+GAL-009,"Default per-file soft limits are PNG/SVG/PDF 2 MiB HTML 5 MiB GIF 5 MiB MP4 10 MiB","APPROVED","Larger artifacts require explicit review and generated-on-demand preference."
+GAL-010,"Gallery outputs record provenance QA and source-semantics context","APPROVED","Visual review must detect raw-versus-field ambiguity."
