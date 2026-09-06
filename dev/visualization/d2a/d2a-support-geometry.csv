@@ -1,0 +1,7 @@
+property,expected,observed,status
+vocabulary,"EXPLICIT_CELL_BOUNDS;STORED_CENTRES","EXPLICIT_CELL_BOUNDS;STORED_CENTRES",PASS
+runtime_geometry,STORED_CENTRES,STORED_CENTRES,PASS
+explicit_bounds_architecture,DEFINED,DEFINED,PASS
+explicit_bounds_runtime,DEFERRED_NOT_CERTIFIED_D2A,DEFERRED_NOT_CERTIFIED_D2A,PASS
+scientific_bounds_invented,FALSE,FALSE,PASS
+schema_version,1.0.0,1.0.0,PASS

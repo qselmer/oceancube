@@ -6,4 +6,7 @@ viz.transect,PASS,PASS,focused visualization suite
 viz.timeseries,PASS,PASS,focused visualization suite
 D1B_gallery_hashes,5_of_5_exact,PASS,governed PNG SHA256 comparison
 Phase_C,PASS,PASS,all Phase-C tests in full suite
-full_test_suite,zero_failures_errors_warnings_skips,PASS,"82 files; 856 cases; 6503 expectations; 1661.84 seconds"
+no_hidden_reduction,none,PASS,HOVMOLLER focused tests
+no_interpolation,none,PASS,HOVMOLLER focused tests and renderer geometry inspection
+missingness,NA_preserved_end_to_end,PASS,prepared serialization and renderer-input tests
+full_test_suite,zero_failures_errors_warnings_skips,PASS,"82 files; 859 cases; 6535 expectations; 1649.18 seconds"

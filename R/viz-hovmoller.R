@@ -37,8 +37,11 @@
 #' @details
 #' The prepared data are the exact time-by-coordinate Cartesian support returned
 #' by [cube_extract()]. Irregular stored spacing remains irregular and is drawn
-#' with tiles positioned at stored coordinate centres; gaps are not stretched
-#' into a continuous raster and no scientific cell bounds are invented.
+#' with a deterministic display-only footprint positioned at stored coordinate
+#' centres; subtle boundaries distinguish stored `NA` tiles from regions with
+#' no stored centre. Gaps are not stretched into a continuous raster and no
+#' scientific cell bounds are invented. The display label normalizes the
+#' unambiguous `degC` alias to `°C`; stored unit metadata remain unchanged.
 #' Calendar-aware non-base time axes are rejected explicitly because the D2A
 #' ggplot renderer cannot represent them without inventing Gregorian dates.
 #'
@@ -179,7 +182,7 @@ viz.hovmoller <- function(
   }
   axis_label <- function(name) {
     label <- switch(name, longitude = "Longitude", latitude = "Latitude", depth = "Depth")
-    units <- axis_units(name)
+    units <- .viz_display_unit(axis_units(name))
     if (is.null(units) || length(units) != 1L || is.na(units) || !nzchar(units)) {
       label
     } else {
@@ -375,6 +378,7 @@ viz.hovmoller <- function(
       "oceancube_viz_data_error"
     )
   }
+  display_footprint <- .viz_display_footprint(selected_time, selected_axis)
 
   backend <- attr(extracted, "oceancube_backend", exact = TRUE)
   selection <- attr(extracted, "oceancube_selection", exact = TRUE)
@@ -406,7 +410,7 @@ viz.hovmoller <- function(
   }
   value_label <- if (!is.na(variable_metadata$units) &&
       nzchar(variable_metadata$units)) {
-    paste0(variable_label, " (", variable_metadata$units, ")")
+    paste0(variable_label, " (", .viz_display_unit(variable_metadata$units), ")")
   } else {
     variable_label
   }
@@ -464,7 +468,7 @@ viz.hovmoller <- function(
       value = "value",
       axis = axis,
       support = "STORED_CENTRES",
-      renderer_geometry = "TILE_CENTRES_WITH_VISIBLE_GAPS",
+      renderer_geometry = "DISPLAY_ONLY_POINT_CENTRED_TILES_WITH_VISIBLE_GAPS",
       regular_time = regular_axis(selected_time),
       regular_axis = regular_axis(selected_axis)
     ),
@@ -478,7 +482,12 @@ viz.hovmoller <- function(
       backend = backend,
       selection_status = "SELECTED",
       fixed_coordinates = fixed_coordinates,
-      no_hidden_reduction = TRUE
+      no_hidden_reduction = TRUE,
+      geometry = "STORED_CENTRES",
+      display_footprint = display_footprint,
+      scientific_bounds = NULL,
+      bounds_authority = "NONE_AVAILABLE_FOR_BOTH_PLOTTED_AXES",
+      explicit_cell_bounds_runtime = "DEFERRED_NOT_CERTIFIED_D2A"
     ),
     provenance = provenance,
     qa = qa,

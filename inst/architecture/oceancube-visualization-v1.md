@@ -175,6 +175,10 @@ Stored irregular coordinate and time positions remain irregular. The D2A
 adapter uses stored-centre tiles and leaves larger gaps visible instead of
 stretching them into a continuous raster or inventing scientific cell bounds.
 Depth values remain positive down; only the y display scale may reverse.
+Renderer geometry distinguishes authoritative scientific support from a
+display-only footprint. The current Hovmöller footprint is explicitly derived
+from stored centres, cannot enter CF metadata, and uses subtle boundaries so a
+grey stored `NA` tile differs from a blank region with no stored centre.
 
 ## D2A scientific scale and palette foundation
 

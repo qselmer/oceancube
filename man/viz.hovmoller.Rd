@@ -73,8 +73,11 @@ smooths, fills, calculates a climatology or anomaly, or estimates a trend.
 \details{
 The prepared data are the exact time-by-coordinate Cartesian support returned
 by \code{\link[=cube_extract]{cube_extract()}}. Irregular stored spacing remains irregular and is drawn
-with tiles positioned at stored coordinate centres; gaps are not stretched
-into a continuous raster and no scientific cell bounds are invented.
+with a deterministic display-only footprint positioned at stored coordinate
+centres; subtle boundaries distinguish stored \code{NA} tiles from regions with
+no stored centre. Gaps are not stretched into a continuous raster and no
+scientific cell bounds are invented. The display label normalizes the
+unambiguous \code{degC} alias to \code{°C}; stored unit metadata remain unchanged.
 Calendar-aware non-base time axes are rejected explicitly because the D2A
 ggplot renderer cannot represent them without inventing Gregorian dates.
 }

@@ -652,5 +652,8 @@ existing visual APIs and outputs; D1A and D1B are certified locally and
 remotely. D2A adds only `viz.hovmoller()`, bringing the development API to 49
 exports, and technically validates time-longitude, time-latitude, and time-
 depth views plus the internal scale foundation. Phase `0.3.0-D` and D2 remain
-IN PROGRESS. D2A is IMPLEMENTED / TECHNICALLY VALIDATED with VISUAL REVIEW
-PENDING; DEC-043 remains unallocated until named maintainer review.
+IN PROGRESS. D2A is IMPLEMENTED / TECHNICALLY VALIDATED with a REVISED VISUAL
+CANDIDATE GENERATED and MAINTAINER REVIEW PENDING. Stored-centre tile extent is
+explicitly display-only; grey stored `NA` tiles are distinct from blank regions
+without stored centres. DEC-043 remains unallocated until named maintainer
+review.

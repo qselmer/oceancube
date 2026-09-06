@@ -1,0 +1,14 @@
+field,pre_review,post_review,equality,status,notes
+scientific_values,fixture_exact,fixture_exact,EXACT,PASS,no calculation or interpolation change
+time_coordinates,fixture_exact,fixture_exact,EXACT,PASS,stored coordinates unchanged
+longitude_coordinates,fixture_exact,fixture_exact,EXACT,PASS,stored coordinates unchanged
+latitude_coordinates,fixture_exact,fixture_exact,EXACT,PASS,stored coordinates unchanged
+depth_coordinates,fixture_exact,fixture_exact,EXACT,PASS,positive-down scientific coordinates unchanged
+selection,cube_extract_exact,cube_extract_exact,EXACT,PASS,no hidden reduction
+provenance,cube_extract_exact,cube_extract_exact,EXACT,PASS,prepared provenance unchanged
+QA,cube_extract_exact,cube_extract_exact,EXACT,PASS,prepared QA unchanged
+unit_metadata,degC,degC,EXACT,PASS,source metadata unchanged
+unit_display,degC,°C,INTENTIONAL_DISPLAY_ONLY_CHANGE,PASS,no conversion
+palette,viridis_D,viridis_D,EXACT,PASS,scientific palette unchanged
+support_geometry,implicit,STORED_CENTRES,INTENTIONAL_METADATA_CHANGE,PASS,authoritative bounds unavailable for both axes
+renderer_geometry,implicit_tile_extent,display_only_point_centred_tiles_with_visible_gaps,INTENTIONAL_DISPLAY_CHANGE,PASS,minimum positive centre spacing is not scientific bounds

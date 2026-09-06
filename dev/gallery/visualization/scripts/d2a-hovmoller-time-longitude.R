@@ -8,8 +8,11 @@ plot <- viz.hovmoller(
   latitude = -11,
   depth = 35,
   title = "Simulated time-longitude temperature",
-  subtitle = "Stored centres; irregular time and longitude; grey cells are missing",
-  caption = "Simulated stored values; no interpolation"
+  subtitle = "Irregular stored centres",
+  caption = paste0(
+    "Grey = stored NA; blank = no stored centre;\n",
+    "Tile extent is display-only; no interpolation."
+  )
 )
 d2a_save_plot(
   plot,

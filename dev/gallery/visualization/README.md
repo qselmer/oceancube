@@ -72,8 +72,11 @@ any intentional appearance change.
 
 These figures were generated from the installed public `viz.hovmoller()` API
 and deterministic simulated data. They are technically validated but have not
-been visually approved. Grey cells are deliberately missing and no value is
-interpolated, averaged, smoothed, or filled.
+been visually approved. A grey tile is a stored centre whose value is `NA`; a
+blank region has no stored centre and therefore no tile or boundary. Tile
+extent is a display-only footprint derived from stored-centre spacing when
+authoritative bounds are unavailable. No value is interpolated, averaged,
+smoothed, or filled.
 
 ### Hovmöller time-depth
 
@@ -89,4 +92,4 @@ interpolated, averaged, smoothed, or filled.
 
 For each candidate, record the named maintainer decision against the checklist
 in `../../visualization/d2a/d2a-visual-review-checklist.csv`. Until then all
-three manifest rows remain `GENERATED_PENDING_MAINTAINER`.
+three manifest rows remain `REGENERATED_PENDING_MAINTAINER`.

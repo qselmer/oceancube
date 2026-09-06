@@ -104,6 +104,22 @@ It does not add or rewrite public lineage, and QA is never transformed into an
 aesthetic. Prepared state contains no private path beyond any pre-existing
 governed source identity permitted by Provenance V1.
 
+For `HOVMOLLER`, `support$geometry` uses the bounded vocabulary
+`EXPLICIT_CELL_BOUNDS` or `STORED_CENTRES`. The former requires authoritative
+bounds for both plotted axes. D2A implements only `STORED_CENTRES`; the
+explicit-bounds runtime is `DEFERRED_NOT_CERTIFIED_D2A`. Its
+`support$display_footprint` declares `DISPLAY_ONLY`,
+`DERIVED_FROM_STORED_CENTRES`, and `MINIMUM_POSITIVE_CENTRE_SPACING`, plus
+positive renderer width/height. `support$scientific_bounds` remains `NULL` and
+the footprint explicitly cannot enter CF metadata. Thus renderer rectangles
+are never represented as certified scientific cell bounds.
+
+The stored-centre renderer retains a row and visible neutral tile for `NA`.
+Absence of a stored centre produces no row, tile, or boundary. Subtle tile
+boundaries clarify this distinction without modifying the field. Coordinates,
+values, selection, provenance, and QA are invariant under this display-only
+extension, so schema version `1.0.0` remains valid.
+
 ## Renderer hints
 
 Hints are serializable, non-scientific state: title, subtitle, caption, points,

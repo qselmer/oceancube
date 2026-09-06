@@ -28,6 +28,49 @@
   "UNSPECIFIED_CONTINUOUS"
 )
 
+.viz_support_geometry_classes <- c(
+  "EXPLICIT_CELL_BOUNDS", "STORED_CENTRES"
+)
+
+.viz_display_unit <- function(unit) {
+  if (is.null(unit) || length(unit) != 1L || is.na(unit) || !nzchar(unit)) {
+    return(unit)
+  }
+  if (identical(unit, "degC")) "\u00B0C" else unit
+}
+
+.viz_display_footprint <- function(x, y) {
+  spacing <- function(values, role) {
+    numeric_values <- if (inherits(values, c("Date", "POSIXct", "POSIXt"))) {
+      as.numeric(values)
+    } else if (is.numeric(values)) {
+      as.numeric(values)
+    } else {
+      numeric()
+    }
+    differences <- diff(sort(unique(numeric_values[is.finite(numeric_values)])))
+    differences <- differences[is.finite(differences) & differences > 0]
+    if (!length(differences)) {
+      .viz_abort(
+        paste0("A display footprint requires at least two finite `", role,
+               "` centres."),
+        "oceancube_viz_data_error"
+      )
+    }
+    min(differences)
+  }
+
+  list(
+    semantics = "DISPLAY_ONLY",
+    source = "DERIVED_FROM_STORED_CENTRES",
+    method = "MINIMUM_POSITIVE_CENTRE_SPACING",
+    x_width = spacing(x, "time"),
+    y_height = spacing(y, "coordinate"),
+    scientific_cell_bounds = FALSE,
+    enters_cf_metadata = FALSE
+  )
+}
+
 .viz_scale_spec <- function(
     classification = "UNSPECIFIED_CONTINUOUS",
     limits = NULL,
@@ -377,6 +420,34 @@
     .viz_abort("Invalid prepared visualization scale classification.",
                "oceancube_viz_data_error")
   }
+  if (identical(x$kind, "HOVMOLLER")) {
+    footprint <- if (is.list(x$support)) x$support$display_footprint else NULL
+    if (!is.list(x$support) ||
+        !is.character(x$support$geometry) ||
+        length(x$support$geometry) != 1L ||
+        !x$support$geometry %in% .viz_support_geometry_classes ||
+        !identical(x$support$geometry, "STORED_CENTRES") ||
+        !is.list(footprint) ||
+        !identical(footprint$semantics, "DISPLAY_ONLY") ||
+        !identical(footprint$source, "DERIVED_FROM_STORED_CENTRES") ||
+        !identical(footprint$method, "MINIMUM_POSITIVE_CENTRE_SPACING") ||
+        !is.numeric(footprint$x_width) || length(footprint$x_width) != 1L ||
+        !is.finite(footprint$x_width) || footprint$x_width <= 0 ||
+        !is.numeric(footprint$y_height) || length(footprint$y_height) != 1L ||
+        !is.finite(footprint$y_height) || footprint$y_height <= 0 ||
+        !identical(footprint$scientific_cell_bounds, FALSE) ||
+        !identical(footprint$enters_cf_metadata, FALSE) ||
+        !is.null(x$support$scientific_bounds) ||
+        !identical(
+          x$support$explicit_cell_bounds_runtime,
+          "DEFERRED_NOT_CERTIFIED_D2A"
+        )) {
+      .viz_abort(
+        "Invalid HOVMOLLER support-geometry metadata.",
+        "oceancube_viz_data_error"
+      )
+    }
+  }
   projection_status <- c("UNKNOWN", "KNOWN", "CURRENT", "NOT_APPLICABLE")
   if (!is.list(x$projection) || !is.character(x$projection$status) ||
       length(x$projection$status) != 1L ||
@@ -581,11 +652,18 @@
   data <- .viz_prepared_table(x)
   axis <- x$geometry$axis
   palette <- .viz_palette_resolve(x$scale)
+  footprint <- x$support$display_footprint
   plot <- ggplot2::ggplot(
     data,
     ggplot2::aes(x = .data$time, y = .data[[axis]], fill = .data$value)
   ) +
-    ggplot2::geom_tile(na.rm = hints$na.rm) +
+    ggplot2::geom_tile(
+      width = footprint$x_width,
+      height = footprint$y_height,
+      colour = "white",
+      linewidth = 0.18,
+      na.rm = hints$na.rm
+    ) +
     ggplot2::scale_fill_viridis_c(
       name = hints$value_label,
       limits = x$scale$limits,

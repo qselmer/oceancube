@@ -1,0 +1,7 @@
+property,stored,display,status
+degC,degC,°C,PASS
+degree_C,degree_C,degree_C,PASS
+unknown_units,unchanged,unchanged,PASS
+unit_conversion,FALSE,FALSE,PASS
+arbitrary_identifier_title_case,FALSE,FALSE,PASS
+public_default_subtitle,NULL,NULL,PASS

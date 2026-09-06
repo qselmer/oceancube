@@ -1,0 +1,8 @@
+property,expected,observed,status
+stored_na_row,RETAINED,RETAINED,PASS
+stored_na_fill,grey85,grey85,PASS
+stored_na_boundary,white,white,PASS
+no_stored_centre_tile,FALSE,FALSE,PASS
+no_stored_centre_boundary,FALSE,FALSE,PASS
+blank_gap_for_irregular_spacing,TRUE,TRUE,PASS
+na_altered,FALSE,FALSE,PASS

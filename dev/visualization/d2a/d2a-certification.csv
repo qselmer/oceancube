@@ -20,3 +20,21 @@ DEC_043_created,FALSE,FALSE,PASS,next available remains DEC-043
 gallery_review_status,GENERATED_PENDING_MAINTAINER,GENERATED_PENDING_MAINTAINER,PASS,not human-certified
 D2A_status,"IMPLEMENTED / TECHNICALLY VALIDATED; VISUAL REVIEW PENDING","IMPLEMENTED / TECHNICALLY VALIDATED; VISUAL REVIEW PENDING",PASS,technical certification only
 push,NOT_PERFORMED,NOT_PERFORMED,PASS,explicit contract
+review_fix_starting_sha,fb6dce401f7deb593073f7bdadc26da56fbdedf3,fb6dce401f7deb593073f7bdadc26da56fbdedf3,PASS,D2A technical implementation parent for the review fix
+review_fix_support_geometry,STORED_CENTRES,STORED_CENTRES,PASS,explicit scientific bounds unavailable for both plotted axes
+review_fix_explicit_bounds_runtime,DEFERRED_NOT_CERTIFIED_D2A,DEFERRED_NOT_CERTIFIED_D2A,PASS,architecture only; no inferred bounds
+review_fix_display_footprint,DISPLAY_ONLY,DISPLAY_ONLY,PASS,derived from minimum positive stored-centre spacing
+review_fix_scientific_invariance,EXACT,EXACT,PASS,values coordinates selection provenance and QA unchanged
+review_fix_missingness,NA_preserved,NA_preserved,PASS,stored NA remains represented and empty support remains absent
+review_fix_unit_metadata,degC,degC,PASS,display-only label is °C
+review_fix_palette,unchanged,unchanged,PASS,viridis option D and grey85 retained
+review_fix_tests,zero failures,"82 files;859 cases;6535 expectations;0 failures;0 errors;0 warnings;0 skips",PASS,devtools test under native Windows UTF-8 locale
+review_fix_build,PASS,PASS,PASS,known .git refs defect reproduced then governed clean-source fallback used
+review_fix_tarball,"filename;bytes;sha256","oceancube_0.2.0.9000.tar.gz;3101394;8f4f2b6ae83cd2a496a22b2265fadd8c8d8c6140115aed5c96cafd10a1308180",PASS,architecture runtime tests documentation and built vignettes present; dev absent
+review_fix_check,"0 errors;0 warnings;0 notes","0 errors;0 warnings;0 notes",PASS,R CMD check --no-manual final portable tarball
+review_fix_installed_gallery,PASS,PASS,PASS,three axes generated with public installed viz.hovmoller and no network
+review_fix_gallery_status,REGENERATED_PENDING_MAINTAINER,REGENERATED_PENDING_MAINTAINER,PASS,human reviewer intentionally blank
+review_fix_DEC_041_count,1,1,PASS,unchanged
+review_fix_DEC_042_count,1,1,PASS,unchanged
+review_fix_DEC_043_count,0,0,PASS,next available remains DEC-043
+review_fix_push,NOT_PERFORMED,NOT_PERFORMED,PASS,explicit contract

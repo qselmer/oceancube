@@ -195,10 +195,79 @@ test_that("irregular spacing is disclosed and rendered as stored-centre tiles", 
   expect_identical(prepared$geometry$support, "STORED_CENTRES")
   expect_identical(
     prepared$geometry$renderer_geometry,
-    "TILE_CENTRES_WITH_VISIBLE_GAPS"
+    "DISPLAY_ONLY_POINT_CENTRED_TILES_WITH_VISIBLE_GAPS"
   )
+  expect_identical(prepared$support$geometry, "STORED_CENTRES")
+  expect_identical(
+    prepared$support$display_footprint$semantics,
+    "DISPLAY_ONLY"
+  )
+  expect_identical(
+    prepared$support$display_footprint$source,
+    "DERIVED_FROM_STORED_CENTRES"
+  )
+  expect_identical(
+    prepared$support$explicit_cell_bounds_runtime,
+    "DEFERRED_NOT_CERTIFIED_D2A"
+  )
+  expect_null(prepared$support$scientific_bounds)
   expect_true(inherits(plot$layers[[1L]]$geom, "GeomTile"))
   expect_false(inherits(plot$layers[[1L]]$geom, "GeomRaster"))
+})
+
+test_that("display footprints are deterministic metadata, not scientific bounds", {
+  cube <- hovmoller_test_cube(lon = -79, lat = -11)
+  extracted <- cube_extract(
+    cube, time = cube$time, variable = "temperature",
+    mode = "table", format = "long"
+  )
+  prepared <- .viz_prepare_hovmoller(cube, "temperature", axis = "depth")
+  footprint <- prepared$support$display_footprint
+
+  expect_identical(.viz_support_geometry_classes,
+                   c("EXPLICIT_CELL_BOUNDS", "STORED_CENTRES"))
+  expect_identical(footprint$method, "MINIMUM_POSITIVE_CENTRE_SPACING")
+  expect_identical(footprint$x_width, 1)
+  expect_identical(footprint$y_height, 20)
+  expect_false(footprint$scientific_cell_bounds)
+  expect_false(footprint$enters_cf_metadata)
+  expect_identical(prepared$data$time, extracted$time)
+  expect_identical(prepared$data$depth, extracted$depth)
+  expect_identical(prepared$data$value, extracted$value)
+  expect_identical(prepared$selection,
+                   attr(extracted, "oceancube_selection", exact = TRUE))
+  expect_identical(prepared$provenance,
+                   attr(extracted, "oceancube_provenance", exact = TRUE))
+  expect_identical(prepared$qa, attr(extracted, "oceancube_qa", exact = TRUE))
+
+  malformed <- prepared
+  malformed$support$geometry <- "EXPLICIT_CELL_BOUNDS"
+  expect_error(
+    .validate_oceancube_viz_data(malformed),
+    "support-geometry",
+    class = "oceancube_viz_data_error"
+  )
+})
+
+test_that("stored NA tiles and gaps without stored centres are distinguishable", {
+  values <- array(seq_len(3 * 4), dim = c(1, 1, 3, 4, 1))
+  values[1, 1, 2, 3, 1] <- NA_real_
+  cube <- hovmoller_test_cube(lon = -79, lat = -11, data = values)
+  prepared <- .viz_prepare_hovmoller(
+    cube, "temperature", axis = "depth", reverse_depth = FALSE
+  )
+  built <- ggplot2::ggplot_build(.viz_render_ggplot(prepared))$data[[1L]]
+
+  expect_identical(nrow(built), nrow(prepared$data))
+  expect_identical(sum(built$fill == "grey85"), 1L)
+  expect_true(all(built$colour == "white"))
+  expect_true(all(built$linewidth == 0.18))
+  expect_true(any(is.na(prepared$data$value)))
+
+  one_time <- built[built$x == min(built$x), , drop = FALSE]
+  one_time <- one_time[order(one_time$y), , drop = FALSE]
+  gaps <- one_time$ymin[-1L] - one_time$ymax[-nrow(one_time)]
+  expect_true(any(gaps > 0))
 })
 
 test_that("missingness survives selection, serialization, and rendering", {
@@ -294,7 +363,7 @@ test_that("labels and metadata are authoritative and bounded", {
 
   expect_identical(plot$labels$x, "Time")
   expect_identical(plot$labels$y, "Depth (m)")
-  expect_identical(plot$scales$get_scales("fill")$name, "temperature (degC)")
+  expect_identical(plot$scales$get_scales("fill")$name, "temperature (°C)")
   expect_identical(plot$labels$title, "Simulated section")
   expect_identical(plot$labels$subtitle, "Stored support")
   expect_identical(plot$labels$caption, "No fill")
@@ -303,6 +372,21 @@ test_that("labels and metadata are authoritative and bounded", {
   expect_identical(attr(plot, "oceancube_backend"), "memory")
   expect_identical(attr(plot, "oceancube_prepared_kind"), "HOVMOLLER")
   expect_true(is.list(attr(plot, "oceancube_source_semantics")))
+})
+
+test_that("unit formatting is display-only and public defaults stay clean", {
+  cube <- hovmoller_test_cube(lon = -79, lat = -11)
+  prepared <- .viz_prepare_hovmoller(cube, "temperature", axis = "depth")
+  plot <- viz.hovmoller(cube, "temperature", axis = "depth")
+
+  expect_identical(prepared$variables$units, "degC")
+  expect_identical(plot$scales$get_scales("fill")$name, "temperature (°C)")
+  expect_identical(.viz_display_unit("degC"), "°C")
+  expect_identical(.viz_display_unit("degree_C"), "degree_C")
+  expect_identical(.viz_display_unit("mmol m-3"), "mmol m-3")
+  expect_null(plot$labels$title)
+  expect_null(plot$labels$subtitle)
+  expect_null(plot$labels$caption)
 })
 
 test_that("invalid calls and malformed extraction output fail deterministically", {

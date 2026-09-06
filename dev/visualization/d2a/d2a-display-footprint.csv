@@ -1,0 +1,9 @@
+property,expected,observed,status
+semantics,DISPLAY_ONLY,DISPLAY_ONLY,PASS
+source,DERIVED_FROM_STORED_CENTRES,DERIVED_FROM_STORED_CENTRES,PASS
+method,MINIMUM_POSITIVE_CENTRE_SPACING,MINIMUM_POSITIVE_CENTRE_SPACING,PASS
+coordinates_altered,FALSE,FALSE,PASS
+values_altered,FALSE,FALSE,PASS
+enters_cf_metadata,FALSE,FALSE,PASS
+implies_interpolation,FALSE,FALSE,PASS
+tile_boundary,"white;linewidth=0.18","white;linewidth=0.18",PASS

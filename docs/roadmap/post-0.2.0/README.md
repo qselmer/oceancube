@@ -196,8 +196,11 @@ visualization functions into preparation and rendering while preserving their
 public signatures and observed behavior. D1B is COMPLETE/CERTIFIED locally and
 remotely. D2A additively implements `viz.hovmoller()` for time by longitude,
 latitude, or depth plus the internal scale/palette foundation. It is
-IMPLEMENTED / TECHNICALLY VALIDATED with VISUAL REVIEW PENDING; no decision is
-allocated and DEC-043 remains next. Phase 0.3.0-D and D2 remain IN PROGRESS.
+IMPLEMENTED / TECHNICALLY VALIDATED with a REVISED VISUAL CANDIDATE GENERATED
+and MAINTAINER REVIEW PENDING. Its stored-centre footprint is explicitly
+display-only and distinguishes grey stored `NA` tiles from blank regions with
+no stored centre. No decision is allocated and DEC-043 remains next. Phase
+0.3.0-D and D2 remain IN PROGRESS.
 
 ## Change control
 

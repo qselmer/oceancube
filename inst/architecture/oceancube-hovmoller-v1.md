@@ -85,22 +85,50 @@ Hovmöller, `reverse_depth = TRUE` changes only the renderer's y scale so the
 surface appears at the top. It never negates, rewrites, reorders, or otherwise
 changes the prepared scientific depth values.
 
-## Coordinate support and irregular spacing
+## Support geometry
 
-The prepared table records stored coordinate centres; it does not manufacture
-cell bounds. The ggplot adapter uses `geom_tile()` at those stored centres.
-Irregular time, longitude, latitude, or depth positions therefore remain at
-their actual coordinates, and larger gaps remain visually larger. The adapter
-does not use `geom_raster()` to falsely regularize spacing. Where only point
-support is authoritative, the stored-centre representation is explicitly a
-display convention, not an assertion of invented scientific bounds.
+Hovmöller support geometry has the bounded vocabulary
+`EXPLICIT_CELL_BOUNDS` and `STORED_CENTRES`. `EXPLICIT_CELL_BOUNDS` means that
+authoritative current metadata provide actual bounds for both plotted axes and
+that the renderer may use those exact bounds as scientific cell extent.
+`STORED_CENTRES` means that the scientific product provides coordinate centres
+but not authoritative bounds for the complete plotted representation.
+
+D2A implements and certifies only `STORED_CENTRES`. Although current CF
+metadata can expose bounds for some individual coordinates, the runtime does
+not safely expose authoritative usable bounds for both Hovmöller axes through
+the bounded preparation path. `EXPLICIT_CELL_BOUNDS` is therefore
+architecturally defined but its runtime path is `DEFERRED_NOT_CERTIFIED_D2A`.
+No partial or speculative bounds path is used.
+
+For `STORED_CENTRES`, the renderer uses a deterministic point-centred display
+footprint. Prepared metadata declare `semantics = DISPLAY_ONLY`,
+`source = DERIVED_FROM_STORED_CENTRES`, and
+`method = MINIMUM_POSITIVE_CENTRE_SPACING`. The footprint width and height are
+the minimum positive separation of the stored centres on their respective
+axes. They are renderer dimensions only: they do not alter coordinates or
+values, are not source bounds, never enter CF metadata, and imply neither
+interpolation nor certified cell support.
+
+The adapter uses `geom_tile()` with the declared display footprint and a
+restrained white boundary. A stored centre with a finite value is a coloured
+tile; a stored centre with `NA` is a light-grey tile with the same boundary; a
+region with no stored centre has neither tile nor boundary and remains the
+light plot background. This makes stored missingness visibly distinct from
+absence of a stored centre without filling support.
+
+Irregular time, longitude, latitude, or depth positions remain at their actual
+coordinates. A separation larger than the minimum stored spacing remains a
+visible blank gap. The adapter does not use `geom_raster()`, midpoint-derived
+scientific bounds, half-spacing CF bounds, or regular-grid assumptions.
 
 ## Missingness
 
 Missing selected values remain `NA` throughout selection, preparation,
-serialization, and rendering. The default adapter uses a neutral grey missing
-colour. `na.rm` controls graphical warning/removal behavior only; it does not
-impute, bridge, fill, smooth, or replace values with zero.
+serialization, and rendering. The default adapter uses neutral `grey85` for a
+stored missing centre and a subtle white tile boundary against the light
+background. `na.rm` controls graphical warning/removal behavior only; it does
+not impute, bridge, fill, smooth, or replace values with zero.
 
 ## Renderer-neutral prepared state
 
@@ -145,10 +173,14 @@ for common colour-vision deficiencies, and independent of optional packages.
 Import or Suggest in D2A. Optional-package availability cannot change the
 default rendering.
 
-Legend text uses the authoritative variable long name or requested name and
-units when available; it never manufactures units. Axis labels likewise use
-the stored coordinate name and authoritative units. Titles, subtitles, and
-captions are conservative user-controlled renderer hints.
+Legend text uses the authoritative variable long name or requested stored name
+and units when available; it never title-cases identifiers or manufactures
+units. Axis labels likewise use the stored coordinate name and authoritative
+units. The display-only formatter maps exactly `degC` to `°C`; stored metadata
+remain `degC`, no conversion occurs, and all unknown unit strings are displayed
+unchanged. Titles, subtitles, and captions are conservative user-controlled
+renderer hints. The public default subtitle remains blank; detailed support
+language belongs to the governed gallery and documentation.
 
 ## Serialization, provenance, and QA
 
