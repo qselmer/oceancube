@@ -1,0 +1,7 @@
+property,contract,status
+time_positions,stored numeric positions preserved,PASS
+coordinate_positions,stored numeric positions preserved,PASS
+renderer,geom_tile at stored centres,PASS
+large_gaps,remain visible rather than stretched,PASS
+scientific_bounds,invented bounds forbidden,PASS
+regular_raster_for_hovmoller,not used,PASS

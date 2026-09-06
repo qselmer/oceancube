@@ -126,7 +126,7 @@ test_that("C-EXIT keeps the complete vertical public surface exact", {
     ),
     stratification = c("x", "metric", "support")
   )
-  expect_identical(length(getNamespaceExports("oceancube")), 48L)
+  expect_identical(length(getNamespaceExports("oceancube")), 49L)
   for (name in names(expected)) {
     expect_identical(names(formals(get(name, asNamespace("oceancube")))),
                      expected[[name]])

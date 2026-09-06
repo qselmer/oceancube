@@ -1,0 +1,7 @@
+candidate,dependency_posture,deterministic_default,headless_cross_platform,cvd_perceptual,decision
+ggplot2_native_viridis,existing Imports,TRUE,TRUE,TRUE,SELECTED_OPTION_D
+viridisLite,not direct,TRUE,TRUE,TRUE,NOT_CALLED_DIRECTLY
+cmocean,not added,TRUE,not evaluated here,oceanographic reference only,DEFERRED
+scico,not added,TRUE,not evaluated here,reported CVD-aware,DEFERRED
+colorspace,not added,TRUE,not evaluated here,toolkit not required,DEFERRED
+rainbow_jet,base or custom,TRUE,TRUE,FALSE,REJECTED

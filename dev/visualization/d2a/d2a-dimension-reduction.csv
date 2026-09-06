@@ -1,0 +1,7 @@
+case,expected,observed,status
+omitted_non_singleton_dimension,ERROR,ERROR,PASS
+omitted_singleton_dimension,ALLOWED,ALLOWED,PASS
+display_axis_selector,ERROR,ERROR,PASS
+hidden_mean,FALSE,FALSE,PASS
+hidden_sum_or_integral,FALSE,FALSE,PASS
+hidden_first_or_nearest_drop,FALSE,FALSE,PASS

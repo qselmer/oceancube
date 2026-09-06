@@ -25,7 +25,7 @@ test_that("oceancube_viz_data v1 is internal, bounded, and valid", {
       isTRUE(.validate_oceancube_viz_data(x))
   }, logical(1))))
   expect_false("oceancube_viz_data" %in% getNamespaceExports("oceancube"))
-  expect_identical(length(getNamespaceExports("oceancube")), 48L)
+  expect_identical(length(getNamespaceExports("oceancube")), 49L)
 })
 
 test_that("validator rejects malformed schema components deterministically", {
@@ -36,7 +36,7 @@ test_that("validator rejects malformed schema components deterministically", {
   malformed <- list(
     missing_key = within(prepared, rm(geometry)),
     version = within(prepared, schema_version <- "2.0.0"),
-    kind = within(prepared, kind <- "HOVMOLLER"),
+    kind = within(prepared, kind <- "CURTAIN"),
     data = within(prepared, data <- list(value = 1)),
     role = within(prepared, roles$x <- "absent"),
     coordinate = within(prepared, coordinates$depth$n <- 999L),

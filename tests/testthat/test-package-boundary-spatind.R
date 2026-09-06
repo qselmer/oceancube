@@ -26,7 +26,8 @@ test_that("only approved APIs extend the boundary", {
     "oxygen_boundary",
     "mixed_layer_depth",
     "thermodynamic_state",
-    "stratification"
+    "stratification",
+    "viz.hovmoller"
   )
   observed <- getNamespaceExports("oceancube")
 

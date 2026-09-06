@@ -1,0 +1,6 @@
+property,contract,status
+scientific_sign,positive down unchanged,PASS
+default_display,surface at top via reversed y scale,PASS
+reverse_depth_effect,renderer scale only,PASS
+surface_only_axis,unsupported because Hovmoller axis needs two finite positions,PASS
+hidden_vertical_reduction,none,PASS

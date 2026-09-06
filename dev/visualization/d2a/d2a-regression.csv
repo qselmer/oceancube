@@ -1,0 +1,9 @@
+scope,expected,status,evidence
+viz.map,PASS,PASS,focused visualization suite
+viz.profile,PASS,PASS,focused visualization suite
+viz.section,PASS,PASS,focused visualization suite
+viz.transect,PASS,PASS,focused visualization suite
+viz.timeseries,PASS,PASS,focused visualization suite
+D1B_gallery_hashes,5_of_5_exact,PASS,governed PNG SHA256 comparison
+Phase_C,PASS,PASS,all Phase-C tests in full suite
+full_test_suite,zero_failures_errors_warnings_skips,PASS,"82 files; 856 cases; 6503 expectations; 1661.84 seconds"

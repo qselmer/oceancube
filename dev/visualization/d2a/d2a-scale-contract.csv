@@ -1,0 +1,7 @@
+classification,allowed,default,centre_rule,status
+SEQUENTIAL,TRUE,FALSE,centre forbidden,PASS
+DIVERGING,TRUE,FALSE,explicit finite scientific centre required,PASS
+CYCLIC,TRUE,FALSE,centre forbidden,PASS
+CATEGORICAL,TRUE,FALSE,centre forbidden,PASS
+UNSPECIFIED_CONTINUOUS,TRUE,TRUE,centre forbidden,PASS
+variable_name_heuristics,FALSE,FALSE,not applicable,PASS

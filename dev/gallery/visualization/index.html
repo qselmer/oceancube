@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>oceancube Phase-D visualization review</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem auto; max-width: 74rem; color: #202124; }
+    h1, h2 { line-height: 1.2; }
+    .notice { padding: 1rem; background: #fff4ce; border-left: 0.35rem solid #8a6d00; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr)); gap: 1.5rem; }
+    figure { margin: 0; border: 1px solid #d6d6d6; padding: 0.75rem; background: white; }
+    img { display: block; width: 100%; height: auto; }
+    figcaption { margin-top: 0.6rem; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>oceancube Phase-D visualization review</h1>
+  <p class="notice"><strong>D2A status:</strong> implemented and technically validated; named maintainer visual review pending.</p>
+
+  <h2>D2A Hovmöller candidates</h2>
+  <div class="grid">
+    <figure>
+      <img src="static/d2a-hovmoller-time-depth.png" alt="Simulated time-depth Hovmöller candidate">
+      <figcaption>Time-depth</figcaption>
+    </figure>
+    <figure>
+      <img src="static/d2a-hovmoller-time-longitude.png" alt="Simulated time-longitude Hovmöller candidate">
+      <figcaption>Time-longitude</figcaption>
+    </figure>
+    <figure>
+      <img src="static/d2a-hovmoller-time-latitude.png" alt="Simulated time-latitude Hovmöller candidate">
+      <figcaption>Time-latitude</figcaption>
+    </figure>
+  </div>
+
+  <h2>D1B reference baselines</h2>
+  <div class="grid">
+    <figure><img src="static/d1b-map.png" alt="D1B map baseline"><figcaption>Map</figcaption></figure>
+    <figure><img src="static/d1b-profile.png" alt="D1B profile baseline"><figcaption>Profile</figcaption></figure>
+    <figure><img src="static/d1b-section.png" alt="D1B section baseline"><figcaption>Section</figcaption></figure>
+    <figure><img src="static/d1b-transect.png" alt="D1B transect baseline"><figcaption>Transect</figcaption></figure>
+    <figure><img src="static/d1b-timeseries.png" alt="D1B time-series baseline"><figcaption>Time series</figcaption></figure>
+  </div>
+</body>
+</html>

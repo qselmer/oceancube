@@ -1,7 +1,7 @@
 # oceancube renderer-neutral visualization data v1
 
-Status: D1B internal implementation contract. Schema name
-`oceancube_viz_data`; schema version `1.0.0`.
+Status: D1B internal implementation contract, additively extended by D2A.
+Schema name `oceancube_viz_data`; schema version `1.0.0`.
 
 ## Purpose
 
@@ -10,7 +10,8 @@ plain prepared data -> renderer adapter. Preparation owns the selected values an
 their meaning. Rendering owns only graphical representation. Existing
 `viz.map()`, `viz.profile()`, `viz.section()`, `viz.transect()`, and
 `viz.timeseries()` remain public, keep their exact signatures, and still return
-modifiable `ggplot` objects.
+modifiable `ggplot` objects. D2A adds `viz.hovmoller()` through the same
+prepare/render boundary.
 
 ## Schema and invariants
 
@@ -29,12 +30,12 @@ mismatch, invalid time or depth metadata, invented scale or source classes,
 invalid projection state, malformed provenance or QA, and live or
 renderer-specific state.
 
-## Supported D1B kinds
+## Supported runtime kinds
 
 Runtime preparation supports exactly `MAP_LAYER`, `PROFILE`, `SECTION`,
-`TRANSECT_SECTION`, `TRANSECT_LINE`, and `TIMESERIES`. Hovmöller, T-S, curtain,
-3-D scenes, isosurfaces, animation, interaction, composition, semantic palettes,
-and vector fields are not executable D1B kinds.
+`TRANSECT_SECTION`, `TRANSECT_LINE`, `TIMESERIES`, and the D2A additive
+`HOVMOLLER` kind. T-S, curtain, 3-D scenes, isosurfaces, animation, interaction,
+composition, and vector fields are not executable kinds.
 
 ## Roles, variables, and coordinates
 
@@ -82,11 +83,17 @@ metadata contract only. D1B performs no CRS transformation; maps report
 `UNKNOWN` unless current authoritative metadata supplies a CRS, and
 non-geographic views report `NOT_APPLICABLE`.
 
-The D1B scale classification is `UNSPECIFIED_CONTINUOUS`. Sequential,
-diverging, cyclic, and categorical semantics are not inferred from variable
-names. Semantic palette resolution remains D2 work. User limits are stored as
-requested display-scale limits and never clip or alter prepared scientific
-values; the existing squish behavior is applied by the ggplot adapter.
+The internal scale vocabulary is `SEQUENTIAL`, `DIVERGING`, `CYCLIC`,
+`CATEGORICAL`, and `UNSPECIFIED_CONTINUOUS`. Sequential, diverging, cyclic, and
+categorical semantics are never inferred from variable names. D2A Hovmöller
+therefore defaults to `UNSPECIFIED_CONTINUOUS`; a diverging class is valid only
+with an explicit scientifically meaningful centre. Scientific class and colour
+palette are separate internal metadata. The D2A palette resolver chooses the
+deterministic ggplot2-native viridis option D for Hovmöller and is unaffected by
+optional package availability. User limits are stored as requested display-
+scale limits and never clip or alter prepared scientific values; the squish
+behavior belongs to the ggplot adapter. Existing D1B plots retain their original
+scale records and appearance.
 
 ## Support, provenance, and QA
 
@@ -118,11 +125,12 @@ removed.
 
 The internal preparers `.viz_prepare_map()`, `.viz_prepare_profile()`,
 `.viz_prepare_section()`, `.viz_prepare_transect()`, and
-`.viz_prepare_timeseries()` delegate selection solely to `cube_extract()` or
-`cube_transect()`. They do not duplicate nearest-cell matching, time/depth
-selection, path matching, distance calculation, or NetCDF subsetting.
+`.viz_prepare_timeseries()`, plus D2A `.viz_prepare_hovmoller()`, delegate
+selection solely to `cube_extract()` or `cube_transect()`. They do not duplicate
+nearest-cell matching, time/depth selection, path matching, distance
+calculation, or NetCDF subsetting.
 
-`.viz_render_ggplot()` dispatches on the six supported kinds. It accepts only a
+`.viz_render_ggplot()` dispatches on the seven supported kinds. It accepts only a
 validated prepared object, performs zero source or NetCDF reads, and recreates
 the starting layers, scales, labels, coordinates, point options, coastline
 behavior, depth display, and `oceancube_*` plot attributes. The five public
@@ -159,7 +167,11 @@ intentional appearance change and remain pending maintainer visual review.
 Pending review does not block this internal refactor, but review is mandatory
 before D2 intentionally changes appearance.
 
-D2 may extend the prepared-data schema additively for semantic palettes, map
-styles, Hovmöller, and governed 2-D composition. It must preserve v1 scientific
-state, source truthfulness, the no-hidden-science rule, existing signatures,
-and the prepare/render boundary.
+D2A adds three deterministic Hovmöller candidates generated through the
+installed public API: time-depth, time-longitude, and time-latitude. They include
+an explicit missing patch and irregular support for review. Their manifest
+status is `GENERATED_PENDING_MAINTAINER`, reviewer is blank, and technical
+validation does not substitute for named human visual review. The D1B hashes
+remain unchanged. D2 may continue additively only while preserving v1
+scientific state, source truthfulness, the no-hidden-science rule, existing
+signatures, and the prepare/render boundary.

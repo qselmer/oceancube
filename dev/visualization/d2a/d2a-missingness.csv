@@ -1,0 +1,7 @@
+stage,expected,observed,status
+selection,NA retained,NA retained,PASS
+preparation,NA retained by default,NA retained,PASS
+serialization,NA round trips,NA round trips,PASS
+render,NA uses explicit grey85 scale value,grey85,PASS
+imputation,none,none,PASS
+na.rm_TRUE,rows removed without filling,rows removed,PASS

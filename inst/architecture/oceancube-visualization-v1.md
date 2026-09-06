@@ -3,10 +3,10 @@
 Decision: **DEC-041 — APPROVED — RENDERER-NEUTRAL OCEAN VISUALIZATION
 ARCHITECTURE**.
 
-Status: D1A architecture certified locally and remotely. D1B implements its
-internal prepared 2-D data contract without a new export, dependency, numerical
-algorithm, scientific transformation, or visualization capability; the scene
-runtime remains deferred to D5.
+Status: D1A and D1B certified locally and remotely. D2A implements the first
+additive renderer-neutral capability, `viz.hovmoller()`, and is technically
+validated with human review of the exact governed gallery outputs still
+pending. The scene runtime remains deferred to D5.
 
 ## Purpose and scope
 
@@ -43,7 +43,8 @@ aliases do not each justify an export.
 The public prefix is frozen as `viz.`. There is no compatibility defect that
 justifies migration to `viz_`, `plot_`, `gg_`, or another namespace.
 
-The five existing functions are retained and may be extended only additively:
+The five existing functions are retained without signature or intentional
+appearance change:
 
 - `viz.map(x, variable, time, depth, limits, na.rm, coastline, title,
   subtitle, caption)` selects one stored layer and returns a `ggplot` raster or
@@ -61,6 +62,19 @@ The five existing functions are retained and may be extended only additively:
 - `viz.timeseries(x, variable, longitude, latitude, depth, time_from, time_to,
   match, tolerance, limits, na.rm, points, title, subtitle, caption)` displays
   an unaggregated stored series at one cell and depth.
+
+D2A adds exactly one public function:
+
+- `viz.hovmoller(x, variable, axis, longitude, latitude, depth, time_from,
+  time_to, match, tolerance, limits, na.rm, reverse_depth, title, subtitle,
+  caption)` displays stored time against one complete longitude, latitude, or
+  finite depth axis. Every remaining non-singleton coordinate must be selected
+  explicitly. The displayed coordinate selector remains `NULL`; time-by-
+  distance is not part of D2A.
+
+The complete bounded Hovmöller scientific, selection, rendering, palette,
+serialization, and review-gate contract is recorded in
+`oceancube-hovmoller-v1.md`.
 
 All currently return modifiable `ggplot` objects, use the existing `ggplot2`
 Import, preserve selection provenance and QA, and use bounded NetCDF reads.
@@ -151,9 +165,34 @@ Scientific depth remains certified metric depth positive downward. Vertical
 plots normally show surface at top and depth increasing downward through an
 axis transformation only.
 
-Hovmöller is a first-class `viz.hovmoller()` candidate for time by longitude,
-latitude, distance, or depth. Input must already be reduced to exactly those
-dimensions; omitted axes are never silently averaged.
+Hovmöller is implemented in D2A for time by longitude, latitude, or depth.
+Time is universally x and the selected coordinate is y. Input is reduced only
+by explicit fixed-coordinate selectors or implicit singleton dimensions;
+omitted non-singleton axes error and are never silently averaged. Time-by-
+distance remains deferred because it requires a governed path/support contract.
+
+Stored irregular coordinate and time positions remain irregular. The D2A
+adapter uses stored-centre tiles and leaves larger gaps visible instead of
+stretching them into a continuous raster or inventing scientific cell bounds.
+Depth values remain positive down; only the y display scale may reverse.
+
+## D2A scientific scale and palette foundation
+
+D2A extends the internal scale vocabulary to `SEQUENTIAL`, `DIVERGING`,
+`CYCLIC`, `CATEGORICAL`, and `UNSPECIFIED_CONTINUOUS`. Names such as
+temperature, oxygen, salinity, or anomaly never determine a class. Without an
+authoritative product class, current descriptor, explicit internal request, or
+governed metadata, the new Hovmöller preparer records
+`UNSPECIFIED_CONTINUOUS`. A `DIVERGING` specification requires an explicit
+scientifically meaningful centre and never assumes zero.
+
+The scale specification and palette resolver remain internal. New Hovmöller
+plots use the deterministic ggplot2-native viridis continuous scale (option D),
+with an explicit neutral missing-value colour. This uses the existing direct
+ggplot2 dependency, is headless and cross-platform, and does not vary with
+optional-package availability. `cmocean` remains a registered oceanographic
+reference and is not added to Imports or Suggests in D2A. The five existing
+visualization defaults are untouched.
 
 `viz.ts()` is a first-class candidate. It distinguishes Practical Salinity with
 in-situ temperature from Absolute Salinity with Conservative Temperature.
@@ -322,14 +361,17 @@ design references, never scientific specifications.
 
 1. D1B: implemented renderer-neutral prepared-data contract, architecturally
    frozen scene contract, and existing-viz prepare/render refactor.
-2. D2: core 2-D, Hovmöller, map styles, and composition.
-3. D3: T-S/SA-CT, curtain, bathymetry, and supplied ocean diagnostics.
-4. D4: interactive, animation, and bounded communication extensions.
-5. D5: small/medium 3-D surfaces, slices, curtains, isosurfaces, and helix.
-6. D-EXIT: cross-mode scientific, object, visual, gallery, and human-review
+2. D2A: implemented and technically validated Hovmöller plus the core internal
+   2-D scale foundation; exact gallery outputs await named maintainer review.
+3. D2: continue core 2-D, map styles, and composition only after D2A review.
+4. D3: T-S/SA-CT, curtain, bathymetry, and supplied ocean diagnostics.
+5. D4: interactive, animation, and bounded communication extensions.
+6. D5: small/medium 3-D surfaces, slices, curtains, isosurfaces, and helix.
+7. D-EXIT: cross-mode scientific, object, visual, gallery, and human-review
    certification.
 
-Phase D is in progress after D1A. D1B is locally COMPLETE/CERTIFIED with the
-internal renderer-neutral prepared-data contract and existing-viz parity; it
-awaits remote certification. D2 is not started. Phase E and 0.5 remain outside
-the authorized scope.
+Phase D and D2 are in progress. D1B is COMPLETE/CERTIFIED locally and remotely.
+D2A is IMPLEMENTED / TECHNICALLY VALIDATED with VISUAL REVIEW PENDING. No D2A
+decision is allocated: DEC-043 remains the next available identifier for the
+subsequent named human-review and final-certification step. Phase E and 0.5
+remain outside the authorized scope.

@@ -1,0 +1,6 @@
+property,expected,observed,status
+serialize_unserialize,identical,identical,PASS
+renderer_object_in_prepared,FALSE,FALSE,PASS
+backend_handle_in_prepared,FALSE,FALSE,PASS
+render_after_roundtrip,ggplot,ggplot,PASS
+private_absolute_paths,0,0,PASS

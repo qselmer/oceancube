@@ -1,0 +1,7 @@
+component,memory,netcdf,status
+scientific_values,exact selected values,exact selected values,PASS
+roles,HOVMOLLER semantic roles,HOVMOLLER semantic roles,PASS
+geometry,stored-centre geometry,stored-centre geometry,PASS
+scale,UNSPECIFIED_CONTINUOUS viridis,UNSPECIFIED_CONTINUOUS viridis,PASS
+backend_identity,memory,netcdf,EXPECTED-DIFFERENCE
+provenance_QA,backend-specific,backend-specific,EXPECTED-DIFFERENCE

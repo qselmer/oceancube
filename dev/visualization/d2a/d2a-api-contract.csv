@@ -1,0 +1,7 @@
+metric,before,after,status,evidence
+public_exports,48,49,PASS,NAMESPACE and installed namespace
+exports_added,NONE,viz.hovmoller,PASS,sole D2A addition
+exports_removed,NONE,NONE,PASS,API additive
+existing_viz_signature_changes,0,0,PASS,all five signatures unchanged
+version,0.2.0.9000,0.2.0.9000,PASS,DESCRIPTION unchanged
+dependencies,unchanged,unchanged,PASS,ggplot2 existing Import; cmocean not added

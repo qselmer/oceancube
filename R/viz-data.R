@@ -4,7 +4,7 @@
 .viz_data_schema_version <- "1.0.0"
 .viz_data_kinds <- c(
   "MAP_LAYER", "PROFILE", "SECTION", "TRANSECT_SECTION",
-  "TRANSECT_LINE", "TIMESERIES"
+  "TRANSECT_LINE", "TIMESERIES", "HOVMOLLER"
 )
 .viz_data_role_names <- c(
   "x", "y", "value", "group", "time", "depth", "longitude",
@@ -21,6 +21,87 @@
 
 .viz_squish <- function(values, range) {
   pmax(range[[1L]], pmin(range[[2L]], values))
+}
+
+.viz_scale_classes <- c(
+  "SEQUENTIAL", "DIVERGING", "CYCLIC", "CATEGORICAL",
+  "UNSPECIFIED_CONTINUOUS"
+)
+
+.viz_scale_spec <- function(
+    classification = "UNSPECIFIED_CONTINUOUS",
+    limits = NULL,
+    centre = NULL,
+    palette = "viridis") {
+  if (!is.character(classification) || length(classification) != 1L ||
+      is.na(classification) || !classification %in% .viz_scale_classes) {
+    .viz_abort(
+      paste0(
+        "`classification` must be one of ",
+        paste0("`", .viz_scale_classes, "`", collapse = ", "), "."
+      ),
+      "oceancube_viz_scale_error"
+    )
+  }
+  if (!is.null(limits) &&
+      (!is.numeric(limits) || !is.null(dim(limits)) || length(limits) != 2L ||
+       any(!is.finite(limits)) || limits[[1L]] >= limits[[2L]])) {
+    .viz_abort(
+      "`limits` must be NULL or two finite numeric values with min < max.",
+      "oceancube_viz_scale_error"
+    )
+  }
+  if (!is.null(centre) &&
+      (!is.numeric(centre) || !is.null(dim(centre)) || length(centre) != 1L ||
+       is.na(centre) || !is.finite(centre))) {
+    .viz_abort(
+      "`centre` must be NULL or one finite numeric value.",
+      "oceancube_viz_scale_error"
+    )
+  }
+  if (identical(classification, "DIVERGING") && is.null(centre)) {
+    .viz_abort(
+      "A DIVERGING scale requires an explicit scientifically meaningful `centre`.",
+      "oceancube_viz_scale_error"
+    )
+  }
+  if (!identical(classification, "DIVERGING") && !is.null(centre)) {
+    .viz_abort(
+      "`centre` is available only for a DIVERGING scale.",
+      "oceancube_viz_scale_error"
+    )
+  }
+  if (!is.character(palette) || length(palette) != 1L ||
+      is.na(palette) || !nzchar(palette) || !identical(palette, "viridis")) {
+    .viz_abort(
+      "D2A supports only the deterministic internal `viridis` palette.",
+      "oceancube_viz_scale_error"
+    )
+  }
+  list(
+    classification = classification,
+    limits = limits,
+    centre = centre,
+    palette = palette
+  )
+}
+
+.viz_palette_resolve <- function(scale) {
+  if (!is.list(scale) || !identical(scale$palette, "viridis") ||
+      !is.character(scale$classification) ||
+      !scale$classification %in% .viz_scale_classes) {
+    .viz_abort(
+      "The prepared visualization scale has no supported deterministic palette.",
+      "oceancube_viz_scale_error"
+    )
+  }
+  list(
+    engine = "ggplot2::scale_fill_viridis_c",
+    family = "viridis",
+    option = "D",
+    direction = 1,
+    na.value = "grey85"
+  )
 }
 
 .viz_named_roles <- function(...) {
@@ -279,11 +360,20 @@
     .viz_abort("Invalid `rendered_from` source semantics.",
                "oceancube_viz_data_error")
   }
-  if (!is.list(x$scale) ||
-      !identical(x$scale$classification, "UNSPECIFIED_CONTINUOUS") ||
+  if (!is.list(x$scale) || !is.character(x$scale$classification) ||
+      length(x$scale$classification) != 1L || is.na(x$scale$classification) ||
+      !x$scale$classification %in% .viz_scale_classes ||
       (!is.null(x$scale$limits) &&
        (!is.numeric(x$scale$limits) || length(x$scale$limits) != 2L ||
-        any(!is.finite(x$scale$limits)) || diff(x$scale$limits) <= 0))) {
+        any(!is.finite(x$scale$limits)) || diff(x$scale$limits) <= 0)) ||
+      (identical(x$scale$classification, "DIVERGING") &&
+       (is.null(x$scale$centre) || !is.numeric(x$scale$centre) ||
+        length(x$scale$centre) != 1L || !is.finite(x$scale$centre))) ||
+      (!is.null(x$scale$centre) &&
+       !identical(x$scale$classification, "DIVERGING")) ||
+      (!is.null(x$scale$palette) &&
+       (!is.character(x$scale$palette) || length(x$scale$palette) != 1L ||
+        is.na(x$scale$palette) || !nzchar(x$scale$palette)))) {
     .viz_abort("Invalid prepared visualization scale classification.",
                "oceancube_viz_data_error")
   }
@@ -339,6 +429,7 @@
     TRANSECT_SECTION = .viz_render_transect_section_ggplot(x),
     TRANSECT_LINE = .viz_render_transect_line_ggplot(x),
     TIMESERIES = .viz_render_timeseries_ggplot(x),
+    HOVMOLLER = .viz_render_hovmoller_ggplot(x),
     .viz_abort("No ggplot renderer is available for this visualization-data kind.")
   )
   plot <- .viz_attach_plot_attributes(plot, x$renderer_hints$plot_attributes)
@@ -483,4 +574,36 @@
       title = hints$title, subtitle = hints$subtitle, caption = hints$caption,
       x = "Time", y = hints$value_label
     )
+}
+
+.viz_render_hovmoller_ggplot <- function(x) {
+  hints <- x$renderer_hints
+  data <- .viz_prepared_table(x)
+  axis <- x$geometry$axis
+  palette <- .viz_palette_resolve(x$scale)
+  plot <- ggplot2::ggplot(
+    data,
+    ggplot2::aes(x = .data$time, y = .data[[axis]], fill = .data$value)
+  ) +
+    ggplot2::geom_tile(na.rm = hints$na.rm) +
+    ggplot2::scale_fill_viridis_c(
+      name = hints$value_label,
+      limits = x$scale$limits,
+      oob = .viz_squish,
+      option = palette$option,
+      direction = palette$direction,
+      na.value = palette$na.value
+    ) +
+    ggplot2::labs(
+      title = hints$title,
+      subtitle = hints$subtitle,
+      caption = hints$caption,
+      x = "Time",
+      y = hints$axis_label
+    ) +
+    ggplot2::theme_minimal()
+  if (identical(axis, "depth") && isTRUE(x$depth$display_reverse)) {
+    plot <- plot + ggplot2::scale_y_reverse()
+  }
+  plot
 }

@@ -1,0 +1,7 @@
+property,contract,status
+orientation,time is always x and reads left to right,PASS
+bounds,inclusive stored Date or POSIXct range,PASS
+ordering,canonical cube order required and preserved,PASS
+resampling,none,PASS
+regularization,none,PASS
+non_base_calendar,explicit unsupported error without Gregorian coercion,PASS

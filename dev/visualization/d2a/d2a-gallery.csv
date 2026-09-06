@@ -1,0 +1,4 @@
+viz_id,path,bytes,width,height,dpi,sha256,review_status,reviewer,status
+D2A-HOVMOLLER-TIME-DEPTH,dev/gallery/visualization/static/d2a-hovmoller-time-depth.png,69380,1800,1200,300,26f991efd329de4687ce45bcd27635875527f92810d5b967d87e0ac22687a107,GENERATED_PENDING_MAINTAINER,,PASS
+D2A-HOVMOLLER-TIME-LONGITUDE,dev/gallery/visualization/static/d2a-hovmoller-time-longitude.png,75079,1800,1200,300,82d54efd0838c64c75393ecaf7ca3480e2d457247870d68bd8ba76d7a74131ea,GENERATED_PENDING_MAINTAINER,,PASS
+D2A-HOVMOLLER-TIME-LATITUDE,dev/gallery/visualization/static/d2a-hovmoller-time-latitude.png,69742,1800,1200,300,3054d2fc42197644ed83e48c456291324f72c163da78a80eec6103e5b7cd2db2,GENERATED_PENDING_MAINTAINER,,PASS

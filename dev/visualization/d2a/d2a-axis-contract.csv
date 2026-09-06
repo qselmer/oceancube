@@ -1,0 +1,5 @@
+axis,x_role,y_role,required_fixed_coordinates,support,status
+longitude,time,longitude,latitude+depth,complete stored longitude,PASS
+latitude,time,latitude,longitude+depth,complete stored latitude,PASS
+depth,time,depth,longitude+latitude,complete finite stored depth,PASS
+distance,NA,NA,NA,deferred,EXPECTED-FALSE

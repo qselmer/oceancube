@@ -1,0 +1,17 @@
+position,argument,default,status
+1,x,required,FROZEN-D2A
+2,variable,required,FROZEN-D2A
+3,axis,"c('longitude';'latitude';'depth')",FROZEN-D2A
+4,longitude,NULL,FROZEN-D2A
+5,latitude,NULL,FROZEN-D2A
+6,depth,NULL,FROZEN-D2A
+7,time_from,NULL,FROZEN-D2A
+8,time_to,NULL,FROZEN-D2A
+9,match,"c('exact';'nearest')",FROZEN-D2A
+10,tolerance,NULL,FROZEN-D2A
+11,limits,NULL,FROZEN-D2A
+12,na.rm,FALSE,FROZEN-D2A
+13,reverse_depth,TRUE,FROZEN-D2A
+14,title,NULL,FROZEN-D2A
+15,subtitle,NULL,FROZEN-D2A
+16,caption,NULL,FROZEN-D2A

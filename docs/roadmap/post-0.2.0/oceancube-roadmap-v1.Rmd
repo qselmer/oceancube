@@ -638,7 +638,7 @@ Lagrangian particle tracking are outside the core package roadmap.
 `0.3.0-A` is COMPLETE/CERTIFIED. B1-B7 establish the bounded CF foundation;
 DEC-029 satisfies Gate B only for dimensional metric ocean depth with certified
 CF semantics and explicit bounds. C1-C10 are technically COMPLETE/CERTIFIED and
-the development API contains 48 exports. C-GOVR reconciles the C8-C10 decisions
+the post-C-EXIT development API contained 48 exports. C-GOVR reconciles the C8-C10 decisions
 DEC-037 through DEC-039 into the canonical register and documents why
 `dev/hardening/**` remains repository-only evidence under the intentional
 source-build exclusion. C-EXIT certifies the complete bounded C1-C10 chain
@@ -646,8 +646,11 @@ locally and remotely through DEC-040 without runtime or API change. Thus
 `0.3.0-C` is COMPLETE/CERTIFIED. D1A adds DEC-041, a persistent reference
 registry, global visualization inventory, renderer evaluation,
 renderer-neutral architecture, and gallery governance without changing
-runtime, tests, dependencies, exports, or version. Phase `0.3.0-D` is IN
-PROGRESS and D1A is LOCAL COMPLETE/CERTIFIED. The single recommended next
-subphase, only after remote D1A certification, is D1B renderer-neutral
-visualization-data contracts and the existing-viz refactor plan; D1B has not
-started.
+runtime, tests, dependencies, exports, or version. D1B adds DEC-042 and the
+internal renderer-neutral prepared-data contract while preserving the five
+existing visual APIs and outputs; D1A and D1B are certified locally and
+remotely. D2A adds only `viz.hovmoller()`, bringing the development API to 49
+exports, and technically validates time-longitude, time-latitude, and time-
+depth views plus the internal scale foundation. Phase `0.3.0-D` and D2 remain
+IN PROGRESS. D2A is IMPLEMENTED / TECHNICALLY VALIDATED with VISUAL REVIEW
+PENDING; DEC-043 remains unallocated until named maintainer review.

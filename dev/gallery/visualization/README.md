@@ -45,3 +45,48 @@ functions, and save 1800 x 1200 PNG output at 300 dpi. Their manifest status is
 `GENERATED_BASELINE_PENDING_MAINTAINER`. Pending review does not block the D1B
 internal refactor, but a maintainer must review these baselines before D2 makes
 any intentional appearance change.
+
+## D1B baseline
+
+### Map
+
+![D1B map baseline](static/d1b-map.png)
+
+### Profile
+
+![D1B profile baseline](static/d1b-profile.png)
+
+### Section
+
+![D1B section baseline](static/d1b-section.png)
+
+### Transect
+
+![D1B transect baseline](static/d1b-transect.png)
+
+### Time series
+
+![D1B time-series baseline](static/d1b-timeseries.png)
+
+## D2A candidates — maintainer review required
+
+These figures were generated from the installed public `viz.hovmoller()` API
+and deterministic simulated data. They are technically validated but have not
+been visually approved. Grey cells are deliberately missing and no value is
+interpolated, averaged, smoothed, or filled.
+
+### Hovmöller time-depth
+
+![D2A Hovmöller time-depth candidate](static/d2a-hovmoller-time-depth.png)
+
+### Hovmöller time-longitude
+
+![D2A Hovmöller time-longitude candidate](static/d2a-hovmoller-time-longitude.png)
+
+### Hovmöller time-latitude
+
+![D2A Hovmöller time-latitude candidate](static/d2a-hovmoller-time-latitude.png)
+
+For each candidate, record the named maintainer decision against the checklist
+in `../../visualization/d2a/d2a-visual-review-checklist.csv`. Until then all
+three manifest rows remain `GENERATED_PENDING_MAINTAINER`.

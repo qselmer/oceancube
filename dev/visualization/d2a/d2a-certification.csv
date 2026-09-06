@@ -1,0 +1,22 @@
+metric,expected,observed,status,notes
+starting_sha,0eda48e768c1c07d8fb121dd9dceac46f5e5d4c1,0eda48e768c1c07d8fb121dd9dceac46f5e5d4c1,PASS,D1B base
+origin_dev_starting_sha,0eda48e768c1c07d8fb121dd9dceac46f5e5d4c1,0eda48e768c1c07d8fb121dd9dceac46f5e5d4c1,PASS,no push
+schema_version,1.0.0,1.0.0,PASS,additive HOVMOLLER kind
+api_exports,49,49,PASS,one new export
+dependencies_changed,FALSE,FALSE,PASS,ggplot2 already imported
+technical_tests,zero failures,"82 files;856 cases;6503 expectations;0 failures;0 errors;0 warnings;0 skips",PASS,devtools test under native Windows UTF-8 locale
+build,PASS,PASS,PASS,governed clean-source snapshot then R CMD build
+tarball,"filename;bytes;sha256","oceancube_0.2.0.9000.tar.gz;3098433;3382c91b59ba22a4cd923f542bb3be19c060a14017ac0474bd7096011caea6eb",PASS,Hovmoller architecture runtime tests documentation and built vignettes present; dev evidence absent
+check,"0 errors;0 warnings;0 notes","0 errors;0 warnings;0 notes",PASS,R CMD check --no-manual
+installed_public_smoke,PASS,PASS,PASS,three axes through installed tarball API
+installed_api,49,49,PASS,viz.hovmoller exported
+internal_triple_colon_calls,0,0,PASS,installed smoke and gallery use public API
+package_example,PASS,PASS,PASS,network-free installed viz.hovmoller example
+reference_registry_additions,0,0,PASS,existing R001 R019 R020 already govern renderer and palette
+architecture_file,inst/architecture/oceancube-hovmoller-v1.md,inst/architecture/oceancube-hovmoller-v1.md,PASS,bounded Hovmoller v1 contract
+DEC_041_count,1,1,PASS,unchanged
+DEC_042_count,1,1,PASS,unchanged
+DEC_043_created,FALSE,FALSE,PASS,next available remains DEC-043
+gallery_review_status,GENERATED_PENDING_MAINTAINER,GENERATED_PENDING_MAINTAINER,PASS,not human-certified
+D2A_status,"IMPLEMENTED / TECHNICALLY VALIDATED; VISUAL REVIEW PENDING","IMPLEMENTED / TECHNICALLY VALIDATED; VISUAL REVIEW PENDING",PASS,technical certification only
+push,NOT_PERFORMED,NOT_PERFORMED,PASS,explicit contract

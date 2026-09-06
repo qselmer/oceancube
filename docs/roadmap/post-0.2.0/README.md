@@ -57,7 +57,7 @@ code changes by itself.
   an optional transient development oracle only
 - DEC-029: approved — dimensional metric ocean depth with certified CF
   semantics and explicit bounds is the authorized Gate-B subset
-- Public API: 39 exports; `cube_open` is the sole A5b addition
+- Public API: 49 exports; `viz.hovmoller` is the sole D2A addition
 - Runtime producer migrations: all identified producers complete and globally certified
 - Hardening findings: no unresolved S0/S1 blocker; accepted debt and
   0.3.0-B inputs remain open under explicit classifications
@@ -193,9 +193,11 @@ dependencies, or version and is COMPLETE/CERTIFIED locally and remotely.
 D1B adds DEC-042, implements the internal renderer-neutral
 `oceancube_viz_data` v1.0.0 contract, and refactors the five existing public
 visualization functions into preparation and rendering while preserving their
-public signatures and observed behavior. Phase 0.3.0-D remains IN PROGRESS;
-D1B is LOCAL COMPLETE/CERTIFIED pending remote certification, and D2 has not
-started.
+public signatures and observed behavior. D1B is COMPLETE/CERTIFIED locally and
+remotely. D2A additively implements `viz.hovmoller()` for time by longitude,
+latitude, or depth plus the internal scale/palette foundation. It is
+IMPLEMENTED / TECHNICALLY VALIDATED with VISUAL REVIEW PENDING; no decision is
+allocated and DEC-043 remains next. Phase 0.3.0-D and D2 remain IN PROGRESS.
 
 ## Change control
 

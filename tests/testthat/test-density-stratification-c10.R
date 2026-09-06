@@ -72,7 +72,7 @@ c10_with_bounds <- function(state, bounds) {
 }
 
 test_that("C10 public surface is bounded and legacy signatures do not change", {
-  expect_identical(length(getNamespaceExports("oceancube")), 48L)
+  expect_identical(length(getNamespaceExports("oceancube")), 49L)
   expect_true("stratification" %in% getNamespaceExports("oceancube"))
   expect_identical(
     names(formals(stratification)), c("x", "metric", "support")

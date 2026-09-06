@@ -102,7 +102,7 @@ test_that("C9 exposes one bounded API and deterministic dependency behavior", {
     names(formals(thermodynamic_state)),
     c("x", "salinity", "temperature", "pressure", "reference_pressure_dbar")
   )
-  expect_identical(length(getNamespaceExports("oceancube")), 48L)
+  expect_identical(length(getNamespaceExports("oceancube")), 49L)
   expect_error(
     thermodynamic_state(c9_profile(), reference_pressure_dbar = -1),
     class = "oceancube_teos10_reference_pressure"

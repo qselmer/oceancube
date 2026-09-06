@@ -1,0 +1,11 @@
+metric,expected,observed,status
+preparation_payload_reads,1,1,PASS
+renderer_payload_reads,0,0,PASS
+full_cube_read,FALSE,FALSE,PASS
+netcdf_physical_count,"longitude=1;latitude=1;depth=2;time=4","longitude=1;latitude=1;depth=2;time=4",PASS
+selected_variables,temperature,temperature,PASS
+render_after_source_removal,success,success,PASS
+representative_selected_rows,30,30,PASS
+representative_source_cube_bytes,13960,13960,PASS
+representative_prepared_bytes,69304,69304,PASS
+representative_ggplot_bytes,16607240,16607240,PASS
