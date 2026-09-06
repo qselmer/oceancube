@@ -68,11 +68,11 @@ any intentional appearance change.
 
 ![D1B time-series baseline](static/d1b-timeseries.png)
 
-## D2A candidates — maintainer review required
+## D2A Hovmöller — COMPLETE / CERTIFIED
 
 These figures were generated from the installed public `viz.hovmoller()` API
-and deterministic simulated data. They are technically validated but have not
-been visually approved. A grey tile is a stored centre whose value is `NA`; a
+and deterministic simulated data. Maintainer `qselmer` visually approved these
+exact governed artifacts on 2026-09-06. A grey tile is a stored centre whose value is `NA`; a
 blank region has no stored centre and therefore no tile or boundary. Tile
 extent is a display-only footprint derived from stored-centre spacing when
 authoritative bounds are unavailable. No value is interpolated, averaged,
@@ -90,6 +90,6 @@ smoothed, or filled.
 
 ![D2A Hovmöller time-latitude candidate](static/d2a-hovmoller-time-latitude.png)
 
-For each candidate, record the named maintainer decision against the checklist
-in `../../visualization/d2a/d2a-visual-review-checklist.csv`. Until then all
-three manifest rows remain `REGENERATED_PENDING_MAINTAINER`.
+The named review is recorded in
+`../../visualization/d2a/d2a-human-visual-review.csv` and the completed
+checklist. Certification is bounded to these exact hashes and the D2A contract.

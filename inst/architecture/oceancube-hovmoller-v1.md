@@ -1,8 +1,8 @@
 # oceancube Hovmöller visualization contract v1
 
-Status: D2A implemented and technically validated; governed human visual
-review is pending. This document does not allocate DEC-043 or certify D2A for
-push.
+Status: D2A COMPLETE / CERTIFIED. Maintainer `qselmer` approved the three exact
+governed gallery artifacts on 2026-09-06. DEC-043 records this bounded visual
+contract; remote publication still requires separate authorization.
 
 ## Scientific definition and scope
 

@@ -195,12 +195,13 @@ D1B adds DEC-042, implements the internal renderer-neutral
 visualization functions into preparation and rendering while preserving their
 public signatures and observed behavior. D1B is COMPLETE/CERTIFIED locally and
 remotely. D2A additively implements `viz.hovmoller()` for time by longitude,
-latitude, or depth plus the internal scale/palette foundation. It is
-IMPLEMENTED / TECHNICALLY VALIDATED with a REVISED VISUAL CANDIDATE GENERATED
-and MAINTAINER REVIEW PENDING. Its stored-centre footprint is explicitly
+latitude, or depth plus the internal scale/palette foundation. DEC-043 records
+named maintainer approval of the exact three governed gallery artifacts and
+marks D2A COMPLETE/CERTIFIED. Its stored-centre footprint remains explicitly
 display-only and distinguishes grey stored `NA` tiles from blank regions with
-no stored centre. No decision is allocated and DEC-043 remains next. Phase
-0.3.0-D and D2 remain IN PROGRESS.
+no stored centre; the explicit-bounds runtime remains deferred. D1A and D1B
+remain COMPLETE/CERTIFIED, while Phase 0.3.0-D and D2 remain IN PROGRESS and
+D2B is NOT STARTED. DEC-044 remains unallocated.
 
 ## Change control
 

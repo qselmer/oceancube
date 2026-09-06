@@ -16,9 +16,9 @@ reference_registry_additions,0,0,PASS,existing R001 R019 R020 already govern ren
 architecture_file,inst/architecture/oceancube-hovmoller-v1.md,inst/architecture/oceancube-hovmoller-v1.md,PASS,bounded Hovmoller v1 contract
 DEC_041_count,1,1,PASS,unchanged
 DEC_042_count,1,1,PASS,unchanged
-DEC_043_created,FALSE,FALSE,PASS,next available remains DEC-043
-gallery_review_status,GENERATED_PENDING_MAINTAINER,GENERATED_PENDING_MAINTAINER,PASS,not human-certified
-D2A_status,"IMPLEMENTED / TECHNICALLY VALIDATED; VISUAL REVIEW PENDING","IMPLEMENTED / TECHNICALLY VALIDATED; VISUAL REVIEW PENDING",PASS,technical certification only
+DEC_043_created,TRUE,TRUE,PASS,next available is DEC-044
+gallery_review_status,APPROVED_BY_MAINTAINER,APPROVED_BY_MAINTAINER,PASS,qselmer approved exact artifacts on 2026-09-06
+D2A_status,"COMPLETE / CERTIFIED","COMPLETE / CERTIFIED",PASS,technical and human visual gates complete
 push,NOT_PERFORMED,NOT_PERFORMED,PASS,explicit contract
 review_fix_starting_sha,fb6dce401f7deb593073f7bdadc26da56fbdedf3,fb6dce401f7deb593073f7bdadc26da56fbdedf3,PASS,D2A technical implementation parent for the review fix
 review_fix_support_geometry,STORED_CENTRES,STORED_CENTRES,PASS,explicit scientific bounds unavailable for both plotted axes
@@ -38,3 +38,20 @@ review_fix_DEC_041_count,1,1,PASS,unchanged
 review_fix_DEC_042_count,1,1,PASS,unchanged
 review_fix_DEC_043_count,0,0,PASS,next available remains DEC-043
 review_fix_push,NOT_PERFORMED,NOT_PERFORMED,PASS,explicit contract
+final_technical_validation,PASS,PASS,PASS,retains exact D2A review-fix runtime evidence
+final_human_visual_review,PASS,PASS,PASS,bounded to the three exact governed gallery artifacts
+final_maintainer,qselmer,qselmer,PASS,canonical repository maintainer identity
+final_review_date,2026-09-06,2026-09-06,PASS,controlling approval date
+final_approved_hashes,3/3,3/3,PASS,exact D2A regenerated artifacts
+final_D1B_hashes,5/5,5/5,PASS,unchanged baselines
+final_locale_month_labels,NON-BLOCKING_DEFERRED,NON-BLOCKING_DEFERRED,PASS,D2A-001 records locale-dependent gallery month labels
+final_DEC_043_count,1,1,PASS,D2A visual contract certified
+final_next_available_DEC,DEC-044,DEC-044,PASS,not allocated
+final_D2A_status,"COMPLETE / CERTIFIED","COMPLETE / CERTIFIED",PASS,bounded D2A contract
+final_push,NOT_PERFORMED,NOT_PERFORMED,PASS,separate authorization required
+final_protected_runtime_diff,0,0,PASS,"R/ DESCRIPTION NAMESPACE and tests unchanged from b19071d"
+final_bounded_tests,"8 files;127 cases;673 expectations;0 failures;0 errors;0 warnings;0 skips","8 files;127 cases;673 expectations;0 failures;0 errors;0 warnings;0 skips",PASS,Hovmoller viz-data renderer parity and five existing visualization regressions
+final_validators,"reference;inventory;decision uniqueness;D2A evidence;gallery manifest","reference;inventory;decision uniqueness;D2A evidence;gallery manifest",PASS,all bounded validators passed
+final_build,PASS,PASS,PASS,known .git refs defect reproduced then governed clean-source fallback used
+final_tarball,"filename;bytes;sha256","oceancube_0.2.0.9000.tar.gz;3101437;57bf2a4529f05d9e1a68c59c7f2bbf5172abdbcde475f68ee1955342b8464590",PASS,distributed architecture present; repository-only dev evidence absent
+final_check,"--no-manual --no-tests;0 errors;0 warnings;0 notes","--no-manual --no-tests;0 errors;0 warnings;0 notes",PASS,Status OK

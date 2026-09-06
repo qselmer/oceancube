@@ -15,8 +15,9 @@ technical validity only. Named maintainer visual review is still required.
 The normative bounded architecture is
 `inst/architecture/oceancube-hovmoller-v1.md`.
 
-Review/fix status: **IMPLEMENTED / TECHNICALLY VALIDATED; REVISED VISUAL
-CANDIDATE GENERATED; MAINTAINER REVIEW PENDING**.
+Final status: **COMPLETE / CERTIFIED**. Maintainer `qselmer` approved the three
+exact governed artifacts on 2026-09-06; the decision is bounded to the D2A
+contract and those hashes.
 
 The support-geometry correction is recorded in
 `d2a-support-geometry.csv`, `d2a-display-footprint.csv`,
@@ -25,5 +26,5 @@ The support-geometry correction is recorded in
 `PRE_REVIEW_BASELINE`; revised hashes are separate
 `POST_REVIEW_FIX_CANDIDATE` evidence.
 
-No DEC-043 is created by D2A. DEC-043 remains the next available decision for
-the later human visual-review and final-certification step.
+DEC-043 certifies the bounded Hovmöller 2-D scientific visualization contract.
+DEC-044 remains unallocated.
