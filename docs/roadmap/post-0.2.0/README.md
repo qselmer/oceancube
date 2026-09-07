@@ -201,7 +201,11 @@ marks D2A COMPLETE/CERTIFIED. Its stored-centre footprint remains explicitly
 display-only and distinguishes grey stored `NA` tiles from blank regions with
 no stored centre; the explicit-bounds runtime remains deferred. D1A and D1B
 remain COMPLETE/CERTIFIED, while Phase 0.3.0-D and D2 remain IN PROGRESS and
-D2B is NOT STARTED. DEC-044 remains unallocated.
+D2B is NOT STARTED. D-VIZDATA adopts the credential-free NOAA/NCEP GODAS 2024
+exact-value physical benchmark as repository-only evidence and is
+COMPLETE/LOCALLY VALIDATED. DEC-044 governs its canonical identity,
+no-transformation contract, and redistribution gate; DEC-045 remains
+unallocated.
 
 ## Change control
 

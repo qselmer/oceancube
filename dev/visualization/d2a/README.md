@@ -27,4 +27,6 @@ The support-geometry correction is recorded in
 `POST_REVIEW_FIX_CANDIDATE` evidence.
 
 DEC-043 certifies the bounded Hovmöller 2-D scientific visualization contract.
-DEC-044 remains unallocated.
+At the D2A exit, DEC-044 remained unallocated. It is subsequently allocated by
+D-VIZDATA to the canonical real-ocean visualization benchmark; DEC-045 remains
+unallocated.

@@ -1,0 +1,3 @@
+"variable","source_variable","standard_name","long_name","units","data_type","dimensions","missing_value","minimum_finite","maximum_finite","median_finite","n_finite","n_missing","fraction_missing"
+"pottmp","pottmp","","Potential temperature","K","Float32","lon;lat;depth;time","-9.96921e+36",280.787048339844,300.074005126953,287.730529785156,75816,56376,0.426470588235294
+"salt","salt","","Salinity","kg/kg","Float32","lon;lat;depth;time","-9.96921e+36",0.0339640006422997,0.0355129987001419,0.0349700003862381,75816,56376,0.426470588235294

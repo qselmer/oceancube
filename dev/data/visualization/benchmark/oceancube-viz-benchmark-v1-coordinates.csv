@@ -1,0 +1,5 @@
+"coordinate","units","standard_name","axis","positive","calendar","n","minimum","maximum","monotonicity","spacing_type","bounds_present"
+"lon","degrees_east","longitude","X","","",12,276.5,287.5,"STRICTLY_INCREASING","REGULAR",FALSE
+"lat","degrees_north","latitude","Y","","",51,-19.8337306976318,-3.16718006134033,"STRICTLY_INCREASING","IRREGULAR",FALSE
+"depth","m","","Z","down","",18,5,459,"STRICTLY_INCREASING","IRREGULAR",FALSE
+"time","days since 1800-01-01 00:00:00","time","T","","",12,81814,82149,"STRICTLY_INCREASING","IRREGULAR",FALSE

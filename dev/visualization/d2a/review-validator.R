@@ -3,7 +3,7 @@ fail <- function(...) stop(..., call. = FALSE)
 assert <- function(ok, message) if (!isTRUE(ok)) fail(message)
 read_contract <- function(path) {
   read.csv(file.path(root, path), check.names = FALSE, stringsAsFactors = FALSE,
-           fileEncoding = "UTF-8")
+           encoding = "UTF-8")
 }
 
 decisions <- read_contract("docs/roadmap/post-0.2.0/roadmap-decisions.csv")
@@ -11,7 +11,10 @@ assert(!anyDuplicated(decisions$decision_id), "decision IDs must be unique")
 assert(sum(decisions$decision_id == "DEC-041") == 1L, "DEC-041 count mismatch")
 assert(sum(decisions$decision_id == "DEC-042") == 1L, "DEC-042 count mismatch")
 assert(sum(decisions$decision_id == "DEC-043") == 1L, "DEC-043 count mismatch")
-assert(!any(decisions$decision_id == "DEC-044"), "DEC-044 must remain unallocated")
+assert(sum(decisions$decision_id == "DEC-044") == 1L,
+       "DEC-044 must be allocated exactly once by D-VIZDATA")
+assert(!any(decisions$decision_id == "DEC-045"),
+       "DEC-045 must remain unallocated")
 
 expected_ids <- c(
   "D2A-HOVMOLLER-TIME-DEPTH",

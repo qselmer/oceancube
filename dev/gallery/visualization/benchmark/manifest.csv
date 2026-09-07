@@ -1,0 +1,5 @@
+"artifact","path","bytes","sha256","status"
+"map","dev/gallery/visualization/benchmark/benchmark-map-temperature.png",68255,"8befa837164e51f0b0013b9499be1419ffe6861fe77c0bc0b1dae1bd52946776","BENCHMARK_PREVIEW_NOT_STYLE_CERTIFIED"
+"profile","dev/gallery/visualization/benchmark/benchmark-profile-temperature.png",82836,"9bbfb7d35053f78ca2f2feb936d1a49b62f859e2c11c09bc205297b2a71f7d45","BENCHMARK_PREVIEW_NOT_STYLE_CERTIFIED"
+"section","dev/gallery/visualization/benchmark/benchmark-section-temperature.png",68020,"117f5ac039f921c499c8a2730ebb10927b572d17c5c2312e5690beebb816518f","BENCHMARK_PREVIEW_NOT_STYLE_CERTIFIED"
+"hovmoller_time_depth","dev/gallery/visualization/benchmark/benchmark-hovmoller-time-depth.png",79657,"01a3d1632ff9ec2d4938fbf97f17197862e9da9027f0c76783d18325b25481f5","BENCHMARK_PREVIEW_NOT_STYLE_CERTIFIED"

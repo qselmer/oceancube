@@ -20,3 +20,8 @@ integrity, and the absence of copied PDFs.
 
 Access date for the D1A review is 2026-09-05. Package versions and release dates
 are observations at that date, not compatibility promises.
+
+D-VIZDATA extends the same schema without widening the closed
+`reference_role` vocabulary. Its provider/product/protocol/license evidence is
+classified in `category` as `DATA_PROVIDER`, `DATA_PRODUCT`, `STANDARD`, and
+`LICENSE`; each remains a `DOMAIN_REFERENCE` for validator compatibility.
