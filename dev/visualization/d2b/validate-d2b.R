@@ -59,14 +59,115 @@ assert(identical(unname(actual), unname(expected)), "D1B/D2A gallery hash regres
 gallery <- utils::read.csv(file.path(dirname(script_file), "d2b-gallery.csv"),
                            check.names = FALSE)
 assert(nrow(gallery) == 7L, "D2B gallery must contain seven safe candidates")
-assert(all(gallery$review_status == "GENERATED_PENDING_MAINTAINER"),
-       "D2B gallery review state is invalid")
+regenerated <- c("d2b-map-field-contour-pottmp",
+                 "d2b-compose-map-profile",
+                 "d2b-compose-map-timeseries")
+expected_status <- ifelse(gallery$artifact %in% regenerated,
+                          "REGENERATED_PENDING_MAINTAINER",
+                          "GENERATED_PENDING_MAINTAINER")
+assert(identical(gallery$review_status, expected_status),
+       "D2B gallery review states are invalid")
 assert(all(is.na(gallery$reviewer) | gallery$reviewer == ""),
        "D2B human reviewer must be blank")
 assert(all(file.exists(file.path(repo_root, gallery$path))),
        "D2B gallery artifact missing")
 assert(all(vapply(file.path(repo_root, gallery$path), sha256_file, character(1L)) ==
              gallery$sha256), "D2B gallery hashes mismatch")
+
+history <- utils::read.csv(
+  file.path(dirname(script_file), "d2b-gallery-hash-history.csv"),
+  check.names = FALSE
+)
+baseline <- history[history$record == "PRE_REVIEW_BASELINE", , drop = FALSE]
+post <- history[history$record == "POST_REVIEW_FIX_CANDIDATE", , drop = FALSE]
+assert(nrow(baseline) == 7L, "All seven PRE_REVIEW_BASELINE hashes are required")
+assert(nrow(post) == 3L, "Exactly three POST_REVIEW_FIX_CANDIDATE hashes are required")
+expected_baseline <- c(
+  `d2b-map-field-pottmp` = "5c75a0ae7827301ff0f4371b1ef5f97f436e4a0a93bac15dfa688487330c21b2",
+  `d2b-map-field-salt` = "5012c5eb2c22e88dbb6fe553b3b11ac00499d758e637257a87bd563b48d275bf",
+  `d2b-map-contour-pottmp` = "5ac0420d16136fa4c47fb5aaaab1c8b8f680242a9ec072d65f30ef00b3f27bf0",
+  `d2b-map-field-contour-pottmp` = "c659e5275623cee9f8f3e84b3805fb7b6cf0442abf4618573eb97788278d285b",
+  `d2b-map-diverging-synthetic` = "32635bd8869eeecede789c9b033bb55d98ec9a869b1ee8b9b453fdbf080343ea",
+  `d2b-compose-map-profile` = "aa086b460d25b7c927b95603ded91b95b76d2accf31582d5ea883dc341fca250",
+  `d2b-compose-map-timeseries` = "a7d636ed9db9f305c37f2e2d6e092ac0f69a0198a83b3f6e9349c180ef910463"
+)
+assert(identical(setNames(baseline$sha256, baseline$artifact), expected_baseline),
+       "PRE_REVIEW_BASELINE hashes changed")
+assert(setequal(post$artifact, regenerated), "Unexpected regenerated artifact set")
+assert(all(post$sha256 == gallery$sha256[match(post$artifact, gallery$artifact)]),
+       "Post-review hashes do not match current gallery")
+assert(all(post$sha256 != expected_baseline[post$artifact]),
+       "Regenerated hashes must differ from their baselines")
+
+composition <- utils::read.csv(
+  file.path(dirname(script_file), "d2b-composition-audit.csv"),
+  check.names = FALSE
+)
+required_composition_columns <- c(
+  "composition", "map_variable", "map_time", "map_depth",
+  "child_plot_type", "selection_source_longitude",
+  "selection_display_longitude", "selection_latitude", "selection_depth",
+  "match_mode", "marker_present", "marker_coordinate_match",
+  "child_selection_match", "composition_source_reads", "status"
+)
+assert(identical(names(composition), required_composition_columns),
+       "Composition audit columns changed")
+assert(identical(composition$composition, c("map_profile", "map_timeseries")),
+       "Composition audit rows changed")
+assert(all(composition$selection_source_longitude == 278.5),
+       "Composition source longitude changed")
+assert(all(composition$selection_display_longitude == -81.5),
+       "Composition display longitude is not exact")
+assert(all(abs(composition$selection_latitude - (-11.8337802886963)) < 1e-12),
+       "Composition latitude is not exact")
+assert(all(composition$match_mode == "exact"), "Composition match mode changed")
+assert(all(composition$marker_present & composition$marker_coordinate_match &
+             composition$child_selection_match),
+       "Composition marker/child linkage failed")
+assert(all(composition$composition_source_reads == 0L),
+       "Composition added a scientific source read")
+
+marker <- utils::read.csv(file.path(dirname(script_file), "d2b-marker-tests.csv"),
+                          check.names = FALSE)
+assert(nrow(marker) == 2L && all(marker$point_count == 1L),
+       "Each composition requires exactly one marker")
+assert(all(marker$expected_display_longitude == marker$built_marker_x),
+       "Built marker longitude mismatch")
+assert(all(marker$expected_latitude == marker$built_marker_y),
+       "Built marker latitude mismatch")
+assert(all(marker$status == "PASS"), "Marker test failed")
+
+invariance <- utils::read.csv(
+  file.path(dirname(script_file), "d2b-scientific-invariance.csv"),
+  check.names = FALSE
+)
+assert(setequal(invariance$component, c(
+  "profile_values", "profile_depths", "timeseries_values",
+  "timeseries_times", "map_prepared_values", "map_coordinates"
+)), "Scientific invariance components changed")
+assert(all(invariance$exact_equal & invariance$status == "PASS"),
+       "Scientific values or coordinates changed")
+assert(all(invariance$pre_review_sha256 == invariance$post_review_sha256),
+       "Scientific invariance hashes differ")
+
+checklist <- utils::read.csv(
+  file.path(dirname(script_file), "d2b-visual-review-checklist.csv"),
+  check.names = FALSE
+)
+assert(all(sprintf("D2B-V%02d", 22:31) %in% checklist$check_id),
+       "Review/fix checklist items are missing")
+assert(all(is.na(checklist$reviewer) | checklist$reviewer == ""),
+       "Review checklist reviewer must remain blank")
+
+architecture <- paste(readLines(file.path(
+  repo_root, "inst", "architecture", "oceancube-map-visualization-v1.md"
+), warn = FALSE), collapse = "\n")
+assert(grepl("must visibly mark the exact spatial selection", architecture,
+             fixed = TRUE), "Composition-linkage architecture note missing")
+assert(grepl("must not be relabelled as land", architecture, fixed = TRUE),
+       "NA/land architecture note missing")
+assert(grepl("does not necessarily communicate the complete valid-", architecture,
+             fixed = TRUE), "Contour support-mask architecture note missing")
 
 decisions <- utils::read.csv(
   file.path(repo_root, "docs", "roadmap", "post-0.2.0", "roadmap-decisions.csv")
@@ -104,5 +205,8 @@ utils::write.csv(data.frame(
 cat("D2B_VALIDATOR=PASS\n")
 cat("API=49\nSCHEMA=1.0.0\nD1B_HASHES=5/5 EXACT MATCH\n")
 cat("D2A_HASHES=3/3 EXACT MATCH\nBENCHMARK_HASH_UNCHANGED=TRUE\n")
+cat("D2B_REGENERATED=3\nD2B_UNCHANGED=4 EXACT MATCH\n")
+cat("COMPOSITION_MARKERS=2/2 EXACT NUMERIC MATCH\n")
+cat("SCIENTIFIC_INVARIANCE=6/6 EXACT MATCH\n")
 cat("DEC_041_044=ONE_EACH\nDEC_045=0\nNEXT_AVAILABLE_DEC=DEC-045\n")
 cat("PALETTE_FINGERPRINT=", fingerprint, "\n", sep = "")

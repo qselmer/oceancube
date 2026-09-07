@@ -1,4 +1,3 @@
-engine_evaluated,public_API_added,dependency_change,map_profile,map_timeseries,scientific_reads_during_composition,provenance_behavior,decision
-patchwork,FALSE,FALSE,PASS,PASS,"0 after child plot creation","each child retains its own selection and plot attributes; no merged observation",GOVERNED_DEVELOPMENT_PATTERN
-cowplot,FALSE,FALSE,NOT_RUN,NOT_RUN,NOT_APPLICABLE,"would retain child plots but offers no D2B advantage",REFERENCE_ONLY
-gridExtra,FALSE,FALSE,NOT_RUN,NOT_RUN,NOT_APPLICABLE,"low-level arrangement only",REFERENCE_ONLY
+"composition","map_variable","map_time","map_depth","child_plot_type","selection_source_longitude","selection_display_longitude","selection_latitude","selection_depth","match_mode","marker_present","marker_coordinate_match","child_selection_match","composition_source_reads","status"
+"map_profile","pottmp","2024-01-01 UTC",5,"profile",278.5,-81.5,-11.8337802886963,,"exact",TRUE,TRUE,TRUE,0,"REGENERATED_PENDING_MAINTAINER"
+"map_timeseries","pottmp","2024-01-01 UTC",5,"timeseries",278.5,-81.5,-11.8337802886963,5,"exact",TRUE,TRUE,TRUE,0,"REGENERATED_PENDING_MAINTAINER"

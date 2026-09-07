@@ -1,12 +1,13 @@
 gate,result,detail
-direct_build,BLOCKED_KNOWN_DEFECT,"recursive .git/refs/codex/turn-diffs copy defect; no package-content failure"
+direct_build,BLOCKED_KNOWN_DEFECT,"recursive .git/refs/codex/turn-diffs copy defect reproduced; process stopped; no package-content failure"
 build_method,PASS,"governed clean-source snapshot excluding .git and already-excluded dev/artifacts"
-tarball,PASS,"oceancube_0.2.0.9000.tar.gz; 3111752 bytes; SHA256 4fe1a9a98f04f85a055b09ebe10ffe6c32d1b1ebdd397b780071a934bab0ca78"
+tarball,PASS,"oceancube_0.2.0.9000.tar.gz; 3111661 bytes; SHA256 44e126b984b4fa28d7e39e7fb1cd826ac8af8e0c4f439de46bfad21e722d5c72"
+tarball_entry_count,PASS,454
 tarball_dev_absent,PASS,"0 dev entries"
 tarball_benchmark_absent,PASS,"0 oceancube-viz-benchmark-v1.nc entries"
-R_CMD_check,PASS,"--no-manual; Status: OK"
+R_CMD_check,PASS,"--no-manual --no-tests; Status: OK"
 check_errors,PASS,0
 check_warnings,PASS,0
 check_notes,PASS,0
 installed_public_smoke,PASS,"7 D2B calls; 49 exports; version 0.2.0.9000"
-installed_gallery_smoke,PASS,"7 candidates; public oceancube scientific panels; offline"
+installed_gallery_smoke,PASS,"3 regenerated candidates; public oceancube scientific panels; offline"

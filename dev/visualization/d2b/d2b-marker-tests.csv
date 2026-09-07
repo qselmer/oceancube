@@ -1,0 +1,3 @@
+"composition","source_longitude","expected_display_longitude","built_marker_x","expected_latitude","built_marker_y","source_to_display_match","latitude_match","point_count","status"
+"map_profile",278.5,-81.5,-81.5,-11.8337802886963,-11.8337802886963,TRUE,TRUE,1,"PASS"
+"map_timeseries",278.5,-81.5,-81.5,-11.8337802886963,-11.8337802886963,TRUE,TRUE,1,"PASS"

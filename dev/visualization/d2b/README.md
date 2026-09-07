@@ -14,5 +14,15 @@ vector-current graphics remain outside D2B.
 
 The gallery script accepts an isolated installed library, uses only exported
 oceancube functions for scientific panels, reads the committed GODAS benchmark
-offline, and composes already-created public ggplots with patchwork. Its outputs
-remain `GENERATED_PENDING_MAINTAINER`; no technical check is a visual approval.
+offline, and composes already-created public ggplots with patchwork. The two
+revised compositions mark the exact source-grid location used by the paired
+profile or time series; the display marker is derived from that authoritative
+selection without another source read. Grey means stored `NA` / missing source
+field support, not inferred land. A contour-only rendering shows isoline
+geometry but does not by itself encode the complete valid-support mask.
+
+The original seven hashes remain recorded as `PRE_REVIEW_BASELINE` in
+`d2b-gallery-hash-history.csv`. Changed images are additionally recorded as
+`POST_REVIEW_FIX_CANDIDATE` and remain
+`REGENERATED_PENDING_MAINTAINER`; unchanged images remain
+`GENERATED_PENDING_MAINTAINER`. No technical check is a visual approval.

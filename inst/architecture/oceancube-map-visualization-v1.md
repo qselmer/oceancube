@@ -70,6 +70,15 @@ map+timeseries are governed development patterns composed with patchwork after
 each child public plot exists. There is no `viz.compose()` export and no merged
 scientific observation or composition-time source read.
 
+When a child plot is a point-specific extraction, a governed map composition
+must visibly mark the exact spatial selection used by that child. The marker is
+a renderer annotation derived from the already-known selection metadata; it
+does not select again or read the source. Stored `NA` in an ocean field means
+missing source-field support and must not be relabelled as land without an
+independently certified land mask. A contour-only rendering communicates
+isoline geometry, but does not necessarily communicate the complete valid-
+support mask.
+
 ## Evidence and governance
 
 Synthetic fixtures certify exact styles, explicit centre errors, missingness,
