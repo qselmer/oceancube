@@ -94,7 +94,7 @@ The named review is recorded in
 `../../visualization/d2a/d2a-human-visual-review.csv` and the completed
 checklist. Certification is bounded to these exact hashes and the D2A contract.
 
-## D2B core maps — REVISED VISUAL CANDIDATES GENERATED
+## D2B core maps — COMPLETE / CERTIFIED LOCALLY
 
 These candidates use the installed public API and the exact first GODAS time
 and shallowest depth. Source longitude is unchanged in prepared data and is
@@ -120,9 +120,8 @@ used in the paired profile or time series; composition adds zero source reads.
 
 ![D2B map and time-series composition](static/d2b-compose-map-timeseries.png)
 
-Reviewer is intentionally blank. The profile and time-series compositions, and
-the title-corrected potential-temperature field-plus-isolines image, are
-`REGENERATED_PENDING_MAINTAINER`. The other four images remain byte-identical
-`GENERATED_PENDING_MAINTAINER` candidates. These exact artifacts require named
-maintainer inspection before D2B may be marked complete/certified or DEC-045
-may be allocated.
+Maintainer `qselmer` approved these exact seven artifacts on 2026-09-07. Their
+hashes, scientific interpretations, and bounded findings are frozen in
+`../../visualization/d2b/d2b-human-visual-review.csv`. D2B is COMPLETE /
+CERTIFIED LOCALLY through DEC-045; remote certification still requires the
+separately authorized three-commit push and successful cross-platform CI.

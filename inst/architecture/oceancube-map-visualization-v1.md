@@ -1,8 +1,8 @@
 # oceancube map visualization contract v1
 
-Status: **D2B implemented and technically validated; visual review pending**.
-No D2B decision is allocated. DEC-045 remains available for a later named
-maintainer review and final certification.
+Status: **D2B COMPLETE / CERTIFIED LOCALLY**. Maintainer `qselmer` approved the
+exact seven governed artifacts on 2026-09-07. DEC-045 freezes this bounded map
+and scientific-scale contract; remote certification remains separate.
 
 ## Scientific product and prepared state
 
@@ -85,6 +85,7 @@ Synthetic fixtures certify exact styles, explicit centre errors, missingness,
 dateline failure, serialization and backend parity. The canonical GODAS 2024
 benchmark supplies real pottmp and salt surface maps with its exact binary and
 scientific hashes. Gallery candidates are generated offline from an installed
-package. They remain `GENERATED_PENDING_MAINTAINER` with a blank reviewer until
-the named visual-review run freezes exact approved hashes and may allocate
-DEC-045.
+package. Maintainer `qselmer` approved the exact seven final hashes on
+2026-09-07; the manifest and
+`dev/visualization/d2b/d2b-human-visual-review.csv` freeze that bounded artifact
+set. Regeneration creates a new candidate and does not inherit approval.

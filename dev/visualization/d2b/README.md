@@ -1,4 +1,8 @@
-# D2B core map technical evidence
+# D2B core map certification evidence
+
+Status: **COMPLETE / CERTIFIED LOCALLY**. Maintainer `qselmer` approved the
+exact seven governed D2B artifacts on 2026-09-07. DEC-045 freezes the bounded
+runtime, scale, longitude, support, missingness and composition contracts.
 
 D2B extends `viz.map()` additively with explicit field, contour and combined
 field/contour styles, deterministic sequential/diverging scales, and
@@ -23,6 +27,6 @@ geometry but does not by itself encode the complete valid-support mask.
 
 The original seven hashes remain recorded as `PRE_REVIEW_BASELINE` in
 `d2b-gallery-hash-history.csv`. Changed images are additionally recorded as
-`POST_REVIEW_FIX_CANDIDATE` and remain
-`REGENERATED_PENDING_MAINTAINER`; unchanged images remain
-`GENERATED_PENDING_MAINTAINER`. No technical check is a visual approval.
+`POST_REVIEW_FIX_CANDIDATE`; unchanged images retain their original exact
+hashes. Named approval of the final seven-file set is recorded in
+`d2b-human-visual-review.csv`; no future regeneration inherits that approval.

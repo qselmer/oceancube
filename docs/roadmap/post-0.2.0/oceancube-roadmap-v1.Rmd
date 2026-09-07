@@ -651,18 +651,20 @@ internal renderer-neutral prepared-data contract while preserving the five
 existing visual APIs and outputs; D1A and D1B are certified locally and
 remotely. D2A adds only `viz.hovmoller()`, bringing the development API to 49
 exports, and technically validates time-longitude, time-latitude, and time-
-depth views plus the internal scale foundation. Phase `0.3.0-D` and D2 remain
-IN PROGRESS. DEC-043 records maintainer `qselmer` approval of the exact three
+depth views plus the internal scale foundation. DEC-043 records maintainer
+`qselmer` approval of the exact three
 governed Hovmöller gallery artifacts on 2026-09-06 and marks D2A
 COMPLETE/CERTIFIED. Stored-centre tile extent remains explicitly display-only;
 grey stored `NA` tiles are distinct from blank regions without stored centres,
 and explicit-bounds runtime support remains deferred. D1A and D1B remain
 COMPLETE/CERTIFIED. D2B additively implements three safe map styles, explicit
 scientific scale classes, display-only longitude wrapping, and governed
-composition without a new export or dependency. It is IMPLEMENTED /
-TECHNICALLY VALIDATED with VISUAL REVIEW PENDING; D3 is NOT STARTED.
+composition without a new export or dependency. Maintainer `qselmer` approved
+the exact seven governed D2B artifacts on 2026-09-07. DEC-045 marks D2B and the
+complete D2A+D2B core D2 scope COMPLETE/CERTIFIED LOCALLY. Phase `0.3.0-D`
+remains IN PROGRESS and D3 is NOT STARTED.
 The subsequent D-VIZDATA infrastructure phase adopts the NOAA/NCEP GODAS 2024
 exact-value physical benchmark as repository-only evidence and is
 COMPLETE/CERTIFIED. DEC-044 governs its canonical identity,
-no-transformation contract, and redistribution gate; DEC-045 remains
-unallocated.
+no-transformation contract, and redistribution gate. DEC-046 is the next
+available decision ID.

@@ -376,9 +376,10 @@ design references, never scientific specifications.
 7. D-EXIT: cross-mode scientific, object, visual, gallery, and human-review
    certification.
 
-Phase D and D2 are in progress. D1B and D2A are COMPLETE/CERTIFIED locally and
-remotely, and D-VIZDATA is COMPLETE/CERTIFIED. D2B is IMPLEMENTED / TECHNICALLY
-VALIDATED with VISUAL REVIEW PENDING. It preserves prepared-data schema 1.0.0
-and delegates its bounded map contract to `oceancube-map-visualization-v1.md`.
-DEC-045 remains unallocated for the subsequent named human-review and final-
-certification step. Phase E and 0.5 remain outside the authorized scope.
+Phase D remains in progress. D1B and D2A are COMPLETE/CERTIFIED locally and
+remotely, and D-VIZDATA is COMPLETE/CERTIFIED. Maintainer `qselmer` approved
+the exact seven D2B artifacts on 2026-09-07; DEC-045 marks D2B and the complete
+D2A+D2B core D2 scope COMPLETE/CERTIFIED LOCALLY. Prepared-data schema 1.0.0
+remains unchanged and the bounded map contract lives in
+`oceancube-map-visualization-v1.md`. D3 is NOT STARTED. Phase E and 0.5 remain
+outside the authorized scope.

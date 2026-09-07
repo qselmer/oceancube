@@ -1,11 +1,11 @@
 gate,result,detail
 direct_build,BLOCKED_KNOWN_DEFECT,"recursive .git/refs/codex/turn-diffs copy defect reproduced; process stopped; no package-content failure"
-build_method,PASS,"governed clean-source snapshot excluding .git and already-excluded dev/artifacts"
-tarball,PASS,"oceancube_0.2.0.9000.tar.gz; 3111661 bytes; SHA256 44e126b984b4fa28d7e39e7fb1cd826ac8af8e0c4f439de46bfad21e722d5c72"
+build_method,PASS,"governed final clean-source snapshot excluding .git dev and artifacts"
+tarball,PASS,"oceancube_0.2.0.9000.tar.gz; 3111698 bytes; SHA256 192cd7319dba6955446345f707199e0fe8cdf9dc23472307e73332c4fda9c312"
 tarball_entry_count,PASS,454
 tarball_dev_absent,PASS,"0 dev entries"
 tarball_benchmark_absent,PASS,"0 oceancube-viz-benchmark-v1.nc entries"
-R_CMD_check,PASS,"--no-manual --no-tests; Status: OK"
+R_CMD_check,PASS,"R 4.5.1; --no-manual --no-tests; Status: OK"
 check_errors,PASS,0
 check_warnings,PASS,0
 check_notes,PASS,0

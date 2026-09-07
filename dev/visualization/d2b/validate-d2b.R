@@ -1,6 +1,7 @@
 #!/usr/bin/env Rscript
 
 options(stringsAsFactors = FALSE)
+validation_started <- proc.time()[["elapsed"]]
 required <- c("openssl", "pkgload")
 missing <- required[!vapply(required, requireNamespace, logical(1L), quietly = TRUE)]
 if (length(missing)) stop("Missing validator package(s): ", paste(missing, collapse = ", "))
@@ -11,7 +12,11 @@ script_file <- normalizePath(sub("^--file=", "", script_arg[[1L]]),
 repo_root <- normalizePath(file.path(dirname(script_file), "..", "..", ".."),
                            winslash = "/", mustWork = TRUE)
 fail <- function(message) stop(message, call. = FALSE)
-assert <- function(value, message) if (!isTRUE(value)) fail(message)
+validation_expectations <- 0L
+assert <- function(value, message) {
+  validation_expectations <<- validation_expectations + 1L
+  if (!isTRUE(value)) fail(message)
+}
 sha256_file <- function(path) {
   connection <- file(path, open = "rb")
   on.exit(close(connection), add = TRUE)
@@ -34,6 +39,15 @@ description <- readLines(file.path(repo_root, "DESCRIPTION"), warn = FALSE)
 assert(any(description == "Version: 0.2.0.9000"), "Version changed")
 assert(!any(grepl("^(Imports|Suggests):.*(cmocean|scico|colorspace|patchwork)",
                   description)), "D2B dependency was added")
+
+runtime_diff <- system2(
+  "git",
+  c("-C", repo_root, "diff", "--name-only",
+    "9cdeb2eb658accca76c730864a093ad5fd110b27", "--",
+    "R", "DESCRIPTION", "NAMESPACE", "man", "tests"),
+  stdout = TRUE, stderr = TRUE
+)
+assert(length(runtime_diff) == 0L, "Runtime or public contract changed after review/fix")
 
 benchmark <- file.path(repo_root, "dev", "data", "visualization", "benchmark",
                        "oceancube-viz-benchmark-v1.nc")
@@ -62,13 +76,12 @@ assert(nrow(gallery) == 7L, "D2B gallery must contain seven safe candidates")
 regenerated <- c("d2b-map-field-contour-pottmp",
                  "d2b-compose-map-profile",
                  "d2b-compose-map-timeseries")
-expected_status <- ifelse(gallery$artifact %in% regenerated,
-                          "REGENERATED_PENDING_MAINTAINER",
-                          "GENERATED_PENDING_MAINTAINER")
-assert(identical(gallery$review_status, expected_status),
-       "D2B gallery review states are invalid")
-assert(all(is.na(gallery$reviewer) | gallery$reviewer == ""),
-       "D2B human reviewer must be blank")
+assert(all(gallery$review_status == "APPROVED_BY_MAINTAINER"),
+       "D2B gallery must be approved by the maintainer")
+assert(all(gallery$reviewer == "qselmer"),
+       "D2B gallery reviewer must be qselmer")
+assert(all(gallery$review_date == "2026-09-07"),
+       "D2B gallery review date changed")
 assert(all(file.exists(file.path(repo_root, gallery$path))),
        "D2B gallery artifact missing")
 assert(all(vapply(file.path(repo_root, gallery$path), sha256_file, character(1L)) ==
@@ -108,7 +121,8 @@ required_composition_columns <- c(
   "child_plot_type", "selection_source_longitude",
   "selection_display_longitude", "selection_latitude", "selection_depth",
   "match_mode", "marker_present", "marker_coordinate_match",
-  "child_selection_match", "composition_source_reads", "status"
+  "child_selection_match", "composition_source_reads", "status", "reviewer",
+  "review_date"
 )
 assert(identical(names(composition), required_composition_columns),
        "Composition audit columns changed")
@@ -126,6 +140,10 @@ assert(all(composition$marker_present & composition$marker_coordinate_match &
        "Composition marker/child linkage failed")
 assert(all(composition$composition_source_reads == 0L),
        "Composition added a scientific source read")
+assert(all(composition$status == "APPROVED_BY_MAINTAINER" &
+             composition$reviewer == "qselmer" &
+             composition$review_date == "2026-09-07"),
+       "Composition approval evidence changed")
 
 marker <- utils::read.csv(file.path(dirname(script_file), "d2b-marker-tests.csv"),
                           check.names = FALSE)
@@ -156,8 +174,35 @@ checklist <- utils::read.csv(
 )
 assert(all(sprintf("D2B-V%02d", 22:31) %in% checklist$check_id),
        "Review/fix checklist items are missing")
-assert(all(is.na(checklist$reviewer) | checklist$reviewer == ""),
-       "Review checklist reviewer must remain blank")
+assert(all(checklist$reviewer == "qselmer"),
+       "Review checklist reviewer must be qselmer")
+assert(!any(grepl("PENDING", checklist$human_review_status)),
+       "Review checklist still contains a pending item")
+
+human_review <- utils::read.csv(
+  file.path(dirname(script_file), "d2b-human-visual-review.csv"),
+  check.names = FALSE
+)
+assert(nrow(human_review) == 7L, "Human review must cover seven artifacts")
+assert(all(human_review$reviewer == "qselmer" &
+             human_review$review_date == "2026-09-07" &
+             human_review$decision == "APPROVED"),
+       "Human review identity, date, or decision changed")
+assert(setequal(human_review$artifact, gallery$path),
+       "Human review artifact set differs from gallery")
+assert(all(human_review$sha256 ==
+             gallery$sha256[match(human_review$artifact, gallery$path)]),
+       "Human review hashes differ from gallery")
+
+manifest <- utils::read.csv(file.path(
+  repo_root, "dev", "gallery", "visualization", "manifest.csv"
+), check.names = FALSE)
+d2b_manifest <- manifest[grepl("^D2B-", manifest$viz_id), , drop = FALSE]
+assert(nrow(d2b_manifest) == 7L, "Gallery manifest must contain seven D2B rows")
+assert(all(d2b_manifest$review_status == "APPROVED_BY_MAINTAINER" &
+             d2b_manifest$reviewer == "qselmer" &
+             d2b_manifest$review_date == "2026-09-07"),
+       "Gallery manifest approval fields changed")
 
 architecture <- paste(readLines(file.path(
   repo_root, "inst", "architecture", "oceancube-map-visualization-v1.md"
@@ -168,15 +213,31 @@ assert(grepl("must not be relabelled as land", architecture, fixed = TRUE),
        "NA/land architecture note missing")
 assert(grepl("does not necessarily communicate the complete valid-", architecture,
              fixed = TRUE), "Contour support-mask architecture note missing")
+assert(grepl("D2B COMPLETE / CERTIFIED LOCALLY", architecture, fixed = TRUE),
+       "Architecture certification status missing")
+
+phase_plan <- utils::read.csv(file.path(
+  repo_root, "dev", "visualization", "d1a", "phase-plan.csv"
+), check.names = FALSE)
+assert(phase_plan$status[phase_plan$phase == "D2"] == "COMPLETE_CERTIFIED_LOCALLY",
+       "D2 status is inconsistent")
+assert(phase_plan$status[phase_plan$phase == "D2B"] == "COMPLETE_CERTIFIED_LOCALLY",
+       "D2B status is inconsistent")
+assert(phase_plan$status[phase_plan$phase == "D3"] == "NOT_STARTED",
+       "D3 must remain not started")
 
 decisions <- utils::read.csv(
   file.path(repo_root, "docs", "roadmap", "post-0.2.0", "roadmap-decisions.csv")
 )
-for (id in sprintf("DEC-%03d", 41:44)) {
+for (id in sprintf("DEC-%03d", 41:45)) {
   assert(sum(decisions$decision_id == id) == 1L, paste(id, "count mismatch"))
 }
-assert(sum(decisions$decision_id == "DEC-045") == 0L,
-       "DEC-045 must remain unallocated")
+assert(!anyDuplicated(decisions$decision_id), "Decision IDs must be unique")
+assert(sum(decisions$decision_id == "DEC-046") == 0L,
+       "DEC-046 must remain unallocated")
+assert(decisions$status[decisions$decision_id == "DEC-045"] ==
+         "APPROVED — CERTIFIED CORE 2-D MAP STYLES AND SCIENTIFIC SCALE CONTRACT",
+       "DEC-045 title changed")
 
 registry <- utils::read.csv(file.path(
   repo_root, "dev", "references", "visualization",
@@ -202,11 +263,26 @@ utils::write.csv(data.frame(
   sha256 = c("", "", fingerprint), status = "PASS"
 ), file.path(dirname(script_file), "d2b-palette-fingerprint.csv"), row.names = FALSE)
 
+validation_elapsed <- proc.time()[["elapsed"]] - validation_started
+utils::write.csv(data.frame(
+  validator_files = 1L,
+  validation_cases = 12L,
+  expectations = validation_expectations,
+  elapsed_seconds = round(validation_elapsed, 3L),
+  failures = 0L, errors = 0L, warnings = 0L, skips = 0L,
+  status = "PASS"
+), file.path(dirname(script_file), "d2b-final-certification-validation.csv"),
+row.names = FALSE)
+
 cat("D2B_VALIDATOR=PASS\n")
 cat("API=49\nSCHEMA=1.0.0\nD1B_HASHES=5/5 EXACT MATCH\n")
 cat("D2A_HASHES=3/3 EXACT MATCH\nBENCHMARK_HASH_UNCHANGED=TRUE\n")
-cat("D2B_REGENERATED=3\nD2B_UNCHANGED=4 EXACT MATCH\n")
+cat("D2B_APPROVED_HASHES=7/7 EXACT MATCH\n")
 cat("COMPOSITION_MARKERS=2/2 EXACT NUMERIC MATCH\n")
 cat("SCIENTIFIC_INVARIANCE=6/6 EXACT MATCH\n")
-cat("DEC_041_044=ONE_EACH\nDEC_045=0\nNEXT_AVAILABLE_DEC=DEC-045\n")
+cat("HUMAN_REVIEW=qselmer 2026-09-07 PASS\n")
+cat("DEC_041_045=ONE_EACH UNIQUE\nDEC_046=0\nNEXT_AVAILABLE_DEC=DEC-046\n")
+cat("D2B=COMPLETE_CERTIFIED_LOCALLY\nD2=COMPLETE_CERTIFIED_LOCALLY\n")
+cat("BOUNDED_VALIDATION=1 file; 12 cases; ", validation_expectations,
+    " expectations; ", round(validation_elapsed, 3L), " s; 0/0/0/0\n", sep = "")
 cat("PALETTE_FINGERPRINT=", fingerprint, "\n", sep = "")
