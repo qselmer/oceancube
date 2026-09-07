@@ -1,0 +1,8 @@
+item,before_D2B,evidence,status
+public_signature,"x;variable;time;depth;limits;na.rm;coastline;title;subtitle;caption","formals(viz.map) at 21d71653027e79c89bdc05bcdf75950e342a042a",RECORDED
+default_renderer,"geom_raster for regular grids; geom_tile otherwise","R/viz-data.R at starting SHA",RECORDED
+default_scale,"ggplot2 scale_fill_continuous","R/viz-data.R at starting SHA",RECORDED
+prepared_kind,MAP_LAYER,"oceancube_viz_data schema 1.0.0",RECORDED
+support_geometry,"rows; missing values; backend; selection status","no scientific cell-bounds claim",RECORDED
+longitude_display,SOURCE,"stored longitude supplied directly to ggplot",RECORDED
+public_exports,49,"NAMESPACE at starting SHA",RECORDED

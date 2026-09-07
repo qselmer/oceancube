@@ -365,17 +365,20 @@ design references, never scientific specifications.
 
 1. D1B: implemented renderer-neutral prepared-data contract, architecturally
    frozen scene contract, and existing-viz prepare/render refactor.
-2. D2A: implemented and technically validated Hovmöller plus the core internal
-   2-D scale foundation; exact gallery outputs await named maintainer review.
-3. D2: continue core 2-D, map styles, and composition only after D2A review.
+2. D2A: implemented and certified Hovmöller plus the core internal 2-D scale
+   foundation after named review of its exact gallery artifacts.
+3. D2B: implements field, contour and field+contour map styles, explicit
+   sequential/diverging semantics, display-only longitude wrapping, and
+   governed patchwork composition. Technical validation precedes named review.
 4. D3: T-S/SA-CT, curtain, bathymetry, and supplied ocean diagnostics.
 5. D4: interactive, animation, and bounded communication extensions.
 6. D5: small/medium 3-D surfaces, slices, curtains, isosurfaces, and helix.
 7. D-EXIT: cross-mode scientific, object, visual, gallery, and human-review
    certification.
 
-Phase D and D2 are in progress. D1B is COMPLETE/CERTIFIED locally and remotely.
-D2A is IMPLEMENTED / TECHNICALLY VALIDATED with VISUAL REVIEW PENDING. No D2A
-decision is allocated: DEC-043 remains the next available identifier for the
-subsequent named human-review and final-certification step. Phase E and 0.5
-remain outside the authorized scope.
+Phase D and D2 are in progress. D1B and D2A are COMPLETE/CERTIFIED locally and
+remotely, and D-VIZDATA is COMPLETE/CERTIFIED. D2B is IMPLEMENTED / TECHNICALLY
+VALIDATED with VISUAL REVIEW PENDING. It preserves prepared-data schema 1.0.0
+and delegates its bounded map contract to `oceancube-map-visualization-v1.md`.
+DEC-045 remains unallocated for the subsequent named human-review and final-
+certification step. Phase E and 0.5 remain outside the authorized scope.

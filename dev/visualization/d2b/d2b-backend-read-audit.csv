@@ -1,0 +1,4 @@
+backend,styles,selected_physical_count,values_requested,renderer_reads_after_preparation,full_cube_read,source_file_removal,scientific_parity,status
+memory,"FIELD;CONTOUR;FIELD_CONTOUR","7 x 7 x 1 x 1 synthetic",49,0,FALSE,NOT_APPLICABLE,"same prepared values and coordinates",PASS
+netcdf_synthetic,"FIELD;CONTOUR;FIELD_CONTOUR","3 x 2 x 1 x 1",6,0,FALSE,PASS,"same prepared values and coordinates",PASS
+netcdf_GODAS,"FIELD;CONTOUR;FIELD_CONTOUR","12 x 51 x 1 x 1",612,0,FALSE,PASS,"exact selected pottmp/salt source values",PASS

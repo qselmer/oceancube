@@ -1,0 +1,2 @@
+"filter","files","cases","expectations","elapsed_seconds","failures","errors","warnings","skips","status"
+"cf|time|vertical|provenance|cube-open|thermodynamic|mixed-layer|oxygen-profile|transition-layer|density-stratification",37,339,2474,918.81,0,0,0,0,"PASS"

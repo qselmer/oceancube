@@ -1,0 +1,4 @@
+engine_evaluated,public_API_added,dependency_change,map_profile,map_timeseries,scientific_reads_during_composition,provenance_behavior,decision
+patchwork,FALSE,FALSE,PASS,PASS,"0 after child plot creation","each child retains its own selection and plot attributes; no merged observation",GOVERNED_DEVELOPMENT_PATTERN
+cowplot,FALSE,FALSE,NOT_RUN,NOT_RUN,NOT_APPLICABLE,"would retain child plots but offers no D2B advantage",REFERENCE_ONLY
+gridExtra,FALSE,FALSE,NOT_RUN,NOT_RUN,NOT_APPLICABLE,"low-level arrangement only",REFERENCE_ONLY

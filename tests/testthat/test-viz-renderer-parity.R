@@ -47,10 +47,12 @@ test_that("renderer is deterministic and performs no scientific selection", {
   expect_identical(viz_plot_semantics(first), viz_plot_semantics(second))
 })
 
-test_that("all five public signatures remain frozen", {
+test_that("map extends append-only while the other public signatures remain frozen", {
   expected <- list(
     viz.map = c("x", "variable", "time", "depth", "limits", "na.rm",
-                "coastline", "title", "subtitle", "caption"),
+                "coastline", "title", "subtitle", "caption", "style",
+                "scale_class", "center", "contour_breaks",
+                "longitude_display"),
     viz.profile = c("x", "variable", "longitude", "latitude", "time",
                     "depth", "limits", "na.rm", "reverse_depth", "points",
                     "title", "subtitle", "caption"),

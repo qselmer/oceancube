@@ -1,0 +1,7 @@
+engine,package,dependency_status,sequential,diverging,cyclic,categorical,perceptual_basis,colourblind_consideration,deterministic,optional_availability_risk,license_reference,D2B_decision,reason
+"ggplot2 viridis scales",ggplot2,Imports,TRUE,FALSE,FALSE,FALSE,"perceptually ordered viridis option D","designed for common colour-vision deficiencies",TRUE,NONE,R001,IMPLEMENT_SEQUENTIAL,"already imported and deterministic"
+"base R grDevices::hcl.colors",grDevices,base,TRUE,TRUE,TRUE,TRUE,"polar LUV HCL palettes","HCL luminance and chroma are auditable",TRUE,NONE,R027,IMPLEMENT_DIVERGING,"Blue-Red 3 supplies a dependency-free balanced default"
+cmocean,cmocean,not_dependency,TRUE,TRUE,TRUE,FALSE,"oceanographic perceptual palettes","domain palette reference",TRUE,HIGH,R019,REFERENCE_ONLY,"installation must never change defaults"
+scico,scico,not_dependency,TRUE,TRUE,FALSE,FALSE,"scientific perceptual palettes","colour-vision-oriented designs",TRUE,HIGH,R021,REFERENCE_ONLY,"no runtime need justifies a dependency"
+colorspace,colorspace,not_dependency,TRUE,TRUE,TRUE,TRUE,"HCL construction and diagnostics","supports CVD simulation and palette diagnostics",TRUE,HIGH,R022,REFERENCE_ONLY,"base grDevices is sufficient for D2B"
+rainbow_jet,base_or_external,forbidden_default,FALSE,FALSE,FALSE,FALSE,"non-monotonic rainbow hue path","poor perceptual ordering",TRUE,NONE,"DEC-041 palette policy",REJECT,"never a D2B default"

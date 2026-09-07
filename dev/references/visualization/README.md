@@ -25,3 +25,8 @@ D-VIZDATA extends the same schema without widening the closed
 `reference_role` vocabulary. Its provider/product/protocol/license evidence is
 classified in `category` as `DATA_PROVIDER`, `DATA_PRODUCT`, `STANDARD`, and
 `LICENSE`; each remains a `DOMAIN_REFERENCE` for validator compatibility.
+
+D2B adds R027 (the R Core HCL palette manual) and R028 (the official ggplot2
+contour reference). They support the dependency-free diverging palette and the
+bounded decision to create contour paths as explicit display geometry. They do
+not allocate DEC-045 or certify visual appearance.

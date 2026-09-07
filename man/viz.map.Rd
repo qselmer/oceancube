@@ -14,7 +14,12 @@ viz.map(
   coastline = NULL,
   title = NULL,
   subtitle = NULL,
-  caption = NULL
+  caption = NULL,
+  style = c("field", "contour", "field_contour", "filled_contour"),
+  scale_class = c("unspecified_continuous", "sequential", "diverging"),
+  center = NULL,
+  contour_breaks = NULL,
+  longitude_display = c("source", "neg180_180", "zero_360")
 )
 }
 \arguments{
@@ -40,6 +45,32 @@ data frame with \code{longitude}, \code{latitude}, and \code{group} columns. Coo
 and CRS are used as supplied and are not transformed.}
 
 \item{title, subtitle, caption}{Optional character scalars used as plot labels.}
+
+\item{style}{Map rendering style. \code{"field"} preserves the historical direct
+raster/tile rendering. \code{"contour"} draws display-only isolines and
+\code{"field_contour"} overlays those isolines on the direct field.
+\code{"filled_contour"} is reserved but currently errors because its missing-
+support and continuous-scale contract is not yet certified.}
+
+\item{scale_class}{Scientific colour-scale class. The historical
+\code{"unspecified_continuous"} default preserves the existing scale exactly.
+\code{"sequential"} uses deterministic viridis option D. \code{"diverging"} uses a
+deterministic base-R HCL palette and requires an explicit \code{center}.}
+
+\item{center}{\code{NULL} or one finite scientifically meaningful centre. It is
+required for \code{scale_class = "diverging"}, must lie strictly inside the
+effective display range, and is invalid for other scale classes. Zero is
+never assumed.}
+
+\item{contour_breaks}{\code{NULL} or at least one finite, strictly increasing
+contour level. When \code{NULL}, explicit contour styles use deterministic
+\code{pretty()} breaks from the finite display range with \code{n = 7}.}
+
+\item{longitude_display}{Display-only longitude convention: \code{"source"}
+preserves stored coordinates, \code{"neg180_180"} wraps to [-180, 180), and
+\code{"zero_360"} wraps to [0, 360). Scientific coordinates, selection,
+provenance, and QA are unchanged. A wrap that introduces an internal
+dateline discontinuity fails explicitly.}
 }
 \value{
 A \code{ggplot} object with selected variable, time, depth, and backend
@@ -48,8 +79,11 @@ recorded in \verb{oceancube_*} attributes.
 \description{
 \code{viz.map()} selects exactly one variable, time, and depth layer through
 \code{\link[=cube_extract]{cube_extract()}} and draws its stored grid without interpolation. Regular
-grids use a raster layer and irregular grids use tiles. NetCDF inputs read
-only the selected layer rather than materializing the complete cube.
+grids use a raster layer and irregular grids use tiles. Explicit contour
+styles calculate renderer-only isoline geometry; they never interpolate,
+regrid, smooth, fill, or replace the prepared scientific values. NetCDF
+inputs read only the selected layer rather than materializing the complete
+cube.
 }
 \examples{
 if (requireNamespace("ggplot2", quietly = TRUE)) {
@@ -60,6 +94,14 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
     vars = "temperature", units = "degC"
   )
   viz.map(cube, "temperature", title = "Surface temperature")
+  viz.map(
+    cube, "temperature", style = "field_contour",
+    scale_class = "sequential", contour_breaks = c(2, 4)
+  )
+
+  signed <- cube
+  signed$data <- signed$data - 3.5
+  viz.map(signed, "temperature", scale_class = "diverging", center = 0)
 }
 }
 \seealso{

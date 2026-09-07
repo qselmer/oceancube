@@ -93,3 +93,30 @@ smoothed, or filled.
 The named review is recorded in
 `../../visualization/d2a/d2a-human-visual-review.csv` and the completed
 checklist. Certification is bounded to these exact hashes and the D2A contract.
+
+## D2B core maps — GENERATED_PENDING_MAINTAINER
+
+These candidates use the installed public API and the exact first GODAS time
+and shallowest depth. Source longitude is unchanged in prepared data and is
+explicitly wrapped only for display. Contours are renderer-only geometry; grey
+cells remain stored `NA`. `FILLED_CONTOUR` is deferred and therefore has no
+candidate. The two compositions combine already-created public plots through
+patchwork and do not introduce `viz.compose()`.
+
+![D2B pottmp field](static/d2b-map-field-pottmp.png)
+
+![D2B salt field](static/d2b-map-field-salt.png)
+
+![D2B pottmp contours](static/d2b-map-contour-pottmp.png)
+
+![D2B pottmp field and contours](static/d2b-map-field-contour-pottmp.png)
+
+![D2B synthetic diverging map](static/d2b-map-diverging-synthetic.png)
+
+![D2B map and profile composition](static/d2b-compose-map-profile.png)
+
+![D2B map and time-series composition](static/d2b-compose-map-timeseries.png)
+
+Reviewer is intentionally blank. These exact artifacts require named
+maintainer inspection before D2B may be marked complete/certified or DEC-045
+may be allocated.

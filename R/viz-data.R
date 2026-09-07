@@ -147,6 +147,262 @@
   )
 }
 
+.viz_map_scale_spec <- function(classification, limits = NULL, centre = NULL,
+                                effective_range) {
+  allowed <- c("UNSPECIFIED_CONTINUOUS", "SEQUENTIAL", "DIVERGING")
+  if (!is.character(classification) || length(classification) != 1L ||
+      is.na(classification) || !classification %in% allowed) {
+    .viz_abort(
+      paste0("Map `scale_class` must resolve to one of ",
+             paste0("`", allowed, "`", collapse = ", "), "."),
+      "oceancube_viz_scale_error"
+    )
+  }
+  if (identical(classification, "DIVERGING")) {
+    if (!is.numeric(effective_range) || length(effective_range) != 2L ||
+        any(!is.finite(effective_range)) || effective_range[[1L]] >=
+        effective_range[[2L]]) {
+      .viz_abort("The effective diverging map display range is invalid.",
+                 "oceancube_viz_scale_error")
+    }
+    if (!is.numeric(centre) || !is.null(dim(centre)) || length(centre) != 1L ||
+        is.na(centre) || !is.finite(centre)) {
+      .viz_abort(
+        "A DIVERGING map scale requires an explicit finite `center`.",
+        "oceancube_viz_scale_error"
+      )
+    }
+    if (centre <= effective_range[[1L]] || centre >= effective_range[[2L]]) {
+      .viz_abort(
+        "A DIVERGING map `center` must lie strictly inside the effective display range.",
+        "oceancube_viz_scale_error"
+      )
+    }
+  } else if (!is.null(centre)) {
+    .viz_abort(
+      "`center` is available only for `scale_class = \"diverging\"`.",
+      "oceancube_viz_scale_error"
+    )
+  }
+  palette <- switch(
+    classification,
+    UNSPECIFIED_CONTINUOUS = "ggplot2_default_continuous",
+    SEQUENTIAL = "viridis_D",
+    DIVERGING = "base_hcl_Blue-Red_3"
+  )
+  list(
+    classification = classification,
+    limits = limits,
+    centre = centre,
+    palette = palette
+  )
+}
+
+.viz_map_contour_spec <- function(values, limits = NULL, breaks = NULL,
+                                  required = FALSE) {
+  if (!isTRUE(required)) {
+    return(list(breaks = NULL, rule = "NOT_APPLICABLE"))
+  }
+  finite <- as.numeric(values[is.finite(values)])
+  display_range <- if (is.null(limits)) range(finite) else limits
+  if (length(finite) < 2L || diff(display_range) <= 0) {
+    .viz_abort(
+      "Contour rendering requires at least two distinct finite display values.",
+      "oceancube_viz_style_error"
+    )
+  }
+  if (is.null(breaks)) {
+    breaks <- pretty(display_range, n = 7L)
+    breaks <- breaks[breaks > display_range[[1L]] &
+                       breaks < display_range[[2L]]]
+    if (!length(breaks)) {
+      breaks <- seq(display_range[[1L]], display_range[[2L]], length.out = 9L)
+      breaks <- breaks[-c(1L, 9L)]
+    }
+    rule <- "PRETTY_FINITE_DISPLAY_RANGE_N7"
+  } else {
+    breaks <- as.numeric(breaks)
+    if (!any(breaks > display_range[[1L]] & breaks < display_range[[2L]])) {
+      .viz_abort(
+        "At least one `contour_breaks` value must lie inside the effective display range.",
+        "oceancube_viz_style_error"
+      )
+    }
+    rule <- "EXPLICIT_USER_LEVELS"
+  }
+  list(breaks = breaks, rule = rule)
+}
+
+.viz_map_display_footprint <- function(longitude, latitude) {
+  minimum_spacing <- function(values) {
+    values <- sort(unique(as.numeric(values[is.finite(values)])))
+    differences <- diff(values)
+    differences <- differences[is.finite(differences) & differences > 0]
+    if (length(differences)) min(differences) else NA_real_
+  }
+  list(
+    semantics = "DISPLAY_ONLY",
+    source = "DERIVED_FROM_STORED_CENTRES",
+    method = "MINIMUM_POSITIVE_CENTRE_SPACING",
+    x_width = minimum_spacing(longitude),
+    y_height = minimum_spacing(latitude),
+    scientific_cell_bounds = FALSE,
+    enters_cf_metadata = FALSE
+  )
+}
+
+.viz_map_wrap_longitude <- function(values, mode) {
+  values <- as.numeric(values)
+  if (identical(mode, "SOURCE")) return(values)
+  wrapped <- if (identical(mode, "NEG180_180")) {
+    ((values + 180) %% 360) - 180
+  } else if (identical(mode, "ZERO_360")) {
+    values %% 360
+  } else {
+    .viz_abort("Unsupported map longitude display mode.",
+               "oceancube_viz_longitude_error")
+  }
+  order_source <- order(values)
+  if (length(wrapped) > 1L &&
+      any(abs(diff(wrapped[order_source])) > 180, na.rm = TRUE)) {
+    .viz_abort(
+      paste0(
+        "Longitude display wrapping introduces an internal dateline ",
+        "discontinuity; D2B does not connect or split that geometry."
+      ),
+      "oceancube_viz_longitude_error"
+    )
+  }
+  wrapped
+}
+
+.viz_map_wrap_coastline <- function(coastline, type, mode) {
+  if (identical(mode, "SOURCE") || is.null(coastline)) return(coastline)
+  if (identical(type, "sf")) {
+    .viz_abort(
+      paste0(
+        "A non-SOURCE longitude display currently requires a data-frame ",
+        "coastline so dateline safety can be checked explicitly."
+      ),
+      "oceancube_viz_longitude_error"
+    )
+  }
+  if (!identical(type, "data.frame")) return(coastline)
+  out <- coastline
+  split_rows <- split(seq_len(nrow(out)), out$group)
+  for (rows in split_rows) {
+    out$longitude[rows] <- .viz_map_wrap_longitude(
+      out$longitude[rows], mode
+    )
+  }
+  out
+}
+
+.viz_map_longitude_labels <- function(values, mode) {
+  format_number <- function(value) {
+    format(abs(value), trim = TRUE, scientific = FALSE)
+  }
+  if (identical(mode, "ZERO_360")) {
+    return(ifelse(values == 0, "0\u00B0", paste0(format_number(values), "\u00B0E")))
+  }
+  ifelse(
+    values < 0, paste0(format_number(values), "\u00B0W"),
+    ifelse(values > 0, paste0(format_number(values), "\u00B0E"), "0\u00B0")
+  )
+}
+
+.viz_map_contour_data <- function(data, breaks) {
+  x <- sort(unique(data$longitude[is.finite(data$longitude)]))
+  y <- sort(unique(data$latitude[is.finite(data$latitude)]))
+  if (length(x) < 2L || length(y) < 2L) {
+    .viz_abort(
+      "Contour rendering requires at least two stored longitude and latitude centres.",
+      "oceancube_viz_style_error"
+    )
+  }
+  z <- matrix(NA_real_, nrow = length(x), ncol = length(y))
+  ix <- match(data$longitude, x)
+  iy <- match(data$latitude, y)
+  valid <- !is.na(ix) & !is.na(iy)
+  z[cbind(ix[valid], iy[valid])] <- data$value[valid]
+  contours <- grDevices::contourLines(x = x, y = y, z = z, levels = breaks)
+  if (!length(contours)) {
+    .viz_abort(
+      "The requested contour levels produced no display geometry.",
+      "oceancube_viz_style_error"
+    )
+  }
+  do.call(rbind, lapply(seq_along(contours), function(index) {
+    item <- contours[[index]]
+    data.frame(
+      longitude = item$x,
+      latitude = item$y,
+      level = item$level,
+      piece = index,
+      stringsAsFactors = FALSE
+    )
+  }))
+}
+
+.viz_map_palette_resolve <- function(scale) {
+  if (identical(scale$classification, "UNSPECIFIED_CONTINUOUS")) {
+    return(list(engine = "ggplot2_default_continuous", colours = NULL))
+  }
+  if (identical(scale$classification, "SEQUENTIAL")) {
+    return(list(engine = "ggplot2_viridis_D", colours = NULL))
+  }
+  if (identical(scale$classification, "DIVERGING")) {
+    return(list(
+      engine = "grDevices_hcl_Blue-Red_3",
+      colours = grDevices::hcl.colors(3L, palette = "Blue-Red 3")
+    ))
+  }
+  .viz_abort("Unsupported D2B map scale classification.",
+             "oceancube_viz_scale_error")
+}
+
+.viz_map_fill_scale <- function(scale, name) {
+  palette <- .viz_map_palette_resolve(scale)
+  if (identical(scale$classification, "UNSPECIFIED_CONTINUOUS")) {
+    return(ggplot2::scale_fill_continuous(
+      name = name, limits = scale$limits, oob = .viz_squish
+    ))
+  }
+  if (identical(scale$classification, "SEQUENTIAL")) {
+    return(ggplot2::scale_fill_viridis_c(
+      name = name, limits = scale$limits, oob = .viz_squish,
+      option = "D", direction = 1, na.value = "grey85"
+    ))
+  }
+  ggplot2::scale_fill_gradient2(
+    name = name, limits = scale$limits, oob = .viz_squish,
+    low = palette$colours[[1L]], mid = palette$colours[[2L]],
+    high = palette$colours[[3L]], midpoint = scale$centre,
+    na.value = "grey85"
+  )
+}
+
+.viz_map_colour_scale <- function(scale, name) {
+  palette <- .viz_map_palette_resolve(scale)
+  if (identical(scale$classification, "UNSPECIFIED_CONTINUOUS")) {
+    return(ggplot2::scale_colour_continuous(
+      name = name, limits = scale$limits, oob = .viz_squish
+    ))
+  }
+  if (identical(scale$classification, "SEQUENTIAL")) {
+    return(ggplot2::scale_colour_viridis_c(
+      name = name, limits = scale$limits, oob = .viz_squish,
+      option = "D", direction = 1, na.value = "grey85"
+    ))
+  }
+  ggplot2::scale_colour_gradient2(
+    name = name, limits = scale$limits, oob = .viz_squish,
+    low = palette$colours[[1L]], mid = palette$colours[[2L]],
+    high = palette$colours[[3L]], midpoint = scale$centre,
+    na.value = "grey85"
+  )
+}
+
 .viz_named_roles <- function(...) {
   supplied <- list(...)
   unknown <- setdiff(names(supplied), .viz_data_role_names)
@@ -448,6 +704,33 @@
       )
     }
   }
+  if (identical(x$kind, "MAP_LAYER")) {
+    footprint <- if (is.list(x$support)) x$support$display_footprint else NULL
+    map_styles <- c("FIELD", "CONTOUR", "FIELD_CONTOUR")
+    longitude_modes <- c("SOURCE", "NEG180_180", "ZERO_360")
+    if (!is.list(x$support) ||
+        !identical(x$support$geometry, "STORED_CENTRES") ||
+        !is.null(x$support$scientific_bounds) ||
+        !identical(
+          x$support$explicit_cell_bounds_runtime,
+          "DEFERRED_NOT_CERTIFIED_D2B"
+        ) ||
+        !is.list(footprint) ||
+        !identical(footprint$semantics, "DISPLAY_ONLY") ||
+        !identical(footprint$source, "DERIVED_FROM_STORED_CENTRES") ||
+        !identical(footprint$method, "MINIMUM_POSITIVE_CENTRE_SPACING") ||
+        !identical(footprint$scientific_cell_bounds, FALSE) ||
+        !identical(footprint$enters_cf_metadata, FALSE) ||
+        !is.character(x$renderer_hints$map_style) ||
+        length(x$renderer_hints$map_style) != 1L ||
+        !x$renderer_hints$map_style %in% map_styles ||
+        !is.character(x$renderer_hints$longitude_display) ||
+        length(x$renderer_hints$longitude_display) != 1L ||
+        !x$renderer_hints$longitude_display %in% longitude_modes) {
+      .viz_abort("Invalid MAP_LAYER D2B renderer/support metadata.",
+                 "oceancube_viz_data_error")
+    }
+  }
   projection_status <- c("UNKNOWN", "KNOWN", "CURRENT", "NOT_APPLICABLE")
   if (!is.list(x$projection) || !is.character(x$projection$status) ||
       length(x$projection$status) != 1L ||
@@ -513,24 +796,76 @@
 .viz_render_map_ggplot <- function(x) {
   hints <- x$renderer_hints
   data <- .viz_prepared_table(x)
-  plot <- ggplot2::ggplot(
-    data,
-    ggplot2::aes(x = .data$longitude, y = .data$latitude, fill = .data$value)
+  source_longitude <- data$longitude
+  data$longitude <- .viz_map_wrap_longitude(
+    source_longitude, hints$longitude_display
   )
-  plot <- if (isTRUE(x$geometry$regular_grid)) {
-    plot + ggplot2::geom_raster(na.rm = hints$na.rm)
+  coastline <- .viz_map_wrap_coastline(
+    hints$coastline, hints$coastline_type, hints$longitude_display
+  )
+  style <- hints$map_style
+
+  if (identical(style, "FIELD")) {
+    plot <- ggplot2::ggplot(
+      data,
+      ggplot2::aes(
+        x = .data$longitude, y = .data$latitude, fill = .data$value
+      )
+    )
+    plot <- if (isTRUE(x$geometry$regular_grid)) {
+      plot + ggplot2::geom_raster(na.rm = hints$na.rm)
+    } else {
+      plot + ggplot2::geom_tile(na.rm = hints$na.rm)
+    }
+    plot <- plot + .viz_map_fill_scale(x$scale, hints$value_label)
+  } else if (style %in% c("CONTOUR", "FIELD_CONTOUR")) {
+    contour_data <- .viz_map_contour_data(data, hints$contour_breaks)
+    if (identical(style, "CONTOUR")) {
+      plot <- ggplot2::ggplot(data) +
+        ggplot2::geom_path(
+          data = contour_data,
+          mapping = ggplot2::aes(
+            x = .data$longitude, y = .data$latitude,
+            group = .data$piece, colour = .data$level
+          ),
+          inherit.aes = FALSE, linewidth = 0.45, na.rm = TRUE
+        ) +
+        .viz_map_colour_scale(x$scale, hints$value_label) +
+        ggplot2::expand_limits(
+          x = range(data$longitude), y = range(data$latitude)
+        )
+    } else {
+      plot <- ggplot2::ggplot(
+        data,
+        ggplot2::aes(
+          x = .data$longitude, y = .data$latitude, fill = .data$value
+        )
+      )
+      plot <- if (isTRUE(x$geometry$regular_grid)) {
+        plot + ggplot2::geom_raster(na.rm = hints$na.rm)
+      } else {
+        plot + ggplot2::geom_tile(na.rm = hints$na.rm)
+      }
+      plot <- plot +
+        ggplot2::geom_path(
+          data = contour_data,
+          mapping = ggplot2::aes(
+            x = .data$longitude, y = .data$latitude, group = .data$piece
+          ),
+          inherit.aes = FALSE, colour = "black", linewidth = 0.35,
+          na.rm = TRUE
+        ) +
+        .viz_map_fill_scale(x$scale, hints$value_label)
+    }
   } else {
-    plot + ggplot2::geom_tile(na.rm = hints$na.rm)
+    .viz_abort("Unsupported D2B map style.", "oceancube_viz_style_error")
   }
+
   plot <- plot +
-    ggplot2::scale_fill_continuous(
-      name = hints$value_label, limits = x$scale$limits, oob = .viz_squish
-    ) +
     ggplot2::labs(
       title = hints$title, subtitle = hints$subtitle, caption = hints$caption,
       x = "Longitude", y = "Latitude"
     )
-  coastline <- hints$coastline
   if (identical(hints$coastline_type, "sf")) {
     coastline <- if (inherits(coastline, "sfc")) sf::st_sf(geometry = coastline) else coastline
     plot <- plot + ggplot2::geom_sf(
@@ -545,7 +880,24 @@
       inherit.aes = FALSE, colour = "black"
     )
   }
-  suppressMessages(plot + ggplot2::coord_equal(expand = FALSE))
+  if (!identical(hints$longitude_display, "SOURCE")) {
+    plot <- plot + ggplot2::scale_x_continuous(
+      labels = function(values) {
+        .viz_map_longitude_labels(values, hints$longitude_display)
+      }
+    )
+  }
+  plot <- suppressMessages(plot + ggplot2::coord_equal(expand = FALSE))
+  attr(plot, "oceancube_source_longitude_range") <- range(source_longitude)
+  attr(plot, "oceancube_display_longitude_range") <- range(data$longitude)
+  attr(plot, "oceancube_contour_geometry") <- if (
+    style %in% c("CONTOUR", "FIELD_CONTOUR")
+  ) {
+    "DISPLAY_CONTOUR_GEOMETRY"
+  } else {
+    "NONE"
+  }
+  plot
 }
 
 .viz_render_profile_ggplot <- function(x) {

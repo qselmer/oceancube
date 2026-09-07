@@ -1,0 +1,4 @@
+"style","scientific_table_identical","variable_identical","time_identical","depth_identical","netcdf_backend","memory_backend","status"
+"FIELD",TRUE,TRUE,TRUE,TRUE,"netcdf","memory","PASS"
+"CONTOUR",TRUE,TRUE,TRUE,TRUE,"netcdf","memory","PASS"
+"FIELD_CONTOUR",TRUE,TRUE,TRUE,TRUE,"netcdf","memory","PASS"

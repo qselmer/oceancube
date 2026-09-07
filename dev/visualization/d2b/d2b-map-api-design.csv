@@ -1,0 +1,8 @@
+candidate_argument,needed,public_or_internal,reason,default,backward_compatibility,decision
+style,TRUE,public,"caller must explicitly request renderer-only contour geometry",field,"appended; historical call remains FIELD",APPROVED_D2B
+scale_class,TRUE,public,"scientific scale semantics cannot be inferred from variable names",unspecified_continuous,"appended; historical ggplot2 scale retained",APPROVED_D2B
+palette,FALSE,internal,"D2B certifies deterministic class defaults without a palette-selection API","class default","no new argument",DEFERRED
+center,TRUE,public,"diverging meaning requires an explicit scientific centre",NULL,"appended; ignored only by absence on historical calls",APPROVED_D2B
+contour_breaks,TRUE,public,"explicit reproducible isoline levels are a core contour control",NULL,"appended; deterministic auto rule only for explicit contour styles",APPROVED_D2B
+longitude_display,TRUE,public,"GODAS needs an explicit display-only longitude convention",source,"appended; source coordinates preserve historical rendering",APPROVED_D2B
+composition,FALSE,internal,"ordinary public ggplots already compose through patchwork",NA,"no viz.compose export",GOVERNED_PATTERN_ONLY

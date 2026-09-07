@@ -1,0 +1,9 @@
+item,expected,actual,status
+file_sha256,e146e286f3708181e11e72f4ee1656e3646c5e4f38c345860dddb9ef8d4b49a9,e146e286f3708181e11e72f4ee1656e3646c5e4f38c345860dddb9ef8d4b49a9,PASS
+scientific_content_sha256,8f7b8ca73a7597ffe5b46fe2b2a6a277115df04ba73f374648e84d9201eadb23,8f7b8ca73a7597ffe5b46fe2b2a6a277115df04ba73f374648e84d9201eadb23,PASS
+variables,"pottmp;salt","pottmp;salt",PASS
+dimensions,"12 longitude x 51 latitude x 18 depth x 12 time","12 longitude x 51 latitude x 18 depth x 12 time",PASS
+selection,"first exact time; shallowest exact depth","2024-01-01 UTC; 5 m",PASS
+source_longitude,"276.5 to 287.5","276.5 to 287.5",PASS
+display_longitude,"-83.5 to -72.5","-83.5 to -72.5",PASS
+scientific_coordinates_changed,FALSE,FALSE,PASS

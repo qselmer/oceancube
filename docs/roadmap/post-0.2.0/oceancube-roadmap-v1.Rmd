@@ -657,9 +657,12 @@ governed Hovmöller gallery artifacts on 2026-09-06 and marks D2A
 COMPLETE/CERTIFIED. Stored-centre tile extent remains explicitly display-only;
 grey stored `NA` tiles are distinct from blank regions without stored centres,
 and explicit-bounds runtime support remains deferred. D1A and D1B remain
-COMPLETE/CERTIFIED; D2B is NOT STARTED.
+COMPLETE/CERTIFIED. D2B additively implements three safe map styles, explicit
+scientific scale classes, display-only longitude wrapping, and governed
+composition without a new export or dependency. It is IMPLEMENTED /
+TECHNICALLY VALIDATED with VISUAL REVIEW PENDING; D3 is NOT STARTED.
 The subsequent D-VIZDATA infrastructure phase adopts the NOAA/NCEP GODAS 2024
 exact-value physical benchmark as repository-only evidence and is
-COMPLETE/LOCALLY VALIDATED. DEC-044 governs its canonical identity,
+COMPLETE/CERTIFIED. DEC-044 governs its canonical identity,
 no-transformation contract, and redistribution gate; DEC-045 remains
 unallocated.

@@ -1,0 +1,5 @@
+style,implemented,renderer,scientific_data_changed,display_interpolation,NA_behavior,support_requirements,real_benchmark_pass,synthetic_fixture_pass,status
+FIELD,TRUE,"ggplot2 geom_raster or geom_tile",FALSE,FALSE,"stored NA remains NA and uses explicit scale NA colour","STORED_CENTRES; display footprint only",PASS,PASS,IMPLEMENTED_TECHNICALLY_VALIDATED
+CONTOUR,TRUE,"base grDevices contourLines plus ggplot2 geom_path",FALSE,DISPLAY_CONTOUR_GEOMETRY,"contour engine receives NA mask; no value is written or filled","at least two stored centres per horizontal axis and finite values",PASS,PASS,IMPLEMENTED_TECHNICALLY_VALIDATED
+FIELD_CONTOUR,TRUE,"FIELD plus black contour geom_path",FALSE,DISPLAY_CONTOUR_GEOMETRY,"FIELD NA remains visible and contours retain NA mask","FIELD and CONTOUR requirements",PASS,PASS,IMPLEMENTED_TECHNICALLY_VALIDATED
+FILLED_CONTOUR,FALSE,NONE,FALSE,FALSE,"not rendered","continuous-band missing-support contract unresolved",DEFERRED,DEFERRED,DEFERRED_WITH_REASON

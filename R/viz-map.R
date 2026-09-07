@@ -2,8 +2,11 @@
 #'
 #' `viz.map()` selects exactly one variable, time, and depth layer through
 #' [cube_extract()] and draws its stored grid without interpolation. Regular
-#' grids use a raster layer and irregular grids use tiles. NetCDF inputs read
-#' only the selected layer rather than materializing the complete cube.
+#' grids use a raster layer and irregular grids use tiles. Explicit contour
+#' styles calculate renderer-only isoline geometry; they never interpolate,
+#' regrid, smooth, fill, or replace the prepared scientific values. NetCDF
+#' inputs read only the selected layer rather than materializing the complete
+#' cube.
 #'
 #' @param x A valid `<ocean_cube>`.
 #' @param variable A single non-missing variable name present in `x`.
@@ -20,6 +23,27 @@
 #'   data frame with `longitude`, `latitude`, and `group` columns. Coordinates
 #'   and CRS are used as supplied and are not transformed.
 #' @param title,subtitle,caption Optional character scalars used as plot labels.
+#' @param style Map rendering style. `"field"` preserves the historical direct
+#'   raster/tile rendering. `"contour"` draws display-only isolines and
+#'   `"field_contour"` overlays those isolines on the direct field.
+#'   `"filled_contour"` is reserved but currently errors because its missing-
+#'   support and continuous-scale contract is not yet certified.
+#' @param scale_class Scientific colour-scale class. The historical
+#'   `"unspecified_continuous"` default preserves the existing scale exactly.
+#'   `"sequential"` uses deterministic viridis option D. `"diverging"` uses a
+#'   deterministic base-R HCL palette and requires an explicit `center`.
+#' @param center `NULL` or one finite scientifically meaningful centre. It is
+#'   required for `scale_class = "diverging"`, must lie strictly inside the
+#'   effective display range, and is invalid for other scale classes. Zero is
+#'   never assumed.
+#' @param contour_breaks `NULL` or at least one finite, strictly increasing
+#'   contour level. When `NULL`, explicit contour styles use deterministic
+#'   `pretty()` breaks from the finite display range with `n = 7`.
+#' @param longitude_display Display-only longitude convention: `"source"`
+#'   preserves stored coordinates, `"neg180_180"` wraps to [-180, 180), and
+#'   `"zero_360"` wraps to [0, 360). Scientific coordinates, selection,
+#'   provenance, and QA are unchanged. A wrap that introduces an internal
+#'   dateline discontinuity fails explicitly.
 #'
 #' @return A `ggplot` object with selected variable, time, depth, and backend
 #'   recorded in `oceancube_*` attributes.
@@ -36,21 +60,44 @@
 #'     vars = "temperature", units = "degC"
 #'   )
 #'   viz.map(cube, "temperature", title = "Surface temperature")
+#'   viz.map(
+#'     cube, "temperature", style = "field_contour",
+#'     scale_class = "sequential", contour_breaks = c(2, 4)
+#'   )
+#'
+#'   signed <- cube
+#'   signed$data <- signed$data - 3.5
+#'   viz.map(signed, "temperature", scale_class = "diverging", center = 0)
 #' }
 viz.map <- function(x, variable, time = NULL, depth = NULL, limits = NULL,
                     na.rm = TRUE, coastline = NULL, title = NULL,
-                    subtitle = NULL, caption = NULL) {
+                    subtitle = NULL, caption = NULL,
+                    style = c("field", "contour", "field_contour",
+                              "filled_contour"),
+                    scale_class = c("unspecified_continuous", "sequential",
+                                    "diverging"),
+                    center = NULL, contour_breaks = NULL,
+                    longitude_display = c("source", "neg180_180", "zero_360")) {
   prepared <- .viz_prepare_map(
     x = x, variable = variable, time = time, depth = depth, limits = limits,
     na.rm = na.rm, coastline = coastline, title = title,
-    subtitle = subtitle, caption = caption
+    subtitle = subtitle, caption = caption, style = style,
+    scale_class = scale_class, center = center,
+    contour_breaks = contour_breaks, longitude_display = longitude_display
   )
   .viz_render_ggplot(prepared)
 }
 
 .viz_prepare_map <- function(x, variable, time = NULL, depth = NULL,
                              limits = NULL, na.rm = TRUE, coastline = NULL,
-                             title = NULL, subtitle = NULL, caption = NULL) {
+                             title = NULL, subtitle = NULL, caption = NULL,
+                             style = c("field", "contour", "field_contour",
+                                       "filled_contour"),
+                             scale_class = c("unspecified_continuous", "sequential",
+                                             "diverging"),
+                             center = NULL, contour_breaks = NULL,
+                             longitude_display = c("source", "neg180_180",
+                                                   "zero_360")) {
   cube_validate(x, strict = TRUE)
 
   abort_viz <- function(message, class = "oceancube_viz_error", parent = NULL) {
@@ -128,6 +175,36 @@ viz.map <- function(x, variable, time = NULL, depth = NULL, limits = NULL,
   validate_label(title, "title")
   validate_label(subtitle, "subtitle")
   validate_label(caption, "caption")
+
+  style <- match.arg(style)
+  scale_class <- match.arg(scale_class)
+  longitude_display <- match.arg(longitude_display)
+  if (identical(style, "filled_contour")) {
+    abort_viz(
+      paste0(
+        "`style = \"filled_contour\"` is reserved but deferred: its ",
+        "continuous-scale and missing-support semantics are not certified in D2B."
+      ),
+      "oceancube_viz_style_error"
+    )
+  }
+  contour_style <- style %in% c("contour", "field_contour")
+  if (!is.null(contour_breaks)) {
+    if (!is.numeric(contour_breaks) || !is.null(dim(contour_breaks)) ||
+        !length(contour_breaks) || any(!is.finite(contour_breaks)) ||
+        any(diff(contour_breaks) <= 0)) {
+      abort_viz(
+        "`contour_breaks` must be NULL or finite, strictly increasing numeric levels.",
+        "oceancube_viz_style_error"
+      )
+    }
+    if (!contour_style) {
+      abort_viz(
+        "`contour_breaks` is available only for an explicit contour style.",
+        "oceancube_viz_style_error"
+      )
+    }
+  }
 
   coastline_type <- "none"
   if (!is.null(coastline)) {
@@ -214,6 +291,30 @@ viz.map <- function(x, variable, time = NULL, depth = NULL, limits = NULL,
     abort_viz("The selected map layer is empty after removing missing values.", "oceancube_viz_data_error")
   }
 
+  finite_values <- layer$value[is.finite(layer$value)]
+  if (!length(finite_values) &&
+      (contour_style || identical(scale_class, "diverging"))) {
+    abort_viz(
+      "The requested contour or diverging map requires finite values.",
+      "oceancube_viz_data_error"
+    )
+  }
+  effective_range <- if (!is.null(limits)) {
+    limits
+  } else if (length(finite_values)) {
+    range(finite_values)
+  } else {
+    c(NA_real_, NA_real_)
+  }
+  scale <- .viz_map_scale_spec(
+    classification = toupper(scale_class), limits = limits,
+    centre = center, effective_range = effective_range
+  )
+  contour_spec <- .viz_map_contour_spec(
+    values = finite_values, limits = limits, breaks = contour_breaks,
+    required = contour_style
+  )
+
   regular_axis <- function(values) {
     values <- sort(unique(as.numeric(values)))
     if (length(values) <= 2L) return(TRUE)
@@ -257,10 +358,16 @@ viz.map <- function(x, variable, time = NULL, depth = NULL, limits = NULL,
       regular_grid = regular_grid
     ),
     projection = list(source_crs = NULL, target_crs = NULL, status = "UNKNOWN"),
-    scale = list(classification = "UNSPECIFIED_CONTINUOUS", limits = limits),
+    scale = scale,
     support = list(
       rows = nrow(layer), missing_values = sum(is.na(layer$value)),
-      backend = backend, selection_status = "SELECTED"
+      backend = backend, selection_status = "SELECTED",
+      geometry = "STORED_CENTRES",
+      scientific_bounds = NULL,
+      explicit_cell_bounds_runtime = "DEFERRED_NOT_CERTIFIED_D2B",
+      display_footprint = .viz_map_display_footprint(
+        layer$longitude, layer$latitude
+      )
     ),
     provenance = .viz_private_state(
       attr(extracted, "oceancube_provenance", exact = TRUE)
@@ -269,12 +376,18 @@ viz.map <- function(x, variable, time = NULL, depth = NULL, limits = NULL,
     renderer_hints = list(
       title = title, subtitle = subtitle, caption = caption,
       na.rm = na.rm, coastline = coastline, coastline_type = coastline_type,
-      value_label = scale_title,
+      value_label = scale_title, map_style = toupper(style),
+      contour_breaks = contour_spec$breaks,
+      contour_break_rule = contour_spec$rule,
+      longitude_display = toupper(longitude_display),
       plot_attributes = list(
         oceancube_variable = variable,
         oceancube_time = selected_time,
         oceancube_depth = selected_depth,
-        oceancube_backend = backend
+        oceancube_backend = backend,
+        oceancube_map_style = toupper(style),
+        oceancube_scale_class = scale$classification,
+        oceancube_longitude_display = toupper(longitude_display)
       )
     )
   )

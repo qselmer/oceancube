@@ -1,0 +1,8 @@
+"case","inherits_ggplot","rendered","installed_exports","version","internal_triple_colon_calls","status"
+"default_field",TRUE,TRUE,49,"0.2.0.9000",0,"PASS"
+"contour",TRUE,TRUE,49,"0.2.0.9000",0,"PASS"
+"field_contour",TRUE,TRUE,49,"0.2.0.9000",0,"PASS"
+"sequential",TRUE,TRUE,49,"0.2.0.9000",0,"PASS"
+"diverging",TRUE,TRUE,49,"0.2.0.9000",0,"PASS"
+"longitude_source",TRUE,TRUE,49,"0.2.0.9000",0,"PASS"
+"longitude_neg180",TRUE,TRUE,49,"0.2.0.9000",0,"PASS"

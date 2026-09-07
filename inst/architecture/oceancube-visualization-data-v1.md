@@ -191,3 +191,11 @@ validation does not substitute for named human visual review. The D1B hashes
 remain unchanged. D2 may continue additively only while preserving v1
 scientific state, source truthfulness, the no-hidden-science rule, existing
 signatures, and the prepare/render boundary.
+
+D2B additively enriches `MAP_LAYER` support and renderer hints without changing
+schema 1.0.0. `support$geometry = STORED_CENTRES`, a display-only footprint,
+the selected map style, deterministic contour breaks, scale class, explicit
+diverging centre, and longitude display mode are serializable renderer/support
+metadata. Scientific coordinates and table values remain source-domain values;
+wrapped longitude and `DISPLAY_CONTOUR_GEOMETRY` exist only in the renderer.
+`FILLED_CONTOUR` and explicit map cell-bounds runtime remain deferred.
