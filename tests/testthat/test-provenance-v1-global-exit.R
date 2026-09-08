@@ -71,7 +71,7 @@ test_that("all certified output classes expose one complete V1 contract", {
     software <- unlist(lapply(provenance$history, function(record) {
       paste(record$software$package, record$software$version)
     }))
-    expect_true(all(software == "oceancube 0.2.0.9000"), info = name)
+    expect_true(all(software == "oceancube 0.3.0"), info = name)
     restored <- unserialize(serialize(value, NULL))
     expect_identical(
       .provenance_semantic(global_exit_provenance(restored, outputs[[name]]$location)),
@@ -283,7 +283,7 @@ test_that("A4 exit machine-readable inventories are exhaustive and closed", {
   evidence <- file.path(root, "dev", "hardening", "provenance")
   if (!dir.exists(evidence)) {
     expect_identical(as.character(utils::packageVersion("oceancube")),
-                     "0.2.0.9000")
+                     "0.3.0")
     return(invisible())
   }
   producer <- read.csv(file.path(evidence, "a4-exit-producer-scan.csv"),

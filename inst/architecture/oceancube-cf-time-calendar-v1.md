@@ -9,7 +9,7 @@ Normative reference: CF Metadata Conventions 1.13
 ## Scope and terminology
 
 This document defines how oceancube will represent and reason about CF time
-without changing the 0.2.0.9000 runtime. A *base civil coordinate* is an exact
+as introduced during the 0.3.0 development cycle. A *base civil coordinate* is an exact
 current `Date` or UTC `POSIXct`. A *calendar-aware coordinate* is a future
 oceancube-owned plain-R state for dates that base R cannot represent faithfully.
 The *source declaration* is the raw CF units/calendar/origin and related

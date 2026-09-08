@@ -1,8 +1,8 @@
 Package: oceancube
 Type: Package
 Title: Tools for Multidimensional Ocean Data Cubes
-Version: 0.2.0.9000
-Date: 2026-08-14
+Version: 0.3.0
+Date: 2026-09-08
 Authors@R: 
     person(given = "Elmer",
            family = "Quispe-Salazar",

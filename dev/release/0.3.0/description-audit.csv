@@ -2,8 +2,8 @@ field,current_value,audit_result,release_action,status
 Package,oceancube,"valid lower-case package name; absent from current CRAN index and archive; absent from Bioconductor 3.23 software list",KEEP,PASS
 Type,Package,"valid conventional field",KEEP,PASS
 Title,"Tools for Multidimensional Ocean Data Cubes","descriptive title case without terminal punctuation",KEEP,PASS
-Version,0.2.0.9000,"development version must remain until API documentation tests and checks close","SET 0.3.0 only at final release commit",DEFERRED
-Date,2026-08-14,"stale development date","SET actual final preparation date",DEFERRED
+Version,0.3.0,"release version frozen after Gates 1-7 passed",KEEP,PASS
+Date,2026-09-08,"actual final release-preparation date",KEEP,PASS
 Authors@R,"Elmer Quispe-Salazar [aut cre] qselmer@gmail.com","valid author and creator with email",KEEP,PASS
 Maintainer,"derived from Authors@R creator","valid CRAN maintainer identity and address",KEEP,PASS
 Description,"canonical five-axis ocean cubes with memory and local NetCDF workflows","includes CF-aware time, bounded vertical science, and static scientific visualization without future claims",KEEP,PASS

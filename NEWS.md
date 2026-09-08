@@ -1,13 +1,29 @@
-# oceancube 0.2.0.9000
+# oceancube 0.3.0
 
-## Development
+## Release
+
+- Freezes a 49-export API after hardening its scientific contracts, property
+  tests, offline real-data fixtures, dependency boundary, and provenance.
+- Adds read-only deferred access to one local NetCDF file with bounded reads;
+  this is not remote access, multi-file processing, or a lazy computation
+  graph.
+- Preserves and validates a bounded CF metadata, time/calendar, climatological
+  time, and positive-down metric vertical subset without silent conversion.
+- Adds certified vertical reduction, integration, depth sampling, gradients,
+  transition-layer and oxygen diagnostics, mixed-layer depth, an optional
+  TEOS-10 bridge, and signed stratification diagnostics.
+- Establishes renderer-neutral visualization data and six static `ggplot`
+  views, including Hovmoller diagrams and certified core 2-D map styles.
+  Specialized D3 visualization is not implemented.
+- Deprecates 13 historical temporal, provider, and spatial compatibility
+  exports while preserving their signatures for this release.
 
 - Certifies the C1-C10 vertical-ocean engine as globally coherent within its
   bounded supported subsets. DEC-040 freezes canonical positive-down metric
   depth, distinct value and diagnostic semantics, explicit gap/missingness
   behavior, the C9-to-C10 TEOS-10 chain, signed N-squared, immutable source CF,
   Provenance V1, and the repository-only hardening-evidence policy. Phase C is
-  complete and certified locally; remote exit remains pending.
+  complete and certified.
 - Adds `stratification()` and extends `mixed_layer_depth()` plus
   `transition_layer()` with the certified C10 density-MLD, pycnocline-candidate,
   and signed TEOS-10 N-squared paths over C9 state. Temperature and density MLD,
@@ -31,7 +47,6 @@
   preserved CF `standard_name` and same-family units; the core, gaps,
   cell-mean brackets, explicit user threshold, provenance, and QA remain
   visible. No universal OMZ/ODZ threshold is introduced.
-- Opened the development cycle toward oceancube 0.3.0.
 - Adds `transition_layer()` as the bounded variable-aware interpretation layer
   above `depth_gradient()` and `depth_feature()`. Preserved source CF
   `standard_name` and compatible units authorize unthresholded thermocline

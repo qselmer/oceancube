@@ -72,7 +72,7 @@ test_that("read_nc emits exactly one canonical ingestion operation", {
   expect_identical(record$output$shape, .cube_shape(cube))
   expect_identical(record$output$variables, "sst")
   expect_identical(record$output$time_kind, "historical")
-  expect_identical(record$software$version, "0.2.0.9000")
+  expect_identical(record$software$version, "0.3.0")
   expect_false("parent" %in% names(provenance))
 
   semantic_text <- paste(capture.output(dput(

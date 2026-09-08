@@ -161,7 +161,7 @@ list(
     time_kind = "historical"
   ),
   scientific_method = NULL,
-  software = list(package = "oceancube", version = "0.2.0.9000"),
+  software = list(package = "oceancube", version = "0.3.0"),
   execution = NULL
 )
 ```

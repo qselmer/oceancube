@@ -81,9 +81,9 @@ test_that("provenance rejects unsafe values, credentials and invalid times", {
 })
 
 test_that("provenance software version is loaded package metadata", {
-  expect_identical(oceancube:::.provenance_software_version(), "0.2.0.9000")
+  expect_identical(oceancube:::.provenance_software_version(), "0.3.0")
   expect_identical(provenance_test_v1()$history[[1]]$software,
-                   list(package = "oceancube", version = "0.2.0.9000"))
+                   list(package = "oceancube", version = "0.3.0"))
 })
 
 test_that("optional source identity and metadata fields validate when known", {
