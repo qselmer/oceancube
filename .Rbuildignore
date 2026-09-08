@@ -2,8 +2,15 @@
 ^\.github($|/)
 ^\.lintr($|/)
 ^cran-comments\.md$
+^_pkgdown\.yml$
 ^data-raw($|/)
 ^pkgdown($|/)
+^docs($|/)
+^.*\.Rcheck($|/)
+^.*\.tar\.gz$
+^Rplots\.pdf$
+^check($|/)
+^outputs?($|/)
 ^.*\.Rproj$
 ^\.Rproj\.user($|/)
 ^\.RDataTmp$
@@ -13,8 +20,6 @@
 ^artifacts($|/)
 ^auxdata($|/)
 ^CITATION\.cff$
-^docs/roadmap($|/)
-^docs/handbook($|/)
 ^README\.Rmd$
 ^README_cache($|/)
 ^README_files($|/)
