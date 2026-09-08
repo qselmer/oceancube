@@ -43,7 +43,7 @@ read_nc <- function(file, vars = NULL, lon_name = NULL, lat_name = NULL,
     .abort_badarg("file", "file does not exist.")
   }
 
-  nc <- ncdf4::nc_open(file)
+  nc <- ncdf4::nc_open(.netcdf_native_path(file))
   on.exit(ncdf4::nc_close(nc), add = TRUE)
 
   cf <- .cf_scan_ncdf4(nc)

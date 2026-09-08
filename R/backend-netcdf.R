@@ -52,6 +52,20 @@
   )
 }
 
+.netcdf_native_path <- function(file) {
+  if (!identical(.Platform$OS.type, "windows")) return(file)
+  candidate <- tryCatch(
+    utils::shortPathName(file),
+    error = function(e) file
+  )
+  if (length(candidate) == 1L && !is.na(candidate) && nzchar(candidate) &&
+      file.exists(candidate)) {
+    candidate
+  } else {
+    file
+  }
+}
+
 .with_netcdf_connection <- function(file, code) {
   .netcdf_scalar_string(file, "file")
   if (!is.function(code)) {
@@ -59,7 +73,7 @@
   }
 
   nc <- tryCatch(
-    ncdf4::nc_open(file),
+    ncdf4::nc_open(.netcdf_native_path(file)),
     error = function(e) {
       .netcdf_abort(
         paste0("Cannot open NetCDF file `", file, "`: ", conditionMessage(e)),

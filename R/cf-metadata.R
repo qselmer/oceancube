@@ -454,7 +454,7 @@
   identity <- .netcdf_file_identity(file)
   nc <- tryCatch(
     ncdf4::nc_open(
-      identity$normalized_path,
+      .netcdf_native_path(identity$normalized_path),
       readunlim = FALSE,
       suppress_dimvals = TRUE
     ),

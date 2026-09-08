@@ -79,6 +79,12 @@ test_that("file paths are normalized without requiring an nc extension", {
     )
   )
   expect_identical(unicode_storage$backend, "netcdf")
+  expect_s3_class(
+    read_nc(unicode_path, vars = "temperature"),
+    "ocean_cube"
+  )
+  expect_identical(.cf_scan_netcdf(unicode_path)$schema_name,
+                   "oceancube_cf_metadata")
   rm(old)
 })
 
