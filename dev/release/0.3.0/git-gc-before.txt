@@ -1,0 +1,92 @@
+OCEANCUBE 0.3.0 - GIT OBJECT CLEANUP PRE-GC SNAPSHOT
+Captured: 2026-09-08 (America/Lima)
+
+COMMAND: git status --short
+RESULT: CLEAN before creation of this evidence file
+
+COMMAND: git rev-parse HEAD
+a85180b203dff8755423b78fdf3e5e68a0c87cda
+
+COMMAND: git show-ref
+31c515e0a3832b7e3ebec747de932f76d523483f refs/codex/turn-diffs/captures/1788837315474/72e2513b-2a6b-49bb-82d4-033341db8a02/base
+ab5400fb8ca696d5e6daaaf8f3bac871b5aa65a8 refs/codex/turn-diffs/captures/1788843424085/ba96fc72-4af9-4bab-a5a2-57f7f0fc2c70/base
+ab5400fb8ca696d5e6daaaf8f3bac871b5aa65a8 refs/codex/turn-diffs/checkpoints/fb710fe7cfcae9a776ecef80013d20ecccd15726aa937f1918bffe36fe759a23/0e380e267cbb4dd33eee2ba07afd2ed2ae78dbf66ec337c2bb8ac309a0b54fb8/1788842525412/1f203767-8e11-4430-839d-902c8dea1484
+4c4914531932db74c1e8d7c85f5fc457cc6d67da refs/heads/backup/c-exit-blocked-4c491
+a85180b203dff8755423b78fdf3e5e68a0c87cda refs/heads/dev-0.3.0
+40bf4b16755ffb48c08eaf22e0678ac7cf683040 refs/heads/main
+40bf4b16755ffb48c08eaf22e0678ac7cf683040 refs/remotes/origin/HEAD
+c4bf153f72b93c9a3b6c8fb26d655ed704f93e32 refs/remotes/origin/dev-0.3.0
+40bf4b16755ffb48c08eaf22e0678ac7cf683040 refs/remotes/origin/main
+b5930c70a5c6ebd83af2009a870544452001c333 refs/tags/v0.1.0
+dad36bc237c08643b37e4a4b427456d2b4c42a93 refs/tags/v0.2.0
+
+COMMAND: git branch -vv
+  backup/c-exit-blocked-4c491 4c49145 docs: certify vertical ocean science exit
+* dev-0.3.0                   a85180b [origin/dev-0.3.0: ahead 9] deprecate: retire provider setup helpers
+  main                        40bf4b1 [origin/main] docs: formalize post-0.2.0 roadmap
+
+COMMAND: git tag --list
+v0.1.0
+v0.2.0
+
+PEELED TAGS
+v0.1.0 = 93d2a79b11a6ae7622443ae068e6e2a2709c9324
+v0.2.0 = d83008066ba3b1f3ea8df3e7ca3001d472f20308
+
+COMMAND: git count-objects -vH
+count: 3032
+size: 725.08 MiB
+in-pack: 0
+packs: 0
+size-pack: 0 bytes
+prune-packable: 0
+garbage: 0
+size-garbage: 0 bytes
+
+COMMAND: git fsck --full --no-reflogs
+exit status: 0
+output records: 115
+dangling blobs: 84
+dangling commits: 3
+dangling trees: 28
+
+COMMAND: git reflog --all --date=iso --format='%H|%gd|%ad|%gs'
+entry count: 246
+UTF-8 joined-output SHA256: 83a8412313e60e67c4cae21e5b38595f15c7fb588c6f78fc5b5c7d358daee588
+
+REFLOG-ONLY COMMITS (all five)
+190487ac7f535396fa91c8ad9ef047a9fe804ed6|2026-09-05T23:44:39-05:00|feat: add renderer-neutral hovmoller visualization|large_blob=false
+262770e48e7ee4148024413d919f1ed41f4fe884|2026-05-11T09:01:56-05:00|Initial OceanCube package structure|large_blob=false
+3cb62f5716341782ba74d42bae9c086b9d7dca12|2026-05-10T12:28:02-05:00|clim_day|large_blob=true
+c782ee6f12f1b671824d4be5697b36a82660ec41|2026-05-10T12:12:08-05:00|Initial commit|large_blob=true
+da4eb79e3c066b8b4897ea4d2059981fb0a921cf|2026-09-05T23:12:21-05:00|feat: add renderer-neutral hovmoller visualization|large_blob=false
+
+LARGE BLOB
+87ee090165157eb5dc81f1a9fa645b6831d06e48
+historical path: cin/cmems_mod_glo_phy_my_0.083deg_P1M-m_thetao-so-zos-mlotst_lon-88.00_-70.00_lat-20.00_-3.00_z0_100m_19930101_20250801.nc
+object size: 1604344656 bytes
+loose-object disk size: 731108686 bytes
+reachability: reflog only
+
+EXCLUSION PROOF
+Each reflog-only commit was tested with git merge-base --is-ancestor against:
+HEAD, main, dev-0.3.0, origin/main, origin/dev-0.3.0,
+v0.1.0^{commit}, and v0.2.0^{commit}.
+All 35 tests returned false.
+
+PRE-GC SIZE BASELINE
+repository total: 738.34 MB
+.git: 725.25 MB
+working tree: 13.10 MB
+reachable objects on disk: 26.24 MB
+reflog-only objects on disk: 697.27 MB
+fully unreachable objects on disk: 1.58 MB
+potential recovery: 698.85 MB
+
+PRE-GC PACKAGE BASELINE
+API exports: 49
+Version: 0.2.0.9000
+tarball: oceancube_0.2.0.9000.tar.gz
+tarball bytes: 1796072
+tarball entries: 295
+repository-only entries: 0
