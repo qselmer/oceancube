@@ -27,3 +27,9 @@ Invisibly returns the imported Python module when available.
 This function creates or activates a Python virtual environment and optionally
 installs the \code{copernicusmarine} Python module. It does not store credentials.
 }
+\section{Lifecycle}{
+
+Deprecated as of oceancube 0.3.0. Manage the provider client and its Python
+environment outside oceancube, then open downloaded local NetCDF files with
+\code{\link[=cube_open]{cube_open()}}.
+}

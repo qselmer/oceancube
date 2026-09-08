@@ -15,11 +15,19 @@
 #' @param verbose Logical. Print progress messages?
 #'
 #' @return Output file path.
+#'
+#' @section Lifecycle:
+#' Deprecated as of oceancube 0.3.0. Use the provider client directly outside
+#' oceancube, save a local NetCDF file, and open it with [cube_open()].
 #' @export
 download_nc <- function(dataset_id, vars, lon = NULL, lat = NULL, time = NULL,
                         depth = NULL, outdir = ".", fmt = c("netcdf", "zarr", "csv", "parquet"),
                         overwrite = FALSE, skip_existing = TRUE, dry_run = FALSE,
                         filename = NULL, verbose = TRUE) {
+  .oceancube_deprecate(
+    "download_nc",
+    "use the provider client directly and open a local NetCDF file with cube_open()"
+  )
   fmt <- match.arg(fmt)
 
   if (!is.character(dataset_id) || length(dataset_id) != 1L) {
@@ -38,7 +46,6 @@ download_nc <- function(dataset_id, vars, lon = NULL, lat = NULL, time = NULL,
   ext <- switch(fmt, netcdf = "nc", zarr = "zarr", csv = "csv", parquet = "parquet")
 
   outdir <- normalizePath(outdir, mustWork = FALSE)
-  dir.create(outdir, recursive = TRUE, showWarnings = FALSE)
 
   filename <- filename %||% .make_filename(
     dataset_id = dataset_id,
@@ -57,6 +64,11 @@ download_nc <- function(dataset_id, vars, lon = NULL, lat = NULL, time = NULL,
     return(outfile)
   }
 
+  if (!requireNamespace("reticulate", quietly = TRUE)) {
+    rlang::abort("Package `reticulate` is required to use `download_nc()`.")
+  }
+
+  dir.create(outdir, recursive = TRUE, showWarnings = FALSE)
   cmt <- reticulate::import("copernicusmarine", delay_load = TRUE)
 
   args <- list(

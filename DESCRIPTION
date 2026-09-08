@@ -28,12 +28,12 @@ Imports:
     ggplot2,
     ncdf4,
     rlang,
-    reticulate,
     stats,
     utils
 Suggests:
     gsw (>= 1.2-0),
     knitr,
+    reticulate,
     rmarkdown,
     sf,
     testthat (>= 3.0.0),

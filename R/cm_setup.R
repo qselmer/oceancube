@@ -9,9 +9,18 @@
 #' @param verbose Logical. Print progress messages?
 #'
 #' @return Invisibly returns the imported Python module when available.
+#'
+#' @section Lifecycle:
+#' Deprecated as of oceancube 0.3.0. Manage the provider client and its Python
+#' environment outside oceancube, then open downloaded local NetCDF files with
+#' [cube_open()].
 #' @export
 cm_setup <- function(env = "oceancube-copernicus", install = TRUE,
                      module = "copernicusmarine", verbose = TRUE) {
+  .oceancube_deprecate(
+    "cm_setup",
+    "manage the provider client outside oceancube and use cube_open()"
+  )
   if (!requireNamespace("reticulate", quietly = TRUE)) {
     rlang::abort("Package `reticulate` is required.")
   }
@@ -47,9 +56,18 @@ cm_setup <- function(env = "oceancube-copernicus", install = TRUE,
 #' @param verbose Logical. Print progress messages?
 #'
 #' @return Imported Python module.
+#'
+#' @section Lifecycle:
+#' Deprecated as of oceancube 0.3.0. Manage the provider client and its Python
+#' environment outside oceancube, then open downloaded local NetCDF files with
+#' [cube_open()].
 #' @export
 cm_connect <- function(env = "oceancube-copernicus", required = TRUE,
                        module = "copernicusmarine", verbose = TRUE) {
+  .oceancube_deprecate(
+    "cm_connect",
+    "manage the provider client outside oceancube and use cube_open()"
+  )
   if (!requireNamespace("reticulate", quietly = TRUE)) {
     rlang::abort("Package `reticulate` is required.")
   }

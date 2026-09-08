@@ -53,3 +53,8 @@ Output file path.
 \description{
 Download a subset from a Copernicus Marine dataset
 }
+\section{Lifecycle}{
+
+Deprecated as of oceancube 0.3.0. Use the provider client directly outside
+oceancube, save a local NetCDF file, and open it with \code{\link[=cube_open]{cube_open()}}.
+}
