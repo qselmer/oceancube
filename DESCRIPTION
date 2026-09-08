@@ -11,9 +11,10 @@ Authors@R:
 Description: Represents multidimensional ocean data with a canonical
     longitude, latitude, depth, time, and variable contract. In-memory and
     read-only local 'NetCDF' backends support validation, inspection,
-    selection, extraction, visualization, temporal aggregation,
-    climatologies, anomalies, descriptive per-cell temporal trends, polygon
-    masks, grid geometry, and polygon weights for downstream marine analyses.
+    selection, extraction, CF-aware time handling, temporal aggregation,
+    climatologies, anomalies, descriptive per-cell temporal trends, bounded
+    vertical diagnostics, and static scientific visualization. Polygon masks,
+    grid geometry, and polygon weights support downstream marine analyses.
 License: MIT + file LICENSE
 URL: https://github.com/qselmer/oceancube,
     https://qselmer.github.io/oceancube/
@@ -21,11 +22,13 @@ BugReports: https://github.com/qselmer/oceancube/issues
 Encoding: UTF-8
 LazyData: false
 Roxygen: list(markdown = TRUE)
+RoxygenNote: 8.0.0
 Depends:
     R (>= 4.2.0)
 Imports:
     cli,
     ggplot2,
+    grDevices,
     ncdf4,
     rlang,
     stats,
@@ -40,4 +43,3 @@ Suggests:
     withr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-Config/roxygen2/version: 8.0.0

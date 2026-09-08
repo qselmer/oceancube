@@ -209,6 +209,12 @@ viz.map <- function(x, variable, time = NULL, depth = NULL, limits = NULL,
   coastline_type <- "none"
   if (!is.null(coastline)) {
     if (inherits(coastline, "sf") || inherits(coastline, "sfc")) {
+      if (!requireNamespace("sf", quietly = TRUE)) {
+        abort_viz(
+          "Package `sf` is required to render an sf/sfc coastline.",
+          "oceancube_viz_dependency_error"
+        )
+      }
       coastline_type <- "sf"
     } else if (is.data.frame(coastline)) {
       required <- c("longitude", "latitude", "group")
