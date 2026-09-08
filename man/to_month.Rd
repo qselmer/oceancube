@@ -29,6 +29,12 @@ even for POSIXct input and warns when that legacy demotion occurs. Use
 Custom \code{fun} values use the legacy full-read implementation and emit a
 deprecation warning.
 }
+\section{Lifecycle}{
+
+Deprecated as of oceancube 0.3.0. Use
+\code{cube_aggregate_time(x, by = "month")} with an explicit supported method.
+}
+
 \seealso{
 \code{\link[=cube_aggregate_time]{cube_aggregate_time()}}
 }

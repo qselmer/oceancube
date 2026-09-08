@@ -10,8 +10,13 @@
 #'   POSIXct semantics follow the source cube.
 #'
 #' @return An object of class `<ocean_clim>`.
+#'
+#' @section Lifecycle:
+#' Deprecated as of oceancube 0.3.0. Use
+#' `cube_climatology(x, by = "month")`.
 #' @export
 clim_month <- function(x, period = NULL) {
+  .oceancube_deprecate("clim_month", "cube_climatology(x, by = \"month\")")
   core <- cube_climatology(
     x,
     by = "month",

@@ -24,3 +24,8 @@ non-finite SD produces NA; every finite positive SD is valid. Exact
 canonical alignment is required, and historical climatologies without the
 required metadata must be recomputed.
 }
+\section{Lifecycle}{
+
+Deprecated as of oceancube 0.3.0. Use
+\code{cube_anomaly(x, climatology, type = "z")}.
+}

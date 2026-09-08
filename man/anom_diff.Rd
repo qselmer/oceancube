@@ -23,3 +23,8 @@ to \code{\link[=cube_anomaly]{cube_anomaly()}}. Exact coordinate, variable, unit
 time-class validation is enforced. Historical climatologies without
 sufficient canonical metadata must be recomputed.
 }
+\section{Lifecycle}{
+
+Deprecated as of oceancube 0.3.0. Use
+\code{cube_anomaly(x, climatology, type = "difference")}.
+}

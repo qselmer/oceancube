@@ -9,8 +9,15 @@
 #' to [cube_anomaly()]. Exact coordinate, variable, unit, calendar, and source
 #' time-class validation is enforced. Historical climatologies without
 #' sufficient canonical metadata must be recomputed.
+#'
+#' @section Lifecycle:
+#' Deprecated as of oceancube 0.3.0. Use
+#' `cube_anomaly(x, climatology, type = "difference")`.
 #' @export
 anom_diff <- function(x, clim) {
+  .oceancube_deprecate(
+    "anom_diff", "cube_anomaly(x, climatology, type = \"difference\")"
+  )
   .legacy_anomaly_wrapper(x, clim, type = "difference")
 }
 
@@ -26,8 +33,15 @@ anom_diff <- function(x, clim) {
 #' non-finite SD produces NA; every finite positive SD is valid. Exact
 #' canonical alignment is required, and historical climatologies without the
 #' required metadata must be recomputed.
+#'
+#' @section Lifecycle:
+#' Deprecated as of oceancube 0.3.0. Use
+#' `cube_anomaly(x, climatology, type = "z")`.
 #' @export
 anom_z <- function(x, clim) {
+  .oceancube_deprecate(
+    "anom_z", "cube_anomaly(x, climatology, type = \"z\")"
+  )
   .legacy_anomaly_wrapper(x, clim, type = "z")
 }
 
@@ -55,8 +69,18 @@ anom_z <- function(x, clim) {
 #' produces `NA`, negative finite SD is an error, and every positive finite SD
 #' is valid. Exact alignment, leap handling, finite masking, and bounded lazy
 #' NetCDF reads are inherited from the canonical anomaly engine.
+#'
+#' @section Lifecycle:
+#' Deprecated as of oceancube 0.3.0 because the historical name is not a
+#' general signal-to-noise ratio. Use
+#' `cube_anomaly(x, climatology, type = "z")` and apply `abs()` explicitly when
+#' a magnitude is required.
 #' @export
 signal_noise <- function(x, clim, signed = FALSE) {
+  .oceancube_deprecate(
+    "signal_noise", "cube_anomaly(x, climatology, type = \"z\")",
+    "Apply `abs()` explicitly when a magnitude is required."
+  )
   if (!is.logical(signed) || length(signed) != 1L || is.na(signed)) {
     .abort_badarg("signed", "must be a single non-missing logical value.")
   }

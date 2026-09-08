@@ -19,3 +19,9 @@ A data frame of annual indicators by variable and depth layer.
 \description{
 Compute annual indicators from an ocean cube
 }
+\section{Lifecycle}{
+
+Deprecated as of oceancube 0.3.0 because implicit zero thresholds are not a
+general scientific default. Use \code{\link[=cube_aggregate_time]{cube_aggregate_time()}} followed by explicit
+downstream summaries.
+}

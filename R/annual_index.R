@@ -5,8 +5,17 @@
 #' @param threshold_neg Optional negative threshold. If `NULL`, fraction below zero is returned.
 #'
 #' @return A data frame of annual indicators by variable and depth layer.
+#'
+#' @section Lifecycle:
+#' Deprecated as of oceancube 0.3.0 because implicit zero thresholds are not a
+#' general scientific default. Use [cube_aggregate_time()] followed by explicit
+#' downstream summaries.
 #' @export
 annual_index <- function(x, threshold_pos = NULL, threshold_neg = NULL) {
+  .oceancube_deprecate(
+    "annual_index",
+    "cube_aggregate_time() followed by explicit downstream summaries"
+  )
   .check_cube(x)
   .require_ordinary_chronology(x, "annual_index")
 

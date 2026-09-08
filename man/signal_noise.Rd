@@ -37,3 +37,10 @@ produces \code{NA}, negative finite SD is an error, and every positive finite SD
 is valid. Exact alignment, leap handling, finite masking, and bounded lazy
 NetCDF reads are inherited from the canonical anomaly engine.
 }
+\section{Lifecycle}{
+
+Deprecated as of oceancube 0.3.0 because the historical name is not a
+general signal-to-noise ratio. Use
+\code{cube_anomaly(x, climatology, type = "z")} and apply \code{abs()} explicitly when
+a magnitude is required.
+}

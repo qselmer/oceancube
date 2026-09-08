@@ -32,3 +32,8 @@ An object of class \verb{<ocean_clim>}.
 replicate per year and then gives every valid yearly replicate equal weight.
 It is intended for daily NetCDF products and event-level linkage.
 }
+\section{Lifecycle}{
+
+Deprecated as of oceancube 0.3.0. Use
+\code{cube_climatology(x, by = "day")}.
+}

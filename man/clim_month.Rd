@@ -21,3 +21,8 @@ An object of class \verb{<ocean_clim>}.
 month-year mean and then gives every valid yearly replicate equal weight,
 rather than pooling every raw observation across years.
 }
+\section{Lifecycle}{
+
+Deprecated as of oceancube 0.3.0. Use
+\code{cube_climatology(x, by = "month")}.
+}

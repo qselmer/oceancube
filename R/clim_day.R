@@ -19,8 +19,13 @@
 #'   least two valid replicates.
 #'
 #' @return An object of class `<ocean_clim>`.
+#'
+#' @section Lifecycle:
+#' Deprecated as of oceancube 0.3.0. Use
+#' `cube_climatology(x, by = "day")`.
 #' @export
 clim_day <- function(x, period = NULL, leap = c("feb28", "drop", "keep"), min_n = 1L) {
+  .oceancube_deprecate("clim_day", "cube_climatology(x, by = \"day\")")
   leap <- match.arg(leap)
   core <- cube_climatology(
     x,

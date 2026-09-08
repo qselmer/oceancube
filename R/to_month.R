@@ -17,9 +17,14 @@
 #' [cube_aggregate_time()] to preserve POSIXct input as UTC POSIXct output.
 #' Custom `fun` values use the legacy full-read implementation and emit a
 #' deprecation warning.
+#'
+#' @section Lifecycle:
+#' Deprecated as of oceancube 0.3.0. Use
+#' `cube_aggregate_time(x, by = "month")` with an explicit supported method.
 #' @export
 #' @seealso [cube_aggregate_time()]
 to_month <- function(x, fun = mean) {
+  .oceancube_deprecate("to_month", "cube_aggregate_time(x, by = \"month\")")
   .check_cube(x)
   .require_ordinary_chronology(x, "to_month")
   .calendar_operation_unsupported(x, "to_month")
