@@ -37,3 +37,4 @@ It is intended for daily NetCDF products and event-level linkage.
 Deprecated as of oceancube 0.3.0. Use
 \code{cube_climatology(x, by = "day")}.
 }
+

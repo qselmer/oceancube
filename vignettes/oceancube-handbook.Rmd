@@ -29,7 +29,8 @@ inference, change-point, or regime analysis.
 
 The canonical flow is construct/read -> validate/inspect -> select/extract ->
 visualize -> optional temporal aggregation -> climatology/anomaly or
-descriptive trend. The five static `viz.*` functions return `ggplot` objects.
-Compatibility helpers remain available after this canonical route. `spatind`
+descriptive trend. The six static `viz.*` functions return `ggplot` objects;
+specialized D3 visualizations remain outside this release. Deprecated
+compatibility helpers remain callable after this canonical route. `spatind`
 consumes prepared values and weights; it owns indicators, interpretation,
 uncertainty, and inference.

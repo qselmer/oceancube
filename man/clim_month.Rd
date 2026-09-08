@@ -26,3 +26,4 @@ rather than pooling every raw observation across years.
 Deprecated as of oceancube 0.3.0. Use
 \code{cube_climatology(x, by = "month")}.
 }
+

@@ -23,8 +23,8 @@ cube_crop(
 
 \item{time}{Optional two-value temporal range compatible with \code{x$time}.
 Calendar-aware axes accept compatible \code{oceancube_cf_time} values or
-calendar-valid character dates. POSIXct limits match elapsed instants and may
-use a display timezone other than the cube's canonical UTC.}
+calendar-valid character dates. POSIXct limits match elapsed instants and
+may use a display timezone other than the cube's canonical UTC.}
 
 \item{variable}{Optional exact variable names. \code{NULL} keeps all variables.}
 

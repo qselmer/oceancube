@@ -18,7 +18,7 @@ cube_trend(
 time semantics. Memory and lazy NetCDF backends are supported. Recurrent
 climatology pseudo-time is rejected.}
 
-\item{method}{The trend method. In 0.2.0 this must be exactly \code{"linear"}.}
+\item{method}{The trend method. This must be exactly \code{"linear"}.}
 
 \item{period}{\code{NULL} for the complete source range, or two ordered bounds
 defining a closed interval. Bounds must use the same \code{Date} or \code{POSIXct}

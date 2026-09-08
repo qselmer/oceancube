@@ -27,7 +27,7 @@
 #'   intersections.
 #'
 #' @return A data frame with stable feature/cell keys, bounds, areas, fractions,
-#'   coverage diagnostics, and—when `dimension = "3d"`—depth and volume fields.
+#'   coverage diagnostics and, when `dimension = "3d"`, depth and volume fields.
 #' @export
 cube_polygon_weights <- function(x, polygons, id_col = NULL, crs = NULL,
                                  dimension = c("2d", "3d"),

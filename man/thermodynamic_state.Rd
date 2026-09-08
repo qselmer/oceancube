@@ -13,7 +13,7 @@ thermodynamic_state(
 )
 }
 \arguments{
-\item{x}{A direct source-profile \code{<ocean_cube>} containing one exact
+\item{x}{A direct source-profile \verb{<ocean_cube>} containing one exact
 CF-identified salinity variable and one exact CF-identified temperature
 variable with point-valued metric-depth semantics.}
 
@@ -21,21 +21,20 @@ variable with point-valued metric-depth semantics.}
 one eligible Practical or Absolute Salinity variable must exist.}
 
 \item{temperature}{Optional exact current variable name. When \code{NULL},
-exactly one eligible in-situ, potential, or Conservative Temperature variable
-must exist.}
+exactly one eligible in-situ, potential, or Conservative Temperature
+variable must exist.}
 
-\item{pressure}{\code{NULL} derives sea pressure from metric depth and
-latitude. Otherwise, an exact current variable name declaring the CF standard
-name \code{sea_water_pressure} must be supplied.}
+\item{pressure}{\code{NULL} derives sea pressure from metric depth and latitude.
+Otherwise, an exact current variable name declaring the CF standard name
+\code{sea_water_pressure} must be supplied.}
 
 \item{reference_pressure_dbar}{Finite non-negative sea pressure in dbar at
 which full potential density is evaluated.}
 }
 \value{
-A memory-backed \code{<ocean_cube>} with variables, in order,
-\code{absolute_salinity}, \code{conservative_temperature},
-\code{sea_water_pressure}, \code{sea_water_density}, and
-\code{sea_water_potential_density}.
+A memory-backed \verb{<ocean_cube>} with variables, in order,
+\code{absolute_salinity}, \code{conservative_temperature}, \code{sea_water_pressure},
+\code{sea_water_density}, and \code{sea_water_potential_density}.
 }
 \description{
 Construct a certified TEOS-10 thermodynamic state

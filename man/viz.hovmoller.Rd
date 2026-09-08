@@ -77,7 +77,7 @@ with a deterministic display-only footprint positioned at stored coordinate
 centres; subtle boundaries distinguish stored \code{NA} tiles from regions with
 no stored centre. Gaps are not stretched into a continuous raster and no
 scientific cell bounds are invented. The display label normalizes the
-unambiguous \code{degC} alias to \code{°C}; stored unit metadata remain unchanged.
+unambiguous \code{degC} alias to \verb{°C}; stored unit metadata remain unchanged.
 Calendar-aware non-base time axes are rejected explicitly because the D2A
 ggplot renderer cannot represent them without inventing Gregorian dates.
 }

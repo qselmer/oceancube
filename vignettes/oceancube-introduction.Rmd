@@ -83,9 +83,9 @@ cube_transect(
 
 ## Static visualization
 
-The five visualization functions return `ggplot` objects and preserve the
+The six visualization functions return `ggplot` objects and preserve the
 scientific cube. They select stored cells without interpolation, smoothing, or
-imputation.
+imputation. Specialized D3 visualizations are not part of this release.
 
 ```{r visualization}
 plots <- list(
@@ -102,6 +102,9 @@ plots <- list(
   ),
   timeseries = viz.timeseries(
     x, "temperature", longitude = lon[1], latitude = lat[1], depth = 5
+  ),
+  hovmoller = viz.hovmoller(
+    x, "temperature", axis = "depth", longitude = lon[1], latitude = lat[1]
   )
 )
 stopifnot(all(vapply(plots, inherits, logical(1), what = "ggplot")))

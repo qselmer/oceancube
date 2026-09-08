@@ -36,7 +36,7 @@ intersections.}
 }
 \value{
 A data frame with stable feature/cell keys, bounds, areas, fractions,
-coverage diagnostics, and—when \code{dimension = "3d"}—depth and volume fields.
+coverage diagnostics and, when \code{dimension = "3d"}, depth and volume fields.
 }
 \description{
 \code{cube_polygon_weights()} computes feature-specific geodesic intersections

@@ -44,3 +44,4 @@ general signal-to-noise ratio. Use
 \code{cube_anomaly(x, climatology, type = "z")} and apply \code{abs()} explicitly when
 a magnitude is required.
 }
+

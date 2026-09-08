@@ -25,3 +25,4 @@ Deprecated as of oceancube 0.3.0 because implicit zero thresholds are not a
 general scientific default. Use \code{\link[=cube_aggregate_time]{cube_aggregate_time()}} followed by explicit
 downstream summaries.
 }
+

@@ -29,3 +29,4 @@ required metadata must be recomputed.
 Deprecated as of oceancube 0.3.0. Use
 \code{cube_anomaly(x, climatology, type = "z")}.
 }
+

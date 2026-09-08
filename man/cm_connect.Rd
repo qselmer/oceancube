@@ -32,3 +32,4 @@ Deprecated as of oceancube 0.3.0. Manage the provider client and its Python
 environment outside oceancube, then open downloaded local NetCDF files with
 \code{\link[=cube_open]{cube_open()}}.
 }
+

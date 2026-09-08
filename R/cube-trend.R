@@ -7,7 +7,7 @@
 #' @param x A valid `<ocean_cube>` with historical `Date` or UTC `POSIXct`
 #'   time semantics. Memory and lazy NetCDF backends are supported. Recurrent
 #'   climatology pseudo-time is rejected.
-#' @param method The trend method. In 0.2.0 this must be exactly `"linear"`.
+#' @param method The trend method. This must be exactly `"linear"`.
 #' @param period `NULL` for the complete source range, or two ordered bounds
 #'   defining a closed interval. Bounds must use the same `Date` or `POSIXct`
 #'   semantics as `x$time`. Partially overlapping bounds are clipped with one
@@ -362,7 +362,7 @@ cube_trend <- function(
 .trend_validate_arguments <- function(method, time_unit, min_n, diagnostics) {
   if (!is.character(method) || length(method) != 1L || is.na(method) ||
       !identical(method, "linear")) {
-    .abort_badarg("method", "must be exactly `linear`; Sen and other methods are not supported in 0.2.0.")
+    .abort_badarg("method", "must be exactly `linear`; Sen and other methods are not supported.")
   }
   allowed_units <- c("year", "day", "hour", "second")
   if (!is.character(time_unit) || length(time_unit) != 1L ||

@@ -1,7 +1,6 @@
 #' Open a local NetCDF file as a deferred ocean cube
 #'
-#' `cube_open()` is an experimental source-opening API in the oceancube 0.3.0
-#' development cycle. It opens one existing local NetCDF file as a read-only
+#' `cube_open()` opens one existing local NetCDF file as a read-only
 #' deferred NetCDF backend. Construction reads structural metadata and the
 #' coordinate values required by the canonical cube, but it does not read
 #' scientific variable arrays or create `x$data`.

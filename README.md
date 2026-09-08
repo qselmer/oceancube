@@ -3,15 +3,16 @@
 
 `oceancube` represents rectilinear ocean data with one validated
 contract and a canonical dimension order: longitude, latitude, depth,
-time, and variable. The oceancube 0.2.0 release freezes a 38-export API
-for validation, inspection, storage-aware selection and extraction,
-visualization, temporal processing, masking, and grid geometry in
-reproducible marine workflows.
+time, and variable. The oceancube 0.3.0 freezes a 49-export API for
+validation, inspection, storage-aware selection and extraction, CF-aware
+temporal processing, vertical diagnostics, renderer-neutral
+visualization, masking, and grid geometry in reproducible marine
+workflows.
 
 ## Status and installation
 
-The current stable source release is oceancube 0.2.0. The corresponding
-annotated tag and GitHub Release are available from the [project
+The current source is the oceancube 0.3.0 release candidate. Historical
+tags and releases are available from the [project
 repository](https://github.com/qselmer/oceancube). The package is not
 currently distributed through CRAN. Install the repository with:
 
@@ -48,11 +49,13 @@ selects closed coordinate ranges. Neither operation interpolates.
 profiles, time series, or Cartesian selections. `cube_transect()`
 extracts ordered horizontal or vertical paths.
 
-The five static visualization helpers return `ggplot` objects without
+The six static visualization helpers return `ggplot` objects without
 changing the input cube: `viz.map()` draws one horizontal layer,
 `viz.section()` a vertical plane, `viz.profile()` one depth profile,
-`viz.transect()` an ordered horizontal or depth transect, and
-`viz.timeseries()` one raw point series.
+`viz.transect()` an ordered horizontal or depth transect,
+`viz.timeseries()` one raw point series, and `viz.hovmoller()` one
+stored coordinate axis through time. D3 specialized visualizations are
+not implemented in this release.
 
 `cube_mask()` applies polygon cell-centre coverage while preserving the
 5D shape. `stock_mask()` supports the established stock-oriented mask
@@ -66,46 +69,6 @@ actual elapsed historical time. A climatology uses recurring pseudo-time
 and is therefore not a valid trend input. Grid primitives include
 `cube_cell_area()`, `cube_layer_thickness()`, `cube_cell_volume()`, and
 `cube_polygon_weights()`.
-
-The development API also provides `layer_integral()` for a deliberately narrow
-CF subset: dimensional metric ocean depth, explicit valid bounds, full
-geometric coverage, and variables declared as vertical cell means. Integration
-uses metre overlap and a piecewise-constant cell-mean assumption. Point values,
-pre-accumulated vertical sums, pressure/height conversions, parametric axes,
-interpolation, and extrapolation are rejected rather than guessed.
-
-`depth_sample()` extends that bounded vertical foundation without changing
-discrete selection: CF cell means are sampled from their explicit containing
-cell, while CF point values may use local two-point linear interpolation.
-Explicit gaps, shared interior cell boundaries and extrapolation are rejected.
-The result has requested point-depth coordinates but no certified layer bounds.
-
-`depth_gradient()` provides the first certified derivative primitive. It
-computes signed adjacent-level secants with respect to physical ocean depth in
-metres, positive downward, and locates them at source-unit midpoints. Point and
-cell-mean inputs remain semantically distinct, irregular spacing is honored,
-and support gaps are diagnosed without interpolation. Gradient outputs carry
-symbolic per-metre units and no physical layer bounds.
-
-`depth_feature()` reduces a certified gradient cube to one conservative
-strongest-gradient candidate or diagnostic status per horizontal profile,
-time, and variable. Polarity is explicit; the default local policy excludes
-gapped secants, ties remain ambiguous, and missing gradients reduce profile
-completeness. The result is a data frame of generic candidates, not automatic
-thermocline, oxycline, halocline, mixed-layer, or density interpretations.
-
-`transition_layer()` adds the first bounded variable-aware interpretation.
-It uses preserved source CF `standard_name` and compatible declared units—not
-variable names—to identify temperature or salinity, then composes the existing
-gradient and feature engines. C6 reports unthresholded thermocline-gradient or
-halocline-gradient candidates while retaining gaps, ties, incomplete profiles,
-quantity basis, sign, provenance, and resolution limits. Oxycline, MLD,
-pycnocline, density, smoothing, and physical-strength thresholds remain
-outside the C6 contract. C7 additionally resolves branch-aware upper/lower
-oxycline candidates around a complete-profile oxygen minimum. The separate
-`oxygen_boundary()` reports the core-containing component for an explicit
-user threshold; point crossings, cell-mean brackets, gaps, and open edges are
-kept distinct, with no universal OMZ/ODZ default.
 
 ## Minimal example
 
@@ -148,13 +111,15 @@ stopifnot(
 
 ## Compatibility helpers
 
-Established workflows may continue to use `to_month()`, `clim_day()`,
-`clim_month()`, `anom_diff()`, `anom_z()`, and `signal_noise()`. New
-workflows should prefer the canonical engines above. Despite its
-historical name, `signal_noise()` is not a generic signal-to-noise
-estimator: it returns the standardized climatological anomaly magnitude,
-`abs(z)`, by default, or signed `z` with `signed = TRUE`. These
-compatibility helpers are not deprecated as a group.
+Thirteen historical exports remain callable but emit bounded deprecation
+warnings: the temporal wrappers `annual_index()`, `to_month()`,
+`clim_day()`, `clim_month()`, `anom_diff()`, `anom_z()`, and
+`signal_noise()`; the provider helpers `cm_setup()`, `cm_connect()`, and
+`download_nc()`; and the spatial helpers `stock_mask()`, `crop_stock()`,
+and `link_events()`. Their reference pages identify canonical
+replacements and cases where no scientifically exact replacement exists.
+Despite its historical name, `signal_noise()` computes a standardized
+climatological anomaly, not a generic signal-to-noise estimator.
 
 ## Package boundary
 
@@ -170,10 +135,7 @@ boundary](https://qselmer.github.io/oceancube/handbook/11-spatind-boundary.html)
 
 The navigable [OceanCube
 Handbook](https://qselmer.github.io/oceancube/handbook/) explains the
-five-dimensional contract, backends, the current 45-export development API
-(the frozen 38-export release plus `cube_open()`, `layer_integral()`,
-`depth_sample()`, `depth_gradient()`, `depth_feature()`, and
-`transition_layer()`), checked
+five-dimensional contract, backends, all 49 public exports, checked
 workflows, the `spatind` boundary, troubleshooting, and the project’s
 Git release policy. Its executable sources live in
 [`handbook/`](handbook/).

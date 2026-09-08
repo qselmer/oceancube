@@ -1,7 +1,7 @@
 #' Extract an ordered ocean transect as a table
 #'
-#' `cube_transect()` is an experimental API being stabilized for 0.2.0. It
-#' resolves the rows of `path` as ordered longitude-latitude pairs and extracts
+#' `cube_transect()` resolves the rows of `path` as ordered
+#' longitude-latitude pairs and extracts
 #' one time, one or more depths, and selected variables. Unlike
 #' [cube_extract()], spatial coordinates never form a Cartesian product.
 #'
@@ -154,7 +154,7 @@ cube_transect <- function(x, path, lon_col = "longitude",
       rlang::warn(
         paste(
           "`cube_transect()` preserved its legacy implicit nearest matching.",
-          "For 0.2.0, specify `match = \"exact\"` or `match = \"nearest\"` explicitly."
+          "Specify `match = \"exact\"` or `match = \"nearest\"` explicitly."
         ),
         class = "oceancube_transect_compat_warning"
       )

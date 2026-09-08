@@ -72,8 +72,8 @@ When \code{keep_index = TRUE}, global \code{longitude_index}, \code{latitude_ind
 \code{depth_index}, \code{time_index}, and \code{variable_index} columns are appended.
 }
 \description{
-\code{cube_transect()} is an experimental API being stabilized for 0.2.0. It
-resolves the rows of \code{path} as ordered longitude-latitude pairs and extracts
+\code{cube_transect()} resolves the rows of \code{path} as ordered
+longitude-latitude pairs and extracts
 one time, one or more depths, and selected variables. Unlike
 \code{\link[=cube_extract]{cube_extract()}}, spatial coordinates never form a Cartesian product.
 }

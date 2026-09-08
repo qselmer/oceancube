@@ -48,12 +48,11 @@ dropped explicitly and recorded.
 
 ## Stability
 
-The 0.2.0 API is frozen at 38 exports. Constructor, reading,
-collection, selection, extraction, masks, compatibility helpers, and grid
-geometry retain their established contracts. New validation, inspection,
-visualization, canonical temporal, anomaly, and trend engines are documented
-as experimental where their current lifecycle says so. No current core API
-performs trend significance or structural-change inference.
+The 0.3.0 API is frozen at 49 exports. Constructor, local deferred reading,
+collection, selection, extraction, masks, compatibility helpers, CF/time and
+vertical engines, six core visualizations, and grid geometry retain their
+documented contracts. Specialized D3 visualization is not implemented. No
+current core API performs trend significance or structural-change inference.
 
 ## Package boundary
 
