@@ -19,6 +19,7 @@ reference:
     contents:
       - ocean_cube
       - read_nc
+      - cube_open
       - cube_collect
   - title: Validation / inspection
     contents:
@@ -51,6 +52,7 @@ reference:
       - viz.profile
       - viz.transect
       - viz.timeseries
+      - viz.hovmoller
   - title: Temporal aggregation
     contents:
       - cube_aggregate_time
@@ -79,6 +81,9 @@ reference:
       - depth_sample
       - layer_mean
       - layer_integral
+      - mixed_layer_depth
+      - thermodynamic_state
+      - stratification
       - link_events
 articles:
   - title: Get started
