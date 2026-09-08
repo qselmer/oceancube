@@ -17,3 +17,10 @@ A masked \verb{<ocean_cube>} object.
 \description{
 Apply a stock mask to an ocean cube
 }
+\section{Lifecycle}{
+
+Deprecated as of oceancube 0.3.0. Use \code{\link[=cube_crop]{cube_crop()}} for rectangular
+selections or \code{\link[=cube_mask]{cube_mask()}} for polygon coverage. Neither function silently
+recreates the stock-specific distance-to-coast rule.
+}
+

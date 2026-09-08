@@ -51,3 +51,12 @@ The original \code{events} data frame with extracted ocean variables appended.
 at event coordinates and dates. It is intended for linking daily anomalies to
 fishing sets, lances, survey stations, biological samples, or occurrence records.
 }
+\section{Lifecycle}{
+
+Deprecated as of oceancube 0.3.0. Use \code{\link[=cube_extract]{cube_extract()}} with explicit
+\code{match = "nearest"} and axis-specific tolerances, applied through an explicit
+event-row workflow. There is no single equivalent replacement because
+\code{link_events()} performs row-wise nearest spatial matching without a public
+spatial tolerance.
+}
+

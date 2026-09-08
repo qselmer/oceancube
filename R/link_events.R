@@ -21,10 +21,22 @@
 #'   and time difference.
 #'
 #' @return The original `events` data frame with extracted ocean variables appended.
+#'
+#' @section Lifecycle:
+#' Deprecated as of oceancube 0.3.0. Use [cube_extract()] with explicit
+#' `match = "nearest"` and axis-specific tolerances, applied through an explicit
+#' event-row workflow. There is no single equivalent replacement because
+#' `link_events()` performs row-wise nearest spatial matching without a public
+#' spatial tolerance.
 #' @export
 link_events <- function(x, events, lon_col = "lon", lat_col = "lat", date_col = "date",
                         depth_col = NULL, vars = NULL, prefix = NULL,
                         time_tolerance = 0L, keep_grid = TRUE) {
+  .oceancube_deprecate(
+    "link_events",
+    "cube_extract() with explicit nearest-match tolerances",
+    "Apply it through an explicit event-row workflow."
+  )
   # Phase A: validate the cube, event structure, and requested variables.
   .check_cube(x)
 

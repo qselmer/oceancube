@@ -75,3 +75,25 @@ test_that("legacy provider exports warn without provider or network access", {
     "download_nc"
   )
 })
+
+test_that("legacy spatial compatibility exports emit bounded warnings", {
+  withr::local_options(list(oceancube.lifecycle_verbosity = "warning"))
+  x <- ocean_cube(
+    lon = c(-80, -79), lat = c(-12, -11), depth = 0,
+    time = as.Date("2020-01-01"),
+    data = array(seq_len(4), dim = c(2, 2, 1, 1, 1)),
+    vars = "temperature", units = "degC"
+  )
+  mask <- suppressWarnings(stock_mask(x, stock = "compatibility"))
+  events <- data.frame(lon = -80, lat = -12, date = as.Date("2020-01-01"))
+
+  expect_oceancube_deprecation(
+    stock_mask(x, stock = "compatibility"),
+    "stock_mask"
+  )
+  expect_oceancube_deprecation(crop_stock(x, mask), "crop_stock")
+  expect_oceancube_deprecation(
+    link_events(x, events, vars = "temperature"),
+    "link_events"
+  )
+})

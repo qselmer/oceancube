@@ -24,3 +24,11 @@ An \verb{<ocean_mask>} object.
 \description{
 Create a stock-oriented spatial mask
 }
+\section{Lifecycle}{
+
+Deprecated as of oceancube 0.3.0. Use \code{\link[=cube_crop]{cube_crop()}} for explicit coordinate
+ranges and \code{\link[=cube_mask]{cube_mask()}} for polygon masks. Distance-to-coast filters require
+an explicit downstream rule; there is no single scientifically equivalent
+replacement for this stock-oriented helper.
+}
+

@@ -8,8 +8,19 @@
 #' @param depth Optional depth range `c(min, max)`.
 #'
 #' @return An `<ocean_mask>` object.
+#'
+#' @section Lifecycle:
+#' Deprecated as of oceancube 0.3.0. Use [cube_crop()] for explicit coordinate
+#' ranges and [cube_mask()] for polygon masks. Distance-to-coast filters require
+#' an explicit downstream rule; there is no single scientifically equivalent
+#' replacement for this stock-oriented helper.
 #' @export
 stock_mask <- function(x, stock = NULL, lat = NULL, dc = NULL, depth = NULL) {
+  .oceancube_deprecate(
+    "stock_mask",
+    "cube_crop() for coordinate ranges or cube_mask() for polygon masks",
+    "Distance-to-coast filtering must be specified explicitly."
+  )
   .check_cube(x)
   if (!is.null(lat)) .check_range(lat, "lat")
   if (!is.null(dc)) .check_range(dc, "dc")
@@ -71,8 +82,17 @@ print.ocean_mask <- function(x, ...) {
 #' @param mask An `<ocean_mask>` object.
 #'
 #' @return A masked `<ocean_cube>` object.
+#'
+#' @section Lifecycle:
+#' Deprecated as of oceancube 0.3.0. Use [cube_crop()] for rectangular
+#' selections or [cube_mask()] for polygon coverage. Neither function silently
+#' recreates the stock-specific distance-to-coast rule.
 #' @export
 crop_stock <- function(x, mask) {
+  .oceancube_deprecate(
+    "crop_stock",
+    "cube_crop() for rectangular selections or cube_mask() for polygon coverage"
+  )
   .check_cube(x)
   cube_shape <- .cube_shape(x)
   if (!inherits(mask, "ocean_mask")) {

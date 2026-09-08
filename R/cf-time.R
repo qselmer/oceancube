@@ -380,6 +380,7 @@
   out
 }
 
+#' @export
 format.oceancube_cf_time <- function(x, ...) {
   calendar <- attr(x, "calendar", exact = TRUE)
   values <- .cf_components_from_key(.cf_time_key(x), calendar)
@@ -390,8 +391,10 @@ format.oceancube_cf_time <- function(x, ...) {
   )
 }
 
+#' @export
 as.character.oceancube_cf_time <- function(x, ...) format(x, ...)
 
+#' @export
 print.oceancube_cf_time <- function(x, ...) {
   cat("<oceancube_cf_time[", length(x), "] calendar=",
       attr(x, "calendar", exact = TRUE), ">\n", sep = "")
@@ -399,14 +402,17 @@ print.oceancube_cf_time <- function(x, ...) {
   invisible(x)
 }
 
+#' @export
 `[.oceancube_cf_time` <- function(x, i, ...) {
   .cf_time_restore(.cf_time_key(x)[i], x)
 }
 
+#' @export
 `[[.oceancube_cf_time` <- function(x, i, ...) {
   .cf_time_restore(.cf_time_key(x)[[i]], x)
 }
 
+#' @export
 `[<-.oceancube_cf_time` <- function(x, i, value) {
   if (!.cf_time_compatible(x, value)) {
     .abort_badarg("time", "replacement values must use identical calendar semantics.")
@@ -416,10 +422,12 @@ print.oceancube_cf_time <- function(x, ...) {
   .cf_time_restore(key, x)
 }
 
+#' @export
 rep.oceancube_cf_time <- function(x, ...) {
   .cf_time_restore(rep(.cf_time_key(x), ...), x)
 }
 
+#' @export
 c.oceancube_cf_time <- function(..., recursive = FALSE) {
   values <- list(...)
   template <- values[[1L]]
@@ -430,6 +438,7 @@ c.oceancube_cf_time <- function(..., recursive = FALSE) {
   .cf_time_restore(do.call(c, lapply(values, .cf_time_key)), template)
 }
 
+#' @export
 Ops.oceancube_cf_time <- function(e1, e2) {
   allowed <- c("==", "!=", "<", "<=", ">", ">=")
   if (!.Generic %in% allowed || missing(e2) || !.cf_time_compatible(e1, e2)) {
@@ -441,6 +450,7 @@ Ops.oceancube_cf_time <- function(e1, e2) {
   do.call(.Generic, list(.cf_time_key(e1), .cf_time_key(e2)))
 }
 
+#' @export
 Summary.oceancube_cf_time <- function(..., na.rm = FALSE) {
   values <- list(...)
   template <- values[[1L]]
@@ -455,6 +465,7 @@ Summary.oceancube_cf_time <- function(..., na.rm = FALSE) {
   .cf_time_restore(do.call(.Generic, list(keys, na.rm = na.rm)), template)
 }
 
+#' @export
 xtfrm.oceancube_cf_time <- function(x) .cf_time_key(x)
 
 .time_class <- function(x) {
