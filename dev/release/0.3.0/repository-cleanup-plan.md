@@ -55,3 +55,24 @@ Before deletion, resolve every target to an absolute path under
 tracked files except the separately reviewed `auxdata/` removal. After cleanup,
 run `git status --short`, recompute repository size, and verify that `R/`, tests,
 API, version, and governed evidence are unchanged.
+
+## Execution result
+
+Physical cleanup completed on 2026-09-07 after the safety gate passed:
+
+- checkout size excluding `.git`: approximately 3,085 MB before and 13.04 MB
+  after cleanup;
+- remaining checkout files excluding `.git`: 897;
+- `artifacts/`, `data-raw/fixtures/cache/`, `oceancube.Rcheck/`, `.Rproj.user/`,
+  `handbook/.quarto/`, local R state, root tarballs, and ignored generated site
+  files: removed;
+- tracked removals: exactly `auxdata/PER_ADM0.RData` and
+  `auxdata/layer_sp.Rdata`;
+- package load: PASS;
+- public exports: 49, unchanged;
+- version: `0.2.0.9000`, unchanged;
+- governed visualization evidence and tracked offline test fixtures: retained.
+
+Generated files removed by this step are not recoverable from the working tree,
+but are reproducible from versioned sources. The two tracked `auxdata/` objects
+remain recoverable from Git history.
