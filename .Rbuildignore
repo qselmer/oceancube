@@ -20,6 +20,8 @@
 ^artifacts($|/)
 ^auxdata($|/)
 ^CITATION\.cff$
+^CODE_OF_CONDUCT\.md$
+^CONTRIBUTING\.md$
 ^README\.Rmd$
 ^README_cache($|/)
 ^README_files($|/)

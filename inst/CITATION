@@ -1,5 +1,10 @@
-meta <- packageDescription("oceancube")
-
 citHeader("To cite oceancube in publications use:")
 
-citation(auto = meta)
+bibentry(
+  bibtype = "Manual",
+  title = "oceancube: Tools for Multidimensional Ocean Data Cubes",
+  author = person("Elmer", "Quispe-Salazar"),
+  year = "2026",
+  note = "R package version 0.3.0",
+  url = "https://github.com/qselmer/oceancube"
+)
