@@ -1,0 +1,26 @@
+field,current_value,audit_result,release_action,status
+Package,oceancube,"valid lower-case package name; absent from current CRAN index and archive; absent from Bioconductor 3.23 software list",KEEP,PASS
+Type,Package,"valid conventional field",KEEP,PASS
+Title,"Tools for Multidimensional Ocean Data Cubes","descriptive title case without terminal punctuation",KEEP,PASS
+Version,0.2.0.9000,"development version must remain until API documentation tests and checks close","SET 0.3.0 only at final release commit",DEFERRED
+Date,2026-08-14,"stale development date","SET actual final preparation date",DEFERRED
+Authors@R,"Elmer Quispe-Salazar [aut cre] qselmer@gmail.com","valid author and creator with email",KEEP,PASS
+Maintainer,"derived from Authors@R creator","valid CRAN maintainer identity and address",KEEP,PASS
+Description,"canonical five-axis ocean cubes with memory and local NetCDF workflows","accurate core boundary but final wording must include certified vertical science and six static views without future claims",UPDATE,OPEN
+License,"MIT + file LICENSE","valid MIT template; copyright holder and 2026 present",KEEP,PASS
+URL,"GitHub and pkgdown site","both canonical project URLs valid",KEEP,PASS
+BugReports,"GitHub issues URL","valid public issue tracker",KEEP,PASS
+Depends,"R >= 4.2.0","compatible with used language and package features",KEEP,PASS
+Imports,"cli ggplot2 ncdf4 rlang reticulate stats utils","all referenced; reticulate serves only provider helpers selected for deprecation",MOVE reticulate TO Suggests,OPEN
+Suggests,"gsw knitr rmarkdown sf testthat withr","all used in optional runtime tests or vignettes; add reticulate",ADD reticulate,OPEN
+SystemRequirements,absent,"core requires no separately declared system software beyond imported package handling; Python remains optional after reticulate moves",KEEP ABSENT,PASS
+Encoding,UTF-8,"required and valid",KEEP,PASS
+LazyData,false,"no package data directory; valid",KEEP,PASS
+Roxygen,"list(markdown = TRUE)","matches roxygen sources",KEEP,PASS
+RoxygenNote,absent,"standard generated-doc version field missing",SET 8.0.0,OPEN
+Config/roxygen2/version,8.0.0,"non-standard substitute for RoxygenNote",REMOVE,OPEN
+Config/testthat/edition,3,"matches test suite",KEEP,PASS
+VignetteBuilder,knitr,"knitr is in Suggests and vignettes build",KEEP,PASS
+CRAN_current_name_check,FALSE,"official CRAN PACKAGES.rds checked 2026-09-07",KEEP EVIDENCE,PASS
+CRAN_archive_name_check,"HTTP 404","official CRAN Archive/oceancube checked 2026-09-07",KEEP EVIDENCE,PASS
+Bioconductor_name_check,FALSE,"oceancube absent from official Bioconductor 3.23 software package list checked 2026-09-07",KEEP EVIDENCE,PASS
